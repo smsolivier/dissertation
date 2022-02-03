@@ -18,3 +18,7 @@ figs/
 *.lof
 *.lot
 *.run.xml
+*.acn
+*.acr
+*.alg
+*.ist

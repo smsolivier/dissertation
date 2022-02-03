@@ -1,5 +1,7 @@
 \documentclass{dissertation}
 \bibliography{references}
+\loadglsentries{glossary}
+\makeglossaries
 \begin{document}
 % --- title page 
 \title{High Order Finite Element Variable Eddington Factor Methods}
@@ -29,10 +31,18 @@
 % to my blah blah blah 
 % \end{dedication}
 
+% table of contents
 \begin{KeepFromToc}
 \tableofcontents
 \end{KeepFromToc}
 \clearpage
+
+% list of acronyms 
+\printglossary[style=april_gloss_style]
+\addcontentsline{toc}{chapter}{Acronyms}
+\clearpage
+
+% figure and table lists
 \listoffigures
 \clearpage
 \listoftables
@@ -50,5 +60,4 @@ Thanks to chairs for always holding me up... or something.
 
 \clearpage
 \printbibliography
-
 \end{document}

@@ -35,6 +35,14 @@
 \RequirePackage{subcaption}
 \RequirePackage[backend=bibtex,sorting=none,style=ieee,citestyle=numeric-comp]{biblatex}
 \RequirePackage{subfiles}
+\usepackage[acronym,nomain,nonumberlist,nogroupskip,nopostdot]{glossaries}
+\newglossarystyle{april_gloss_style}{%
+  \glossarystyle{long}%
+  \renewenvironment{theglossary}%
+     {\begin{longtable}{p{2.5cm}p{\linewidth}}}%
+     {\end{longtable}}%
+}
+\renewcommand{\glsnamefont}[1]{\textbf{#1}}
 
 % rename bib auxiliary file names
 \renewcommand{\blxauxsuffix}{}
