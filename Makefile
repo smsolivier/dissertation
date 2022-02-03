@@ -87,8 +87,8 @@ cleanfigs :
 # remove auxiliary files associated with a tex file in the main and subfiles directories
 .PHONY : 
 cleantex : 
-	$(foreach dir, . $(subfiles_dir), \ 
-		$(foreach file, $(notdir $(basename $(wildcard $(dir)/*.tex))), \
+	@$(foreach dir, . $(subfiles_dir),\
+		$(foreach file, $(notdir $(basename $(wildcard $(dir)/*.tex))),\
 			find $(dir) -maxdepth 1 -type f -name '$(file).*' ! -name '$(file).tex' -delete;))
 
 # remove tex auxilary files 
