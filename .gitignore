@@ -14,3 +14,7 @@ figs/
 *.bbl
 *.blg
 *.spl
+*.bib
+*.lof
+*.lot
+*.run.xml
