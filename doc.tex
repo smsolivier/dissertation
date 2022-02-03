@@ -1,47 +1,53 @@
-\documentclass{ucbthesis}
-
-\usepackage{biblatex}
-\usepackage{subfiles}
-% \bibliography{references}
-
-\addtolength{\abovecaptionskip}{\baselineskip} 
-
+\documentclass{dissertation}
 \bibliography{references}
 
 \begin{document}
-\title{High Order Variable Eddington Factor Methods}
-\author{Samuel S. Olivier}
+\title{High Order Finite Element Variable Eddington Factor Methods}
+\author{Samuel Olivier}
 \degreesemester{Spring}
 \degreeyear{2022}
 \degree{Doctor of Philosophy}
-\chair{Professor Rachel Slaybaugh}
-\othermembers{}
-\numberofmembers{1}
-\field{Applied Science \& Technology}
+\chair{Professor Per Persson}
+\othermembers{
+	Professor Phillip Collela\\
+	Professor Panayiotis Papadopoulos\\
+	Dr.~Terry Haut}
+\numberofmembers{4}
+\field{Applied Science and Technology}
+\emphasis{Computational and Data Science and Engineering}
 
 \maketitle
-\approvalpage
+% \approvalpage
 \copyrightpage
 
-\begin{frontmatter}
-\begin{dedication}
-to my blah blah blah 
-\end{dedication}
+\begin{abstract}
 
-% \tableofcontents
-% \clearpage
-% \listoffigures
-% \clearpage
-% \listoftables
-% \clearpage
+\end{abstract}
+
+% --- front matter --- 
+\begin{frontmatter}
+% \begin{dedication}
+% to my blah blah blah 
+% \end{dedication}
+
+\begin{KeepFromToc}
+\tableofcontents
+\end{KeepFromToc}
+\clearpage
+\listoffigures
+\clearpage
+\listoftables
+\clearpage
 
 \begin{acknowledgements}
 Thanks to chairs for always holding me up... or something. 
 \end{acknowledgements}
 \end{frontmatter}
 
+% --- main matter --- 
 \pagestyle{headings}
 
+\clearpage
 \printbibliography
 
 \end{document}
