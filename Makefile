@@ -97,6 +97,7 @@ clean :
 	rm -f $(MAIN).nav 
 	rm -f $(MAIN).snm
 	rm -f $(MAIN).run.xml
+	rm -f $(MAIN).bcf $(MAIN).lof $(MAIN).lot
 	$(MAKE) cleantikz
 
 # --- targets that require specific command line arguments --- 
