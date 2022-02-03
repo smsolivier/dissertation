@@ -4,7 +4,7 @@ PYTHON = python3
 # location of figures 
 figdir = figs
 # location of python source files 
-PYSRC = python
+pysrc = python
 # location of data files 
 datadir = data
 # location of standalone tikz files 
@@ -34,7 +34,7 @@ TIKZ = $(notdir $(basename $(wildcard tikz/*.tex)))
 TIKZ := $(addsuffix .pdf, $(TIKZ))
 
 # search for .py dependencies in SRC directory 
-vpath %.py $(PYSRC)
+vpath %.py $(pysrc)
 # also search for .pdf in figdir 
 vpath %.pdf $(figdir)
 # search for .tex dependencies in tikzdir 
@@ -95,7 +95,7 @@ cleantex :
 .PHONY : clean 
 clean : 
 	rm -rf $(figdir) 
-	rm -rf $(PYSRC)/__pycache__
+	rm -rf $(pysrc)/__pycache__
 	rm -rf __pycache__
 	$(MAKE) cleantex 
 	$(MAKE) cleantikz
