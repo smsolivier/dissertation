@@ -82,22 +82,18 @@ cleantikz :
 .PHONY : 
 cleanfigs : 
 	@$(foreach file, $(notdir $(basename $(TIKZ))), find $(figdir) -maxdepth 1 -type f -name '$(file).*' ! -name '$(file).pdf' -delete;)
+# remove auxiliary files associated with a tex file in the main directory
+.PHONY : 
+cleantex : 
+	@$(foreach file, $(basename $(wildcard *.tex)), find . -maxdepth 1 -type f -name '$(file).*' ! -name '$(file).tex' -delete;)
 
 # remove tex auxilary files 
 .PHONY : clean 
 clean : 
-	latexmk -c 
 	rm -rf $(figdir) 
-	rm -f $(MAIN).synctex.gz 
-	rm -f $(MAIN).pdf
 	rm -rf $(PYSRC)/__pycache__
 	rm -rf __pycache__
-	rm -f $(MAIN).spl 
-	rm -f $(MAIN).bbl
-	rm -f $(MAIN).nav 
-	rm -f $(MAIN).snm
-	rm -f $(MAIN).run.xml
-	rm -f $(MAIN).bcf $(MAIN).lof $(MAIN).lot
+	$(MAKE) cleantex 
 	$(MAKE) cleantikz
 
 # --- targets that require specific command line arguments --- 
