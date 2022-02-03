@@ -33,8 +33,11 @@
 \usetikzlibrary{calc}
 \RequirePackage{stmaryrd}
 \RequirePackage{subcaption}
-\RequirePackage{biblatex}
+\RequirePackage[backend=bibtex,sorting=none,style=ieee,citestyle=numeric-comp]{biblatex}
 \RequirePackage{subfiles}
+
+% rename bib auxiliary file names
+\renewcommand{\blxauxsuffix}{}
 
 % copied from April's thesis 
 \addtolength{\abovecaptionskip}{\baselineskip} 
