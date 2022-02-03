@@ -9,6 +9,8 @@ PYSRC = python
 datadir = data
 # location of standalone tikz files 
 tikzdir = tikz
+# location of tex subfiles 
+subfiles_dir = chapters
 
 # location of matplotlibrc (makes plots look nice) 
 MPL = matplotlibrc
@@ -82,10 +84,12 @@ cleantikz :
 .PHONY : 
 cleanfigs : 
 	@$(foreach file, $(notdir $(basename $(TIKZ))), find $(figdir) -maxdepth 1 -type f -name '$(file).*' ! -name '$(file).pdf' -delete;)
-# remove auxiliary files associated with a tex file in the main directory
+# remove auxiliary files associated with a tex file in the main and subfiles directories
 .PHONY : 
 cleantex : 
-	@$(foreach file, $(basename $(wildcard *.tex)), find . -maxdepth 1 -type f -name '$(file).*' ! -name '$(file).tex' -delete;)
+	$(foreach dir, . $(subfiles_dir), \ 
+		$(foreach file, $(notdir $(basename $(wildcard $(dir)/*.tex))), \
+			find $(dir) -maxdepth 1 -type f -name '$(file).*' ! -name '$(file).tex' -delete;))
 
 # remove tex auxilary files 
 .PHONY : clean 
