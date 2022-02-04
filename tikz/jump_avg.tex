@@ -1,6 +1,7 @@
 \documentclass{standalone}
 
 \usepackage{tikz}
+\usepackage{bm}
 \usepackage{pgfplots}
 \usetikzlibrary{calc, tikzmark, shapes, shapes.arrows, arrows, 3d, positioning}
 \pgfplotsset{compat=1.17}
@@ -15,7 +16,7 @@
 			\node[sloped like x axis] at (.5,.25) {$K_1$}; 
 			\node[sloped like x axis] at (1.50,.25) {$K_2$}; 
 			\node[sloped like x axis] at (.90,.50) {$\mathcal{F}$}; 
-			\draw[->, >=stealth] (1,.5) -- (1.25,.5) node[above,sloped like x axis] {\scriptsize$\hat{n}$}; 
+			\draw[->, >=stealth] (1,.5) -- (1.25,.5) node[above,sloped like x axis] {\scriptsize$\boldsymbol{\mathrm{n}}$}; 
 		\end{scope}
 
 		\draw[dashed] (0,0,-1) -- (0,0,.5); 
