@@ -1,0 +1,24 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+\usetikzlibrary{calc, tikzmark, shapes, shapes.arrows, arrows, 3d, positioning}
+\usepackage{bm}
+\newcommand{\Omegahat}{\boldsymbol{\mathrm{\Omega}}}
+\begin{document}
+\tdplotsetmaincoords{70}{110}
+\begin{tikzpicture}[>=stealth, dsh/.style={dashed, opacity=.5, text opacity=1}, tdplot_main_coords, scale=1.5, thick]
+	\draw[->] (0,0,0) -- (4,0,0) node[anchor=north east] {$x$}; 
+	\draw[->] (0,0,0) -- (0,4,0) node[anchor=north west] {$y$}; 
+	\draw[->] (0,0,0) -- (0,0,4) node[anchor=south] {$z$};  
+	\tdplotsetcoord{P}{4.25}{45}{50}
+	\draw[->, thick] (0,0,0) -- (P) node[above right] {$\Omegahat$}; 
+	\draw[->] (0,0,0) -- (Pxy); 
+	\draw[->] (Pxy) -- (P); 
+	\draw[dsh] (Pxy) -- ({sin(45)*cos(50)*4.25},0,0) node[left] {$\mu$}; 
+	\draw[dsh] (Pxy) -- (0,{sin(45)*sin(50)*4.25},0) node[above] {$\eta$}; 
+	\tdplotdrawarc{(0,0,0)}{1}{0}{50}{xshift=0mm, yshift=2mm}{$\theta$}
+	\tdplotsetthetaplanecoords{50}
+	\tdplotdrawarc[tdplot_rotated_coords]{(0,0,0)}{2}{0}{45}{xshift=-.5mm,yshift=-4mm}{$\varphi$} 
+	\draw[dsh] (P) -- (0,0,{4.25*cos(45)}) node[left] {$\xi$}; 
+\end{tikzpicture}
+\end{document}
