@@ -1,0 +1,57 @@
+Options used:
+   --mesh ../data/3point.mesh
+   --refine 0
+   --fe_order 2
+   --mesh_order 1
+   --no_fixup
+   --solve_type bicg
+   --iterative
+   --vef
+   --use_prev
+   --non
+   --num_sweeps 1
+   --distortion tg
+   --alpha 0.35
+   --anderson 0
+   --epsilon 0.001
+   --vef_type ldg
+   --outname solution
+   --scale_sigma
+   --scale_curve
+   --nsolve sun
+   --beta_on
+Ne = 336, kmin = 1.000, kmax = 169.530
+
+[KINSOL] KINSol
+   scsteptol =     3.67e-11  fnormtol =        1e-06
+
+[KINSOL] KINFP
+   nni =    1   nfe =      1   fnorm =           12.5661817748462
+
+[KINSOL] KINFP
+   nni =    2   nfe =      2   fnorm =         0.1523549405386824
+
+[KINSOL] KINFP
+   nni =    3   nfe =      3   fnorm =         0.1498425449033363
+
+[KINSOL] KINFP
+   nni =    4   nfe =      4   fnorm =       0.004242058128175685
+
+[KINSOL] KINFP
+   nni =    5   nfe =      5   fnorm =       0.000874523355914647
+
+[KINSOL] KINFP
+   nni =    6   nfe =      6   fnorm =      0.0001122144428524763
+
+[KINSOL] KINFP
+   nni =    7   nfe =      7   fnorm =      1.026392175162982e-05
+
+[KINSOL] KINFP
+   nni =    8   nfe =      8   fnorm =      1.044877606659611e-06
+
+[KINSOL] KINFP
+   nni =    9   nfe =      9   fnorm =      1.206687567645304e-07
+
+[KINSOL] KINFP
+   Return value: 0 (KIN_SUCCESS)
+outer = 9, inner = 49, 3, 27.3

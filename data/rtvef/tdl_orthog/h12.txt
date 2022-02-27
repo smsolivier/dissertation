@@ -1,0 +1,50 @@
+Options used:
+   --mesh ../data/inline-quad.mesh
+   --refine 1
+   --fe_order 2
+   --mesh_order 1
+   --no_fixup
+   --solve_type bicg
+   --iterative
+   --vef
+   --use_prev
+   --non
+   --num_sweeps 1
+   --distortion tg
+   --alpha 0.35
+   --anderson 0
+   --epsilon 0.01
+   --vef_type h1
+   --outname h1vef_tdl/h12
+   --scale_sigma
+   --scale_curve
+   --nsolve sun
+   --beta_off
+   --eta 1
+   --maxiter 50
+Ne = 64, kmin = 1.000, kmax = 1.000
+
+[KINSOL] KINSol
+   scsteptol =     3.67e-11  fnormtol =        1e-06
+
+[KINSOL] KINFP
+   nni =    1   nfe =      1   fnorm =           12.5570236243347
+
+[KINSOL] KINFP
+   nni =    2   nfe =      2   fnorm =        0.01363908670717402
+
+[KINSOL] KINFP
+   nni =    3   nfe =      3   fnorm =      0.0005885500519680759
+
+[KINSOL] KINFP
+   nni =    4   nfe =      4   fnorm =      4.529469205705183e-05
+
+[KINSOL] KINFP
+   nni =    5   nfe =      5   fnorm =      5.223823145494855e-06
+
+[KINSOL] KINFP
+   nni =    6   nfe =      6   fnorm =      5.688780555512807e-07
+
+[KINSOL] KINFP
+   Return value: 0 (KIN_SUCCESS)
+outer = 6, inner = 162, 59, 7, 27.0

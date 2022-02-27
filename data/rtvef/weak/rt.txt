@@ -1,0 +1,36 @@
+Thu Dec 30 12:33:54 PST 2021
+SLURM job = 7223547
+tdl = false
+fe_order = 2
+vef_type = rt
+solve_type = bicg
+sym_cg = true
+sn_order = 6
+mock_data = false
+tdl = false
+use air = false
+project psi = false
+superlu on cg = false
+richardson iterations = 1
+transport =   3.36 s,   1.16 s
+[[ En ]] = 2.500e-02
+np =  36, it = 26 (7.9e-07),   0.50 s,   0.98 s,   6.33 s,   326592 (9.072e+03)
+transport =   3.41 s,   1.25 s
+[[ En ]] = 2.581e-02
+np =  72, it = 25 (9.6e-07),   0.56 s,   0.90 s,   6.55 s,   630000 (8.750e+03)
+transport =   3.68 s,   1.36 s
+[[ En ]] = 2.339e-02
+np = 144, it = 29 (6.4e-07),   0.57 s,   1.09 s,   7.36 s,  1306368 (9.072e+03)
+transport =   4.10 s,   1.28 s
+[[ En ]] = 1.916e-02
+np = 288, it = 28 (8.2e-07),   0.57 s,   1.10 s,   8.12 s,  2570652 (8.926e+03)
+transport =   4.75 s,   1.32 s
+[[ En ]] = 1.711e-02
+np = 576, it = 25 (9.7e-07),   0.59 s,   1.12 s,   9.89 s,  5225472 (9.072e+03)
+transport =   5.50 s,   1.33 s
+[[ En ]] = 1.569e-02
+np = 864, it = 30 (8.3e-07),   0.60 s,   1.28 s,  11.72 s,  7805952 (9.035e+03)
+transport =   6.07 s,   1.33 s
+[[ En ]] = 1.504e-02
+np = 1152, it = 32 (4.3e-07),   0.59 s,   1.37 s,  13.94 s, 10384668 (9.014e+03)
+Thu Dec 30 12:35:44 PST 2021

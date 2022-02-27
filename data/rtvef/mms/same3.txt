@@ -1,0 +1,68 @@
+Options used:
+   --Ne 10
+   --fe_order 3
+   --mesh_order 1
+   --solve_type bicg
+   --dist_param 0.3
+   --distortion tg
+   --alpha 1
+   --beta 1
+   --gamma 0.5
+   --gamma2 0.25
+   --delta 1.25
+   --chi 1
+   --omicron 0.05
+   --facetype 0
+   --notdl
+   --discrete
+   --legendre
+   --elevate 0
+   --snorder 4
+residual = 6.234e-15
+ratio err = 2.534e-16
+interface error = 8.464e-05
+phi diff = 2.356e-07
+J diff = 8.923e-05
+vGphi = 1.994e-16, 1.000e+00
+rt proj err = 1.331e-05
+lf prod = 6.948e-17, 1.000e+00
+J int err = 1.037e-03 (4)
+h = 1.25000000e-01
+   3.72821473e-05, 5.02387921e-06, 1.30562388e-05, 3.43585327e-04 (24)
+   3.72818889e-05, 5.02006527e-06, 1.24058971e-05, 3.19567838e-04 (11)
+residual = 9.282e-15
+ratio err = 2.534e-16
+interface error = 1.014e-05
+phi diff = 1.066e-08
+J diff = 1.590e-05
+vGphi = 7.105e-17, 1.000e+00
+rt proj err = 1.077e-06
+lf prod = 8.972e-17, 1.000e+00
+J int err = 1.131e-04 (4)
+h = 6.66666667e-02
+   3.00360677e-06, 2.87320940e-07, 9.91472697e-07, 5.41201966e-05 (26)
+   3.00358679e-06, 2.87033090e-07, 9.26088153e-07, 5.02129340e-05 (12)
+residual = 1.207e-14
+ratio err = 2.534e-16
+interface error = 2.313e-06
+phi diff = 1.310e-09
+J diff = 4.586e-06
+vGphi = 1.790e-16, 1.000e+00
+rt proj err = 1.947e-07
+lf prod = 1.037e-16, 1.000e+00
+J int err = 2.602e-05 (4)
+h = 4.34782609e-02
+   5.42761455e-07, 4.36090581e-08, 1.75870511e-07, 1.51633711e-05 (26)
+   5.42759138e-07, 4.35725027e-08, 1.63311166e-07, 1.40602866e-05 (13)
+residual = 2.143e-14
+ratio err = 2.534e-16
+interface error = 9.180e-07
+phi diff = 3.607e-10
+J diff = 2.092e-06
+vGphi = 4.082e-16, 1.000e+00
+rt proj err = 6.728e-08
+lf prod = 1.424e-16, 1.000e+00
+J int err = 1.064e-05 (4)
+h = 3.33333333e-02
+   1.87439135e-07, 1.38871992e-08, 6.03416579e-08, 6.85556087e-06 (26)
+   1.87438565e-07, 1.38777670e-08, 5.59136323e-08, 6.35531529e-06 (13)
