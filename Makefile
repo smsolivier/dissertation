@@ -4,7 +4,7 @@ PYTHON = python3
 # location of figures 
 figdir = figs
 # location of python source files 
-pysrc = python
+pysrc = pysrc
 # location of data files 
 datadir = data
 # location of standalone tikz files 
@@ -25,7 +25,7 @@ FIGS =
 FIGS := $(addsuffix .pdf, $(FIGS))
 
 # list of tables to build
-TABS = 
+TABS = cp
 TABS := $(addsuffix .tex, $(TABS))
 TABS := $(addprefix $(figdir)/, $(TABS))
 
@@ -61,7 +61,7 @@ $(figdir)/%.tex : %.py $(datadir)/*
 	@latexmk -pdf -output-directory=$(figdir) $< > /dev/null 
 
 # compile latex with latexmk
-$(MAIN).pdf: $(MAIN).tex $(figdir) $(FIGS) $(TABS) $(TIKZ) $(REF) *.tex Makefile
+$(MAIN).pdf: $(MAIN).tex $(figdir) $(FIGS) $(TABS) $(TIKZ) $(REF) $(subfiles_dir)/*.tex Makefile
 	@latexmk -pdf \
 		-pdflatex="pdflatex --interaction=nonstopmode --shell-escape %O %S" \
 		$(MAIN) > /dev/null
