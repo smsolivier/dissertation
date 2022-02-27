@@ -5,7 +5,7 @@ transport basis type = 2
 flux fixup = 1
 solve type = bicg
 source quadrature order = 2
-vef type = H1xL2
+vef type = H1
 anderson vecs = 2
 nonlinear solver = sun
 
@@ -75,7 +75,7 @@ transport basis type = 2
 flux fixup = 1
 solve type = bicg
 source quadrature order = 2
-vef type = H1xL2
+vef type = H1
 anderson vecs = 2
 nonlinear solver = sun
 
@@ -154,7 +154,7 @@ transport basis type = 2
 flux fixup = 1
 solve type = bicg
 source quadrature order = 2
-vef type = H1xL2
+vef type = H1
 anderson vecs = 2
 nonlinear solver = sun
 
@@ -254,7 +254,7 @@ transport basis type = 2
 flux fixup = 1
 solve type = bicg
 source quadrature order = 2
-vef type = H1xL2
+vef type = H1
 anderson vecs = 2
 nonlinear solver = sun
 
@@ -399,7 +399,7 @@ transport basis type = 2
 flux fixup = 1
 solve type = bicg
 source quadrature order = 2
-vef type = H1xL2
+vef type = H1
 anderson vecs = 2
 nonlinear solver = sun
 
@@ -484,7 +484,7 @@ transport basis type = 2
 flux fixup = 1
 solve type = bicg
 source quadrature order = 2
-vef type = H1xL2
+vef type = H1
 anderson vecs = 2
 nonlinear solver = sun
 
@@ -578,7 +578,7 @@ transport basis type = 2
 flux fixup = 1
 solve type = bicg
 source quadrature order = 2
-vef type = H1xL2
+vef type = H1
 anderson vecs = 2
 nonlinear solver = sun
 
@@ -687,7 +687,7 @@ transport basis type = 2
 flux fixup = 1
 solve type = bicg
 source quadrature order = 2
-vef type = H1xL2
+vef type = H1
 anderson vecs = 2
 nonlinear solver = sun
 
@@ -844,7 +844,7 @@ transport basis type = 2
 flux fixup = 1
 solve type = bicg
 source quadrature order = 2
-vef type = H1xL2
+vef type = H1
 anderson vecs = 2
 nonlinear solver = sun
 
@@ -932,7 +932,7 @@ transport basis type = 2
 flux fixup = 1
 solve type = bicg
 source quadrature order = 2
-vef type = H1xL2
+vef type = H1
 anderson vecs = 2
 nonlinear solver = sun
 
@@ -1029,7 +1029,7 @@ transport basis type = 2
 flux fixup = 1
 solve type = bicg
 source quadrature order = 2
-vef type = H1xL2
+vef type = H1
 anderson vecs = 2
 nonlinear solver = sun
 
@@ -1135,7 +1135,7 @@ transport basis type = 2
 flux fixup = 1
 solve type = bicg
 source quadrature order = 2
-vef type = H1xL2
+vef type = H1
 anderson vecs = 2
 nonlinear solver = sun
 
