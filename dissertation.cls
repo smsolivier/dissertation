@@ -35,6 +35,7 @@
 \RequirePackage{subcaption}
 \RequirePackage[backend=bibtex,sorting=none,style=ieee,citestyle=numeric-comp]{biblatex}
 \RequirePackage{subfiles}
+\RequirePackage{adjustbox}
 \usepackage[acronym,nomain,nonumberlist,nogroupskip,nopostdot]{glossaries}
 \newglossarystyle{april_gloss_style}{%
   \glossarystyle{long}%
