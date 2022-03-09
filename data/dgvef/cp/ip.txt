@@ -1,13 +1,16 @@
 112 elements
 fe order = 1
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
 source quadrature order = 2
 prec type = USC
 vef type = IP
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
@@ -45,18 +48,21 @@ nonlinear solver = sun
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
 outer = 10, inner = 115, min = 6, max = 16, avg = 11.500, max norm = 9.114e-09
-[[En]]: max = 8.701e-02, min = 6.914e-02, avg = 8.333e-02
-solve time = 13.668 s
+[[En]]: max = 7.296e-01, min = 5.208e-02, avg = 1.201e-01
+solve time = 13.720 s
 448 elements
 fe order = 1
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
 source quadrature order = 2
 prec type = USC
 vef type = IP
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
@@ -97,18 +103,21 @@ nonlinear solver = sun
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
 outer = 11, inner = 132, min = 7, max = 17, avg = 12.000, max norm = 8.501e-09
-[[En]]: max = 6.164e-02, min = 4.861e-02, avg = 5.887e-02
-solve time = 44.832 s
+[[En]]: max = 5.158e-01, min = 3.556e-02, avg = 7.945e-02
+solve time = 44.963 s
 1792 elements
 fe order = 1
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
 source quadrature order = 2
 prec type = USC
 vef type = IP
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
@@ -155,18 +164,21 @@ nonlinear solver = sun
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
 outer = 13, inner = 146, min = 4, max = 18, avg = 11.231, max norm = 9.918e-09
-[[En]]: max = 4.224e-02, min = 3.398e-02, avg = 4.049e-02
-solve time = 242.367 s
+[[En]]: max = 3.618e-01, min = 2.450e-02, avg = 5.067e-02
+solve time = 229.122 s
 7168 elements
 fe order = 1
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
 source quadrature order = 2
 prec type = USC
 vef type = IP
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
@@ -216,18 +228,21 @@ nonlinear solver = sun
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
 outer = 14, inner = 161, min = 6, max = 18, avg = 11.500, max norm = 9.741e-09
-[[En]]: max = 2.820e-02, min = 2.242e-02, avg = 2.702e-02
-solve time = 876.500 s
+[[En]]: max = 2.443e-01, min = 1.637e-02, avg = 3.281e-02
+solve time = 1037.904 s
 112 elements
 fe order = 2
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
 source quadrature order = 2
 prec type = USC
 vef type = IP
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
@@ -274,18 +289,21 @@ nonlinear solver = sun
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
 outer = 13, inner = 139, min = 5, max = 16, avg = 10.692, max norm = 9.868e-09
-[[En]]: max = 9.629e-02, min = 7.133e-02, avg = 9.175e-02
-solve time = 35.290 s
+[[En]]: max = 7.640e-01, min = 5.020e-02, avg = 1.054e-01
+solve time = 34.893 s
 448 elements
 fe order = 2
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
 source quadrature order = 2
 prec type = USC
 vef type = IP
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
@@ -338,18 +356,21 @@ nonlinear solver = sun
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
 outer = 15, inner = 168, min = 5, max = 17, avg = 11.200, max norm = 9.050e-09
-[[En]]: max = 6.351e-02, min = 4.876e-02, avg = 6.084e-02
-solve time = 146.128 s
+[[En]]: max = 5.184e-01, min = 3.417e-02, avg = 6.675e-02
+solve time = 159.755 s
 1792 elements
 fe order = 2
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
 source quadrature order = 2
 prec type = USC
 vef type = IP
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
@@ -405,18 +426,21 @@ nonlinear solver = sun
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
 outer = 16, inner = 178, min = 4, max = 17, avg = 11.125, max norm = 9.440e-09
-[[En]]: max = 4.093e-02, min = 3.216e-02, avg = 3.925e-02
-solve time = 640.716 s
+[[En]]: max = 3.418e-01, min = 2.277e-02, avg = 4.291e-02
+solve time = 662.918 s
 7168 elements
 fe order = 2
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
 source quadrature order = 2
 prec type = USC
 vef type = IP
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
@@ -475,18 +499,21 @@ nonlinear solver = sun
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
 outer = 17, inner = 190, min = 5, max = 17, avg = 11.176, max norm = 7.875e-09
-[[En]]: max = 2.498e-02, min = 1.944e-02, avg = 2.391e-02
-solve time = 2557.906 s
+[[En]]: max = 2.122e-01, min = 1.382e-02, avg = 2.563e-02
+solve time = 2998.936 s
 112 elements
 fe order = 3
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
 source quadrature order = 2
 prec type = USC
 vef type = IP
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
@@ -539,18 +566,21 @@ nonlinear solver = sun
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
 outer = 15, inner = 187, min = 5, max = 19, avg = 12.467, max norm = 9.932e-09
-[[En]]: max = 9.719e-02, min = 6.784e-02, avg = 9.262e-02
-solve time = 72.335 s
+[[En]]: max = 7.312e-01, min = 4.878e-02, avg = 9.465e-02
+solve time = 70.632 s
 448 elements
 fe order = 3
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
 source quadrature order = 2
 prec type = USC
 vef type = IP
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
@@ -606,18 +636,21 @@ nonlinear solver = sun
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
 outer = 16, inner = 224, min = 7, max = 22, avg = 14.000, max norm = 9.112e-09
-[[En]]: max = 6.198e-02, min = 4.585e-02, avg = 5.926e-02
-solve time = 288.375 s
+[[En]]: max = 4.853e-01, min = 3.267e-02, avg = 6.120e-02
+solve time = 284.779 s
 1792 elements
 fe order = 3
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
 source quadrature order = 2
 prec type = USC
 vef type = IP
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
@@ -676,18 +709,21 @@ nonlinear solver = sun
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
 outer = 17, inner = 239, min = 6, max = 22, avg = 14.059, max norm = 9.387e-09
-[[En]]: max = 3.737e-02, min = 2.894e-02, avg = 3.571e-02
-solve time = 1154.141 s
+[[En]]: max = 3.059e-01, min = 2.023e-02, avg = 3.722e-02
+solve time = 1212.880 s
 7168 elements
 fe order = 3
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
 source quadrature order = 2
 prec type = USC
 vef type = IP
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
@@ -749,5 +785,5 @@ nonlinear solver = sun
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
 outer = 18, inner = 259, min = 7, max = 22, avg = 14.389, max norm = 9.605e-09
-[[En]]: max = 2.068e-02, min = 1.584e-02, avg = 1.966e-02
-solve time = 5351.557 s
+[[En]]: max = 1.781e-01, min = 1.096e-02, avg = 2.041e-02
+solve time = 5309.334 s

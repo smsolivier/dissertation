@@ -15,7 +15,7 @@ Options used:
    --anderson 0
    --epsilon 0.001
    --vef_type h1
-   --outname h1vef_tdl/h13
+   --outname mfem_tdl/h13
    --scale_sigma
    --scale_curve
    --nsolve sun
@@ -28,17 +28,17 @@ Ne = 64, kmin = 1.000, kmax = 1.000
    scsteptol =     3.67e-11  fnormtol =        1e-06
 
 [KINSOL] KINFP
-   nni =    1   nfe =      1   fnorm =          12.56328775838455
+   nni =    1   nfe =      1   fnorm =          12.56330155364165
 
 [KINSOL] KINFP
-   nni =    2   nfe =      2   fnorm =       0.001809248083356354
+   nni =    2   nfe =      2   fnorm =       0.001604745431488709
 
 [KINSOL] KINFP
-   nni =    3   nfe =      3   fnorm =       1.38410961301183e-05
+   nni =    3   nfe =      3   fnorm =      1.208260228513502e-05
 
 [KINSOL] KINFP
-   nni =    4   nfe =      4   fnorm =      2.567565079436562e-07
+   nni =    4   nfe =      4   fnorm =      1.770802537937044e-07
 
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
-outer = 4, inner = 103, 54, 5, 25.8
+outer = 4, inner = 47, 21, 4, 11.8

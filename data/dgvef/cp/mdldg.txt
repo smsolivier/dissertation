@@ -1,840 +1,888 @@
 112 elements
 fe order = 1
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
-source quadrature order = 4
+source quadrature order = 2
 prec type = amg
 vef type = MDLDG
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
 
 [KINSOL] KINFP
-   nni =    1   nfe =      1   fnorm =          13.35222837268661
+   nni =    1   nfe =      1   fnorm =          13.43393111911895
 
 [KINSOL] KINFP
-   nni =    2   nfe =      2   fnorm =         0.3510202672685157
+   nni =    2   nfe =      2   fnorm =         0.3654084579194807
 
 [KINSOL] KINFP
-   nni =    3   nfe =      3   fnorm =        0.07938533804163761
+   nni =    3   nfe =      3   fnorm =        0.07437673147920321
 
 [KINSOL] KINFP
-   nni =    4   nfe =      4   fnorm =        0.05855620616360913
+   nni =    4   nfe =      4   fnorm =        0.06412007895197136
 
 [KINSOL] KINFP
-   nni =    5   nfe =      5   fnorm =       0.004518815199868964
+   nni =    5   nfe =      5   fnorm =       0.004030928574848769
 
 [KINSOL] KINFP
-   nni =    6   nfe =      6   fnorm =        0.00229872519151475
+   nni =    6   nfe =      6   fnorm =       0.002635643931792608
 
 [KINSOL] KINFP
-   nni =    7   nfe =      7   fnorm =      0.0009003084491240321
+   nni =    7   nfe =      7   fnorm =      0.0009517035825015174
 
 [KINSOL] KINFP
-   nni =    8   nfe =      8   fnorm =       0.000181114433530416
+   nni =    8   nfe =      8   fnorm =      0.0001632349619722362
 
 [KINSOL] KINFP
-   nni =    9   nfe =      9   fnorm =       6.07383673525419e-05
+   nni =    9   nfe =      9   fnorm =      7.619638200440093e-05
 
 [KINSOL] KINFP
-   nni =   10   nfe =     10   fnorm =      2.422150953762525e-05
+   nni =   10   nfe =     10   fnorm =      2.791262973023123e-05
 
 [KINSOL] KINFP
-   nni =   11   nfe =     11   fnorm =      6.606568513811695e-06
+   nni =   11   nfe =     11   fnorm =      7.132966895584403e-06
 
 [KINSOL] KINFP
-   nni =   12   nfe =     12   fnorm =      3.951492371867538e-06
+   nni =   12   nfe =     12   fnorm =      4.917231685053203e-06
 
 [KINSOL] KINFP
-   nni =   13   nfe =     13   fnorm =      1.587338554487339e-06
+   nni =   13   nfe =     13   fnorm =      1.408568151783918e-06
 
 [KINSOL] KINFP
-   nni =   14   nfe =     14   fnorm =      3.596443198805588e-07
+   nni =   14   nfe =     14   fnorm =      4.363292074316405e-07
 
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
-outer = 14, inner = 91, min = 3, max = 10, avg = 6.500, max norm = 8.086e-09
-[[En]]: max = 9.334e-02, min = 6.914e-02, avg = 8.957e-02
-solve time = 17.222 s
+outer = 14, inner = 90, min = 3, max = 10, avg = 6.429, max norm = 8.927e-09
+[[En]]: max = 7.296e-01, min = 5.470e-02, avg = 1.040e-01
+solve time = 17.493 s
 448 elements
 fe order = 1
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
-source quadrature order = 4
+source quadrature order = 2
 prec type = amg
 vef type = MDLDG
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
 
 [KINSOL] KINFP
-   nni =    1   nfe =      1   fnorm =          13.43421545441664
+   nni =    1   nfe =      1   fnorm =          13.52444200999655
 
 [KINSOL] KINFP
-   nni =    2   nfe =      2   fnorm =         0.4264681874579079
+   nni =    2   nfe =      2   fnorm =         0.4345550834102279
 
 [KINSOL] KINFP
-   nni =    3   nfe =      3   fnorm =         0.1245870707229215
+   nni =    3   nfe =      3   fnorm =         0.1179561837600858
 
 [KINSOL] KINFP
-   nni =    4   nfe =      4   fnorm =         0.0811093895764754
+   nni =    4   nfe =      4   fnorm =        0.08373292213541927
 
 [KINSOL] KINFP
-   nni =    5   nfe =      5   fnorm =       0.008655986784272374
+   nni =    5   nfe =      5   fnorm =       0.007246591309986616
 
 [KINSOL] KINFP
-   nni =    6   nfe =      6   fnorm =       0.003255017433150265
+   nni =    6   nfe =      6   fnorm =       0.003988601167978723
 
 [KINSOL] KINFP
-   nni =    7   nfe =      7   fnorm =       0.002131385783388007
+   nni =    7   nfe =      7   fnorm =       0.002250161496789582
 
 [KINSOL] KINFP
-   nni =    8   nfe =      8   fnorm =      0.0004461525133658828
+   nni =    8   nfe =      8   fnorm =       0.000356269558302813
 
 [KINSOL] KINFP
-   nni =    9   nfe =      9   fnorm =      0.0001772750992914407
+   nni =    9   nfe =      9   fnorm =      0.0001976804069454552
 
 [KINSOL] KINFP
-   nni =   10   nfe =     10   fnorm =      7.710262378446409e-05
+   nni =   10   nfe =     10   fnorm =      7.195449380281715e-05
 
 [KINSOL] KINFP
-   nni =   11   nfe =     11   fnorm =      2.392039407250746e-05
+   nni =   11   nfe =     11   fnorm =      2.352705105079789e-05
 
 [KINSOL] KINFP
-   nni =   12   nfe =     12   fnorm =      1.826202631471929e-05
+   nni =   12   nfe =     12   fnorm =      2.178269703911884e-05
 
 [KINSOL] KINFP
-   nni =   13   nfe =     13   fnorm =      4.797030051406637e-06
+   nni =   13   nfe =     13   fnorm =      4.160703541034039e-06
 
 [KINSOL] KINFP
-   nni =   14   nfe =     14   fnorm =      1.699024829271423e-06
+   nni =   14   nfe =     14   fnorm =      2.169732493007004e-06
 
 [KINSOL] KINFP
-   nni =   15   nfe =     15   fnorm =      1.195171459800193e-06
+   nni =   15   nfe =     15   fnorm =      1.274471557843881e-06
 
 [KINSOL] KINFP
-   nni =   16   nfe =     16   fnorm =      3.404372358462027e-07
+   nni =   16   nfe =     16   fnorm =      3.682091698209433e-07
 
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
-outer = 16, inner = 110, min = 3, max = 11, avg = 6.875, max norm = 9.464e-09
-[[En]]: max = 6.442e-02, min = 4.861e-02, avg = 6.204e-02
-solve time = 69.947 s
+outer = 16, inner = 111, min = 3, max = 11, avg = 6.938, max norm = 7.828e-09
+[[En]]: max = 5.158e-01, min = 3.682e-02, avg = 6.691e-02
+solve time = 68.002 s
 1792 elements
 fe order = 1
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
-source quadrature order = 4
+source quadrature order = 2
 prec type = amg
 vef type = MDLDG
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
 
 [KINSOL] KINFP
-   nni =    1   nfe =      1   fnorm =          13.49198053783643
+   nni =    1   nfe =      1   fnorm =          13.58821265246379
 
 [KINSOL] KINFP
-   nni =    2   nfe =      2   fnorm =         0.5928054543790819
+   nni =    2   nfe =      2   fnorm =         0.6021335457691512
 
 [KINSOL] KINFP
-   nni =    3   nfe =      3   fnorm =         0.1488129516174705
+   nni =    3   nfe =      3   fnorm =         0.1417274070032812
 
 [KINSOL] KINFP
-   nni =    4   nfe =      4   fnorm =        0.09803410906942123
+   nni =    4   nfe =      4   fnorm =         0.1004485759390454
 
 [KINSOL] KINFP
-   nni =    5   nfe =      5   fnorm =        0.01585368749381733
+   nni =    5   nfe =      5   fnorm =        0.01412476815131325
 
 [KINSOL] KINFP
-   nni =    6   nfe =      6   fnorm =       0.004890976064501062
+   nni =    6   nfe =      6   fnorm =       0.005771837578844696
 
 [KINSOL] KINFP
-   nni =    7   nfe =      7   fnorm =       0.003805205921039279
+   nni =    7   nfe =      7   fnorm =       0.004100980188599279
 
 [KINSOL] KINFP
-   nni =    8   nfe =      8   fnorm =       0.000908762056623269
+   nni =    8   nfe =      8   fnorm =      0.0007962653563926558
 
 [KINSOL] KINFP
-   nni =    9   nfe =      9   fnorm =      0.0002769280935612795
+   nni =    9   nfe =      9   fnorm =      0.0003411785288123248
 
 [KINSOL] KINFP
-   nni =   10   nfe =     10   fnorm =      0.0001419186731503874
+   nni =   10   nfe =     10   fnorm =      0.0001503570272023413
 
 [KINSOL] KINFP
-   nni =   11   nfe =     11   fnorm =      5.894508497183981e-05
+   nni =   11   nfe =     11   fnorm =      5.328336122811805e-05
 
 [KINSOL] KINFP
-   nni =   12   nfe =     12   fnorm =      3.738649551776607e-05
+   nni =   12   nfe =     12   fnorm =      5.214086633775761e-05
 
 [KINSOL] KINFP
-   nni =   13   nfe =     13   fnorm =      1.198966499948995e-05
+   nni =   13   nfe =     13   fnorm =      1.447322571879184e-05
 
 [KINSOL] KINFP
-   nni =   14   nfe =     14   fnorm =      2.951849626731118e-06
+   nni =   14   nfe =     14   fnorm =      5.797981813771003e-06
 
 [KINSOL] KINFP
-   nni =   15   nfe =     15   fnorm =      2.322192873771556e-06
+   nni =   15   nfe =     15   fnorm =      3.378273267795606e-06
 
 [KINSOL] KINFP
-   nni =   16   nfe =     16   fnorm =       5.65623598625109e-07
+   nni =   16   nfe =     16   fnorm =      8.746315753871414e-07
 
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
-outer = 16, inner = 112, min = 3, max = 11, avg = 7.000, max norm = 9.825e-09
-[[En]]: max = 4.390e-02, min = 3.398e-02, avg = 4.219e-02
-solve time = 271.909 s
+outer = 16, inner = 118, min = 4, max = 11, avg = 7.375, max norm = 9.030e-09
+[[En]]: max = 3.618e-01, min = 2.514e-02, avg = 4.637e-02
+solve time = 267.461 s
 7168 elements
 fe order = 1
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
-source quadrature order = 4
+source quadrature order = 2
 prec type = amg
 vef type = MDLDG
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
 
 [KINSOL] KINFP
-   nni =    1   nfe =      1   fnorm =          13.46142532641535
+   nni =    1   nfe =      1   fnorm =           13.5544807021112
 
 [KINSOL] KINFP
-   nni =    2   nfe =      2   fnorm =         0.7659604010745735
+   nni =    2   nfe =      2   fnorm =         0.7819561297319588
 
 [KINSOL] KINFP
-   nni =    3   nfe =      3   fnorm =         0.2158461886175178
+   nni =    3   nfe =      3   fnorm =         0.2087083327988322
 
 [KINSOL] KINFP
-   nni =    4   nfe =      4   fnorm =          0.118055279463853
+   nni =    4   nfe =      4   fnorm =         0.1155789437417705
 
 [KINSOL] KINFP
-   nni =    5   nfe =      5   fnorm =         0.0306320176480237
+   nni =    5   nfe =      5   fnorm =        0.02780639312108324
 
 [KINSOL] KINFP
-   nni =    6   nfe =      6   fnorm =       0.008266593509371978
+   nni =    6   nfe =      6   fnorm =        0.00852354999724203
 
 [KINSOL] KINFP
-   nni =    7   nfe =      7   fnorm =        0.00515467310369877
+   nni =    7   nfe =      7   fnorm =       0.005842675790954321
 
 [KINSOL] KINFP
-   nni =    8   nfe =      8   fnorm =       0.002166874310275624
+   nni =    8   nfe =      8   fnorm =        0.00200538273562656
 
 [KINSOL] KINFP
-   nni =    9   nfe =      9   fnorm =      0.0006130857525719069
+   nni =    9   nfe =      9   fnorm =      0.0007031016469145612
 
 [KINSOL] KINFP
-   nni =   10   nfe =     10   fnorm =      0.0001998444886111006
+   nni =   10   nfe =     10   fnorm =      0.0002882356699747124
 
 [KINSOL] KINFP
-   nni =   11   nfe =     11   fnorm =      8.755439765806283e-05
+   nni =   11   nfe =     11   fnorm =      8.661652153563182e-05
 
 [KINSOL] KINFP
-   nni =   12   nfe =     12   fnorm =      4.708144525589208e-05
+   nni =   12   nfe =     12   fnorm =      8.014716171622638e-05
 
 [KINSOL] KINFP
-   nni =   13   nfe =     13   fnorm =      2.295562613618962e-05
+   nni =   13   nfe =     13   fnorm =       3.89325668395113e-05
 
 [KINSOL] KINFP
-   nni =   14   nfe =     14   fnorm =      1.033253004290025e-05
+   nni =   14   nfe =     14   fnorm =      1.919168192920928e-05
 
 [KINSOL] KINFP
-   nni =   15   nfe =     15   fnorm =      4.071265823579751e-06
+   nni =   15   nfe =     15   fnorm =       8.74384631899261e-06
 
 [KINSOL] KINFP
-   nni =   16   nfe =     16   fnorm =       1.57451851112711e-06
+   nni =   16   nfe =     16   fnorm =      1.976976084394622e-06
 
 [KINSOL] KINFP
-   nni =   17   nfe =     17   fnorm =      6.369859095745056e-07
+   nni =   17   nfe =     17   fnorm =      1.770534147516045e-06
+
+[KINSOL] KINFP
+   nni =   18   nfe =     18   fnorm =      7.770417408403674e-07
 
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
-outer = 17, inner = 123, min = 3, max = 12, avg = 7.235, max norm = 9.092e-09
-[[En]]: max = 2.920e-02, min = 2.274e-02, avg = 2.804e-02
-solve time = 1180.304 s
+outer = 18, inner = 125, min = 3, max = 12, avg = 6.944, max norm = 9.016e-09
+[[En]]: max = 2.443e-01, min = 1.674e-02, avg = 2.952e-02
+solve time = 1238.914 s
 112 elements
 fe order = 2
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
-source quadrature order = 4
+source quadrature order = 2
 prec type = amg
 vef type = MDLDG
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
 
 [KINSOL] KINFP
-   nni =    1   nfe =      1   fnorm =          12.85783734118261
+   nni =    1   nfe =      1   fnorm =          12.88814009602029
 
 [KINSOL] KINFP
-   nni =    2   nfe =      2   fnorm =         0.5384782843899931
+   nni =    2   nfe =      2   fnorm =         0.5415102636062203
 
 [KINSOL] KINFP
-   nni =    3   nfe =      3   fnorm =         0.1010276924832763
+   nni =    3   nfe =      3   fnorm =        0.09572195352264101
 
 [KINSOL] KINFP
-   nni =    4   nfe =      4   fnorm =        0.09000468903510606
+   nni =    4   nfe =      4   fnorm =        0.09255090973492663
 
 [KINSOL] KINFP
-   nni =    5   nfe =      5   fnorm =       0.007647643278182681
+   nni =    5   nfe =      5   fnorm =       0.007097060565016022
 
 [KINSOL] KINFP
-   nni =    6   nfe =      6   fnorm =       0.004421066362245818
+   nni =    6   nfe =      6   fnorm =       0.005438187589963284
 
 [KINSOL] KINFP
-   nni =    7   nfe =      7   fnorm =       0.002979919832871381
+   nni =    7   nfe =      7   fnorm =       0.003155037680145911
 
 [KINSOL] KINFP
-   nni =    8   nfe =      8   fnorm =      0.0004700112463553729
+   nni =    8   nfe =      8   fnorm =      0.0004267665288997247
 
 [KINSOL] KINFP
-   nni =    9   nfe =      9   fnorm =      0.0001981729393882858
+   nni =    9   nfe =      9   fnorm =      0.0002376836444581976
 
 [KINSOL] KINFP
-   nni =   10   nfe =     10   fnorm =      0.0001030754358422037
+   nni =   10   nfe =     10   fnorm =      0.0001100031756897657
 
 [KINSOL] KINFP
-   nni =   11   nfe =     11   fnorm =      4.415193133855411e-05
+   nni =   11   nfe =     11   fnorm =      4.447260173978673e-05
 
 [KINSOL] KINFP
-   nni =   12   nfe =     12   fnorm =      3.574159749419881e-05
+   nni =   12   nfe =     12   fnorm =      4.556982699721601e-05
 
 [KINSOL] KINFP
-   nni =   13   nfe =     13   fnorm =      8.894494574418488e-06
+   nni =   13   nfe =     13   fnorm =      6.562016650835112e-06
 
 [KINSOL] KINFP
-   nni =   14   nfe =     14   fnorm =      2.791714887706576e-06
+   nni =   14   nfe =     14   fnorm =      2.989561590283074e-06
 
 [KINSOL] KINFP
-   nni =   15   nfe =     15   fnorm =      1.765290896793559e-06
+   nni =   15   nfe =     15   fnorm =      2.170966223902226e-06
 
 [KINSOL] KINFP
-   nni =   16   nfe =     16   fnorm =      5.522187180861948e-07
+   nni =   16   nfe =     16   fnorm =      5.791079861205972e-07
 
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
-outer = 16, inner = 124, min = 4, max = 11, avg = 7.750, max norm = 9.215e-09
-[[En]]: max = 9.516e-02, min = 7.133e-02, avg = 9.137e-02
-solve time = 41.328 s
+outer = 16, inner = 122, min = 4, max = 11, avg = 7.625, max norm = 9.445e-09
+[[En]]: max = 7.640e-01, min = 5.262e-02, avg = 9.737e-02
+solve time = 45.180 s
 448 elements
 fe order = 2
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
-source quadrature order = 4
+source quadrature order = 2
 prec type = amg
 vef type = MDLDG
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
 
 [KINSOL] KINFP
-   nni =    1   nfe =      1   fnorm =          12.86638718168421
+   nni =    1   nfe =      1   fnorm =          12.89757879490371
 
 [KINSOL] KINFP
-   nni =    2   nfe =      2   fnorm =         0.7427311341181408
+   nni =    2   nfe =      2   fnorm =         0.7523749906767252
 
 [KINSOL] KINFP
-   nni =    3   nfe =      3   fnorm =          0.136601698707882
+   nni =    3   nfe =      3   fnorm =          0.134610059600069
 
 [KINSOL] KINFP
-   nni =    4   nfe =      4   fnorm =         0.1037702416277209
+   nni =    4   nfe =      4   fnorm =          0.106019628178269
 
 [KINSOL] KINFP
-   nni =    5   nfe =      5   fnorm =        0.01313691627602709
+   nni =    5   nfe =      5   fnorm =        0.01268211740481107
 
 [KINSOL] KINFP
-   nni =    6   nfe =      6   fnorm =       0.005561950365348678
+   nni =    6   nfe =      6   fnorm =       0.006899515732881167
 
 [KINSOL] KINFP
-   nni =    7   nfe =      7   fnorm =       0.004669296167546522
+   nni =    7   nfe =      7   fnorm =       0.005015556028811874
 
 [KINSOL] KINFP
-   nni =    8   nfe =      8   fnorm =      0.0007918268665132455
+   nni =    8   nfe =      8   fnorm =      0.0008877947585088641
 
 [KINSOL] KINFP
-   nni =    9   nfe =      9   fnorm =      0.0003602529800439402
+   nni =    9   nfe =      9   fnorm =      0.0004518181422239476
 
 [KINSOL] KINFP
-   nni =   10   nfe =     10   fnorm =      0.0002032308901984692
+   nni =   10   nfe =     10   fnorm =      0.0002076245847195679
 
 [KINSOL] KINFP
-   nni =   11   nfe =     11   fnorm =      7.253027391929123e-05
+   nni =   11   nfe =     11   fnorm =       7.04103492235042e-05
 
 [KINSOL] KINFP
-   nni =   12   nfe =     12   fnorm =      5.598761160041654e-05
+   nni =   12   nfe =     12   fnorm =      7.341409450567493e-05
 
 [KINSOL] KINFP
-   nni =   13   nfe =     13   fnorm =      1.730396047228133e-05
+   nni =   13   nfe =     13   fnorm =      1.679075281124653e-05
 
 [KINSOL] KINFP
-   nni =   14   nfe =     14   fnorm =      6.070033621741189e-06
+   nni =   14   nfe =     14   fnorm =      9.957252338432809e-06
 
 [KINSOL] KINFP
-   nni =   15   nfe =     15   fnorm =      3.889126835465717e-06
+   nni =   15   nfe =     15   fnorm =      5.654926251708048e-06
 
 [KINSOL] KINFP
-   nni =   16   nfe =     16   fnorm =      9.482046194886351e-07
+   nni =   16   nfe =     16   fnorm =      1.179260146422223e-06
+
+[KINSOL] KINFP
+   nni =   17   nfe =     17   fnorm =       1.12897347470664e-06
+
+[KINSOL] KINFP
+   nni =   18   nfe =     18   fnorm =      5.392684445659768e-07
 
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
-outer = 16, inner = 138, min = 5, max = 12, avg = 8.625, max norm = 9.351e-09
-[[En]]: max = 6.387e-02, min = 4.876e-02, avg = 6.116e-02
-solve time = 155.539 s
+outer = 18, inner = 143, min = 4, max = 12, avg = 7.944, max norm = 9.281e-09
+[[En]]: max = 5.184e-01, min = 3.548e-02, avg = 6.258e-02
+solve time = 178.068 s
 1792 elements
 fe order = 2
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
-source quadrature order = 4
+source quadrature order = 2
 prec type = amg
 vef type = MDLDG
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
 
 [KINSOL] KINFP
-   nni =    1   nfe =      1   fnorm =          12.82655293733418
+   nni =    1   nfe =      1   fnorm =          12.85360311542206
 
 [KINSOL] KINFP
-   nni =    2   nfe =      2   fnorm =         0.8895824509843751
+   nni =    2   nfe =      2   fnorm =         0.9067172384921125
 
 [KINSOL] KINFP
-   nni =    3   nfe =      3   fnorm =          0.196481010202153
+   nni =    3   nfe =      3   fnorm =         0.2002613028925015
 
 [KINSOL] KINFP
-   nni =    4   nfe =      4   fnorm =         0.1038428492025452
+   nni =    4   nfe =      4   fnorm =         0.1081204958861453
 
 [KINSOL] KINFP
-   nni =    5   nfe =      5   fnorm =        0.02473188670612458
+   nni =    5   nfe =      5   fnorm =         0.0231667372922999
 
 [KINSOL] KINFP
-   nni =    6   nfe =      6   fnorm =       0.007677499790359033
+   nni =    6   nfe =      6   fnorm =       0.009257713831710479
 
 [KINSOL] KINFP
-   nni =    7   nfe =      7   fnorm =       0.005578487144085487
+   nni =    7   nfe =      7   fnorm =       0.006334576906825706
 
 [KINSOL] KINFP
-   nni =    8   nfe =      8   fnorm =       0.001663263832078155
+   nni =    8   nfe =      8   fnorm =       0.001624479578401727
 
 [KINSOL] KINFP
-   nni =    9   nfe =      9   fnorm =      0.0006397508600577417
+   nni =    9   nfe =      9   fnorm =      0.0007157250391791603
 
 [KINSOL] KINFP
-   nni =   10   nfe =     10   fnorm =      0.0002206382168339349
+   nni =   10   nfe =     10   fnorm =      0.0003300202002705088
 
 [KINSOL] KINFP
-   nni =   11   nfe =     11   fnorm =      9.527809902754036e-05
+   nni =   11   nfe =     11   fnorm =      9.929354462712148e-05
 
 [KINSOL] KINFP
-   nni =   12   nfe =     12   fnorm =      5.424986672131205e-05
+   nni =   12   nfe =     12   fnorm =      9.227058635774554e-05
 
 [KINSOL] KINFP
-   nni =   13   nfe =     13   fnorm =      2.408092503891623e-05
+   nni =   13   nfe =     13   fnorm =      3.097284414477208e-05
 
 [KINSOL] KINFP
-   nni =   14   nfe =     14   fnorm =      1.054253363452773e-05
+   nni =   14   nfe =     14   fnorm =      2.057122813980961e-05
 
 [KINSOL] KINFP
-   nni =   15   nfe =     15   fnorm =      4.686857367763864e-06
+   nni =   15   nfe =     15   fnorm =      9.766295674396019e-06
 
 [KINSOL] KINFP
-   nni =   16   nfe =     16   fnorm =      1.887361291030842e-06
+   nni =   16   nfe =     16   fnorm =      2.224104655113024e-06
 
 [KINSOL] KINFP
-   nni =   17   nfe =     17   fnorm =      7.044852029514104e-07
+   nni =   17   nfe =     17   fnorm =      1.818743326165162e-06
+
+[KINSOL] KINFP
+   nni =   18   nfe =     18   fnorm =      9.953691691988453e-07
 
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
-outer = 17, inner = 159, min = 5, max = 14, avg = 9.353, max norm = 9.490e-09
-[[En]]: max = 4.152e-02, min = 3.196e-02, avg = 3.977e-02
-solve time = 671.913 s
+outer = 18, inner = 164, min = 4, max = 14, avg = 9.111, max norm = 8.787e-09
+[[En]]: max = 3.418e-01, min = 2.339e-02, avg = 4.126e-02
+solve time = 691.001 s
 7168 elements
 fe order = 2
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
-source quadrature order = 4
+source quadrature order = 2
 prec type = amg
 vef type = MDLDG
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
 
 [KINSOL] KINFP
-   nni =    1   nfe =      1   fnorm =          12.69404020028276
+   nni =    1   nfe =      1   fnorm =          12.70731353313253
 
 [KINSOL] KINFP
-   nni =    2   nfe =      2   fnorm =         0.9184099493302966
+   nni =    2   nfe =      2   fnorm =         0.9414904116083991
 
 [KINSOL] KINFP
-   nni =    3   nfe =      3   fnorm =         0.2311056934907165
+   nni =    3   nfe =      3   fnorm =         0.2277500953842688
 
 [KINSOL] KINFP
-   nni =    4   nfe =      4   fnorm =         0.1241160418421312
+   nni =    4   nfe =      4   fnorm =         0.1299598127299439
 
 [KINSOL] KINFP
-   nni =    5   nfe =      5   fnorm =        0.04274726365313231
+   nni =    5   nfe =      5   fnorm =         0.0401802353759122
 
 [KINSOL] KINFP
-   nni =    6   nfe =      6   fnorm =        0.01013406311485499
+   nni =    6   nfe =      6   fnorm =        0.01129496876304015
 
 [KINSOL] KINFP
-   nni =    7   nfe =      7   fnorm =       0.005953026942849715
+   nni =    7   nfe =      7   fnorm =       0.007824393423747744
 
 [KINSOL] KINFP
-   nni =    8   nfe =      8   fnorm =       0.002898545909821859
+   nni =    8   nfe =      8   fnorm =        0.00320803980554718
 
 [KINSOL] KINFP
-   nni =    9   nfe =      9   fnorm =       0.001383216260890219
+   nni =    9   nfe =      9   fnorm =       0.001223073110233841
 
 [KINSOL] KINFP
-   nni =   10   nfe =     10   fnorm =      0.0002213038279152979
+   nni =   10   nfe =     10   fnorm =      0.0003229007305733944
 
 [KINSOL] KINFP
-   nni =   11   nfe =     11   fnorm =      0.0001070676045211716
+   nni =   11   nfe =     11   fnorm =       0.000177809692328168
 
 [KINSOL] KINFP
-   nni =   12   nfe =     12   fnorm =      7.210356549847141e-05
+   nni =   12   nfe =     12   fnorm =      0.0001023560613770957
 
 [KINSOL] KINFP
-   nni =   13   nfe =     13   fnorm =       4.52771017582787e-05
+   nni =   13   nfe =     13   fnorm =      6.611645858001225e-05
 
 [KINSOL] KINFP
-   nni =   14   nfe =     14   fnorm =      1.201928293537158e-05
+   nni =   14   nfe =     14   fnorm =      2.765117086855895e-05
 
 [KINSOL] KINFP
-   nni =   15   nfe =     15   fnorm =       5.16211584034032e-06
+   nni =   15   nfe =     15   fnorm =      1.001627803409733e-05
 
 [KINSOL] KINFP
-   nni =   16   nfe =     16   fnorm =      2.614175669046759e-06
+   nni =   16   nfe =     16   fnorm =      5.726966464170147e-06
 
 [KINSOL] KINFP
-   nni =   17   nfe =     17   fnorm =      1.023030052671459e-06
+   nni =   17   nfe =     17   fnorm =      1.279262192399599e-06
 
 [KINSOL] KINFP
-   nni =   18   nfe =     18   fnorm =      1.077692766471294e-06
+   nni =   18   nfe =     18   fnorm =      1.285750863666557e-06
 
 [KINSOL] KINFP
-   nni =   19   nfe =     19   fnorm =      4.189717429659012e-07
+   nni =   19   nfe =     19   fnorm =      4.296582227780732e-07
 
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
-outer = 19, inner = 175, min = 4, max = 14, avg = 9.211, max norm = 9.663e-09
-[[En]]: max = 2.547e-02, min = 1.948e-02, avg = 2.438e-02
-solve time = 2966.343 s
+outer = 19, inner = 177, min = 4, max = 14, avg = 9.316, max norm = 9.847e-09
+[[En]]: max = 2.122e-01, min = 1.411e-02, avg = 2.467e-02
+solve time = 3439.478 s
 112 elements
 fe order = 3
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
-source quadrature order = 4
+source quadrature order = 2
 prec type = amg
 vef type = MDLDG
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
 
 [KINSOL] KINFP
-   nni =    1   nfe =      1   fnorm =          13.07890012199434
+   nni =    1   nfe =      1   fnorm =          13.13218594095839
 
 [KINSOL] KINFP
-   nni =    2   nfe =      2   fnorm =         0.8313066536551297
+   nni =    2   nfe =      2   fnorm =           0.84555991669148
 
 [KINSOL] KINFP
-   nni =    3   nfe =      3   fnorm =         0.1170770206618585
+   nni =    3   nfe =      3   fnorm =          0.122617032993106
 
 [KINSOL] KINFP
-   nni =    4   nfe =      4   fnorm =         0.1008850429723964
+   nni =    4   nfe =      4   fnorm =         0.1053241205695354
 
 [KINSOL] KINFP
-   nni =    5   nfe =      5   fnorm =       0.008897904817876556
+   nni =    5   nfe =      5   fnorm =       0.009924722190996604
 
 [KINSOL] KINFP
-   nni =    6   nfe =      6   fnorm =       0.006601671277459809
+   nni =    6   nfe =      6   fnorm =       0.007796804804531599
 
 [KINSOL] KINFP
-   nni =    7   nfe =      7   fnorm =       0.003756849493143255
+   nni =    7   nfe =      7   fnorm =       0.004109908679239993
 
 [KINSOL] KINFP
-   nni =    8   nfe =      8   fnorm =      0.0006721159518001674
+   nni =    8   nfe =      8   fnorm =      0.0007679695225901728
 
 [KINSOL] KINFP
-   nni =    9   nfe =      9   fnorm =      0.0004577162354917341
+   nni =    9   nfe =      9   fnorm =      0.0005645249313674938
 
 [KINSOL] KINFP
-   nni =   10   nfe =     10   fnorm =      0.0001371478880605181
+   nni =   10   nfe =     10   fnorm =      0.0001281687663907682
 
 [KINSOL] KINFP
-   nni =   11   nfe =     11   fnorm =      5.433290644085709e-05
+   nni =   11   nfe =     11   fnorm =      6.670770001071524e-05
 
 [KINSOL] KINFP
-   nni =   12   nfe =     12   fnorm =      4.061362052931727e-05
+   nni =   12   nfe =     12   fnorm =      5.447705871430841e-05
 
 [KINSOL] KINFP
-   nni =   13   nfe =     13   fnorm =      1.762081932699111e-05
+   nni =   13   nfe =     13   fnorm =      1.782535212802028e-05
 
 [KINSOL] KINFP
-   nni =   14   nfe =     14   fnorm =      8.019306546813709e-06
+   nni =   14   nfe =     14   fnorm =      1.032870596495705e-05
 
 [KINSOL] KINFP
-   nni =   15   nfe =     15   fnorm =      3.804987031452711e-06
+   nni =   15   nfe =     15   fnorm =      4.063845493451623e-06
 
 [KINSOL] KINFP
-   nni =   16   nfe =     16   fnorm =      1.302918686052479e-06
+   nni =   16   nfe =     16   fnorm =      1.253270629275605e-06
 
 [KINSOL] KINFP
-   nni =   17   nfe =     17   fnorm =      7.965361560335893e-07
+   nni =   17   nfe =     17   fnorm =      9.225311534688529e-07
 
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
-outer = 17, inner = 196, min = 5, max = 22, avg = 11.529, max norm = 9.909e-09
-[[En]]: max = 9.702e-02, min = 6.784e-02, avg = 9.261e-02
-solve time = 77.805 s
+outer = 17, inner = 209, min = 5, max = 22, avg = 12.294, max norm = 9.909e-09
+[[En]]: max = 7.312e-01, min = 4.993e-02, avg = 9.042e-02
+solve time = 80.332 s
 448 elements
 fe order = 3
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
-source quadrature order = 4
+source quadrature order = 2
 prec type = amg
 vef type = MDLDG
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
 
 [KINSOL] KINFP
-   nni =    1   nfe =      1   fnorm =          13.10569766713085
+   nni =    1   nfe =      1   fnorm =           13.1617694844551
 
 [KINSOL] KINFP
-   nni =    2   nfe =      2   fnorm =          1.037938922504485
+   nni =    2   nfe =      2   fnorm =          1.063679147592792
 
 [KINSOL] KINFP
-   nni =    3   nfe =      3   fnorm =         0.1891300068979325
+   nni =    3   nfe =      3   fnorm =         0.1998486406167683
 
 [KINSOL] KINFP
-   nni =    4   nfe =      4   fnorm =        0.09886089551957622
+   nni =    4   nfe =      4   fnorm =         0.1028477736047428
 
 [KINSOL] KINFP
-   nni =    5   nfe =      5   fnorm =        0.01276018864204609
+   nni =    5   nfe =      5   fnorm =        0.01607060547701211
 
 [KINSOL] KINFP
-   nni =    6   nfe =      6   fnorm =       0.007805710491720852
+   nni =    6   nfe =      6   fnorm =       0.008581239172835708
 
 [KINSOL] KINFP
-   nni =    7   nfe =      7   fnorm =       0.005488108451311757
+   nni =    7   nfe =      7   fnorm =       0.005966983758797451
 
 [KINSOL] KINFP
-   nni =    8   nfe =      8   fnorm =       0.001305244928857974
+   nni =    8   nfe =      8   fnorm =       0.001300966972385798
 
 [KINSOL] KINFP
-   nni =    9   nfe =      9   fnorm =      0.0006567264371899473
+   nni =    9   nfe =      9   fnorm =      0.0008059969668028355
 
 [KINSOL] KINFP
-   nni =   10   nfe =     10   fnorm =      0.0003129618575357096
+   nni =   10   nfe =     10   fnorm =      0.0002979394231155119
 
 [KINSOL] KINFP
-   nni =   11   nfe =     11   fnorm =      0.0001120481417535846
+   nni =   11   nfe =     11   fnorm =      9.748552043364889e-05
 
 [KINSOL] KINFP
-   nni =   12   nfe =     12   fnorm =      7.268773198132461e-05
+   nni =   12   nfe =     12   fnorm =      9.103035145474614e-05
 
 [KINSOL] KINFP
-   nni =   13   nfe =     13   fnorm =      3.186226476048493e-05
+   nni =   13   nfe =     13   fnorm =      2.319085169943946e-05
 
 [KINSOL] KINFP
-   nni =   14   nfe =     14   fnorm =      1.965172850226793e-05
+   nni =   14   nfe =     14   fnorm =      2.284792465800933e-05
 
 [KINSOL] KINFP
-   nni =   15   nfe =     15   fnorm =      9.525658054121422e-06
+   nni =   15   nfe =     15   fnorm =       7.77591229783603e-06
 
 [KINSOL] KINFP
-   nni =   16   nfe =     16   fnorm =       1.88691791680462e-06
+   nni =   16   nfe =     16   fnorm =      2.010088890225248e-06
 
 [KINSOL] KINFP
-   nni =   17   nfe =     17   fnorm =      2.361398572681139e-06
+   nni =   17   nfe =     17   fnorm =      2.511335118526858e-06
 
 [KINSOL] KINFP
-   nni =   18   nfe =     18   fnorm =      8.653803517111314e-07
+   nni =   18   nfe =     18   fnorm =      8.730873848339371e-07
 
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
-outer = 18, inner = 213, min = 6, max = 17, avg = 11.833, max norm = 9.470e-09
-[[En]]: max = 6.268e-02, min = 4.585e-02, avg = 6.001e-02
-solve time = 304.420 s
+outer = 18, inner = 209, min = 6, max = 17, avg = 11.611, max norm = 9.874e-09
+[[En]]: max = 4.853e-01, min = 3.350e-02, avg = 5.884e-02
+solve time = 326.579 s
 1792 elements
 fe order = 3
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
-source quadrature order = 4
+source quadrature order = 2
 prec type = amg
 vef type = MDLDG
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
 
 [KINSOL] KINFP
-   nni =    1   nfe =      1   fnorm =          13.04455561488777
+   nni =    1   nfe =      1   fnorm =          13.09427069933255
 
 [KINSOL] KINFP
-   nni =    2   nfe =      2   fnorm =          1.066142374742158
+   nni =    2   nfe =      2   fnorm =          1.097278002040246
 
 [KINSOL] KINFP
-   nni =    3   nfe =      3   fnorm =         0.2182959275876144
+   nni =    3   nfe =      3   fnorm =         0.2330547522414732
 
 [KINSOL] KINFP
-   nni =    4   nfe =      4   fnorm =         0.1173803849981834
+   nni =    4   nfe =      4   fnorm =         0.1224979694762949
 
 [KINSOL] KINFP
-   nni =    5   nfe =      5   fnorm =        0.02712362828175219
+   nni =    5   nfe =      5   fnorm =         0.0280489927454759
 
 [KINSOL] KINFP
-   nni =    6   nfe =      6   fnorm =        0.00963809822769357
+   nni =    6   nfe =      6   fnorm =        0.01136029426698926
 
 [KINSOL] KINFP
-   nni =    7   nfe =      7   fnorm =       0.006463085858672279
+   nni =    7   nfe =      7   fnorm =       0.007778068246407921
 
 [KINSOL] KINFP
-   nni =    8   nfe =      8   fnorm =        0.00166729769306051
+   nni =    8   nfe =      8   fnorm =       0.001998396601077701
 
 [KINSOL] KINFP
-   nni =    9   nfe =      9   fnorm =       0.001070977229414405
+   nni =    9   nfe =      9   fnorm =       0.001042548684099254
 
 [KINSOL] KINFP
-   nni =   10   nfe =     10   fnorm =      0.0002575299717348933
+   nni =   10   nfe =     10   fnorm =       0.000441640351021233
 
 [KINSOL] KINFP
-   nni =   11   nfe =     11   fnorm =      0.0001537697327511633
+   nni =   11   nfe =     11   fnorm =       0.000104325323446508
 
 [KINSOL] KINFP
-   nni =   12   nfe =     12   fnorm =      6.229563303195018e-05
+   nni =   12   nfe =     12   fnorm =      0.0001283781752382529
 
 [KINSOL] KINFP
-   nni =   13   nfe =     13   fnorm =      5.692427772274744e-05
+   nni =   13   nfe =     13   fnorm =      5.419916127613611e-05
 
 [KINSOL] KINFP
-   nni =   14   nfe =     14   fnorm =      1.746564517168814e-05
+   nni =   14   nfe =     14   fnorm =      3.791782659723353e-05
 
 [KINSOL] KINFP
-   nni =   15   nfe =     15   fnorm =      8.341123571176112e-06
+   nni =   15   nfe =     15   fnorm =      1.427916137952678e-05
 
 [KINSOL] KINFP
-   nni =   16   nfe =     16   fnorm =      4.491406377038487e-06
+   nni =   16   nfe =     16   fnorm =      5.789754710328054e-06
 
 [KINSOL] KINFP
-   nni =   17   nfe =     17   fnorm =      1.030035053140033e-06
+   nni =   17   nfe =     17   fnorm =      1.774453970204704e-06
 
 [KINSOL] KINFP
-   nni =   18   nfe =     18   fnorm =      1.620680976532896e-06
+   nni =   18   nfe =     18   fnorm =      1.392491916885064e-06
 
 [KINSOL] KINFP
-   nni =   19   nfe =     19   fnorm =      3.802995545143517e-07
+   nni =   19   nfe =     19   fnorm =      7.212787194177395e-07
 
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
-outer = 19, inner = 235, min = 6, max = 19, avg = 12.368, max norm = 9.659e-09
-[[En]]: max = 3.810e-02, min = 2.892e-02, avg = 3.641e-02
-solve time = 1268.399 s
+outer = 19, inner = 239, min = 6, max = 18, avg = 12.579, max norm = 9.845e-09
+[[En]]: max = 3.059e-01, min = 2.066e-02, avg = 3.585e-02
+solve time = 1287.780 s
 7168 elements
 fe order = 3
 sn order = 12
+transport basis type = 2
 flux fixup = 2
+inner tolerance = 1e-08
 solve type = bicg
-source quadrature order = 4
+source quadrature order = 2
 prec type = amg
 vef type = MDLDG
 anderson vecs = 2
 nonlinear solver = sun
+outer tolerance = 1e-06
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
 
 [KINSOL] KINFP
-   nni =    1   nfe =      1   fnorm =          12.88998896424691
+   nni =    1   nfe =      1   fnorm =          12.92363433641405
 
 [KINSOL] KINFP
-   nni =    2   nfe =      2   fnorm =           1.00565525101261
+   nni =    2   nfe =      2   fnorm =          1.047494600582148
 
 [KINSOL] KINFP
-   nni =    3   nfe =      3   fnorm =         0.2098884954861111
+   nni =    3   nfe =      3   fnorm =         0.2183707133418886
 
 [KINSOL] KINFP
-   nni =    4   nfe =      4   fnorm =          0.135168816511311
+   nni =    4   nfe =      4   fnorm =         0.1451382970890882
 
 [KINSOL] KINFP
-   nni =    5   nfe =      5   fnorm =        0.03271774900740398
+   nni =    5   nfe =      5   fnorm =        0.03976733219428374
 
 [KINSOL] KINFP
-   nni =    6   nfe =      6   fnorm =        0.01293353904136962
+   nni =    6   nfe =      6   fnorm =        0.01439962666758721
 
 [KINSOL] KINFP
-   nni =    7   nfe =      7   fnorm =       0.006686045535665874
+   nni =    7   nfe =      7   fnorm =       0.008849014094651331
 
 [KINSOL] KINFP
-   nni =    8   nfe =      8   fnorm =       0.004794740429296174
+   nni =    8   nfe =      8   fnorm =       0.003993470112527264
 
 [KINSOL] KINFP
-   nni =    9   nfe =      9   fnorm =       0.002033897186659583
+   nni =    9   nfe =      9   fnorm =       0.002263498695729727
 
 [KINSOL] KINFP
-   nni =   10   nfe =     10   fnorm =      0.0004369138711506348
+   nni =   10   nfe =     10   fnorm =      0.0003822737988532499
 
 [KINSOL] KINFP
-   nni =   11   nfe =     11   fnorm =      0.0001804599952854868
+   nni =   11   nfe =     11   fnorm =      0.0002853235111131003
 
 [KINSOL] KINFP
-   nni =   12   nfe =     12   fnorm =      9.828431218461553e-05
+   nni =   12   nfe =     12   fnorm =      0.0001466497126900723
 
 [KINSOL] KINFP
-   nni =   13   nfe =     13   fnorm =      7.641051805273857e-05
+   nni =   13   nfe =     13   fnorm =      0.0001327210685453384
 
 [KINSOL] KINFP
-   nni =   14   nfe =     14   fnorm =      2.336006802061696e-05
+   nni =   14   nfe =     14   fnorm =      2.613456477984499e-05
 
 [KINSOL] KINFP
-   nni =   15   nfe =     15   fnorm =      9.751040659589094e-06
+   nni =   15   nfe =     15   fnorm =      1.024463389320829e-05
 
 [KINSOL] KINFP
-   nni =   16   nfe =     16   fnorm =      5.984639220413257e-06
+   nni =   16   nfe =     16   fnorm =       7.94288374716956e-06
 
 [KINSOL] KINFP
-   nni =   17   nfe =     17   fnorm =      1.956335118569186e-06
+   nni =   17   nfe =     17   fnorm =      1.643134448281458e-06
 
 [KINSOL] KINFP
-   nni =   18   nfe =     18   fnorm =       1.70311743674656e-06
+   nni =   18   nfe =     18   fnorm =      2.712629453727189e-06
 
 [KINSOL] KINFP
-   nni =   19   nfe =     19   fnorm =      8.425724629113063e-07
+   nni =   19   nfe =     19   fnorm =      5.917506029629038e-07
 
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
-outer = 19, inner = 245, min = 6, max = 19, avg = 12.895, max norm = 9.572e-09
-[[En]]: max = 2.114e-02, min = 1.597e-02, avg = 2.005e-02
-solve time = 5428.113 s
+outer = 19, inner = 246, min = 7, max = 20, avg = 12.947, max norm = 9.934e-09
+[[En]]: max = 1.781e-01, min = 1.117e-02, avg = 2.014e-02
+solve time = 5756.334 s

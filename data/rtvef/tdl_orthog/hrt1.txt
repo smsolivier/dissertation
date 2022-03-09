@@ -15,44 +15,42 @@ Options used:
    --anderson 0
    --epsilon 0.1
    --vef_type hrt
-   --outname rtvef_tdl/hrt1
+   --outname mfem_tdl/hrt1
    --scale_sigma
    --scale_curve
    --nsolve sun
    --beta_off
    --eta 1
+   --maxiter 50
 Ne = 64, kmin = 1.000, kmax = 1.000
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
 
 [KINSOL] KINFP
-   nni =    1   nfe =      1   fnorm =          12.36092457247722
+   nni =    1   nfe =      1   fnorm =          12.38649890576185
 
 [KINSOL] KINFP
-   nni =    2   nfe =      2   fnorm =        0.09857883378675592
+   nni =    2   nfe =      2   fnorm =          0.104069823788524
 
 [KINSOL] KINFP
-   nni =    3   nfe =      3   fnorm =       0.008946511498291621
+   nni =    3   nfe =      3   fnorm =       0.008165099238755413
 
 [KINSOL] KINFP
-   nni =    4   nfe =      4   fnorm =       0.001426930842195029
+   nni =    4   nfe =      4   fnorm =        0.00108489290337932
 
 [KINSOL] KINFP
-   nni =    5   nfe =      5   fnorm =        0.00025462416729094
+   nni =    5   nfe =      5   fnorm =       0.000168028000695486
 
 [KINSOL] KINFP
-   nni =    6   nfe =      6   fnorm =      4.626725533873888e-05
+   nni =    6   nfe =      6   fnorm =      2.755867256065692e-05
 
 [KINSOL] KINFP
-   nni =    7   nfe =      7   fnorm =      8.666633336096297e-06
+   nni =    7   nfe =      7   fnorm =      4.637384177330617e-06
 
 [KINSOL] KINFP
-   nni =    8   nfe =      8   fnorm =      1.645444260622853e-06
-
-[KINSOL] KINFP
-   nni =    9   nfe =      9   fnorm =      3.167867452802398e-07
+   nni =    8   nfe =      8   fnorm =      8.019439416973029e-07
 
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
-outer = 9, inner = 46, 8, 3, 5.1
+outer = 8, inner = 45, 8, 3, 5.6

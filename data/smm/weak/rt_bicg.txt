@@ -1,0 +1,54 @@
+Mon Feb 28 22:31:06 PST 2022
+fe_order = 2
+solve_type = "bicg"
+sym_cg_prec = false
+vef_type = "rtsm"
+sn_order = 6
+mock_data = false
+use_AIR = false
+vef_tdl = false
+project_psi = false
+vef_direct = false
+richardson_it = 1
+sm_type = 6
+amg_it = 1
+amg_sweeps = 1
+inner_tol = 1e-8
+flux_fixup = "ZeroAndScale"
+fe_basis_type = "Positive"
+global NE = 36288
+transport =   3.42 s,   1.80 s
+using block tri preconditioner
+[[ En ]] = 2.540e-02
+np =  36, it = 31 (4.3e-09),   0.26 s,   1.05 s,   7.21 s,   326592 (9.072e+03)
+global NE = 70000
+transport =   3.41 s,   1.60 s
+using block tri preconditioner
+[[ En ]] = 2.622e-02
+np =  72, it = 33 (2.2e-09),   0.25 s,   1.13 s,   7.17 s,   630000 (8.750e+03)
+global NE = 145152
+transport =   3.69 s,   1.90 s
+using block tri preconditioner
+[[ En ]] = 2.369e-02
+np = 144, it = 31 (3.7e-09),   0.25 s,   1.12 s,   7.99 s,  1306368 (9.072e+03)
+global NE = 285628
+transport =   4.11 s,   1.56 s
+using block tri preconditioner
+[[ En ]] = 1.940e-02
+np = 288, it = 31 (7.9e-09),   0.25 s,   1.35 s,   8.80 s,  2570652 (8.926e+03)
+global NE = 580608
+transport =   4.75 s,   1.87 s
+using block tri preconditioner
+[[ En ]] = 1.728e-02
+np = 576, it = 32 (5.4e-09),   0.27 s,   1.45 s,  10.78 s,  5225472 (9.072e+03)
+global NE = 867328
+transport =   5.50 s,   1.65 s
+using block tri preconditioner
+[[ En ]] = 1.581e-02
+np = 864, it = 31 (7.4e-09),   0.26 s,   1.47 s,  12.25 s,  7805952 (9.035e+03)
+global NE = 1153852
+transport =   6.10 s,   1.79 s
+using block tri preconditioner
+[[ En ]] = 1.515e-02
+np = 1152, it = 35 (4.8e-09),   0.27 s,   1.59 s,  14.66 s, 10384668 (9.014e+03)
+Mon Feb 28 22:32:58 PST 2022

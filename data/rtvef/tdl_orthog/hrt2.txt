@@ -15,35 +15,36 @@ Options used:
    --anderson 0
    --epsilon 0.01
    --vef_type hrt
-   --outname rtvef_tdl/hrt2
+   --outname mfem_tdl/hrt2
    --scale_sigma
    --scale_curve
    --nsolve sun
    --beta_off
    --eta 1
+   --maxiter 50
 Ne = 64, kmin = 1.000, kmax = 1.000
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
 
 [KINSOL] KINFP
-   nni =    1   nfe =      1   fnorm =          12.55700773939005
+   nni =    1   nfe =      1   fnorm =          12.55756795865024
 
 [KINSOL] KINFP
-   nni =    2   nfe =      2   fnorm =        0.01360556206095714
+   nni =    2   nfe =      2   fnorm =        0.01107284545411762
 
 [KINSOL] KINFP
-   nni =    3   nfe =      3   fnorm =      0.0005993913049845978
+   nni =    3   nfe =      3   fnorm =      0.0005702223883217172
 
 [KINSOL] KINFP
-   nni =    4   nfe =      4   fnorm =      4.476749114579182e-05
+   nni =    4   nfe =      4   fnorm =      3.527819317095116e-05
 
 [KINSOL] KINFP
-   nni =    5   nfe =      5   fnorm =      5.157828648627572e-06
+   nni =    5   nfe =      5   fnorm =      3.501952730577962e-06
 
 [KINSOL] KINFP
-   nni =    6   nfe =      6   fnorm =      5.597744361374168e-07
+   nni =    6   nfe =      6   fnorm =      3.240828774231375e-07
 
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
-outer = 6, inner = 25, 7, 2, 4.2
+outer = 6, inner = 22, 7, 1, 3.7

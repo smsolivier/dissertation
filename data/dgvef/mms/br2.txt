@@ -1,0 +1,70 @@
+Options used:
+   --Ne '50 100 150 200'
+   --fe_order '1 2 3'
+   --mesh_order 3
+   --vef br2
+   --solve_type bicg
+   --dist_param 0.3
+   --distortion tg
+   --alpha 1
+   --beta 1
+   --gamma 0.5
+   --gamma2 0.25
+   --delta 1.25
+   --chi 1
+   --eta 0.1
+   --omicron 0.05
+   --elevate 0
+   --snorder 4
+   --iterative
+1:
+  - h: 0.03994160
+    err: 3.99919770e-03
+    it: 53
+    norm: 9.953e-15
+  - h: 0.01997051
+    err: 1.00444379e-03
+    it: 61
+    norm: 9.928e-15
+  - h: 0.01331364
+    err: 4.46837742e-04
+    it: 60
+    norm: 8.759e-15
+  - h: 0.00998522
+    err: 2.51419597e-04
+    it: 64
+    norm: 9.931e-15
+2:
+  - h: 0.05873889
+    err: 4.87468370e-04
+    it: 50
+    norm: 4.659e-15
+  - h: 0.03025854
+    err: 6.87841707e-05
+    it: 55
+    norm: 6.040e-15
+  - h: 0.01997051
+    err: 1.97677047e-05
+    it: 61
+    norm: 8.874e-15
+  - h: 0.01490333
+    err: 8.19915199e-06
+    it: 56
+    norm: 8.368e-15
+3:
+  - h: 0.07681446
+    err: 1.43700630e-04
+    it: 46
+    norm: 5.701e-15
+  - h: 0.03994160
+    err: 1.03657855e-05
+    it: 55
+    norm: 2.138e-15
+  - h: 0.02627708
+    err: 1.94967422e-06
+    it: 55
+    norm: 5.609e-15
+  - h: 0.01997051
+    err: 6.51561104e-07
+    it: 55
+    norm: 4.771e-15

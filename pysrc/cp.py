@@ -9,7 +9,11 @@ import texTools as tex
 import re 
 
 oc = OutputCycler()
-files = [{'base': 'data/rtvef/cp/', 'types': ['rt', 'hrt', 'h1']}, {'base': 'data/dgvef/cp/', 'types': ['ip', 'br2', 'cg', 'mdldg']}]
+files = [
+	{'base': 'data/rtvef/cp/', 'types': ['h1', 'rtgs', 'hrt'], 'ext': 'rtvef'}, 
+	{'base': 'data/dgvef/cp/', 'types': ['ip', 'br2', 'cg', 'mdldg'], 'ext': 'dgvef'}, 
+	{'base': 'data/smm/cp/', 'types': ['ip', 'cg', 'rt_bicg', 'hrt'], 'ext': 'smm'}
+]
 for file in files:
 	d = {}
 	for t in file['types']:
@@ -21,8 +25,8 @@ for file in files:
 				p = int(re.findall(r'fe order = ([0-9]*)', line)[0])
 			if ('vef type = ' in line):
 				t = re.findall(r'vef type = (.*)', line)[0]
-				# if (t=='MDLDG'):
-					# t = r'LDG\textsubscript{0}'
+				if ('SM' in t):
+					t = t.strip('SM')
 
 			if ('outer = ' in line):
 				outer = int(re.findall(r'outer = ([0-9]*),', line)[0])
@@ -49,7 +53,7 @@ for file in files:
 	l = len(types)
 	ele = list(d[types[0]][1].keys())
 	table = tex.Tabular()
-	keys = ['avg']
+	keys = ['max', 'min', 'avg']
 	table.SetHeader('$N_e$', *(types*(len(keys)+1)))
 	fmt = {'max': '{}', 'min': '{}', 'avg': '{:.2f}'}
 	titles = {'outer': 'Outer', 'max': 'Max Inner', 'min': 'Min Inner', 'avg': 'Avg. Inner'}
@@ -72,6 +76,6 @@ for file in files:
 		table.AddColumnGroup(titles[t], 1+i*l, l)
 	table.AddColumnBreak(0)
 	if (oc.Good()):
-		table.Write(oc.Get())
+		table.Write(oc.Get(0, file['ext']))
 	else:
 		print(table)

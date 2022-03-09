@@ -21,11 +21,14 @@ REF = references.bib
 MAIN = doc
 
 # list of figures to be built for the document 
-FIGS = 
+FIGS = dgvef/mms smm/mms eps_lineout
 FIGS := $(addsuffix .pdf, $(FIGS))
 
 # list of tables to build
-TABS = cp
+TABS = cp eps_table\
+dgvef/weak dgvef/mock dgvef/mms_table\
+rtvef/weak rtvef/solvers rtvef/mms rtvef/mms_elev rtvef/mms_diff \
+smm/weak smm/vmms smm/mms_diff smm/mms_elev
 TABS := $(addsuffix .tex, $(TABS))
 TABS := $(addprefix $(figdir)/, $(TABS))
 
@@ -47,6 +50,7 @@ all : $(MAIN).pdf
 # create a directory called $(figdir) if needed 
 $(figdir) : 
 	mkdir -p $(figdir)
+	mkdir -p $(figdir)/dgvef $(figdir)/rtvef $(figdir)/smm
 
 # make figures from python code. save to figdir directory 
 %.pdf : %.py $(MPL) $(datadir)/*
@@ -101,3 +105,11 @@ clean :
 	$(MAKE) cleantikz
 
 # --- targets that require specific command line arguments --- 
+$(figdir)/rtvef/mms_elev.tex : $(pysrc)/rtvef/mms.py 
+	$(PYTHON) $< $@ data/rtvef/mms_elev/
+$(figdir)/rtvef/mms_diff.tex : $(pysrc)/rtvef/mms.py 
+	$(PYTHON) $< $@ data/rtvef/mms_diff/
+$(figdir)/smm/mms_elev.tex : $(pysrc)/smm/vmms.py 
+	$(PYTHON) $< $@ data/smm/mms_elev/
+$(figdir)/smm/mms_diff.tex : $(pysrc)/smm/vmms.py 
+	$(PYTHON) $< $@ data/smm/mms_diff/

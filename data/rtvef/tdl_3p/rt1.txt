@@ -15,77 +15,81 @@ Options used:
    --anderson 0
    --epsilon 0.1
    --vef_type rt
-   --outname rtvef_tdl_3p/rt1
+   --outname mfem_tdl_3p/rt1
    --scale_sigma
    --scale_curve
    --nsolve sun
    --beta_off
    --eta 1
+   --maxiter 50
 Ne = 336, kmin = 1.000, kmax = 169.530
 
 [KINSOL] KINSol
    scsteptol =     3.67e-11  fnormtol =        1e-06
 
 [KINSOL] KINFP
-   nni =    1   nfe =      1   fnorm =          12.30091493191893
+   nni =    1   nfe =      1   fnorm =          12.33083258737467
 
 [KINSOL] KINFP
-   nni =    2   nfe =      2   fnorm =          1.070053327725326
+   nni =    2   nfe =      2   fnorm =          2.261379107987139
 
 [KINSOL] KINFP
-   nni =    3   nfe =      3   fnorm =          1.045387422578901
+   nni =    3   nfe =      3   fnorm =          1.969961812781374
 
 [KINSOL] KINFP
-   nni =    4   nfe =      4   fnorm =         0.3606119750860923
+   nni =    4   nfe =      4   fnorm =           0.82106993022221
 
 [KINSOL] KINFP
-   nni =    5   nfe =      5   fnorm =         0.0544669650570615
+   nni =    5   nfe =      5   fnorm =         0.1940757334204068
 
 [KINSOL] KINFP
-   nni =    6   nfe =      6   fnorm =        0.01831450927977585
+   nni =    6   nfe =      6   fnorm =        0.06011796926902946
 
 [KINSOL] KINFP
-   nni =    7   nfe =      7   fnorm =       0.009134284552699157
+   nni =    7   nfe =      7   fnorm =        0.01088062652372201
 
 [KINSOL] KINFP
-   nni =    8   nfe =      8   fnorm =       0.004462862262684553
+   nni =    8   nfe =      8   fnorm =       0.004613776463594732
 
 [KINSOL] KINFP
-   nni =    9   nfe =      9   fnorm =       0.002226835191235566
+   nni =    9   nfe =      9   fnorm =       0.002404597536724395
 
 [KINSOL] KINFP
-   nni =   10   nfe =     10   fnorm =        0.00109710755562098
+   nni =   10   nfe =     10   fnorm =       0.001261990472890773
 
 [KINSOL] KINFP
-   nni =   11   nfe =     11   fnorm =      0.0005402851164930667
+   nni =   11   nfe =     11   fnorm =      0.0006496224268630613
 
 [KINSOL] KINFP
-   nni =   12   nfe =     12   fnorm =      0.0002665858491024409
+   nni =   12   nfe =     12   fnorm =      0.0003335733161442533
 
 [KINSOL] KINFP
-   nni =   13   nfe =     13   fnorm =        0.00013182427613323
+   nni =   13   nfe =     13   fnorm =      0.0001709571758752304
 
 [KINSOL] KINFP
-   nni =   14   nfe =     14   fnorm =      6.533254325624682e-05
+   nni =   14   nfe =     14   fnorm =      8.733504349933696e-05
 
 [KINSOL] KINFP
-   nni =   15   nfe =     15   fnorm =        3.2436979628514e-05
+   nni =   15   nfe =     15   fnorm =      4.452301068091913e-05
 
 [KINSOL] KINFP
-   nni =   16   nfe =     16   fnorm =      1.612947333384795e-05
+   nni =   16   nfe =     16   fnorm =      2.265002266277349e-05
 
 [KINSOL] KINFP
-   nni =   17   nfe =     17   fnorm =      8.031690258647473e-06
+   nni =   17   nfe =     17   fnorm =      1.149987787840701e-05
 
 [KINSOL] KINFP
-   nni =   18   nfe =     18   fnorm =      4.004441084504151e-06
+   nni =   18   nfe =     18   fnorm =      5.827990465334665e-06
 
 [KINSOL] KINFP
-   nni =   19   nfe =     19   fnorm =      1.998863551122554e-06
+   nni =   19   nfe =     19   fnorm =      2.949239309657514e-06
 
 [KINSOL] KINFP
-   nni =   20   nfe =     20   fnorm =      9.988230900148665e-07
+   nni =   20   nfe =     20   fnorm =      1.490445733054457e-06
+
+[KINSOL] KINFP
+   nni =   21   nfe =     21   fnorm =      7.523159055722317e-07
 
 [KINSOL] KINFP
    Return value: 0 (KIN_SUCCESS)
-outer = 20
+outer = 21

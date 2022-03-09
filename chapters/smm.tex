@@ -4,4 +4,74 @@
 \begin{document}
 \chapter{Second Moment Methods}
 
+\section{Results}
+
+% --- mms figures --- 
+\begin{figure}
+\centering
+\begin{subfigure}{.4\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/smm/mms.pdf}
+	\caption{}
+\end{subfigure}
+\begin{subfigure}{.4\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/smm/mms_1.pdf}
+	\caption{}
+\end{subfigure}
+\begin{subfigure}{.4\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/smm/mms_2.pdf}
+	\caption{}
+\end{subfigure}
+\end{figure}
+
+% --- MFEM MMS --- 
+\begin{table}
+\centering
+\caption{}
+\label{}
+\input{figs/smm/mms_diff}
+\end{table}
+
+\begin{table}
+\centering
+\caption{}
+\label{}
+\input{figs/smm/vmms}
+\end{table}
+
+\begin{table}
+\centering
+\caption{}
+\label{}
+\input{figs/smm/mms_elev}
+\end{table}
+
+% --- thick diffusion limit --- 
+\begin{table}
+\centering
+\caption{}
+\label{}
+\input{figs/eps_table_smm}
+\end{table}
+
+% --- crooked pipe hp scaling --- 
+\begin{table}
+\centering
+\caption{}
+\label{}
+\begin{adjustbox}{max width = \textwidth}
+\input{figs/cp_smm}
+\end{adjustbox}
+\end{table}
+
+% --- weak scaling --- 
+\begin{table}
+\centering
+\caption{}
+\label{}
+\input{figs/smm/weak}
+\end{table}
+
 \end{document}

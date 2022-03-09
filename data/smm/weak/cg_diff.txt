@@ -1,0 +1,41 @@
+Wed Mar  2 21:21:35 PST 2022
+fe_order = 2
+solve_type = "cg"
+sym_cg_prec = false
+vef_type = "cgsm"
+sn_order = 6
+mock_data = false
+use_AIR = false
+vef_tdl = true
+project_psi = false
+vef_direct = false
+richardson_it = 1
+sm_type = 0
+amg_it = 1
+amg_sweeps = 1
+inner_tol = 1e-8
+build_faces = true
+flux_fixup = "ZeroAndScale"
+fe_basis_type = "Positive"
+global NE = 36288
+[[ En ]] = 0.000e+00
+np =  36, it = 18 (9.1e-09),   0.07 s,   0.05 s,   0.30 s,   150266 (4.174e+03)
+global NE = 70000
+[[ En ]] = 0.000e+00
+np =  72, it = 18 (5.0e-09),   0.08 s,   0.07 s,   0.45 s,   290042 (4.028e+03)
+global NE = 145152
+[[ En ]] = 0.000e+00
+np = 144, it = 18 (9.6e-09),   0.09 s,   0.09 s,   0.69 s,   600884 (4.173e+03)
+global NE = 285628
+[[ En ]] = 0.000e+00
+np = 288, it = 18 (6.6e-09),   0.10 s,   0.09 s,   1.12 s,  1183180 (4.108e+03)
+global NE = 580608
+[[ En ]] = 0.000e+00
+np = 576, it = 18 (9.0e-09),   0.11 s,   0.10 s,   2.10 s,  2404742 (4.175e+03)
+global NE = 867328
+[[ En ]] = 0.000e+00
+np = 864, it = 18 (8.5e-09),   0.11 s,   0.11 s,   3.06 s,  3593152 (4.159e+03)
+global NE = 1153852
+[[ En ]] = 0.000e+00
+np = 1152, it = 18 (8.7e-09),   0.10 s,   0.18 s,   4.69 s,  4776592 (4.146e+03)
+Wed Mar  2 21:22:35 PST 2022

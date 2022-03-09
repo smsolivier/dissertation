@@ -1,0 +1,65 @@
+Options used:
+   --mesh ../data/inline-quad.mesh
+   --refine 1
+   --fe_order 2
+   --mesh_order 1
+   --no_fixup
+   --solve_type bicg
+   --direct
+   --vef
+   --use_prev
+   --non
+   --num_sweeps 1
+   --distortion tg
+   --alpha 0.35
+   --anderson 0
+   --epsilon 0.1
+   --vef_type cgsm
+   --outname smm_tdl/cgsm1
+   --scale_sigma
+   --scale_curve
+   --nsolve sun
+   --beta_off
+   --eta 1
+   --maxiter 50
+Ne = 64, kmin = 1.000, kmax = 1.000
+
+[KINSOL] KINSol
+   scsteptol =     3.67e-11  fnormtol =        1e-06
+
+[KINSOL] KINFP
+   nni =    1   nfe =      1   fnorm =          12.48904424507798
+
+[KINSOL] KINFP
+   nni =    2   nfe =      2   fnorm =         0.9237852657362099
+
+[KINSOL] KINFP
+   nni =    3   nfe =      3   fnorm =         0.1267116379954785
+
+[KINSOL] KINFP
+   nni =    4   nfe =      4   fnorm =        0.02014202508595664
+
+[KINSOL] KINFP
+   nni =    5   nfe =      5   fnorm =       0.003377172140011986
+
+[KINSOL] KINFP
+   nni =    6   nfe =      6   fnorm =       0.000581672088538987
+
+[KINSOL] KINFP
+   nni =    7   nfe =      7   fnorm =      0.0001085405383165483
+
+[KINSOL] KINFP
+   nni =    8   nfe =      8   fnorm =       2.30319128142753e-05
+
+[KINSOL] KINFP
+   nni =    9   nfe =      9   fnorm =      4.851837466013365e-06
+
+[KINSOL] KINFP
+   nni =   10   nfe =     10   fnorm =       1.01783790040777e-06
+
+[KINSOL] KINFP
+   nni =   11   nfe =     11   fnorm =      2.130518035325935e-07
+
+[KINSOL] KINFP
+   Return value: 0 (KIN_SUCCESS)
+outer = 11

@@ -1,35 +1,47 @@
-Fri Oct  8 01:39:13 PDT 2021
-SLURM job = 6707835
+Mon Feb 28 17:37:51 PST 2022
 fe_order = 2
-vef_type = hrt
-solve_type = bicg
-sym_cg = true
+solve_type = "bicg"
+sym_cg_prec = false
+vef_type = "hrt"
 sn_order = 6
 mock_data = false
-tdl = false
-use air = false
-project psi = false
-superlu on cg = false
-richardson iterations = 3
-transport =   3.39 s,   1.52 s
-[[ En ]] = 2.500e-02
-np =  36, it = 12 (4.4e-07),   0.43 s,   0.08 s,   5.95 s,   326592 (9.072e+03)
-transport =   3.44 s,   1.44 s
-[[ En ]] = 2.581e-02
-np =  72, it = 11 (4.3e-07),   0.49 s,   0.08 s,   6.10 s,   630000 (8.750e+03)
-transport =   3.73 s,   1.67 s
-[[ En ]] = 2.339e-02
-np = 144, it = 13 (3.7e-07),   0.50 s,   0.11 s,   6.90 s,  1306368 (9.072e+03)
-transport =   4.14 s,   1.66 s
-[[ En ]] = 1.916e-02
-np = 288, it = 12 (9.4e-07),   0.50 s,   0.10 s,   7.69 s,  2570652 (8.926e+03)
-transport =   4.83 s,   1.58 s
-[[ En ]] = 1.711e-02
-np = 576, it = 13 (4.9e-07),   0.52 s,   0.11 s,   9.30 s,  5225472 (9.072e+03)
-transport =   5.55 s,   1.53 s
-[[ En ]] = 1.569e-02
-np = 864, it = 13 (3.9e-07),   0.51 s,   0.12 s,  11.16 s,  7805952 (9.035e+03)
-transport =   6.14 s,   1.59 s
-[[ En ]] = 1.504e-02
-np = 1152, it = 12 (7.4e-07),   0.53 s,   0.21 s,  13.26 s, 10384668 (9.014e+03)
-Fri Oct  8 01:40:59 PDT 2021
+use_AIR = false
+vef_tdl = false
+project_psi = false
+vef_direct = false
+richardson_it = 1
+sm_type = 0
+amg_it = 1
+amg_sweeps = 1
+inner_tol = 1e-8
+flux_fixup = "ZeroAndScale"
+fe_basis_type = "Positive"
+global NE = 36288
+transport =   3.43 s,   1.77 s
+[[ En ]] = 2.540e-02
+np =  36, it = 14 (7.3e-09),   0.55 s,   0.09 s,   6.02 s,   326592 (9.072e+03)
+global NE = 70000
+transport =   3.42 s,   1.56 s
+[[ En ]] = 2.622e-02
+np =  72, it = 15 (3.7e-09),   0.53 s,   0.13 s,   5.89 s,   630000 (8.750e+03)
+global NE = 145152
+transport =   3.71 s,   1.79 s
+[[ En ]] = 2.369e-02
+np = 144, it = 15 (3.9e-09),   0.56 s,   0.17 s,   6.66 s,  1306368 (9.072e+03)
+global NE = 285628
+transport =   4.10 s,   1.68 s
+[[ En ]] = 1.940e-02
+np = 288, it = 16 (2.5e-09),   0.55 s,   0.18 s,   7.38 s,  2570652 (8.926e+03)
+global NE = 580608
+transport =   4.78 s,   1.81 s
+[[ En ]] = 1.728e-02
+np = 576, it = 15 (1.7e-09),   0.57 s,   0.19 s,   9.16 s,  5225472 (9.072e+03)
+global NE = 867328
+transport =   5.49 s,   1.68 s
+[[ En ]] = 1.581e-02
+np = 864, it = 18 (4.3e-09),   0.56 s,   0.22 s,  10.71 s,  7805952 (9.035e+03)
+global NE = 1153852
+transport =   6.13 s,   1.94 s
+[[ En ]] = 1.515e-02
+np = 1152, it = 16 (3.9e-09),   0.56 s,   0.28 s,  13.53 s, 10384668 (9.014e+03)
+Mon Feb 28 17:39:33 PST 2022
