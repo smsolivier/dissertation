@@ -1,0 +1,11 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}[square/.style={rectangle, fill=red, inner sep=1pt}]
+	\draw (-1,-1) rectangle (1,1); 
+	\filldraw (1,0) circle[radius=1pt]; 
+	\filldraw (-1,0) circle[radius=1pt]; 
+	\node[square] at (0,1) {};
+	\node[square] at (0,-1) {};
+\end{tikzpicture}
+\end{document}

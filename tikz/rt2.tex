@@ -1,0 +1,13 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}[square/.style={rectangle, fill=red, inner sep=1pt}]
+	\draw (-1,-1) rectangle (1,1); 
+	\foreach \x in {-1, -0.4472136, 0.4472136, 1}{
+		\foreach \y in {-0.77459667, 0, 0.77459667}{
+			\filldraw (\x,\y) circle[radius=1pt]; 	
+			\node[square] at (\y,\x) {}; 	
+		}
+	}
+\end{tikzpicture}
+\end{document}

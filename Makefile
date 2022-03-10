@@ -21,7 +21,7 @@ REF = references.bib
 MAIN = doc
 
 # list of figures to be built for the document 
-FIGS = dgvef/mms smm/mms eps_lineout
+FIGS = dgvef/mms smm/mms eps_lineout quad_mesh
 FIGS := $(addsuffix .pdf, $(FIGS))
 
 # list of tables to build
