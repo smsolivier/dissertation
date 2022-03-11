@@ -7,18 +7,18 @@
 \begin{document}
 \tdplotsetmaincoords{70}{110}
 \begin{tikzpicture}[>=stealth, dsh/.style={dashed, opacity=.5, text opacity=1}, tdplot_main_coords, scale=1.5, thick]
-	\draw[->] (0,0,0) -- (4,0,0) node[anchor=north east] {$x$}; 
-	\draw[->] (0,0,0) -- (0,4,0) node[anchor=north west] {$y$}; 
-	\draw[->] (0,0,0) -- (0,0,4) node[anchor=south] {$z$};  
+	\draw[->] (0,0,0) -- (4,0,0) node at +(.25,0,0) {$x$}; 
+	\draw[->] (0,0,0) -- (0,4,0) node at +(0,.15,0) {$y$}; 
+	\draw[->] (0,0,0) -- (0,0,4) node at +(0,0,.15) {$z$};  
 	\tdplotsetcoord{P}{4.25}{45}{50}
 	\draw[->, thick] (0,0,0) -- (P) node[shift={(45:.3cm)}] {$\Omegahat$}; 
-	\draw[opacity=.5] (0,0,0) -- (Pxy); 
-	\draw[opacity=.5] (Pxy) -- (P); 
+	\draw[dsh] (0,0,0) -- (Pxy); 
+	\draw[dsh] (Pxy) -- (P); 
 	\draw[dsh] (Pxy) -- ({sin(45)*cos(50)*4.25},0,0) node[left] {$\mu$}; 
 	\draw[dsh] (Pxy) -- (0,{sin(45)*sin(50)*4.25},0) node[above] {$\eta$}; 
-	\tdplotdrawarc{(0,0,0)}{1}{0}{50}{xshift=-1mm, yshift=2mm}{$\theta$}
+	\tdplotdrawarc[<->]{(0,0,0)}{1}{0}{50}{xshift=-1mm, yshift=2mm}{$\theta$}
 	\tdplotsetthetaplanecoords{50}
-	\tdplotdrawarc[tdplot_rotated_coords]{(0,0,0)}{1.1}{0}{45}{xshift=-1mm,yshift=-2.5mm}{$\varphi$} 
+	\tdplotdrawarc[<->, tdplot_rotated_coords]{(0,0,0)}{1.1}{0}{45}{xshift=-1mm,yshift=-2.5mm}{$\varphi$} 
 	\draw[dsh] (P) -- (0,0,{4.25*cos(45)}) node[left] {$\xi$}; 
 \end{tikzpicture}
 \end{document}
