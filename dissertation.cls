@@ -45,6 +45,10 @@
 }
 \renewcommand{\glsnamefont}[1]{\textbf{#1}}
 
+% set to display subsections in TOC 
+\setcounter{tocdepth}{2}
+\setcounter{secnumdepth}{4}
+
 % rename bib auxiliary file names
 \renewcommand{\blxauxsuffix}{}
 
