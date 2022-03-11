@@ -5,6 +5,7 @@
 	* why VEF (NABC)
 * previous work -> gap analysis 
 * scope of research
+	* limit to grey linear transport in 2D 
 * summary of results
 * outline of document 
 
