@@ -3,13 +3,515 @@
 
 \begin{document}
 \chapter{Mixed Finite Element VEF Discretizations}
+Here, we derive mixed finite element discretizations for the VEF equations with Miften-Larsen boundary conditions. We seek approximations to the scalar flux and current in the finite-dimensional spaces $\mathcal{E}$ and $\mathcal{V}$, respectively, and test the zeroth and first moments with functions in the spaces $\mathcal{E}'$ and $\mathcal{V}'$, respectively. We consider Galerkin discretizations so that the test and trial spaces for the scalar flux and current are the same. In other words, we restrict ourselves to the case that $\mathcal{E}' = \mathcal{E}$ and $\mathcal{V}' = \mathcal{V}$. We proceed by first informally deriving the weak form assuming the spaces $\mathcal{E}$ and $\mathcal{V}$ have the requisite regularity to allow the resulting weak form to be well defined. We will see that there is no ambiguity in the choice $\mathcal{E} = Y_p \subset L^2(\D)$. However, due to the presence of the Eddington tensor, the standard Raviart Thomas methods are inappropriate and so two choices for $\mathcal{V}$ are presented: a method with $\mathcal{V} = W_{p+1} \subset \Hone$ and a non-conforming method where $\mathcal{V} = \RT_p\subset H(\div;\D)$. 
 
-\section{Choice of Space for the Current}
+\section{Weak Form}
+Multiplying the zeroth and first moments with sufficiently smooth functions $u$ and $\vec{v}$, respectively, and integrating over the domain yields: 
+	\begin{subequations}
+	\begin{equation}
+		\int u\, \nabla\cdot\vec{J} \ud \x + \int \sigma_a\, u\varphi \ud \x = \int u\, Q_0 \ud \x \,,
+	\end{equation}
+	\begin{equation}
+		\int \vec{v}\cdot\nabla\cdot\paren{\E\varphi} \ud \x + \int \sigma_t\,\vec{v}\cdot\vec{J} \ud \x = \int \vec{v}\cdot\vec{Q}_1 \ud \x \,. 
+	\end{equation}
+Note that the Eddington tensor is not globally differentiable due to the spatial interpolation used to approximate the angular flux. Thus, we integrate by parts to arrive at the weak form of the VEF equations: 
+	\end{subequations}
+	\begin{subequations} \label{eq:vef_weak}
+	\begin{equation}
+		\int u\, \nabla\cdot\vec{J} \ud \x + \int \sigma_a\, u\varphi \ud \x = \int u\, Q_0 \ud \x \,,
+	\end{equation}
+	\begin{equation}
+		\int_{\partial \D} \vec{v}\cdot\E\n\, \bar{\varphi} \ud s - \int \nabla\vec{v} : \E \varphi \ud \x + \int \sigma_t\,\vec{v}\cdot\vec{J} \ud \x = \int \vec{v}\cdot\vec{Q}_1 \ud \x \,, 
+	\end{equation}
+	\end{subequations}
+where $\varphi = \bar{\varphi}$ on the boundary of the domain. We have used Green's identity for a tensor multiplied by a vector: 
+	\begin{equation}
+		\int \nabla\cdot\paren{\vec{v}\cdot\P} \ud \x = \int \vec{v}\cdot\nabla\cdot\P \ud \x + \int \nabla\vec{v} : \P \ud \x = \oint \vec{v}\cdot\P\n \ud s \,, 
+	\end{equation}
+where 
+	\begin{equation}
+		\mat{A} : \mat{B} = \sum_{i=1}^2 \sum_{j=1}^2 A_{ij} B_{ij} \,, \quad \mat{A}, \mat{B} \in \R^{2\times 2} \,. 
+	\end{equation}
+Integrating by parts moves derivatives from the Eddington tensor and VEF scalar flux to the test function $\vec{v}$ allowing weaker requirements for $\E$ and $\varphi$. In addition, we assume $\vec{J} \in \mathcal{V}$ has enough regularity to allow $\nabla\cdot\vec{J} \in L^2(\D)$ (i.e.~$\mathcal{V} \subset H(\div;\D)$) so that $\int u\, \nabla\cdot\vec{J} \ud \x$ is well defined. Thus, we can unambiguously take $u,\varphi \in \mathcal{E} \subset L^2(\D)$. However, the test function $\vec{v}$ now has increased regularity requirements. Namely, we must have $\nabla\vec{v} : \E \in L^2(\D)$ instead of the typical requirement that $\nabla\cdot\vec{v} = \nabla\vec{v} : \I \in L^2(\D)$. 
+In the thick diffusion limit, $\E = \frac{1}{3}\I$ and this requirement reduces to $\nabla\vec{v}:\E = \frac{1}{3}\nabla\cdot\vec{v} \in L^2(\D)$. 
+In this case, RT methods apply directly for both $\vec{v}$ and $\vec{J}$. However, for a general Eddington tensor, the RT space does not have the continuity requirements to allow the term $\int \nabla\vec{v} : \E\varphi \ud \x < \infty$. 
+
+\begin{prop} \label{prop:edd}
+For a symmetric tensor $\mat{S}$, let $\vec{v} : \D\rightarrow \R^2$ be such that 
+\begin{enumerate}
+	\item $\vec{v}|_K \in \H^1(K)$ for each $K \in \meshT$
+	\item $\jump{\vec{v}\cdot\mat{S}\n} = 0$ 
+\end{enumerate}
+then $\int \nabla\vec{v} : \mat{S} \ud \x < \infty$. Conversely, if $\int \nabla\vec{v} : \mat{S} \ud \x < \infty$ and (a) is satisfied, then (b) holds. 
+\end{prop}
+\begin{proof}
+From (a), $\nablah \vec{v} \in [L^2(K)]^2$. Given a sufficiently smooth symmetric tensor $\mat{S}$ that vanishes on the boundary, the following holds: 
+	\begin{equation}
+	\begin{aligned}
+		\int \nablah\vec{v} : \mat{S} \ud \x &= \sum_{K\in\meshT} \bracket{\int_{\partial K} \vec{v}\cdot\mat{S}\n \ud s - \int_K \vec{v}\cdot\nabla\cdot\mat{S} \ud \x} \\
+		&= \int_{\Gamma_0} \jump{\vec{v}\cdot\mat{S}\n} \ud s - \int \vec{v}\cdot\nabla\cdot\mat{S} \ud \x \\
+		&= \int \nabla\vec{v} : \mat{S} \ud \x \,. 
+	\end{aligned}
+	\end{equation}
+Since the left hand side is bounded, $\int \nabla\vec{v} : \mat{S} \ud \x < \infty$. 
+
+On the other hand, if $\int \nabla\vec{v} : \mat{S} \ud \x < \infty$, then $\nabla\vec{v}:\mat{S} = \nablah\vec{v}:\mat{S}$ and, given $\vec{v}|_K\in\H^1(K)$, we obtain 
+	\begin{equation}
+		\int_{\Gamma_0} \jump{\vec{v}\cdot\mat{S}\n} \ud s = 0 \,, \quad \forall \mat{S} \in [C_0^\infty(\D)]^{2\times 2} \,,
+	\end{equation}
+hence, (b) holds. 
+\end{proof}
+Proposition \ref{prop:edd} generalizes Proposition \ref{prop:div} in that Proposition \ref{prop:edd} reduces to Proposition \ref{prop:div} when $\mat{S} = \mat{I}$. Applying this result to the VEF equations, we have that 
+	\begin{equation} \label{eq:edd_cts_req}
+		\int \nabla\vec{v} : \E\varphi \ud \x < \infty \iff \jump{\vec{v}\cdot\E\n} = 0 \,, \quad \forall \mathcal{F} \in \Gamma_0 \,. 
+	\end{equation}
+Figure \ref{fig:Encomp} depicts an example of the Eddington tensor rotating and scaling the normal vector, altering the continuity requirement of the space. Note that since the Eddington tensor is symmetric positive definite, $\n\cdot\E\n > 0$ and thus $\theta \in (-\pi/2,\pi/2)$. In other words, the Eddington tensor cannot rotate the normal past a direction tangential to the face. 
+\begin{figure}
+\centering
+\includegraphics[width=.5\textwidth]{figs/Encomp.pdf}
+\caption{A depiction of the rotation and scaling of the normal vector induced by the Eddington tensor. Since the Eddington tensor is symmetric positive definite, the angle $\theta$ cannot be larger than $\pm 90^\circ$. Due to the presence of the Eddington tensor in the VEF first moment equation, continuity of the $\E\n$ component is required. }
+\label{fig:Encomp}
+\end{figure}
+
+In light of Eq.~\ref{eq:edd_cts_req}, the weak form in Eq.~\ref{eq:vef_weak} will hold only when the space $\mathcal{V}$ is chosen so that both $\jump{\vec{J}\cdot\n} = 0$ and $\jump{\vec{v}\cdot\E\n} = 0$ on all interior faces. These conditions can only be met by using $\vec{v}, \vec{J} \in \mathcal{V} \subset \Hone$ so that all components of $\vec{v}$ and $\vec{J}$ are continuous. A Petrov-Galerkin discretization where the test space satisfies $\jump{\vec{v}\cdot\E\n} = 0$ and the trial space satisfies $\jump{\vec{J}\cdot\n} = 0$ may be possible. In this case, the test space would need to use a more general Piola transform that preserves the $\E\n$ component of a vector, making the test space dependent on the angular flux. The Petrov-Galerkin discretization is not considered here due to this complication. 
+Alternatively, non-conforming DG-like techniques can be used to allow use of the RT space for both the test and trial spaces. That is, both $\vec{v}, \vec{J} \in \mathcal{V}=\RT_p \subset H(\div;\D)$ and the discontinuity in $\vec{v}\cdot\E\n$ is handled with numerical fluxes. 
+
 \subsection{$\Hone$}
+Setting $\vec{v},\vec{J} \in \mathcal{V} \subset \Hone$ and $u,\varphi \in \mathcal{E} \subset L^2(\D)$ allows the weak form in Eq.~\ref{eq:vef_weak} to hold. The inf-sup \cite{mfem_brezzi} condition states that the discretization arising from the pairing of equal degree interpolation for the scalar flux and current will be singular. That is, the $Y_p\times W_p$ discretization does not have a unique solution. The smallest non-singular pairing of spaces is then $Y_p \times W_{p+1}$. In other words, if the scalar flux is piecewise-constant, continuous linear finite elements for each component of the current must be used. 
+
+The discretization is complete by supplying boundary conditions. Solving the Miften-Larsen boundary conditions (Eq.~\ref{eq:mlbc}) for $\varphi$ yields 
+	\begin{equation}
+		\bar{\varphi} = \frac{1}{E_b}\!\paren{\vec{J}\cdot\n - 2\Jin} \,. 
+	\end{equation}
+The $\Hone\times L^2(\D)$ mixed finite element VEF discretization is then: find $(\varphi,\vec{J}) \in Y_p\times W_{p+1}$ such that 
+	\begin{subequations}
+	\begin{equation}
+		\int u\,\nabla\cdot\vec{J} \ud \x + \int \sigma_a\, u\varphi\ud\x = \int u\, Q_0 \ud \x \,, \quad \forall u \in Y_p \,, 
+	\end{equation}
+	\begin{multline}
+		-\int \nabla\vec{v} : \E\varphi \ud \x + \int \sigma_t\, \vec{v}\cdot\vec{J} \ud \x + \int_{\Gamma_b} \frac{1}{E_b}\!\paren{\vec{v}\cdot\E\n}\!\paren{\vec{J}\cdot\n} \ud s \\= \int \vec{v}\cdot\vec{Q}_1 \ud \x + 2\int_{\Gamma_b} \frac{1}{E_b}\vec{v}\cdot\E\n\, \Jin \ud s \,, \quad \forall \vec{v} \in W_{p+1} \,. 
+	\end{multline}
+	\end{subequations}
+Equation \ref{eq:scalar_copies_grad} is used to compute the gradient and divergence of a $W_{p}$ vector in reference space. 
+
+Using $\mathcal{V} \subset \Hone$ is simple to implement in that it relies only on the scalar continuous finite element space and does not require interior face bilinear forms. 
+However, this choice has been seen to degrade both solution quality and solver performance due to allowing non-physical, spurious modes. These so-called checkerboard modes are a well-known issue with $\Hone\times L^2(\D)$ discretizations in the context of fluid flow \cite{elman2014finite} and are a consequence of the mismatch between the spaces $\nabla\cdot W_{p+1}$ and $Y_p$. The space $\mathcal{V} \subset \Hone$ is either too small with respect to $Y_p$, leading to a singular system in the case $\mathcal{V} = W_p$ or too large, allowing spurious modes for $\mathcal{V} = W_{p+1}$. The effect of these modes on solution quality and solver performance is investigated in Section \ref{sec:badmodes} in the context of radiation diffusion. 
+
 \subsection{Raviart Thomas}
+If $\vec{v},\vec{J} \in \mathcal{V} \subset H(\div;\D)$, a non-conforming approach must be used for the first moment equation due to the presence of the Eddington tensor. On each element $K$, consider the weak first moment equation: 
+	\begin{equation} \label{eq:weak_first_rt}
+		\int_{\partial K} \vec{v}\cdot \widehat{\E\varphi}\n \ud s - \int_K \nabla\vec{v} : \E\varphi \ud \x + \int_K \sigma_t\, \vec{v}\cdot\vec{J} \ud \x = \int_K \vec{v} \cdot \vec{Q}_1 \ud \x \,, \quad \forall \vec{v} \in \mathbb{D}_p(K) \,, 
+	\end{equation}
+where $\widehat{\E\varphi}$ is an approximation to $\E\varphi$ provided on the boundary of the element known as the numerical flux. Summing over all elements $K\in\meshT$: 
+	\begin{equation}
+		\int_\Gamma \jump{\vec{v}}\cdot\widehat{\E\varphi}\n \ud s - \int \nablah\vec{v} : \E\varphi \ud \x + \int \sigma_t\, \vec{v}\cdot\vec{J} \ud \x = \int \vec{v}\cdot\vec{Q}_1 \ud \x \,, \quad \forall \vec{v} \in \RT_p \,. 
+	\end{equation}
+We have used the fact that on a face $\mathcal{F} = K_1 \cap K_2$, $\n = \n_1 = -\n_2$ and the definitions of the jump and broken gradient in Eqs.~\ref{eq:jump_avg} and \ref{eq:broken_grad}, respectively. 
+To facilitate the connection to radiation diffusion in the thick diffusion limit, we set 
+	\begin{equation}
+		\widehat{\E\varphi}\n = \avg{\E\n}\!\avg{\varphi} \,, \quad \mathrm{on} \ \mathcal{F} \in \Gamma_0 
+	\end{equation}
+where the average is defined in Eq.~\ref{eq:jump_avg}. 
+The Miften-Larsen boundary conditions are applied with 
+	\begin{equation} \label{eq:rt_mlbc}
+		\widehat{\E\varphi}\n = \frac{\E\n}{E_b}\!\paren{\vec{J}\cdot\n - 2\Jin} \,, \quad \mathrm{on} \ \mathcal{F} \in \Gamma_b \,. 
+	\end{equation}
+This is derived by solving Eq.~\ref{eq:mlbc} for the scalar flux and multiplying by $\E\n$. The $Y_p \times \RT_p$ discretization is then: find $(\varphi,\vec{J}) \in Y_p \times \RT_p$ such that 
+	\begin{equation}
+		\int u\, \nabla\cdot\vec{J} \ud \x + \int \sigma_a\, u\varphi \ud \x = \int u\, Q_0 \ud \x \,, \quad \forall u \in Y_p \,,
+	\end{equation}
+	\begin{multline}
+		\int_{\Gamma_0} \jump{\vec{v}\cdot\avg{\E\n}} \avg{\varphi} \ud s - \int \nablah \vec{v} : \E\varphi \ud \x + \int \sigma_t\, \vec{v}\cdot\vec{J} \ud \x + \int_{\Gamma_b} \frac{1}{E_b}\!\paren{\vec{v}\cdot\E\n}\!\paren{\vec{J}\cdot\n} \ud s \\= \int \vec{v}\cdot\vec{Q}_1 \ud \x + 2\int_{\Gamma_b} \frac{1}{E_b}\vec{v}\cdot\E\n\, \Jin \ud s \,, \quad \forall \vec{v} \in \RT_p \,. 
+	\end{multline}
+Since RT vectors use the contravariant Piola transform, we substitute $\vec{v} = \frac{1}{J}\mat{F}\hvec{v}$ in all terms involving $\vec{v}$ and use Eqs.~\ref{eq:piola_grad} and \ref{eq:piola_div} to evaluate $\nablah\vec{v}$ and $\nabla\cdot\vec{J}$, respectively. 
+
+In the thick diffusion limit, $\E = \frac{1}{3}\I$ and 
+	\begin{equation}
+		\jump{\vec{v}\cdot\avg{\E\n}} = \frac{1}{3}\jump{\vec{v}\cdot\n} = 0 \,, 
+	\end{equation}
+since $\vec{v} \in \RT_p$ has a continuous normal component. Furthermore, $\nablah:\E = \frac{1}{3}\nabla\cdot\vec{v}$ so meaning this discretization with this choice of numerical flux is equivalent to the standard RT discretization of diffusion in the thick diffusion limit. 
+
+The RT space satisfies $\nabla\cdot\RT_p = Y_p$ avoiding the spurious modes seen for the $\Hone \times L^2(\D)$ discretization. This allows superior solution quality and excellent solver performance. However, the RT method is more complex due to the need for interior face bilinear forms, the contravariant Piola transform, and the comparatively less simple RT space. 
+
 \section{Discrete Inf-Sup Condition}
+
 \section{Block Solvers}
-\section{Hybridization}
+The above discretizations admit the following block system
+	\begin{equation}
+		\begin{bmatrix} 
+			\mat{A} & \mat{G} \\ \mat{D} &\mat{M}_a 
+		\end{bmatrix}
+		\begin{bmatrix} 
+			\fevec{J} \\ \fevec{\varphi} 
+		\end{bmatrix}
+		= \begin{bmatrix} 
+			\fevec{g} \\ \fevec{f} 
+		\end{bmatrix} \,,
+	\end{equation}
+where for $u,\varphi \in \mathcal{E}$ and $\vec{v},\vec{J} \in \mathcal{V}$: 
+	\begin{subequations}
+	\begin{equation} \label{eq:A}
+		\fevec{v}^T \mat{A} \fevec{J} = \int \sigma_t\, \vec{v}\cdot\vec{J} \ud \x + \int_{\Gamma_b} \frac{1}{E_b}\!\paren{\vec{v}\cdot\E\n}\!\paren{\vec{J}\cdot\n} \ud s \,, 
+	\end{equation}
+	\begin{equation} \label{eq:Ma}
+		\fevec{u}^T\mat{M}_a \fevec{\varphi} = \int \sigma_a, u\varphi \ud \x \,,
+	\end{equation}
+	\begin{equation} \label{eq:D}
+		\fevec{u}^T\mat{D}\fevec{J} = \int u\, \nabla\cdot\vec{J} \ud \x \,,
+	\end{equation}
+	\begin{equation} \label{eq:G}
+		\fevec{v}^T \mat{G} \fevec{\varphi} = \begin{cases}
+			-\int \nabla\vec{v} : \E\varphi \ud \x \,, & \mathcal{V} = W_{p+1} \\ 
+			\int_{\Gamma_0} \jump{\vec{v}\cdot\avg{\E\n}}\!\avg{\varphi} \ud s - \int \nablah\vec{v} : \E \varphi \ud \x \,, & \mathcal{V} = \RT_p 
+		\end{cases} \,, 
+	\end{equation} 
+	\begin{equation} \label{eq:g}
+		\fevec{v}^T\fevec{g} = \int \vec{v}\cdot\vec{Q}_1 \ud \x + 2\int_{\Gamma_b}\frac{1}{E_b}\!\vec{v}\cdot\E\n\, \Jin \ud s \,, 
+	\end{equation}
+	\begin{equation} \label{eq:f}
+		\fevec{u}^T \fevec{f} = \int u\,Q_0 \ud \x \,. 
+	\end{equation}
+	\end{subequations}
+Note that the integration transformations described in Section \ref{sec:int_trans} are implicitly used and in particular the contravariant Piola transform is implicitly used when $\mathcal{V} = \RT_p$. 
+
+We use a lower block triangular preconditioner of the form 
+	\begin{equation} \label{eq:block_prec}
+		\mat{M} = \begin{bmatrix} 
+			\mat{A} \\ \mat{D} & \tmat{S}
+		\end{bmatrix} \,,
+	\end{equation}
+where $\tmat{S}$ is an approximation to the Schur complement $\mat{S} = \mat{M}_a - \mat{D}\mat{A}^{-1}\mat{G}$. Block preconditioners seek to modify the system such that it has a minimal polynomial with small degree \cite{benzi_golub_liesen_2005}. Iterative solvers with an optimality condition, such as GMRES, can then converge in a small number of iterations. However, computing the generally dense Schur complement and exactly inverting it are impractical. Instead, we use an approximate Schur complement formed from a sparse approximation to $\mat{A}^{-1}$ and sparse matrix multiplication. That is, we use
+	\begin{equation}
+		\tmat{S} = \mat{M}_a - \mat{D}\tmat{A}^{-1}\mat{G} 
+	\end{equation}
+where $\tmat{A}$ is the lumped mass matrix and boundary term. On elements with no boundary faces (i.e.~$\partial K \cap \Gamma_b = \emptyset$), the lumping procedure is to sum the rows of the matrix into the diagonal. This is computed on the element-local matrix as: 
+	\begin{equation}
+		\tilde{A}^e_{ij} = \begin{cases}
+			\sum_{k} A_{ik}^e \,, & i=j \\ 
+			0 \,, & i\neq j 
+		\end{cases} \,, 
+	\end{equation}
+where $\mat{A}^e$ and $\tmat{A}^e$ are the matrices associated with the degrees of freedom corresponding to element $K_e$. 
+On elements with a boundary face, the boundary integral over $\Gamma_b$ contributes. Due to the Eddington tensor, $\vec{v}\cdot\E\n$ couples degrees of freedom corresponding to the normal and tangential components of $\vec{v}$. We leverage the block structure of the local matrices to lump the boundary elements. Let 
+	\begin{equation}
+		\mat{A}^e = \begin{bmatrix} 
+			\mat{A}^e_{11} & \mat{A}^e_{12} \\ 
+			\mat{A}^e_{21} & \mat{A}^e_{22} 
+		\end{bmatrix}
+	\end{equation}
+where $\mat{A}^e_{ij}$ is the sub-block corresponding to the degrees of freedom of the $i^{th}$ and $j^{th}$ components of the test and trial functions, respectively. We then lump each of these sub-blocks separately so that: 
+	\begin{equation}
+		\tmat{A}^e = \begin{bmatrix} 
+			\tmat{A}^e_{11} & \tmat{A}^e_{12} \\ 
+			\tmat{A}^e_{21} & \tmat{A}^e_{22} 			
+		\end{bmatrix} \,. 
+	\end{equation}
+The lumped local matrix $\tmat{A}^e$ is diagonal by vector component. That is, each row has at most two entries corresponding to the two components of a vector in $\R^2$. 
+
+For both interior and boundary elements, the local matrices $\tmat{A}^e$ are assembled into the global matrix $\tmat{A}$. For rows corresponding to interior degrees of freedom, the lumped matrix is diagonal and thus the inverse is simply $1/\tilde{A}_{ii}$. For rows corresponding to boundary degrees of freedom, $\tmat{A}$ is a diagonal matrix for each vector component. The inverse is computed by gathering the entries corresponding to each vector component into a $2\times 2$ matrix, inverting it, and scattering the inverse back to a sparse matrix representing $\tmat{A}^{-1}$. Finally, the lumped Schur complement is formed with sparse matrix multiplication. Note that computing the Schur complement is numerically analogous to eliminating the current in the analytic equations to form a second-order, elliptic partial differential equation. Thus, Algebraic Multigrid (AMG) is expected to be a spectrally equivalent approximation to $\tmat{S}^{-1}$. 
+
+The approximate inverse of the block preconditioner in Eq.~\ref{eq:block_prec} is applied with forward substitution. In other words, we solve
+	\begin{equation}
+		\begin{bmatrix} 
+			\mat{A} \\ \mat{D} & \tmat{S}
+		\end{bmatrix}
+		\begin{bmatrix} 
+			x_1 \\ x_2 
+		\end{bmatrix}
+		= \begin{bmatrix} 
+			r_1 \\ r_2 
+		\end{bmatrix}
+	\end{equation}
+by approximately solving the block problems: 
+	\begin{subequations}
+	\begin{equation}
+		\mat{A} x_1 = r_1 \,,
+	\end{equation}
+	\begin{equation}
+		\tmat{S}x_2 = r_2 - \mat{D} x_1 \,. 
+	\end{equation}
+	\end{subequations}
+The approximate inverse of $\mat{A}$ and $\tmat{S}$ are applied with one iteration of Jacobi smoothing and AMG, respectively. 
+
+\section{Hybridization} \label{sec:hyb}
+A hybridized version of the RT mixed method is obtained by relaxing the continuity requirements of the space $\RT_p$ and reimposing them weakly. Removing the continuity requirement from $\RT_p$ yields the broken space 
+	\begin{equation}
+		\hRT_p = \{ \vec{v} \in [L^2(\D)]^2 : \vec{v}|_{K_e} \in \mathbb{D}_k(K_e) \,, \quad \forall K_e \in \meshT \} \,. 
+	\end{equation}
+This space is equivalent to $\RT_p$ on each element but $\hRT_p$ does not have the matching conditions that strongly enforce continuity in the normal component. Note that $\RT_p \subset \hRT_p$ and that $\vec{v} \in \hRT_p$ belongs to $\RT_p$ if and only if $\jump{\vec{v}\cdot\n} = 0$ on all interior mesh interfaces. In other words, the mixed problem can be reformulated to use the space $\hRT_p$ instead of $\RT_p$ by adding the constraint that $\jump{\vec{J}\cdot\n} = 0$ for each $\mathcal{F} \in \Gamma_0$. The methods presented in this section enforce this constraint with a Lagrange multiplier. 
+
+Hybridized methods are attractive for three reasons. First, since $\vec{J}\in\hRT_p$ and $\varphi \in Y_p$ are both discontinuous, their degrees of freedom are coupled only locally on each element. It is then possible to locally eliminate the scalar flux and current arriving at a system of equations for just the Lagrange multiplier. This reduced system is much smaller than the original $2\times 2$ system. Second, the reduced system for the Lagrange multiplier will be positive definite and AMG can be applied directly, avoiding the need for block preconditioners. Finally, the Lagrange multiplier provides an additional approximation for the scalar flux not provided by the original mixed problem. 
+
+Since the VEF equations are not symmetric, the variational principles typically used to derive hybridized mixed finite element methods are not appropriate. We first show the derivation of a hybridized method for the symmetric case of radiation diffusion using variational principles. This method is extended to the VEF equations by emulating the properties of the symmetric case. Finally, we discuss the details of an efficient implementation. 
+
+\subsection{Derivation for Radiation Diffusion}
+The radiation diffusion equation with zero boundary conditions is 
+	\begin{subequations}
+	\begin{equation}
+		\nabla\cdot\vec{J} + \sigma_a \varphi = Q_0 \,, \quad \x \in \D \,,
+	\end{equation}
+	\begin{equation}
+		\nabla\varphi + 3\sigma_t \vec{J} = 0 \,, \quad \x \in \D\,,
+	\end{equation}
+	\begin{equation}
+		\varphi = 0 \,, \quad \x \in \partial \D \,,
+	\end{equation}
+	\end{subequations}
+where the source has been assumed to be isotropic. The $Y_p\times \RT_p$ mixed finite element discretization is then: find $(\varphi,\vec{J}) \in Y_p\times \RT_p$ such that  
+	\begin{subequations} \label{eq:mixed_diff}
+	\begin{equation} 
+		\int 3\sigma_t\,\vec{v}\cdot\vec{J}\ud \x - \int \nabla\cdot\vec{v}\,\varphi \ud \x = 0 \,, \quad \forall \vec{v} \in \RT_p \,,
+	\end{equation}
+	\begin{equation}
+		\int u\,\nabla\cdot\vec{J} \ud \x + \int \sigma_a\, u \varphi \ud \x = \int u\, Q_0 \ud \x \,, \quad \forall u \in Y_p \,. 
+	\end{equation}
+	\end{subequations}
+This discretization arises from a mixed variational principle. Consider the saddle point problem: 
+	\begin{equation} \label{eq:saddle}
+		\inf_{\vec{J}\in \RT_p} \sup_{\varphi \in Y_p} \mathcal{L}(\vec{J},\varphi) \,, 
+	\end{equation}
+where 
+	\begin{equation}
+		\mathcal{L}(\vec{J},\varphi) = \int 3\sigma_t\, \vec{J}\cdot\vec{J} \ud \x - \paren{\int \varphi\, \nabla\cdot\vec{J} \ud \x + \frac{1}{2}\int \sigma_a\, \varphi^2 \ud \x - \int \varphi\,Q_0\,\ud \x} \,. 
+	\end{equation}
+This saddle point problem minimizes the so-called minimum complementary energy principle, defined as $\int 3\sigma_t\,\vec{J}\cdot\vec{J} \ud \x$, under the constraint of particle balance. The solution is found by setting $\nabla\mathcal{L} = 0$: 
+	\begin{subequations}
+	\begin{equation}
+		\pderiv{\mathcal{L}}{\vec{J}} = \int 3\sigma_t\, \vec{v}\cdot\vec{J} \ud \x - \int \nabla\cdot\vec{v}\, \varphi \ud \x = 0 \,, \quad \forall \vec{v} \in \RT_p \,, 
+	\end{equation}
+	\begin{equation}
+		\pderiv{\mathcal{L}}{\varphi} = \int u\, \nabla\cdot\vec{J} \ud \x + \int \sigma_a\, u \varphi \ud \x - \int u\, Q_0 \ud \x = 0 \,, \quad \forall u \in Y_p \,. 
+	\end{equation}
+	\end{subequations}
+In other words, the solution of the mixed discretization in Eq.~\ref{eq:mixed_diff} is also the saddle point of $\mathcal{L}$. 
+
+The hybridized form is found by replacing $\RT_p$ with $\hRT_p$ and adding the constraint that the normal component of the current is continuous. The resulting constrained saddle point problem is: 
+	\begin{equation}
+		\inf_{\vec{J}\in\hRT_p} \sup_{\varphi \in Y_p} \hat{\mathcal{L}}(\vec{J},\varphi) \quad \text{such that} \ \jump{\vec{J}\cdot\n} = 0 \quad \forall \mathcal{F} \in \Gamma_0 \,,  
+	\end{equation}
+where $\hat{\mathcal{L}}$ is the broken form of $\mathcal{L}$ that applies $\mathcal{L}$ on each element independently:  
+	\begin{equation}
+		\hat{\mathcal{L}}(\vec{J},\varphi) = \int 3\sigma_t\, \vec{J}\cdot\vec{J} \ud \x - \paren{\int \varphi\, \nablah\cdot\vec{J} \ud \x + \frac{1}{2}\int \sigma_a\, \varphi^2 \ud \x - \int \varphi\,Q_0\,\ud \x} \,.
+	\end{equation}
+Since the $\vec{J} \in \hRT_p$ and $\varphi\in Y_p$ are discontinuous, the above holds element-wise due to the use of the broken divergence.  
+Introducing the Lagrange multiplier $\lambda$, the constrained saddle point problem is equivalent to 
+	\begin{equation}
+		\inf_{\vec{J}\in \hRT_p} \sup_{\varphi \in Y_p} \sup_{\lambda \in \Lambda_p} \mathcal{H}(\vec{J}, \varphi, \lambda) \,, 
+	\end{equation}
+where
+	\begin{equation}
+		\mathcal{H}(\vec{J}, \varphi, \lambda) = \hat{\mathcal{L}}(\vec{J},\varphi) + \int_{\Gamma_0} \lambda\jump{\vec{J}\cdot\n} \ud s\,. 
+	\end{equation}	
+As before, the solution is found by setting $\nabla\mathcal{H} = 0$: 
+	\begin{subequations}
+	\begin{equation} \label{eq:diff_hyb_first_glob}
+		\pderiv{\mathcal{H}}{\vec{J}} = \int 3\sigma_t\, \vec{v}\cdot\vec{J} \ud \x - \int \nablah\cdot\vec{v}\, \varphi \ud \x + \int_{\Gamma_0}\jump{\vec{v}\cdot\n} \lambda \ud s = 0 \,, \quad \forall \vec{v} \in \hRT_p \,, 
+	\end{equation}
+	\begin{equation} \label{eq:diff_hyb_zero_glob}
+		\pderiv{\mathcal{H}}{\varphi} = \int u\, \nablah\cdot\vec{J} \ud \x + \int \sigma_a\, u\varphi \ud \x - \int u\, Q_0 \ud \x = 0 \,, \quad \forall u \in Y_p \,,
+	\end{equation}
+	\begin{equation}
+		\pderiv{\mathcal{H}}{\lambda} = \int_{\Gamma_0} \mu\jump{\vec{J}\cdot\n} \ud s = 0 \,, \quad \forall \mu \in \Lambda_p \,. 
+	\end{equation}
+	\end{subequations}
+Since $\hRT_p$ and $Y_p$ are discontinuous spaces, the hybridized mixed method is equivalent to:
+	\begin{subequations}
+	\begin{equation} \label{eq:diff_hyb_first}
+		\int_K 3\sigma_t\, \vec{v}\cdot\vec{J}\ud \x - \int_K \nabla\cdot\vec{v}\, \varphi \ud \x + \int_{\partial K \cap \Gamma_0} \vec{v}\cdot\n_K \lambda \ud s = 0 \,, \quad \forall \vec{v} \in \mathbb{D}_p(K)\,,\ K \in \meshT \,, 
+	\end{equation}
+	\begin{equation}
+		\int_K u\,\nabla\cdot\vec{J} \ud \x + \int_K \sigma_a\, u \varphi \ud \x = \int_K u\, Q_0 \ud \x \,, \quad \forall u \in \mathbb{Q}_p(K)\,,\ K \in \meshT \,, 
+	\end{equation}
+	\begin{equation} \label{eq:hyb_cts_n}
+		\int_{\Gamma_0} \mu \jump{\vec{J}\cdot\n} \ud s = 0 \,, \quad \forall \mu \in \Lambda_p \,. 
+	\end{equation}
+	\end{subequations}
+Here it can be seen that the degrees of freedom for the scalar flux and current are no longer globally coupled. In fact, if $\lambda$ were known, the scalar flux and current could be recovered by solving element-local radiation diffusion problems where $\lambda$ plays the role of a weak boundary condition applied on each element. Note that the non-zero boundary condition $\varphi = \bar{\varphi}$ for $\x\in\Gamma_b$ can be applied by subtracting $\int_{\Gamma_b} \vec{v}\cdot\n\, \bar{\varphi} \ud s$ from the right hand side of Eq.~\ref{eq:diff_hyb_first_glob} or equivalently by subtracting $\int_{\partial K \cap \Gamma_b} \vec{v}\cdot\n_K\, \bar{\varphi}$ from the right hand side of Eq.~\ref{eq:diff_hyb_first}. 
+
+In hybridization, continuity of the normal component is enforced weakly (e.g.~see Eq.~\ref{eq:hyb_cts_n}). However, it is well known that the resulting discrete solution will actually satisfy continuity of the normal component in a strong sense. In fact, hybridization has also been viewed as an algebraic technique similar to static condensation in \cite{doi:10.1137/17M1132562}. 
+
+\subsection{Extension to VEF}
+The above variational process cannot be applied directly to the VEF equations due to their lack of symmetry. Without symmetry, it is unclear which potential the weak VEF equations correspond to. However, we can define a hybrid method for the VEF equations by mimicking the properties seen above for the symmetric case. In particular, we use the broken RT space, $\hRT_p$, and a Lagrange multiplier that 1) weakly enforces continuity of the normal component of the current and 2) provides inter-element boundary conditions for element-local VEF equations. As in the symmetric case, this will allow elimination of the scalar flux and current, leading to a smaller system for just the Lagrange multiplier where AMG can be applied directly. However, since the resulting method cannot be derived from a variational principle it is unclear whether the resulting hybrid formulation will be equivalent to the original mixed formulation. 
+
+The hybridized diffusion method can be extended to the VEF equations with Miften-Larsen boundary conditions by replacing the diffusion first moment with the VEF first moment equation and using the boundary condition $\bar{\varphi} = \frac{1}{E_b}(\vec{J}\cdot\n - 2\Jin)$. 
+This can be accomplished by using the element-local weak form of the first moment equation in Eq.~\ref{eq:weak_first_rt} and setting 
+	\begin{equation}
+		\widehat{\E\varphi}\n = \avg{\E\n}\lambda \,, \quad \mathrm{on} \ \mathcal{F} \in \Gamma_0 \,. 
+	\end{equation}
+The numerical flux on the boundary is the same as in Eq.~\ref{eq:rt_mlbc}. For each $K$, the element-local VEF problem is then
+	\begin{subequations}
+	\begin{multline}
+		\int_{\partial K \cap \Gamma_0} \vec{v}\cdot\avg{\E\n_K} \lambda \ud s - \int_K \nabla \vec{v} : \E\varphi \ud \x + \int_K \sigma_t\, \vec{v}\cdot\vec{J} \ud \x + \int_{\partial K \cap \Gamma_b} \frac{1}{E_b}\!\paren{\vec{v}\cdot\E\n_K}\!\paren{\vec{J}\cdot\n_K} \ud s \\ = \int_K \vec{v}\cdot\Qone \ud \x + 2\int_{\partial K \cap \Gamma_b} \frac{1}{E_b}\vec{v}\cdot\E\n_K\, \Jin \ud s \,, \quad \forall\vec{v} \in \mathbb{D}_p(K) \,, 
+	\end{multline}
+	\begin{equation}
+		\int_K u\, \nabla\cdot\vec{J} \ud \x + \int_K \sigma_a\, u\varphi \ud \x = \int_K u\, Q_0 \ud \x \,, \quad \forall u \in \Qbb{p}(K) \,. 
+	\end{equation}
+	\end{subequations}
+The resulting hybrid VEF method is: find $(\vec{J},\varphi,\lambda) \in \hRT_p \times Y_p \times \Lambda_p$ such that 
+	\begin{subequations}
+	\begin{multline}
+		\int_{\Gamma_0} \jump{\vec{v}\cdot\avg{\E\n}} \lambda \ud s - \int \nablah \vec{v} : \E\varphi \ud \x + \int \sigma_t\, \vec{v}\cdot\vec{J} \ud \x + \int_{\Gamma_b} \frac{1}{E_b}\!\paren{\vec{v}\cdot\E\n}\!\paren{\vec{J}\cdot\n} \ud s \\ = \int \vec{v}\cdot\Qone \ud \x + 2\int_{\Gamma_b} \frac{1}{E_b}\vec{v}\cdot\E\n\, \Jin \ud s \,, \quad \forall\vec{v} \in \hRT_p \,, 
+	\end{multline}
+	\begin{equation}
+		\int_K u\, \nablah\cdot\vec{J} \ud \x + \int_K \sigma_a\, u\varphi \ud \x = \int_K u\, Q_0 \ud \x \,, \quad \forall u \in Y_p \,, 
+	\end{equation}
+	\begin{equation}
+		\int_{\Gamma_0} \mu\jump{\vec{J}\cdot\n} \ud s = 0 \,, \quad \forall \mu \in \Lambda_p \,. 
+	\end{equation}
+	\end{subequations}
+Observe that this represents element-local VEF problems where the boundary conditions are provided either by the Miften-Larsen boundary conditions on the boundary of the domain or by the Lagrange multiplier $\lambda$ for interior elements. Thus, if $\lambda$ were known, the scalar flux and current could be solved for independently on each element. 
+
+\subsection{Implementation Details}
+In matrix form, the hybridized system is 
+	\begin{equation} \label{eq:hyb_form}
+		\begin{bmatrix} 
+			\hmat{A} & \hmat{G} & \mat{C}_2 \\ 
+			\hmat{D} & \mat{M}_a \\
+			\mat{C}_1 && 
+		\end{bmatrix}
+		\begin{bmatrix} 
+			\fevec{J} \\ \fevec{\varphi} \\ \fevec{\lambda} 
+		\end{bmatrix}
+		= \begin{bmatrix} 
+			\hat{\fevec{g}} \\ \fevec{f} \\ 0 
+		\end{bmatrix} \,, 
+	\end{equation}
+where $\hmat{A}$, $\hmat{D}$, and $\hat{\fevec{g}}$ are defined in Eqs.~\ref{eq:A}, \ref{eq:D}, and \ref{eq:g}, respectively, but use $\mathcal{V} = \hRT_p$ and 
+	\begin{equation}
+		\hmat{G} = -\int \nablah\vec{v} : \E \varphi \ud \x 
+	\end{equation}
+is the analog of $\mat{G}$ in Eq.~\ref{eq:G} that uses $\mathcal{V} = \hRT_p$ and does not include the interior face bilinear form. 
+The DG absorption mass matrix, $\mat{M}_a$, and right hand side, $\fevec{f}$, are unchanged from the original mixed form defined in Eqs.~\ref{eq:Ma} and \ref{eq:f}, respectively. The constraint matrices are defined as: 
+	\begin{subequations}
+	\begin{equation}
+		\fevec{\mu}^T\mat{C}_1 \fevec{J} = \int_{\Gamma_0} \mu \jump{\vec{J}\cdot\n} \ud s \,,
+	\end{equation}
+	\begin{equation}
+		\fevec{v}^T \mat{C}_2 \fevec{\lambda} = \int_{\Gamma_0} \jump{\vec{v}\cdot\avg{\E\n}} \lambda \ud s \,, 
+	\end{equation}
+	\end{subequations}
+where $\mu \in \Lambda_p$ and $\vec{v} \in \hRT_p$. 
+
+Only the constraint matrices $\mat{C}_1$ and $\mat{C}_2$ are globally coupled. The matrices $\hmat{A}$, $\hmat{G}$, $\hmat{D}$, and $\mat{M}_a$ are all block diagonal by element and can thus be eliminated on each element without fill-in. Figure \ref{fig:hyb_sparsity_a} shows the sparsity pattern of the block system in Eq.~\ref{eq:hyb_form}. Note that this matrix can be permuted to be block diagonal by element by grouping the current and scalar flux degrees of freedom associated with each element together. This matrix is shown in Fig.~\ref{fig:hyb_sparsity_b} where it is clear that the block system has a structure amenable to efficient solution via block Gaussian elimination. 
+\begin{figure}
+	\centering
+	\begin{subfigure}{.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figs/rtvef/hyb_sparsity.pdf}
+		\caption{}
+		\label{fig:hyb_sparsity_a}
+	\end{subfigure}
+	\begin{subfigure}{.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figs/rtvef/hyb_sparsity_1.pdf}
+		\caption{}
+		\label{fig:hyb_sparsity_b}
+	\end{subfigure}
+	\begin{subfigure}{.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figs/rtvef/hyb_sparsity_2.pdf}
+		\caption{}
+		\label{fig:hyb_sparsity_c}
+	\end{subfigure}	
+	\caption{\todo{add}Sparsity plots for the block system corresponding to the hybridized Raviart Thomas discretization for the VEF equations. In (a), the degrees of freedom are organized as $J_1$, $J_2$, $\varphi$, $\lambda$. In (b), the rows and columns of the matrix in (a) are permuted to group the currents and scalar fluxes associated with each element together. With this ordering, it is clear that the scalar flux and current can be eliminated on each element without fill-in, leaving a system for $\lambda$ only. Note that in practice, the elimination of the element-local problems is performed locally with dense operations and global sparse matrices are used to form the reduced system for the Lagrange multiplier. }
+	\label{fig:hyb_sparsity}
+\end{figure}
+
+Performing block Gaussian elimination on each element, the reduced system for the Lagrange multiplier reads 
+	\begin{equation}
+		\mat{H} \fevec{\lambda} = 
+		\begin{bmatrix} 
+			\mat{C}_1 & \mat{0} 
+		\end{bmatrix}
+		\begin{bmatrix} 
+			\hmat{A} & \hmat{G} \\ \hmat{D} & \mat{M}_a 
+		\end{bmatrix}^{-1}
+		\begin{bmatrix} 
+			\mat{C}_2 \\ \mat{0}
+		\end{bmatrix}
+		\fevec{\lambda}
+		= \begin{bmatrix} 
+			\mat{C}_1 & \mat{0} 
+		\end{bmatrix}
+		\begin{bmatrix} 
+			\hmat{A} & \hmat{G} \\ \hmat{D} & \mat{M}_a 
+		\end{bmatrix}^{-1}
+		\begin{bmatrix} 
+			\hat{\fevec{g}} \\ \fevec{f} 
+		\end{bmatrix} \,. 
+	\end{equation}
+The inverse of the local VEF problems is derived by finding the blocks $\mat{W}$, $\mat{X}$, $\mat{Y}$, and $\mat{Z}$ that satisfy
+	\begin{equation} \label{eq:block_inv}
+		\begin{bmatrix} 
+			\hmat{A} & \hmat{G} \\ \hmat{D} & \mat{M}_a 
+		\end{bmatrix}
+		\begin{bmatrix} 
+			\mat{W} & \mat{X} \\ \mat{Y} & \mat{Z} 
+		\end{bmatrix}
+		= \begin{bmatrix} 
+			\mat{I} \\
+			& \mat{I} 
+		\end{bmatrix} \,. 
+	\end{equation}
+We assume that $\hmat{A}$ and the Schur complement $\hmat{S} = \mat{M}_a - \hmat{D} \hmat{A}^{-1}\hmat{G}$ are non-singular. This is justified in non-void regions where $\sigma_t > 0$. However, we do not assume $\mat{M}_a$ is non-singular since $\sigma_a \geq 0$ can be zero. 
+Solving Eq.~\ref{eq:block_inv} for the blocks $\mat{W}$, $\mat{X}$, $\mat{Y}$, and $\mat{Z}$ under these constraints yields: 
+	\begin{subequations}
+	\begin{equation}
+		\mat{W} = \hmat{A}^{-1}(\mat{I} + \hmat{G}\hmat{S}^{-1}\hmat{D}\hmat{A}^{-1}) \,,
+	\end{equation}
+	\begin{equation}
+		\mat{X} = -\hmat{A}^{-1} \hmat{G} \hmat{S}^{-1} \,,
+	\end{equation}
+	\begin{equation}
+		\mat{Y} = -\hmat{S}^{-1}\hmat{D} \hmat{A}^{-1} \,, 
+	\end{equation}
+	\begin{equation}
+		\mat{Z} = \hmat{S}^{-1} \,. 
+	\end{equation}
+	\end{subequations}
+The reduced system for the Lagrange multiplier is then 
+	\begin{equation}
+		\mat{H} \fevec{\lambda} = \mat{C}_1 \mat{W} \mat{C}_2 = \mat{C}_1 \hmat{A}^{-1}\!\paren{\mat{I} + \hmat{G}\hmat{S}^{-1}\hmat{D}\hmat{A}^{-1}} \mat{C}_2 \fevec{\lambda} = \mat{C}_1\!\paren{\mat{W}\hat{\fevec{g}} + \mat{X}\fevec{f}} \,. 
+	\end{equation}
+We can now rewrite the $3\times 3$ block system as 
+	\begin{equation}
+		\begin{bmatrix} 
+			\hmat{A} & \hmat{G} & \mat{C}_2 \\ 
+			\hmat{D} & \mat{M}_a \\
+			&& \mat{H}
+		\end{bmatrix}
+		\begin{bmatrix} 
+			\fevec{J} \\ \fevec{\varphi} \\ \fevec{\lambda} 
+		\end{bmatrix}
+		= \begin{bmatrix} 
+			\hat{\fevec{g}} \\ \fevec{f} \\ \mat{C}_1\!\paren{\mat{W}\hat{\fevec{g}} + \mat{X}\fevec{f}} 
+		\end{bmatrix} \,. 
+	\end{equation}
+This system can be solved with block back substitution. First, solve the globally coupled system 
+	\begin{equation}
+		\mat{H} \fevec{\lambda} = \mat{C}_1\!\paren{\mat{W}\hat{\fevec{g}} + \mat{X}\fevec{f}}
+	\end{equation}
+for $\fevec{\lambda}$. The element-local inverse can then be used to solve for the scalar flux and current with 
+	\begin{equation}
+		\begin{bmatrix} 
+			\fevec{J} \\ \fevec{\varphi}
+		\end{bmatrix}
+		= \begin{bmatrix} 
+			\mat{W} & \mat{X} \\ \mat{Y} & \mat{Z} 
+		\end{bmatrix}
+		\begin{bmatrix} 
+			\hat{\fevec{g}} - \mat{C}_2 \fevec{\lambda} \\ 
+			\fevec{f} 
+		\end{bmatrix}
+		= \begin{bmatrix} 
+			\mat{W}\!\paren{\hat{\fevec{g}} - \mat{C}_2 \fevec{\lambda}} + \mat{X} \fevec{f} \\
+			\mat{Y}\!\paren{\hat{\fevec{g}} - \mat{C}_2 \fevec{\lambda}} + \mat{Z}\fevec{f} 
+		\end{bmatrix} \,. 
+	\end{equation}
+In this way, only $\dim(\Lambda_p)$ globally coupled unknowns must be solved for as opposed to the $\dim(\RT_p) + \dim(Y_p)$ required by the original mixed formulation. 
+	
+In practice, the blocks of the inverse $\mat{W}$, $\mat{X}$, $\mat{Y}$, and $\mat{Z}$ are formed using dense matrix operations applied on the element-local matrices corresponding to the degrees of freedom of a single element. The local matrices are then broadcast to a global sparse matrix in order to perform the sparse matrix multiplication required to form the reduced system for the Lagrange multiplier. The Lagrange multiplier can be scalably solved for by preconditioning $\mat{H}$ with AMG. In addition, recovering the scalar flux and current is a post-processing step that is independent on each element and thus scales optimally. 
+
 \section{Results}
 
 % --- MMS diffusion --- 
