@@ -21,7 +21,8 @@ REF = references.bib
 MAIN = doc
 
 # list of figures to be built for the document 
-FIGS = dgvef/mms smm/mms eps_lineout quad_mesh
+FIGS = lor lor4 lor8 lor_dist lor_dist4 lor_dist8 \
+dgvef/mms dgvef/unified rtvef/hyb_sparsity smm/mms eps_lineout quad_mesh
 FIGS := $(addsuffix .pdf, $(FIGS))
 
 # list of tables to build
@@ -105,6 +106,17 @@ clean :
 	$(MAKE) cleantikz
 
 # --- targets that require specific command line arguments --- 
+# low order refined diagrams 
+lor4.pdf : lor.py $(MPL) 
+	$(PYTHON) $< $(figdir)/$@ 4
+lor8.pdf : lor.py $(MPL) 
+	$(PYTHON) $< $(figdir)/$@ 8
+lor_dist4.pdf : lor_dist.py $(MPL) 
+	$(PYTHON) $< $(figdir)/$@ 4 
+lor_dist8.pdf : lor_dist.py $(MPL) 
+	$(PYTHON) $< $(figdir)/$@ 8
+
+# MMS on various directories 
 $(figdir)/rtvef/mms_elev.tex : $(pysrc)/rtvef/mms.py 
 	$(PYTHON) $< $@ data/rtvef/mms_elev/
 $(figdir)/rtvef/mms_diff.tex : $(pysrc)/rtvef/mms.py 
