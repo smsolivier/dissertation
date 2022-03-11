@@ -1,68 +1,82 @@
 # Introduction
 * motivation 
-	* HO on HO 
-* pare down to simple linear transport problem 
-* gap in VEF literature 
+	* TRT 
+	* high order 
+	* why VEF (NABC)
+* previous work -> gap analysis 
+* scope of research
+* summary of results
+* outline of document 
 
-# VEF Background
-* transport equation introduction 
+# VEF Algorithm
+* linear transport equation 
 * derivation of VEF 
-	* miften larsen BCs 
-* operator notation derivation of VEF algorithm
-	* fixed point 
-	* anderson 
+* algorithm in operator notation 
 * properties of VEF data 
-	* gateaux derivative -> nullspace 
 
 # FEM 
 * description of mesh 
-* notation 
 * integration transforms 
 * finite element spaces 
+* notation 
+* Galerkin's method 
 * assembly 
 
 # Transport Discretizations
 * SN 
 * DG 
-	* upwind discretization 
-	* lagging on curved meshes 
-	* flux fixup
-* could be place to show full matrix, idea of richardson? 
+* sweep
+* discrete VEF algorithm
+* fixups 
 
 # DGVEF 
-## Results 
-* MMS 
-* TDL 
-* mock problem 
-* crooked pipe 
-* weak scaling 
+* adaption of unified to vef 
+* numerical fluxes 
+* derivation of CG VEF 
+* description of subspace correction preconditioner 
+* results 
+	* MMS 
+	* TDL 
+	* mock problem 
+	* crooked pipe 
+	* weak scaling 
 
 # RTVEF 
-## Results
-* MMS 
-* TDL 
-* curved solvers failure 
-* bad modes 
-* two material problem 
-* crooked pipe 
-* weak scaling
+* requirements of spaces 
+* H1 
+* RT 
+* discrete inf-sup condition 
+* block solvers 
+* hybridization 
+* results
+	* MMS 
+	* TDL 
+	* curved solvers failure 
+	* bad modes 
+	* two material problem 
+	* crooked pipe 
+	* weak scaling
 
 # SMM
-* MMS 
-	* all methods phi 
-	* RT and HRT J should match RTVEF results 
-* TDL 
-* glancing void 
-* crooked pipe 
-* weak scaling 
-	* comparison of minres and bicg for RT 
+* derivation via lagging 
+* connection to VEF via linearization 
+* derivation of SMMs 
+* results 
+	* MMS 
+		* all methods phi 
+		* RT and HRT J should match RTVEF results 
+	* TDL 
+	* glancing void 
+	* crooked pipe 
+	* weak scaling 
+		* comparison of minres and bicg for RT 
 
-# Comparison of Methods + Properties of VEF in General 
+# Additional Results and Discussion
+* additional sweeps on triple point 
+* anderson on triple point 
 * solution quality on triple point mesh 
-* SMM vs VEF 
-	* TTS in inner solve 
-* slower convergence on reentrant meshes 
-* need for augments 
+* comparison of SMM and VEF 
+* recommendations for use in production code 
 
 # Conclusions
 * summary of results 
