@@ -56,11 +56,11 @@
 \addtolength{\abovecaptionskip}{\baselineskip} 
 
 % --- custom commands --- 
-\newcommand{\mat}[1]{\boldsymbol{\rm{#1}}}
+\newcommand{\mat}[1]{\boldsymbol{\mathrm{#1}}}
 \newcommand{\hmat}[1]{\hat{\mat{#1}}}
 \newcommand{\tmat}[1]{\tilde{\mat{#1}}}
 \renewcommand{\vec}[1]{\boldsymbol{#1}}
-\newcommand{\bvec}[1]{\boldsymbol{\rm{#1}}}
+\newcommand{\bvec}[1]{\boldsymbol{\mathrm{#1}}}
 \newcommand{\twovec}[2]{\begin{pmatrix} #1 \\ #2 \end{pmatrix}}
 \newcommand{\hvec}[1]{\hat{\vec{#1}}}
 \newcommand{\fevec}[1]{\,\underline{\!#1\!}\,}
@@ -106,6 +106,7 @@
 \newcommand{\e}{\boldsymbol{\mathrm{e}}}
 \newcommand{\n}{\boldsymbol{\mathrm{n}}}
 \newcommand{\tang}{\boldsymbol{\mathrm{\tau}}}
+\newcommand{\Jin}{J_\text{in}}
 
 % --- text highlighting --- 
 % highlights text to remind me to do look at it again
