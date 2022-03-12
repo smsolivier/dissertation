@@ -45,6 +45,7 @@
 * properties of VEF data 
 	* Gateaux of Eddington tensor 
 	* bounds 
+	* asymptotic limits
 * discretization commuting diagram 
 * diffusion advection reaction structure 
 
