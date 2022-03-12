@@ -17,7 +17,7 @@ for f in files:
 		db = yaml.safe_load(stream)
 	opts = db.pop('Options used')
 	vtype = re.findall(r'--vef\s(\S*)', opts)[0]
-	db['vtype'] = vtype 
+	db['vtype'] = vtype.replace('sm', '')
 	d.append(db) 
 
 for p in range(1,4):
