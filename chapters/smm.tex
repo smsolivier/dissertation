@@ -4,6 +4,67 @@
 \begin{document}
 \chapter{Second Moment Methods}
 
+\section{The Continuous Algorithm}
+\glspl{smm} can be viewed as using an alternative closure of the second moment of the angular flux. Where \gls{vef} uses $\P = \E \varphi$, \gls{smm} uses 
+	\begin{equation}
+		\P = \T(\psi) + \frac{1}{3}\I \varphi 
+	\end{equation}
+where $\T(\psi)$ is a \emph{correction tensor} defined as: 
+	\begin{equation}
+		\T(\psi) = \int \Omegahat\otimes\Omegahat\, \psi \ud \Omega - \frac{1}{3}\I \varphi \,. 
+	\end{equation}
+Note that this is simply an algebraic reformulation of the second moment $\P = \int \Omegahat\otimes\Omegahat\, \psi \ud \Omega$ where the isotropic tensor $1/3\I\varphi$ is added and subtracted. 
+Like the VEF closure, the SMM closure is trivial in that the solution to the transport equation must already be known in order to define the correction tensor. 
+
+The SMM algorithm forms an efficient iterative scheme by lagging the correction tensor. Using this closure in the zeroth and first moment equations yields: 
+	\begin{subequations}
+	\begin{equation}
+		\nabla\cdot\vec{J} + \sigma_a \varphi = Q_0 \,, 
+	\end{equation}
+	\begin{equation}
+		\nabla\cdot\paren{\T(\psi) + \frac{1}{3}\I \varphi} + \sigma_t \vec{J} = \vec{Q}_1 \,. 
+	\end{equation}
+	\end{subequations}
+The second-order form is found by eliminating the current: 
+	\begin{equation}
+		-\nabla\cdot\frac{1}{3\sigma_t}\nabla\varphi + \sigma_a \varphi = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t} + \nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T(\psi) \,. 
+	\end{equation}
+SMM solves the coupled system: 
+	\begin{subequations}
+	\begin{equation}
+		\Omegahat\cdot\nabla\psi + \sigma_t \psi = \frac{\sigma_s}{4\pi}\varphi + q \,, 
+	\end{equation}
+	\begin{equation}
+		-\nabla\cdot\frac{1}{3\sigma_t}\nabla\varphi + \sigma_a \varphi = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t} + \nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T(\psi) \,. 
+	\end{equation}
+	\end{subequations}
+Let $\mat{L} = \Omegahat\cdot\nabla + \sigma_t$, $\mat{S} = \frac{\sigma_s}{4\pi}$, and 
+	\begin{equation}
+		\mat{D} = -\nabla\cdot\frac{1}{3\sigma_t}\nabla + \sigma_a
+	\end{equation}
+be the streaming and collision, scattering, and diffusion operators. By eliminating the angular flux, the SMM algorithm is equivalent to: 
+	\begin{equation}
+		\mat{D}\varphi = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t} + \nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T(\mat{L}^{-1}(\mat{S}\varphi + q)) \,. 
+	\end{equation}
+The key aspect of SMM is that the left hand side operator $\mat{D}$ is no longer a function of the angular flux and represents a radiation diffusion system. By applying the inverse of the diffusion system to both sides, we arrive at the fixed-point operator 
+	\begin{equation}
+		\varphi = G(\varphi)
+	\end{equation}
+where 
+	\begin{equation}
+		G(\varphi) = \mat{D}^{-1}\bracket{Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t} + \nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T(\mat{L}^{-1}(\mat{S}\varphi + q))} \,. 
+	\end{equation}
+Note that for SMM, evaluating $G(\varphi)$ only requires the inversion of the streaming and collision operator and a symmetric positive definite diffusion system. \todo{advantageous because}
+
+\section{Derivation by Linearizing VEF}
+
+\section{A Connection to Newton's Method}
+
+\section{Discrete Second Moment Methods}
+\subsection{Interior Penalty and Continuous Finite Element}
+
+\subsection{Mixed Finite Element}
+
 \section{Results}
 
 % --- mms figures --- 
