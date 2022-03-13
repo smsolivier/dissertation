@@ -5,7 +5,7 @@
 \chapter{Second Moment Methods}
 
 \section{The Continuous Algorithm}
-\glspl{smm} can be viewed as using an alternative closure of the second moment of the angular flux. Where \gls{vef} uses $\P = \E \varphi$, \gls{smm} uses 
+SMMs use an alternative closure for the moment equations. Where VEF uses a multiplicative closure $\P = \E\varphi$, SMM uses the additive closure: 
 	\begin{equation}
 		\P = \T(\psi) + \frac{1}{3}\I \varphi 
 	\end{equation}
@@ -14,15 +14,49 @@ where $\T(\psi)$ is a \emph{correction tensor} defined as:
 		\T(\psi) = \int \Omegahat\otimes\Omegahat\, \psi \ud \Omega - \frac{1}{3}\I\int \psi \ud \Omega \,. 
 	\end{equation}
 Note that this is simply an algebraic reformulation of the second moment $\P = \int \Omegahat\otimes\Omegahat\, \psi \ud \Omega$ where an isotropic pressure tensor proportional to the zeroth moment is added and subtracted. That is, in the same way that VEF multiplies and divides by the zeroth moment, SMM adds and subtracts. 
-Like the VEF closure, the SMM closure is trivial in that the solution to the transport equation must already be known in order to define the correction tensor. \todo{relate correction tensor to derivative of Eddington tensor}
+Like the VEF closure, the SMM closure is trivial in that the solution to the transport equation must already be known in order to define the correction tensor. 
 
-Using this closure in the zeroth and first moment equations yields: 
-	\begin{subequations}
+For boundary conditions, the partial currents can be analogously closed with an additive functional. Letting $J_n^\pm = \int_{\Omegahat\cdot\n\gtrless0} \Omegahat\cdot\n\, \psi \ud \Omega$, consider 
 	\begin{equation}
-		\nabla\cdot\vec{J} + \sigma_a \varphi = Q_0 \,, 
+	\begin{aligned}
+		\vec{J}\cdot\n &= J_n^- + J_n^+ \\
+		&= 2J_n^- + (J_n^+ - J_n^-) \\
+		&= 2J_n^- + \int |\Omegahat\cdot\n|\,\psi \ud \Omega \,. 
+	\end{aligned}
+	\end{equation}
+We can now add and subtract $1/2 \int \psi \ud \Omega$ to arrive at the closed boundary condition: 
+	\begin{equation}
+		\vec{J}\cdot\n = 2J_n^- + \frac{1}{2}\varphi + \beta(\psi) \,, 
+	\end{equation}
+where 
+	\begin{equation}
+		\beta(\psi) = \int |\Omegahat\cdot\n|\,\psi \ud \Omega - \frac{1}{2}\int\psi \ud \Omega 
+	\end{equation}
+is the boundary correction factor. 
+
+The factors of one third and one half used in the closures of $\P$ and $\vec{J}\cdot\n$, respectively, are chosen so that the SMM equations are equivalent to radiation diffusion when the angular flux is linearly anisotropic. To see this, let $\psi(\x,\Omegahat) = f(\x) + \Omegahat\cdot\vec{g}(\x)$ then 
+	\begin{equation}
+		\T(\psi) = \int \Omegahat\otimes\Omegahat\paren{f + \Omegahat\cdot\vec{g}} \ud \Omega - \frac{1}{3}\I \int f + \Omegahat\cdot\vec{g} \ud \Omega = \frac{4\pi f}{3} \I - \frac{4\pi f}{3} \I = 0 \,, 
 	\end{equation}
 	\begin{equation}
-		\nabla\cdot\paren{\T(\psi) + \frac{1}{3}\I \varphi} + \sigma_t \vec{J} = \vec{Q}_1 \,. 
+		\beta(\psi) = \int |\Omegahat\cdot\n|\paren{f + \Omegahat\cdot\vec{g}} \ud \Omega - \frac{1}{2}\int f + \Omegahat\cdot\vec{g} \ud \Omega = 2\pi f - \frac{4\pi f}{2} = 0 \,. 
+	\end{equation}
+Thus, the closures simplify to 
+	\begin{equation}
+		\P = \frac{1}{3}\I \varphi \,, \quad \vec{J}\cdot\n = 2 J_n^- + \frac{1}{2}\varphi \,. 
+	\end{equation}
+In other words, the moment equations with SMM closures are equivalent to radiation diffusion with Marshak boundary conditions when the angular flux is linearly anisotropic. 
+
+With these closures, the SMM equations are 
+	\begin{subequations}
+	\begin{equation}
+		\nabla\cdot\vec{J} + \sigma_a \varphi = Q_0 \,, \quad \x \in \D\,,
+	\end{equation}
+	\begin{equation}
+		\nabla\cdot\paren{\T(\psi) + \frac{1}{3}\I \varphi} + \sigma_t \vec{J} = \vec{Q}_1 \,, \quad \x \in \D\,,
+	\end{equation}
+	\begin{equation} \label{smm:bc}
+		\vec{J}\cdot\n = \frac{1}{2}\varphi + \Jin + \beta(\psi) \,, \quad \x \in \partial \D \,. 
 	\end{equation}
 	\end{subequations}
 The second-order form is found by eliminating the current: 
@@ -38,7 +72,8 @@ SMM solves the coupled system:
 		-\nabla\cdot\frac{1}{3\sigma_t}\nabla\varphi + \sigma_a \varphi = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t} + \nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T(\psi) \,. 
 	\end{equation}
 	\end{subequations}
-Since $\T$ is a linear function of the angular flux, the coupling between the transport and SMM equations is linear. 
+where boundary conditions are specified by Eqs. \todo{transport BC} and \ref{smm:bc}. 
+Since the closures are linear functions of the angular flux, the coupling between the transport and SMM equations is linear. 
 Let $\mat{L} = \Omegahat\cdot\nabla + \sigma_t$, $\mat{S} = \frac{\sigma_s}{4\pi}$, and 
 	\begin{equation}
 		\mat{D} = -\nabla\cdot\frac{1}{3\sigma_t}\nabla + \sigma_a
@@ -57,7 +92,7 @@ where
 	\end{equation}
 The fixed-point operator $G(\varphi)$ is applied in two stages: 1) solve the transport equation using a scattering source formed from the VEF scalar flux and 2) solve the SMM equation using the correction tensor computed from the angular flux found in stage 1). As with VEF, this fixed point problem can be solved with simple fixed-point iteration or more advanced techniques such as Anderson acceleration. 
 
-We now discuss algorithmic differences between SMM and VEF. Evaluating the fixed-point operators for SMM and VEF require solving systems of the form: 
+We now discuss algorithmic differences between SMM and VEF. Evaluating the fixed-point operators for SMM and VEF requires solving systems of the form: 
 	\begin{subequations}
 	\begin{equation}
 		-\nabla\cdot\frac{1}{3\sigma_t}\nabla\varphi + \sigma_a \varphi = b(\psi) \,, 
@@ -66,7 +101,7 @@ We now discuss algorithmic differences between SMM and VEF. Evaluating the fixed
 		-\nabla\cdot\frac{1}{\sigma_t}\cdot\paren{\E(\psi)\varphi} + \sigma_a \varphi = b \,,
 	\end{equation}
 	\end{subequations}
-for SMM and VEF, respectively. The right hand side terms $b$ represent generic source terms. The dependence on the angular flux are explicitly denoted in the SMM right hand side source and the VEF Eddington tensor to highlight the location of the couplings to the transport equation. Observe that the SMM left hand side is a radiation diffusion equation with a transport-dependent source term. In contrast, VEF has a transport-dependent, non-symmetric left hand side but a fixed right hand side source term. This is a key difference that makes the evaluation of the SMM fixed-point operator cheaper than the VEF operator. Solving the VEF equations requires the use of iterative methods compatible with non-symmetric systems. These generally require either more storage or more computation compared to methods designed to solve symmetric systems. Second, the standard form of the radiation diffusion equation can be directly discretized with existing techniques. Finally, the SMM left hand side does not need to be recomputed at each evaluation of the fixed-point operator. For VEF, the left hand side must be reassembled at each iteration. 
+for SMM and VEF, respectively. The right hand side terms $b$ represent generic source terms. The dependences on the angular flux are explicitly denoted in the SMM right hand side source and the VEF Eddington tensor to highlight the location of the couplings to the transport equation. Observe that the SMM left hand side is a radiation diffusion equation with a transport-dependent source term. In contrast, VEF has a transport-dependent, non-symmetric left hand side but a fixed right hand side source term. This is a key difference that makes the evaluation of the SMM fixed-point operator cheaper than the VEF operator. Solving the VEF equations requires the use of iterative methods compatible with non-symmetric systems. These generally require either more storage or more computation compared to methods designed to solve symmetric systems. Second, the SMM left hand side does not need to be recomputed at each evaluation of the fixed-point operator. For VEF, the left hand side must be reassembled at each iteration. In addition, the SMM left hand side can be directly discretized and solved with existing techniques. 
 
 \section{Derivation by Linearizing VEF}
 

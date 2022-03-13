@@ -106,9 +106,14 @@
 * hybridization 
 
 # SMM 
-* derivation via lagging 
-* derivation via linearizing
-* connect to radiation diffusion with extra sources  
+* introduce SMM 
+	* cite LM paper, Cefus and Larsen 
+	* goal is to have SPD LHS 
+* derive equations + BCs as additive closure (instead of VEF's multiplicative)
+	* connect to radiation diffusion with extra sources  
+* connect to a linearization of VEF 
+	* point out correction terms are derivatives of VEF data => TSE 
+	* provides systematic path to convert VEF to SMM 
 * linearize IP, CG, RT, HRT 
 
 # Additional Results 
