@@ -22,7 +22,7 @@ with Dirichlet boundary conditions. The present goal is to adapt their derivatio
 		\nabla\cdot\vec{J} + \sigma_a \varphi = Q_0 \,, 
 	\end{equation}
 	\end{subequations}
-with the Robin style boundary conditions given in Eq.~\ref{eq:mlbc}. We will see significant differences in the final equation since the Eddington tensor is inside the divergence.
+with the Robin style boundary conditions given in Eq.~\ref{dgvef:mlbc}. We will see significant differences in the final equation since the Eddington tensor is inside the divergence.
 Additionally, the presence of a right-hand side in the first moment equation as well as non-unit coefficients introduce further complications.
 We will then derive analogues of the interior penalty (IP), second method of Bassi and Rebay (BR2), and Minimial Dissipation Local Discontinuous Galerkin (MDLDG) variants.
 Finally, we will show how to extract a continuous finite element method from this framework. 
@@ -56,7 +56,7 @@ Summing the zeroth moment over all elements:
 		\int_\Gamma \jump{u} \avg{\widehat{\vec{J}}\cdot\hat{n}} \ud s + \int_{\Gamma_0} \avg{u}\jump{\widehat{\vec{J}}\cdot\hat{n}} \ud s - \int \nablah u \cdot \vec{J} \ud \x + \int \sigma_a \, u\varphi \ud \x = \int u\, Q_0 \ud \x \,,
 	\end{equation}
 where the jumps and averages identity (Eq.~\ref{ref:jump_avg_id}) was used. We will now use the discrete first moment to determine a functional form for $\vec{J}$. Integrating by parts locally over element $K$, we have that 
-	\begin{equation} \label{eq:identity}
+	\begin{equation} \label{dgvef:identity}
 		\int_K \nabla\vec{v} : \E \varphi \ud \x = \int_{\partial K} \vec{v}\cdot\E\varphi\hat{n}_K \ud s - \int_K \vec{v}\cdot\nabla\cdot\paren{\E\varphi} \ud \x \,. 
 	\end{equation}
 The first moment's weak form on each element becomes: 
@@ -64,46 +64,46 @@ The first moment's weak form on each element becomes:
 		\int_{\partial K} \vec{v}\cdot\paren{\widehat{\E\varphi}\hat{n}_K - \E\varphi\hat{n}_K} \ud s + \int_K \vec{v}\cdot\nabla\cdot\paren{\E\varphi} \ud \x + \int_K \sigma_t \, \vec{v}\cdot\vec{J} \ud \x = \int_K \vec{v} \cdot\vec{Q}_1 \ud \x \,, \quad \forall \vec{v} \in [\mathbb{Q}_p(K)]^{\dim} \,. 
 	\end{equation}
 Summing over all elements and using the jumps and averages identity, the weak form for the first moment is:  
-	\begin{multline} \label{eq:weak_strong}
+	\begin{multline} \label{dgvef:weak_strong}
 		\int_\Gamma \avg{\vec{v}}\cdot\jump{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}} \ud s + \int_{\Gamma_0} \jump{\vec{v}} \cdot \avg{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}} \ud s \\+ \int \vec{v}\cdot\nablah \cdot\paren{\E\varphi} \ud \x + \int \sigma_t \, \vec{v}\cdot\vec{J} \ud \x = \int \vec{v}\cdot\vec{Q}_1 \ud \x \,, \quad \forall \vec{v} \in W_p \,, 
 	\end{multline}
-where $\nablah\cdot\paren{\E\varphi}$ is evaluated as $\nablah\cdot\paren{\E\varphi} = \E\nablah \varphi + \paren{\nablah\cdot\E}\!\varphi$, and the term $\nablah\cdot\E$ is computed using Eq.~\ref{eq:Ediv}. 
+where $\nablah\cdot\paren{\E\varphi}$ is evaluated as $\nablah\cdot\paren{\E\varphi} = \E\nablah \varphi + \paren{\nablah\cdot\E}\!\varphi$, and the term $\nablah\cdot\E$ is computed using Eq.~\ref{dgvef:Ediv}. 
 
 We now wish to write all terms as volumetric integrals so that a functional form for the current can be found. To that end, define \emph{lifting operators} $\vec{r}(\vec{\tau}) \in W_p$ and $\vec{\ell}(\vec{\chi}) \in W_p$ such that 
 	\begin{subequations}
-	\begin{equation} \label{eq:lift-r}
+	\begin{equation} \label{dgvef:lift-r}
 		\int \sigma_t\, \vec{v}\cdot\vec{r}(\vec{\tau}) \ud \x = - \int_{\Gamma} \avg{\vec{v}} \cdot \vec{\tau} \ud s \,, \quad \forall \vec{v} \in W_p \,, 
 	\end{equation}
-	\begin{equation} \label{eq:lift-l}
+	\begin{equation} \label{dgvef:lift-l}
 		\int \sigma_t \, \vec{v}\cdot\vec{\ell}(\vec{\chi}) \ud \x = -\int_{\Gamma_0} \jump{\vec{v}} \cdot \vec{\chi} \ud s \,, \quad \forall \vec{v} \in W_p \,, 
 	\end{equation}
 	\end{subequations}
 where $\vec{\tau}$ and $\vec{\chi}$ are vector functions that are singled-valued on $\Gamma_0$. 
 Note that the lifting operators are finite element grid functions just as the current is and that the left hand sides are simply the $W_p$ total interaction mass matrix.
-Since $W_p$ is piecewise discontinuous, the $W_p$ mass matrix is block-diagonal by element and thus the systems of equations corresponding to Eqs. \ref{eq:lift-r} and \ref{eq:lift-l} are amenable to efficient direct factorization (see \ref{sec:lifting}). 
+Since $W_p$ is piecewise discontinuous, the $W_p$ mass matrix is block-diagonal by element and thus the systems of equations corresponding to Eqs. \ref{dgvef:lift-r} and \ref{dgvef:lift-l} are amenable to efficient direct factorization (see \ref{sec:lifting}). 
 
-Setting $\vec{\tau} = \jump{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}}$ and $\vec{\chi} = \avg{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}}$ and using the definitions of the lifting operators, Eq.~\ref{eq:weak_strong} can be written entirely in terms of volumetric integrals as: 
+Setting $\vec{\tau} = \jump{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}}$ and $\vec{\chi} = \avg{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}}$ and using the definitions of the lifting operators, Eq.~\ref{dgvef:weak_strong} can be written entirely in terms of volumetric integrals as: 
 	\begin{equation}
 		\int \sigma_t\, \vec{v}\cdot\vec{J} \ud \x = \int \sigma_t\, \vec{v}\cdot\bracket{\frac{1}{\sigma_t} \paren{\vec{Q}_1 - \nablah\cdot\paren{\E\varphi}} + \vec{r}\!\paren{\jump{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}}} + \vec{\ell}\!\paren{\avg{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}}}} \ud \x 
 	\end{equation}
 for all $\vec{v}\in W_p$. Subtracting the right hand side and setting the integrand to zero implies that 
-	\begin{equation} \label{eq:current_form}
+	\begin{equation} \label{dgvef:current_form}
 		\vec{J} = \frac{1}{\sigma_t}\paren{\vec{Q}_1 - \nablah\cdot\paren{\E\varphi}} + \vec{r}\!\paren{\jump{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}}} + \vec{\ell}\!\paren{\avg{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}}}\,. 
 	\end{equation}
 Observe that the above represents the element-local strong form of the current, $\frac{1}{\sigma_t}\paren{\vec{Q}_1 - \nablah\cdot\paren{\E\varphi}}$ found by analytically eliminating the current, with additional terms that capture the effect of the numerical fluxes. In other words, we have derived the \emph{discrete} elimination of the current. 
 
 Using this discrete form for the current and the definitions of the lifting operators to convert from volumetric integrals back to surface integrals, the zeroth moment becomes: 
-	\begin{multline} \label{eq:familynobc}
+	\begin{multline} \label{dgvef:familynobc}
 		\int_\Gamma \jump{u} \avg{\widehat{\vec{J}}\cdot\hat{n}} \ud s + \int_{\Gamma_0} \avg{u}\!\jump{\widehat{\vec{J}}\cdot\hat{n}} \ud s + \int_\Gamma \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}} \ud s \\ 
 		+ \int_{\Gamma_0} \jump{\frac{\nablah u}{\sigma_t}} \cdot \avg{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}} \ud s + \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x \\ 
 		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x \,, \quad \forall u \in Y_p \,. 
 	\end{multline}
 On boundary faces, we apply the Miften-Larsen boundary conditions by setting 
-	\begin{equation} \label{eq:ml_bdr_flux}
+	\begin{equation} \label{dgvef:ml_bdr_flux}
 		\widehat{\vec{J}}\cdot\hat{n} = 2g + E_b \varphi \,, \quad \widehat{\E\varphi}\hat{n} = \E\varphi\hat{n} \,, \quad \text{on} \ \mathcal{F} \in \Gamma_b \,. 
 	\end{equation}
 % All the methods we consider use 
-% 	\begin{equation} \label{eq:num_scalar_flux}
+% 	\begin{equation} \label{dgvef:num_scalar_flux}
 % 		\widehat{\E\varphi}\hat{n} = \avg{\E\varphi\hat{n}} \,, \quad \text{on} \ \mathcal{F} \in \Gamma \,, 
 % 	\end{equation}
 % where on a boundary face $\avg{\E\varphi\hat{n}} = \E\varphi\hat{n}$ from the definition of the average on a boundary face. In this way, the second condition of the Miften-Larsen boundary condition is encompassed in this definition. Using this numerical flux, we have that 
@@ -127,12 +127,12 @@ All the methods we consider use so-called conservative numerical fluxes such tha
 		\jump{\widehat{\E\varphi}\hat{n}} = 0 \,, \quad \avg{\widehat{\E\varphi}\hat{n}} = \widehat{\E\varphi}\hat{n} \,, \quad \text{on} \ \mathcal{F} \in \Gamma_0 \,. 
 	\end{equation}
 	\end{subequations}
-Using the boundary conditions and the assumption of conservative numerical fluxes, Eq.~\ref{eq:familynobc} becomes: 
-	\begin{multline} \label{eq:family}
+Using the boundary conditions and the assumption of conservative numerical fluxes, Eq.~\ref{dgvef:familynobc} becomes: 
+	\begin{multline} \label{dgvef:family}
 		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int_{\Gamma_0} \jump{u} \widehat{\vec{J}}\cdot\hat{n} \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\hat{n}} \ud s \\+ \int_{\Gamma_0} \jump{\frac{\nablah u}{\sigma_t}} \cdot \avg{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}} \ud s + \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x \\ 
 		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - 2\int_{\Gamma_b} u\, g \ud s \,, \quad \forall u \in Y_p \,. 
 	\end{multline}
-Equation \ref{eq:family} defines a \emph{family} of DG methods. That is, through the specification of the numerical flux for the current on interior faces, analogues of all the methods listed in \cite{Arnold2002} can be derived.
+Equation \ref{dgvef:family} defines a \emph{family} of DG methods. That is, through the specification of the numerical flux for the current on interior faces, analogues of all the methods listed in \cite{Arnold2002} can be derived.
 
 \section{Specification of Numerical Fluxes}
 All the methods we consider use numerical fluxes of the form 
@@ -145,13 +145,13 @@ All the methods we consider use numerical fluxes of the form
 	\end{equation}
 	\end{subequations}
 where $\alpha(\varphi)$ and $\vec{\theta}(\varphi)$ are single-valued functions whose purpose is to ensure a stable discretization.
-The IP, BR2, and LDG methods differ only in the choice of $\alpha(\varphi)$ and $\vec{\theta}(\varphi)$. With these numerical fluxes, Eq.~\ref{eq:family} becomes: 
-	\begin{multline} \label{eq:family_alpha}
+The IP, BR2, and LDG methods differ only in the choice of $\alpha(\varphi)$ and $\vec{\theta}(\varphi)$. With these numerical fluxes, Eq.~\ref{dgvef:family} becomes: 
+	\begin{multline} \label{dgvef:family_alpha}
 		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int_{\Gamma_0} \jump{u} \alpha(\varphi) \ud s - \int_{\Gamma_0} \jump{u} \avg{\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi}\cdot\hat{n}} \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\hat{n}} \ud s \\ + \int_{\Gamma_0} \jump{\frac{\nablah u}{\sigma_t}} \cdot \vec{\theta}(\varphi) \ud s
 		+ \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x \\ 
 		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_0} \jump{u} \avg{\frac{\vec{Q}_1\cdot\hat{n}}{\sigma_t}} \ud s - 2\int_{\Gamma_b} u\, g \ud s \,, \quad \forall u \in Y_p \,. 
 	\end{multline}
-Recall that this form has already applied boundary conditions according to Eq.~\ref{eq:ml_bdr_flux}. In other words, the above corresponds to a DG scheme with the following numerical fluxes:
+Recall that this form has already applied boundary conditions according to Eq.~\ref{dgvef:ml_bdr_flux}. In other words, the above corresponds to a DG scheme with the following numerical fluxes:
 		\begin{subequations}
 		\begin{equation}
 			\widehat{\vec{J}}\cdot\hat{n} = \begin{cases}
@@ -173,7 +173,7 @@ An interior penalty (IP)-like method uses
 		\alpha(\varphi) = \kappa \jump{\varphi} \,, \quad \vec{\theta}(\varphi) = 0 \,, 
 	\end{equation}
 where $\kappa$ is the penalty parameter. IP methods require that $\kappa \propto \sigma_t^{-1} p^2/h$ in order to guarantee stability. The full IP weak form is then: find $\varphi \in Y_p$ such that 
-	\begin{multline} \label{eq:ip}
+	\begin{multline} \label{dgvef:ip}
 		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int_{\Gamma_0} \kappa \jump{u} \jump{\varphi} \ud s - \int_{\Gamma_0} \jump{u} \avg{\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi}\cdot\hat{n}} \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\hat{n}} \ud s \\
 		+ \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x \\ 
 		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_0} \jump{u} \avg{\frac{\vec{Q}_1\cdot\hat{n}}{\sigma_t}} \ud s - 2\int_{\Gamma_b} u\, g \ud s \,, \quad \forall u \in Y_p \,. 
@@ -181,7 +181,7 @@ where $\kappa$ is the penalty parameter. IP methods require that $\kappa \propto
 
 \subsection{The Second Method of Bassi and Rebay (BR2)}
 The second method of Bassi and Rebay (BR2) uses an alternative penalty term. Let $\vec{\rho}_f(\omega)\in W_p$ be a face-local lifting operator defined by 
-	\begin{equation} \label{eq:rhof}
+	\begin{equation} \label{dgvef:rhof}
 		\int \vec{v}\cdot\vec{\rho}_f(\omega) \ud \x = -\int_f \avg{\vec{v} \cdot\hat{n}} \omega \ud s \,, \quad \forall \vec{v} \in W_p\,, \quad \text{on} \ f\in \Gamma_0 \,. 
 	\end{equation}
 Here, $\omega$ is a scalar function that is single-valued on the interior face $f$. Note that the integration on the left hand side is over the entire domain while the right hand side is localized to a single interior face. This means the right hand side, and thus $\vec{\rho}_f(\omega)$, will be non-zero only for DOFs in elements that share the face $f$. 
@@ -200,7 +200,7 @@ so that the relevant term is
 This BR2 numerical flux avoids the need to tune the penalty parameter while still allowing element-by-element assembly (see \ref{sec:lifting}). 
 
 The BR2 DG VEF discretization is then: find $\varphi \in Y_p$ such that 
-	\begin{multline} \label{eq:br2}
+	\begin{multline} \label{dgvef:br2}
 		\int_{\Gamma_b} E_b\, u \varphi \ud s - \int_{\Gamma_0} \jump{u} \avg{\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi}\cdot\hat{n}} \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\hat{n}} \ud s \\
 		+ \sum_{f\in\Gamma_0} \int \eta\, \vec{\rho}_f(\jump{u}) \cdot \vec{\rho}_f(\jump{\varphi}) \ud \x + \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x \\ 
 		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_0} \jump{u} \avg{\frac{\vec{Q}_1\cdot\hat{n}}{\sigma_t}} \ud s - 2\int_{\Gamma_b} u\, g \ud s \,, \quad \forall u \in Y_p \,. 
@@ -216,7 +216,7 @@ Finally, we consider the Local Discontinuous Galerkin (LDG) method. In general, 
 		\widehat{\E\varphi}\hat{n} = \avg{\E\varphi\hat{n}} - \beta\jump{\E\varphi\hat{n}} \,,
 	\end{equation}
 	\end{subequations}
-where $\vec{J}$ is defined as the discrete elimination of the current derived in Eq.~\ref{eq:current_form}. The scalar parameter $\beta$ can be defined as 
+where $\vec{J}$ is defined as the discrete elimination of the current derived in Eq.~\ref{dgvef:current_form}. The scalar parameter $\beta$ can be defined as 
 	\begin{equation}
 		\beta = \begin{cases}
 			1/2 \,, & \vec{w}\cdot\hat{n} > 0 \\ 
@@ -256,7 +256,7 @@ where $\vec{\rho}_0(\omega), \vec{\lambda}(\upsilon) \in W_p$ such that
 		\int \vec{v} \cdot \vec{\lambda}(\upsilon) \ud \x = -\int_{\Gamma_0} \jump{\vec{v}\cdot\hat{n}} \upsilon \ud s \,, \quad \forall \vec{v} \in W_p \,, 
 	\end{equation}
 are analogues of $\vec{r}_0(\vec{\tau})$ and $\vec{\ell}(\vec{\chi})$, respectively, that do not include the total interaction cross section in the left hand side mass matrices and have scalar arguments. The LDG VEF discretization is then: find $\varphi \in Y_p$ such that 
-	\begin{multline} \label{eq:ldg}
+	\begin{multline} \label{dgvef:ldg}
 		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int_{\Gamma_0} \kappa\, \jump{u}\jump{\varphi} \ud s - \int_{\Gamma_0} \jump{u} \avg{\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi}\cdot\hat{n}} \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\hat{n}} \ud s \\
 		+ \int \paren{\vec{\rho}_0\!\paren{\jump{u}} + \vec{\lambda}\!\paren{\beta\jump{u}}}\cdot\paren{\vec{r}_0\!\paren{\jump{\E\varphi\hat{n}}} + \vec{\ell}\!\paren{\beta\jump{\E\varphi\hat{n}}}} \ud \x \\+ \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x 
 		\\= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_0} \jump{u} \paren{\avg{\frac{\vec{Q}_1\cdot\hat{n}}{\sigma_t}} + \beta\jump{\frac{\vec{Q}_1\cdot\hat{n}}{\sigma_t}}} \ud s - 2\int_{\Gamma_b} u\, g \ud s \,, \quad \forall u \in Y_p \,. 
@@ -275,7 +275,7 @@ However, since the Eddington tensor is still discontinuous, we have that
 		\jump{\E\varphi\hat{n}} = \jump{\E\hat{n}} \varphi \,. 
 	\end{equation}
 Note that, for $u\in V_p$, $\nabla u \in W_p$. In other words, while $u\in V_p$ is continuous $\nabla u$ is not. Thus, by starting from the DG VEF discretization and assembling onto $V_p$, we arrive at a CG VEF discretization of the form: find $\varphi \in V_p$ such that 
-	\begin{multline} \label{eq:cg}
+	\begin{multline} \label{dgvef:cg}
 		\int_{\Gamma_b} E_b\, u \varphi \ud s - \int_{\Gamma_0} \avg{\frac{\nabla u}{\sigma_t}} \cdot \jump{\E\hat{n}}\!\varphi \ud s 
 		+ \int \nabla u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x \\ 
 		= \int u\, Q_0 \ud \x + \int \nabla u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - 2\int_{\Gamma_b} u\, g \ud s \,, \quad \forall u \in V_p \,. 
@@ -285,18 +285,93 @@ Observe that in the thick diffusion limit, where $\E = \frac{1}{3}\I$ and $E_b =
 \section{Uniform Subspace Correction Preconditioner}
 
 \section{Results}
+The VEF algorithms described in this chapter were implemented using the MFEM \cite{MFEM,mfem-web} finite element framework. The stabilized bi-conjugate gradient (BiCGStab) and Jacobi solvers from MFEM were used to solve the VEF discretizations along with BoomerAMG, the AMG solver from the sparse linear algebra library \emph{hypre} \cite{hypre}. KINSOL, from the Sundials package \cite{hindmarsh2005sundials}, provided the Anderson-accelerated fixed-point solver. When iterative solver results are not presented, the parallel implementation of the sparse direct solver SuperLU \cite{lidemmel03} was used. We use the high-order DG \gls{sn} transport solver from \cite{graph_sweeps}.
+
+Unless otherwise specified, we set the penalty parameter to 
+	\begin{equation}
+		\kappa_e = \avg{\frac{(p+1)^2}{\sigma_t h_e}} 
+	\end{equation}
+and the BR2 stabilization parameter to $\eta = 4$. We use the MDLDG method, the variant of the LDG method where $\kappa \equiv 0$ and set the upwinding vector $\vec{w}$ to be a unit vector at a $45^\circ$ angle from the $x$-axis. The VEF discretizations all use the element-local basis defined using the Gauss-Lobatto points to enable the use of the subspace correction preconditioner where required. The transport discretization is always solved with the same finite element order as the VEF scalar flux. However, we use the positive Bernstein basis \cite{doi:10.1137/11082539X} for the transport discretization. 
+
+\subsection{Method of Manufactured Solutions}
+The accuracy of the methods are determined with the \gls{mms}. The solution is set to 
+	\begin{equation} \label{dgvef:mms_psi}
+		\psi = \frac{1}{4\pi}\bracket{\alpha(\x) + \Omegahat\cdot\vec{\beta}(\x) + \Omegahat\otimes\Omegahat : \mat{\Theta}(\x)} \,,
+	\end{equation}
+where 
+	\begin{subequations}
+	\begin{equation}
+		\alpha(\x) = \sin(\pi x) \sin(\pi y) + \delta \,, 
+	\end{equation}
+	\begin{equation}
+		\vec{\beta}(\x) = \begin{bmatrix} 
+			\sin\!\paren{\frac{2\pi(x+\omega)}{1+2\omega}}\sin\!\paren{\frac{2\pi(y+\omega)}{1+2\omega}}\\
+			\sin\!\paren{\frac{2\pi(x+\omega)}{1+2\omega}}\sin\!\paren{\frac{2\pi(y+\omega)}{1+2\omega}}
+		\end{bmatrix} \,,
+	\end{equation}
+	\begin{equation} \label{dgvef:mmsH}
+		\mat{\Theta}(\x) = \begin{bmatrix} 
+			\frac{1}{2}\sin\!\paren{\frac{3\pi(x+\zeta)}{1 + 2\zeta}}\sin\!\paren{\frac{3\pi(y+\zeta)}{1+2\zeta}}
+			& \sin\!\paren{\frac{2\pi(x+\omega)}{1+2\omega}}\sin\!\paren{\frac{2\pi(y+\omega)}{1+2\omega}}\\
+			\sin\!\paren{\frac{2\pi(x+\omega)}{1+2\omega}}\sin\!\paren{\frac{2\pi(y+\omega)}{1+2\omega}}
+			& \frac{1}{4}\sin\!\paren{\frac{3\pi(x+\zeta)}{1 + 2\zeta}}\sin\!\paren{\frac{3\pi(y+\zeta)}{1+2\zeta}}
+		\end{bmatrix} \,.
+	\end{equation}
+	\end{subequations}
+The parameter $\delta = 1.25$ is used to ensure $\psi>0$ and $\zeta = 0.1$ and $\omega = 0.05$ are used to test spatially-dependent, non-isotropic inflow boundary conditions. The domain is $\D = [0,1]^2$. 
+With this definition: 
+	\begin{subequations}
+	\begin{equation}
+		\phi(\x) = \alpha(\x) + \frac{1}{3}\tr\mat{\Theta}(\x) \,,
+	\end{equation}
+	\begin{equation}
+		\vec{J}(\x) = \frac{1}{3}\vec{\beta}(\x) \,,
+	\end{equation}
+	\begin{equation}
+		\P(\x) = \frac{\alpha(\x)}{3}\I + \frac{1}{15}\begin{bmatrix} 
+			3 \Theta_{11}(\x) + \Theta_{22}(\x) & \Theta_{12}(\x) \\ \Theta_{21}(\x) & \Theta_{11}(\x) + 3 \Theta_{22}(\x) 
+		\end{bmatrix} \,. 
+	\end{equation}
+	\end{subequations}
+This leads to an exact Eddington tensor $\E = \P/\phi$ that is dense and spatially varying. The MMS $\psi$ and $\phi$ are substituted into the transport equation to solve for the MMS source $q$ that forces the solution to Eq.~\ref{dgvef:mms_psi}. 
+
+The accuracy of the VEF discretizations can be investigated in isolation by computing the VEF data from the MMS angular flux and setting the sources $Q_0$ and $\vec{Q}_1$ to the moments of the transport MMS source. This is accomplished by computing the VEF data from the MMS angular flux projected onto a finite element space of equal order to the VEF finite element space. An open, Gauss-Legendre basis is used for the angular flux so that the Eddington tensor will have discontinuities of magnitude $\mathcal{O}(h^{p+1})$ on interior mesh faces. The VEF data and source moments are computed using level symmetric $S_4$ angular quadrature. The VEF equations are then solved as if $\E$, $E_b$, $Q_0$, $\vec{Q}_1$, and $\Jin$ are provided data. 
+
+We use refinements of a third-order curved mesh created by distorting an orthogonal mesh according to the velocity field of the Taylor Green vortex. This mesh distortion is generated by advecting the mesh control points with 
+	\begin{equation}
+		\x = \int_0^T \mat{v} \ud t \,,
+	\end{equation}
+where the final time $T = 0.3 \pi$ and 
+	\begin{equation}
+		\mat{v} = \begin{bmatrix} 
+			\sin(x_1) \cos(x_2) \\
+			-\cos(x_1)\sin(x_2) 
+		\end{bmatrix}
+	\end{equation}
+is the analytic solution of the Taylor Green vortex. The time integration is calculated with 300 forward Euler time steps. An example mesh is shown in Fig.~\ref{dgvef:tgmesh}. 
+
+% --- plot of taylor green mesh ---
+\begin{figure}
+\centering
+\includegraphics[width=.5\textwidth]{data/img/tgmesh0.3.png}
+\caption{}
+\label{dgvef:tgmesh}
+\end{figure}
+
+Figure \ref{dgvef:mms_plot} shows the $L^2(\D)$ error between the VEF solution and the exact MMS scalar flux solution as the mesh is refined for the IP, BR2, MDLDG, and CG VEF discretizations when quadratic basis functions are used. Here, $h$ is the \emph{maximum} value of the characteristic element length in the mesh. All methods have nearly identical error behavior and converge with third-order accuracy as expected. This experiment is repeated with $p=1$ and $p=3$ in Tables \ref{dgvef:mms_table1} and \ref{dgvef:mms_table2}, respectively. Logarithmic regression is used to compute the exponent and constant of the error function $E = C h^{\bar{p}}$ with $C$ the constant and $\bar{p}$ the method's experimentally-observed order of accuracy. The standard deviation of the four error values for each value of $h$ is also provided to quantify the variance in the error behavior. Accuracy of $\mathcal{O}(h^{p+1})$ is observed and the four variants are shown to have variance below the discretization error. 
+
 % --- MMS tables --- 
 \begin{table}
 \centering
 \caption{}
-\label{}
+\label{dgvef:mms_table1}
 \input{figs/dgvef/mms_table}
 \end{table}
 
 \begin{table}
 \centering
 \caption{}
-\label{}
+\label{dgvef:mms_table2}
 \input{figs/dgvef/mms_table_2}
 \end{table}
 
@@ -305,40 +380,168 @@ Observe that in the thick diffusion limit, where $\E = \frac{1}{3}\I$ and $E_b =
 \centering
 \includegraphics[width=.65\textwidth]{figs/dgvef/mms_1.pdf}
 \caption{}
-\label{}
+\label{dgvef:mms_plot}
 \end{figure}
 
+\subsection{Thick Diffusion Limit}
+Next, we investigate the iterative convergence properties of the VEF methods in the regime known as the asymptotic thick diffusion limit \cite{diflim}. The material data is set to 
+	\begin{equation}
+		\sigma_t = \frac{1}{\epsilon} \,, \quad \sigma_a = \epsilon \,, \quad \sigma_s = \frac{1}{\epsilon} - \epsilon \,, \quad q = \epsilon 
+	\end{equation}
+with $\epsilon \in (0,1]$ and the thick diffusion limit corresponding to $\epsilon \rightarrow 0$. A coarse mesh that does not adequately resolve the mean free path is used to stress the convergence of the VEF algorithm. This is a numerically challenging, but common in practice, regime where robust performance is crucial. 
+
+We first demonstrate robust convergence on an $8\times 8$ linear mesh with $\D = [0,1]^2$. Convergence was identical for linear, quadratic, and cubic basis functions so we present results for $p=2$ only. Level symmetric $S_4$ angular quadrature is used. Fixed-point iteration without Anderson acceleration is used to solve the coupled transport-VEF system. Table \ref{dgvef:tdl} shows the number of iterations required to converge to a fixed-point tolerance of $10^{-6}$ as $\epsilon \rightarrow 0$. All four VEF variants converge robustly and in an identical number of iterations for each value of $\epsilon$. All methods converged to the non-trivial diffusion limit solution. Lineouts of the 2D solutions are shown in Fig.~\ref{dgvef:eps_lineout} to demonstrate that the non-trivial, diffusion solution is obtained by four methods. Note that even the continuous finite element discretization paired with the discontinuous finite element transport discretization will be robust in the thick diffusion limit. 
 % --- thick diffusion limit --- 
 \begin{table}
 \centering
 \caption{}
-\label{}
+\label{dgvef:tdl}
 \input{figs/eps_table}
 \end{table}
+% --- orthogonal lineouts --- 
+\begin{figure}
+\centering
+\foreach \f in {figs/eps_lineout.pdf,figs/eps_lineout_br2.pdf,figs/eps_lineout_mdldg.pdf,figs/eps_lineout_cg.pdf}{
+	\begin{subfigure}{.4\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{\f}
+	\caption{}
+	\end{subfigure}	
+}
+\caption{}
+\label{dgvef:eps_lineout}
+\end{figure}
 
+This experiment is repeated on the triple point mesh shown in Fig.~\ref{dgvef:3point_mesh}. This mesh was generated by running a purely Lagrangian hydrodynamics simulation on a third-order mesh. The mesh contains concave/reentrant interior faces meaning the matrix corresponding to the transport discretization \emph{cannot} be re-ordered to be strictly lower block triangular. The pseudo-optimally reordered sweep from \cite{graph_sweeps}, which lags the incoming angular flux on reentrant faces, is used to enable an element-by-element transport solve. Since the incoming fluxes on reentrant faces are lagged, the angular flux on these faces is not linearly eliminated. In other words, the presence of reentrant faces means that the transport equation is not fully inverted at every fixed-point iteration. In addition, the mesh elements in the ``swirl'' at the center are severely distorted and thus have poor approximation ability. In practice, the mesh would be remapped before this level of distortion were present. Due to this severe distortion, stability of the IP VEF discretization required scaling the penalty paramater according to 
+	\begin{equation}
+		\kappa_e = C \frac{(p+1)^2}{\sigma_t h_e} \,,
+	\end{equation}	
+where $C = \max_{K_e \in \meshT} C_e$ with $C_e$ the condition number of the Jacobian matrix for element $K_e$. For the triple point mesh, $C=169$.
+% --- triple point mesh --- 
+\begin{figure}
+\centering
+\includegraphics[width=.65\textwidth]{data/img/3point.png}
+\caption{}
+\label{dgvef:3point_mesh}
+\end{figure}
+
+Table \ref{dgvef:tdl_3p} shows the number of fixed-point iterations to converge the thick diffusion limit problems on the triple point mesh. The IP, BR2, and CG methods converged equivalently with MDLDG generally converging slower. This is likely due to MDLDG being less numerically diffusive compared to the IP, BR2, and CG methods which either have a penalization term that regularizes towards a continuous solution or is a continuous method. 
+% --- triple point TDL --- 
+\begin{table}
+\centering
+\caption{}
+\label{dgvef:tdl_3p}
+\input{figs/eps_table_dgvef_3p}
+\end{table}
+
+\subsection{Crooked Pipe} \label{dgvef_sec:cp}
+We now demonstrate the efficacy of the methods on a more realistic, multi-material problem. A common benchmark is the crooked pipe problem. The geometry and materials are shown in Fig.~\ref{dgvef:cp_diag}. The problem consists of two materials, the wall and the pipe, which have an 1000x difference in total interaction cross section. We mock the time-dependent benchmark as a steady-state problem by adding artificial absorption and fixed-source terms corresponding to backward Euler time integration. We use a large time step such that $c\Delta t = 10^3$ with an initial condition $\psi_0 = 10^{-4}$ for all $(\x,\Omegahat) \in \D \times \mathbb{S}^2$. The absorption and source terms are then 
+	\begin{subequations}
+	\begin{equation}
+		\sigma_a = \frac{1}{c\Delta t} = 10^{-3} \,\si{\per\cm}\,,  
+	\end{equation}
+	\begin{equation}
+		q = \frac{1}{c\Delta t} \psi_0 = 10^{-1}\,\si{\per\cm\cubed\per\s\per\str} \,. 
+	\end{equation}
+	\end{subequations}
+The boundary conditions are 
+	\begin{equation}
+		f = \begin{cases}
+			\frac{1}{2\pi}\,, & x = 0 \ \mathrm{and}\ y \in [-1/2,1/2] \\ 
+			0 \,, & \mathrm{otherwise}
+		\end{cases} \,,
+	\end{equation}
+so that radiation enters the pipe at the left side of the domain. We use a Level Symmetric $S_{12}$ angular quadrature set. The zero and scale \cite{hamilton2009negative} negative flux fixup, a sweep compatible method that zeros out negativity and rescales so that particle balance is preserved, is used inside the transport inversion to ensure positivity. 
+% --- crooked pipe geometry --- 
+\begin{figure}
+\centering
+\includegraphics[width=.65\textwidth]{figs/crooked_pipe.pdf}
+\caption{}
+\label{dgvef:cp_diag}
+\end{figure}
+
+A VEF solution to the crooked pipe using the IP method with $p=2$ is shown in Fig.~\ref{dgvef:cp_sol} where a non-uniform mesh is used to adequately resolve the interface between the optically thin pipe and the optically thick wall. Here, we see that VEF does capture the ``shadow'' induced by the radiation turning the corner around the inner wall. A radiation diffusion solution would non-physically show illumination on the back side of the wall.
+% --- crooked pipe solution --- 
+\begin{figure}
+\centering
+\includegraphics[width=.65\textwidth]{data/img/cp.png}
+\caption{}
+\label{dgvef:cp_sol}
+\end{figure}
+
+The outer fixed-point and inner linear iterative efficiency is demonstrated by refining in $h$ and $p$. Note that to simplify the refinement process we use a uniform mesh. The outer solver is Anderson-accelerated fixed-point iteration with two Anderson vectors. Anderson acceleration is not required for convergence on this problem but does provide more uniform convergence in $h$. Since the mesh is orthogonal, the transport equation is fully inverted at each outer iteration. This allows use of the low memory variant so that the storage cost of Anderson acceleration is two scalar flux-sized vectors. The outer tolerance is $10^{-6}$. The inner BiCGStab tolerance is $10^{-8}$. The uniform subspace correction (USC) preconditioner with one Jacobi iteration and one AMG V-cycle per application is used for the IP and BR2 discretizations. The CG and MDLDG discretizations use one V-cycle of AMG as a preconditioner. The previous outer iteration is used as an initial guess to BiCGStab so that the initial guess becomes progressively better as the outer iteration converges. 
+
+Table \ref{dgvef:cphp} shows the number of outer Anderson-accelerated fixed-point iterations and the maximum, minimum, and average number of inner BiCGStab iterations performed at each outer iteration as the mesh is refined and the polynomial order is increased. At each refinement and polynomial order, the IP, BR2, and CG methods outer iteration converged equivalently with MDLDG converging 1-4 iterations slower. All methods were scalable in $h$ and $p$ with CG requiring the fewest iterations followed by MDLDG and then IP and BR2. 
 % --- crooked pipe hp scaling --- 
 \begin{table}
 \centering
 \caption{}
-\label{}
+\label{dgvef:cphp}
 \begin{adjustbox}{max width = \textwidth}
 \input{figs/cp_dgvef.tex}
 \end{adjustbox}
 \end{table}
 
+\subsection{Weak Scaling}
+Finally, we show that the IP VEF system with $p=2$ can be solved efficiently in parallel on larger problems. The parallel partitioning is such that there are $\sim\!9000$ VEF scalar flux unknowns per processor. The results were generated on 32 nodes of the \texttt{rztopaz} machine at LLNL which has two 18-core Intel Xeon E5-2695 CPUs per node. 
+
+First, we investigate weak scaling on a mock problem where the VEF data are provided as inputs to the problem (as opposed to being solved for through fixed-point iteration). This allows the VEF system to be solved in isolation from the transport equation. We use the materials, geometry, and boundary conditions from the crooked pipe problem shown in Fig.~\ref{dgvef:cp_diag} but set the Eddington tensor and boundary factor to 
+	\begin{subequations}
+	\begin{equation}
+		\E = \begin{cases}
+			\begin{bmatrix} 
+				9/11 & 0 \\ 0 & 1/11 
+			\end{bmatrix}\,, & \x \in \mathrm{pipe} \\[1em] 
+			\begin{bmatrix} 
+				1/3	& 0 \\ 0 & 1/3
+			\end{bmatrix}\,, & \x \in \mathrm{wall} 
+		\end{cases} \,, 
+	\end{equation}
+	\begin{equation}
+		E_b = \begin{cases}
+			9/10 \,, & \x \in \partial(\mathrm{pipe})\\
+			1/2 \,, & \x \in \partial(\mathrm{wall}) 
+		\end{cases} \,. 
+	\end{equation}
+	\end{subequations}
+This corresponds to a linearly-anisotropic/diffusive angular flux in the wall and an extremely forward peaked solution 
+	\begin{equation}
+		\psi = \Omegahat_x^8 
+	\end{equation}
+in the pipe. The motivation for this choice is that the solvers are predicted to struggle when the Eddington tensor is discontinuous. We stress that this setup does not correspond to a physically realistic problem. 
+
+Table \ref{dgvef:weak_mock} shows the number of BiCGStab iterations to convergence for the USC-preconditioned IP VEF system on this mock problem. The columns of the table parameterize the solver used for the continuous stage of the USC preconditioner. The standard USC preconditioner used in the previous results did not converge on this mock problem. However, when a sparse direct solver is used instead of AMG, uniform convergence is recovered. This suggests that AMG is failing to adequately solve the continuous operator. 
 % --- weak scaling mock problem --- 
 \begin{table}
 \centering
 \caption{}
-\label{}
+\label{dgvef:weak_mock}
 \input{figs/dgvef/mock}
 \end{table}
 
+Note that AMG is effective on the standard continuous finite element discretization of diffusion. It is then expected that AMG will be effective in approximating the inverse of a symmetrized CG operator. By lagging the terms 
+	\begin{equation}
+		-\int_{\Gamma_0} \avg{\frac{\nabla u}{\sigma_t}}\cdot \jump{\E\varphi\hat{n}} \ud s + \int \nabla u \cdot \frac{1}{\sigma_t} \paren{\nablah\cdot\E}\!\varphi \ud \x
+	\end{equation}
+in the CG VEF discretization (Eq.~\ref{eq:cg}), a symmetric operator more amenable to accurate inversion via AMG is found. The symmetrized operator is then:
+	\begin{equation}
+		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int \nablah u \cdot \frac{1}{\sigma_t}\E \nablah \varphi \ud \x + \int \sigma_a\, u \varphi \ud \x \,, 
+	\end{equation}
+with $u,v \in V_p$. 
+This is a CG discretization of 
+	\begin{equation}
+		-\nabla \cdot \frac{1}{\sigma_t}\E\nabla \varphi + \sigma_a \varphi 
+	\end{equation} 
+which corresponds to the VEF drift-diffusion equation where the advective term $\paren{\nabla\cdot\E}\!\varphi$ is lagged and moved to the right hand side. 
+
+The ``AMG-S'' column of Table \ref{dgvef:weak_mock} shows the convergence on the mock problem when one AMG V-cycle is applied to the symmetrized CG operator instead of the non-symmetric CG operator. The method converges and is roughly uniform in iteration counts as the mesh is refined. The ``AMG-S3'' column corresponds to the use of three iterations of an inner Richardson iteration to approximate the inverse of the non-symmetric CG operator. The Richardson iteration is preconditioned using one V-cycle of AMG on the symmetrized CG operator. In other words, this option approximates the inverse of the non-symmetric CG operator with three approximate inversions of the symmetrized CG operator. For this option, iterative efficiency generally fell between that of the sparse direct solver and using only AMG on the symmetrized CG operator. Inner iterations do reduce the number of total iterations to convergence but, since three V-cycles are performed per preconditioner application, not to the degree that fewer V-cycles are performed.
+
+Next, we show weak scaling of the IP and CG VEF linear solves on the first outer iteration of the linearized crooked pipe problem from Section \ref{dgvef_sec:cp} with $p=2$. One parallel block Jacobi transport sweep is performed to provide angular fluxes to compute the VEF data. The VEF system is then solved using BiCGStab. Table \ref{dgvef:weak_cp} shows the number of BiCGStab iterations to convergence to a tolerance of $10^{-8}$. For the IP method, the USC preconditioner is used where the continuous operator is left in non-symmetric form and when it is symmetrized. The CG method uses AMG as a preconditioner. In addition, the number of iterations to solve the corresponding IP and CG diffusion problems (by setting $\E = \frac{1}{3}\I$ and $E_b = 1/2$) are shown. These results indicate that on a physically realistic problem the standard USC preconditioner and USC preconditioner with the symmetrized CG operator are both effective. IP VEF only required 5-7 more iterations than IP diffusion and CG VEF only required 2-7 more iterations than CG diffusion. Since no problems where the USC preconditioner with symmetrized CG operator failed to converge were found, the preconditioner with symmetrized CG operator may be more robust. Note that this discrepancy was not observed on physically realistic problems. 
 % --- weak scaling on cp --- 
 \begin{table}
 \centering
 \caption{}
-\label{}
+\label{dgvef:weak_cp}
 \input{figs/dgvef/weak}
 \end{table}
 
