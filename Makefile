@@ -16,6 +16,8 @@ subfiles_dir = chapters
 MPL = matplotlibrc
 # location of references file 
 REF = references.bib
+# location of glossary file 
+GLOSS = glossary.tex
 
 # name of main document 
 MAIN = doc
@@ -66,7 +68,7 @@ $(figdir)/%.tex : %.py $(datadir)/*
 	@latexmk -pdf -output-directory=$(figdir) $< > /dev/null 
 
 # compile latex with latexmk
-$(MAIN).pdf: $(MAIN).tex $(figdir) $(FIGS) $(TABS) $(TIKZ) $(REF) $(subfiles_dir)/*.tex Makefile
+$(MAIN).pdf: $(MAIN).tex $(figdir) $(FIGS) $(TABS) $(TIKZ) $(REF) $(GLOSS) $(subfiles_dir)/*.tex Makefile
 	@latexmk -pdf \
 		-pdflatex="pdflatex --interaction=nonstopmode --shell-escape %O %S" \
 		$(MAIN) > /dev/null
