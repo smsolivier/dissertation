@@ -122,6 +122,7 @@ represent the VEF drift-diffusion equation and Miften-Larsen boundary conditions
 		= 0 \,, 
 	\end{equation}
 where $\y = \vector{\psi & \varphi}$. In this section, we show that the SMM algorithm is equivalent to a first-order Taylor series of $F$ expanded about $\y_0 = \vector{\psi_0 & \varphi_0}$ where $\psi_0$ is linearly anisotropic and $\varphi_0 = \int \psi_0 \ud \Omega$. 
+
 The first-order Taylor series approximation to the root finding problem $F(\y) = 0$ is: 
 	\begin{equation}
 		0 = F(\y) \xrightarrow{\text{TSE}} F(\y_0) + \pderiv{F}{\y}\biggr\rvert_{\y_0}(\y - \y_0) \,. 
@@ -134,7 +135,7 @@ The Jacobian is given by:
 			\pderiv{F_3}{\psi} & \pderiv{F_3}{\varphi} 
 		\end{bmatrix} 
 	\end{equation}
-with $F_i$ the rows of $F$. The transport equation is linear in both $\psi$ and $\varphi$ so the first row of the Jacobian is simply: 
+where $F_i$ are the rows of $F$. The transport equation is linear in both $\psi$ and $\varphi$ so the first row of the Jacobian is simply: 
 	\begin{equation}
 		\pderiv{F_1}{\y} = \begin{bmatrix} 
 			\mat{L} & -\mat{S} 
@@ -234,12 +235,27 @@ Converting the operator notation back to equations, the first-order Taylor serie
 Observe that these equations are equivalent to the transport equation and the SMM drift-diffusion equation given in Eq.~\ref{smm:drift} with the corrected Marshak boundary condition from Eq.~\ref{smm:bc}. 
 An equivalent fixed-point operator can be derived by eliminating the angular flux and operating by the inverse of the diffusion operator. Thus, SMMs are both 1) an algorithm based on a reformulation of the transport equation using additive closures and 2) VEF algorithms linearized about a linearly anisotropic solution. 
 
+\todo{fix use of $\mat{D}$ as operator vs. functional ($\mat{D}$ is just the LHS)}
+
 % Note that a solution procedure for Eqs.~\ref{smm:trans_rewrite} and \ref{smm:linearized} that does not iteratively lag the correction tensor and boundary factor would be equivalent to a Newton scheme to solve the VEF equations. Such an algorithm would converge with the quadratic convergence characteristic of Newton's method. However, forming and solving the operator $\pderiv{\mat{V}}{\psi}$ is prohibitively expensive due to its dependence on the high-dimensional angular flux. Iteratively lagging the correction tensor and factor then represents a``quasi-Newton'' scheme in that the inverse of the Jacobian is approximated by lagging the $\psi$-dependent terms. Unfortunately, lagging these terms degrades the convergence so that the SMM algorithm has linear convergence. 
 
 \section{Discrete Second Moment Methods}
-The equivalence of SMM and VEF linearized about a linearly anisotropic solution provides a systematic path toward deriving discrete SMMs. Any VEF method can be converted to an SMM method through the linearization process described in Section \ref{smm_sec:linearize}. In the following subsections, the methods derived in Chapters \ref{chap:dgvef} and \ref{chap:rtvef} are linearized to form SMMs. 
+The equivalence of SMM and VEF linearized about a linearly anisotropic solution provides a systematic path toward deriving discrete SMMs. Any VEF method can be converted to an SMM method through the linearization process described in Section \ref{smm_sec:linearize}. We make use of the structure of the coupled transport-VEF system to simplify the derivations. Consider
+	\begin{equation}
+		F(\psi,\varphi) = \begin{bmatrix} 
+			\mat{\Theta}(\psi,\varphi) \\ \mat{V}(\psi,\varphi) 
+		\end{bmatrix} = 0\,,
+	\end{equation}
+where $\mat{\Theta}(\psi,\varphi)$ represents a generic transport discretization and $\mat{V}(\psi,\varphi)$ a generic discretization of the VEF moment equations. Note that for a discretization in first-order form, $\mat{V}$ will also depend on the current. The linearization process always produces a system of the form: 
+	\begin{equation}
+		\begin{bmatrix} 
+			\mat{\Theta}(\psi,\varphi) \\
+			\displaystyle\mat{V}(\psi_0,\varphi) + \pderiv{\mat{V}}{\psi}\big\rvert_{\psi_0}
+		\end{bmatrix} = 0 \,. 
+	\end{equation}
+That is, we have the original transport equation coupled to a discretization of diffusion with a $\psi$-dependent correction term arising from the derivative of the VEF operator, $\pderiv{\mat{V}}{\psi}\big\rvert_{\psi_0}$. 
 
-\todo{talk about general form where just need partial derivative}
+In the following subsections, the methods derived in Chapters \ref{chap:dgvef} and \ref{chap:rtvef} are linearized to form discrete SMMs by determining 1) the diffusion problem, $\mat{V}(\psi_0, \varphi)$, found by evaluating the VEF system using a linearly anisotropic angular flux and 2) the transport-dependent correction terms corresponding to $\pderiv{\mat{V}}{\psi}\big\rvert_{\psi_0}$. We will see that linearizing the \emph{discrete} VEF system provides a straightforward path toward discretizing the correction terms. 
 
 \subsection{Interior Penalty and Continuous Finite Element}
 The DG VEF discretization is: find $\varphi\in Y_p$ such that 
@@ -248,6 +264,7 @@ The DG VEF discretization is: find $\varphi\in Y_p$ such that
 		+ \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x \\ 
 		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_0} \jump{u} \avg{\frac{\vec{Q}_1\cdot\n}{\sigma_t}} \ud s - 2\int_{\Gamma_b} u\, \Jin \ud s \,, \quad \forall u \in Y_p \,. 
 	\end{multline}
+\todo{follow steps 1 and 2. How do IP terms simplify to SIP?}
 
 \subsection{Mixed Finite Element}
 
