@@ -1,0 +1,86 @@
+Options used:
+   --mesh ../data/3point.mesh
+   --refine 0
+   --fe_order 2
+   --mesh_order 1
+   --no_fixup
+   --solve_type bicg
+   --iterative
+   --vef
+   --use_prev
+   --non
+   --num_sweeps 1
+   --distortion tg
+   --alpha 0.35
+   --anderson 5
+   --epsilon 0.1
+   --vef_type ip
+   --outname solution
+   --scale_sigma
+   --scale_curve
+   --nsolve sun
+   --beta_off
+   --eta 1
+   --maxiter 50
+Ne = 336, kmin = 1.000, kmax = 169.530
+
+[KINSOL] KINSol
+   scsteptol =     3.67e-11  fnormtol =        1e-06
+
+[KINSOL] KINFP
+   nni =    1   nfe =      1   fnorm =          12.35003191152432
+
+[KINSOL] KINFP
+   nni =    2   nfe =      2   fnorm =         0.3687903558638714
+
+[KINSOL] KINFP
+   nni =    3   nfe =      3   fnorm =         0.1894931947025214
+
+[KINSOL] KINFP
+   nni =    4   nfe =      4   fnorm =         0.1364781154739649
+
+[KINSOL] KINFP
+   nni =    5   nfe =      5   fnorm =        0.05130638515162644
+
+[KINSOL] KINFP
+   nni =    6   nfe =      6   fnorm =       0.008298675661087884
+
+[KINSOL] KINFP
+   nni =    7   nfe =      7   fnorm =       0.006345624973878472
+
+[KINSOL] KINFP
+   nni =    8   nfe =      8   fnorm =       0.001222548346198948
+
+[KINSOL] KINFP
+   nni =    9   nfe =      9   fnorm =      0.0006996278998094851
+
+[KINSOL] KINFP
+   nni =   10   nfe =     10   fnorm =      7.790344401392701e-05
+
+[KINSOL] KINFP
+   nni =   11   nfe =     11   fnorm =      0.0001879527270762793
+
+[KINSOL] KINFP
+   nni =   12   nfe =     12   fnorm =       2.83527814133322e-05
+
+[KINSOL] KINFP
+   nni =   13   nfe =     13   fnorm =      6.753418464633398e-05
+
+[KINSOL] KINFP
+   nni =   14   nfe =     14   fnorm =      2.467011343476599e-05
+
+[KINSOL] KINFP
+   nni =   15   nfe =     15   fnorm =       7.97926601237009e-06
+
+[KINSOL] KINFP
+   nni =   16   nfe =     16   fnorm =      1.154314951179458e-05
+
+[KINSOL] KINFP
+   nni =   17   nfe =     17   fnorm =      6.693009732217092e-06
+
+[KINSOL] KINFP
+   nni =   18   nfe =     18   fnorm =      1.788528649626642e-07
+
+[KINSOL] KINFP
+   Return value: 0 (KIN_SUCCESS)
+outer = 18, inner = 525, 43, 17, 29.2

@@ -31,7 +31,8 @@ FIGS := $(addsuffix .pdf, $(FIGS))
 TABS = cp eps_table\
 dgvef/weak dgvef/mock dgvef/mms_table\
 rtvef/weak rtvef/solvers rtvef/mms rtvef/mms_elev rtvef/mms_diff \
-smm/weak smm/vmms smm/mms_diff smm/mms_elev
+smm/weak smm/vmms smm/mms_diff smm/mms_elev \
+anderson eps3
 TABS := $(addsuffix .tex, $(TABS))
 TABS := $(addprefix $(figdir)/, $(TABS))
 
