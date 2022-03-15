@@ -25,7 +25,7 @@ for file in files:
 	d[file] = {'Ne': Ne, 'it': it, 'np': nproc}
 
 # table = tex.Tabular('Processors', '$N_e$', *['IP', 'CG', 'RT', 'HRT']*2)
-table = tex.Tabular('Processors', '$N_e$', *['VEF', 'Diff.']*4)
+table = tex.Tabular('Processors', '$N_e$', *['SMM', 'Diff.']*4)
 ele = d[files[0]]['Ne']
 nproc = d[files[0]]['np']
 for i in range(len(ele)):
