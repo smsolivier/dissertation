@@ -36,6 +36,7 @@
 \RequirePackage[backend=bibtex,sorting=none,style=ieee,citestyle=numeric-comp]{biblatex}
 \RequirePackage{subfiles}
 \RequirePackage{adjustbox}
+\RequirePackage[section]{placeins}
 \usepackage[acronym,nomain,nonumberlist,nogroupskip,nopostdot]{glossaries}
 \newglossarystyle{april_gloss_style}{%
   \glossarystyle{long}%
@@ -89,6 +90,7 @@
 \newcommand{\T}{\mat{T}}
 \newcommand{\M}{\mat{M}}
 \newcommand{\x}{\boldsymbol{\mathrm{x}}}
+\newcommand{\y}{\boldsymbol{\mathrm{y}}}
 \newcommand{\avg}[1]{\left\{\!\!\left\{#1\right\}\!\!\right\}}
 \newcommand{\jump}[1]{\left\llbracket#1 \right\rrbracket}
 \renewcommand{\vector}[1]{\begin{bmatrix} #1 \end{bmatrix}^T}

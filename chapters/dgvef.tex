@@ -2,8 +2,7 @@
 \documentclass[../doc.tex]{subfiles}
 
 \begin{document}
-\chapter{Discontinuous Galerkin VEF Discretizations}
-
+\chapter{Discontinuous Galerkin VEF Discretizations} \label{chap:dgvef}
 In this chapter, we adapt the derivation of a unified framework for DG methods designed for the Poisson equation from \cite{Arnold2002} to the VEF equations. This enables the use of any of the DG methods described there. \textcite{Arnold2002} derive a family of DG methods for:
 	\begin{subequations}
 	\begin{equation}
@@ -31,10 +30,10 @@ Finally, we will show how to extract a continuous finite element method from thi
 We seek the VEF scalar flux in the degree-$p$ DG finite element space $Y_p$ and the current in the degree-$p$ vector-valued DG finite element space $W_p$. The weak form is then: find $(\varphi,\vec{J}) \in Y_p \times W_p$ such that for all $K \in \meshT$: 
 	\begin{subequations}
 	\begin{equation}
-		\int_{\partial K} \vec{v}\cdot\widehat{\E\varphi}\hat{n}_K \ud s - \int_K \nabla\vec{v} : \E \varphi \ud \x + \int_K \sigma_t \, \vec{v}\cdot\vec{J} \ud \x = \int_K \vec{v}\cdot\vec{Q}_1 \ud \x \,, \quad \forall \vec{v} \in [\mathbb{Q}_p(K)]^{\dim} \,, 
+		\int_{\partial K} \vec{v}\cdot\widehat{\E\varphi}\n_K \ud s - \int_K \nabla\vec{v} : \E \varphi \ud \x + \int_K \sigma_t \, \vec{v}\cdot\vec{J} \ud \x = \int_K \vec{v}\cdot\vec{Q}_1 \ud \x \,, \quad \forall \vec{v} \in [\mathbb{Q}_p(K)]^{\dim} \,, 
 	\end{equation}
 	\begin{equation}
-		\int_{\partial K} u\,\widehat{\vec{J}}\cdot\hat{n}_K \ud s - \int_K \nabla u \cdot\vec{J} \ud \x + \int_K \sigma_a\, u \varphi \ud \x = \int_K u\, Q_0 \ud \x \,, \quad \forall u \in \mathbb{Q}_p(K) \,, 
+		\int_{\partial K} u\,\widehat{\vec{J}}\cdot\n_K \ud s - \int_K \nabla u \cdot\vec{J} \ud \x + \int_K \sigma_a\, u \varphi \ud \x = \int_K u\, Q_0 \ud \x \,, \quad \forall u \in \mathbb{Q}_p(K) \,, 
 	\end{equation}
 	\end{subequations}
 where the \emph{numerical fluxes} $\widehat{\E\varphi}$ and $\widehat{\vec{J}}$ are approximations of $\E\varphi$ and $\vec{J}$ on the boundaries of the elements in the mesh. We group the product $\E\varphi$ as the numerical flux to mimic the integration by parts of a tensor times a vector. Here, the gradient of a vector is 
@@ -53,19 +52,19 @@ and the symmetric weak form for radiation diffusion is recovered.
 
 Summing the zeroth moment over all elements: 
 	\begin{equation}
-		\int_\Gamma \jump{u} \avg{\widehat{\vec{J}}\cdot\hat{n}} \ud s + \int_{\Gamma_0} \avg{u}\jump{\widehat{\vec{J}}\cdot\hat{n}} \ud s - \int \nablah u \cdot \vec{J} \ud \x + \int \sigma_a \, u\varphi \ud \x = \int u\, Q_0 \ud \x \,,
+		\int_\Gamma \jump{u} \avg{\widehat{\vec{J}}\cdot\n} \ud s + \int_{\Gamma_0} \avg{u}\jump{\widehat{\vec{J}}\cdot\n} \ud s - \int \nablah u \cdot \vec{J} \ud \x + \int \sigma_a \, u\varphi \ud \x = \int u\, Q_0 \ud \x \,,
 	\end{equation}
 where the jumps and averages identity (Eq.~\ref{ref:jump_avg_id}) was used. We will now use the discrete first moment to determine a functional form for $\vec{J}$. Integrating by parts locally over element $K$, we have that 
 	\begin{equation} \label{dgvef:identity}
-		\int_K \nabla\vec{v} : \E \varphi \ud \x = \int_{\partial K} \vec{v}\cdot\E\varphi\hat{n}_K \ud s - \int_K \vec{v}\cdot\nabla\cdot\paren{\E\varphi} \ud \x \,. 
+		\int_K \nabla\vec{v} : \E \varphi \ud \x = \int_{\partial K} \vec{v}\cdot\E\varphi\n_K \ud s - \int_K \vec{v}\cdot\nabla\cdot\paren{\E\varphi} \ud \x \,. 
 	\end{equation}
 The first moment's weak form on each element becomes: 
 	\begin{equation}
-		\int_{\partial K} \vec{v}\cdot\paren{\widehat{\E\varphi}\hat{n}_K - \E\varphi\hat{n}_K} \ud s + \int_K \vec{v}\cdot\nabla\cdot\paren{\E\varphi} \ud \x + \int_K \sigma_t \, \vec{v}\cdot\vec{J} \ud \x = \int_K \vec{v} \cdot\vec{Q}_1 \ud \x \,, \quad \forall \vec{v} \in [\mathbb{Q}_p(K)]^{\dim} \,. 
+		\int_{\partial K} \vec{v}\cdot\paren{\widehat{\E\varphi}\n_K - \E\varphi\n_K} \ud s + \int_K \vec{v}\cdot\nabla\cdot\paren{\E\varphi} \ud \x + \int_K \sigma_t \, \vec{v}\cdot\vec{J} \ud \x = \int_K \vec{v} \cdot\vec{Q}_1 \ud \x \,, \quad \forall \vec{v} \in [\mathbb{Q}_p(K)]^{\dim} \,. 
 	\end{equation}
 Summing over all elements and using the jumps and averages identity, the weak form for the first moment is:  
 	\begin{multline} \label{dgvef:weak_strong}
-		\int_\Gamma \avg{\vec{v}}\cdot\jump{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}} \ud s + \int_{\Gamma_0} \jump{\vec{v}} \cdot \avg{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}} \ud s \\+ \int \vec{v}\cdot\nablah \cdot\paren{\E\varphi} \ud \x + \int \sigma_t \, \vec{v}\cdot\vec{J} \ud \x = \int \vec{v}\cdot\vec{Q}_1 \ud \x \,, \quad \forall \vec{v} \in W_p \,, 
+		\int_\Gamma \avg{\vec{v}}\cdot\jump{\widehat{\E\varphi}\n - \E\varphi\n} \ud s + \int_{\Gamma_0} \jump{\vec{v}} \cdot \avg{\widehat{\E\varphi}\n - \E\varphi\n} \ud s \\+ \int \vec{v}\cdot\nablah \cdot\paren{\E\varphi} \ud \x + \int \sigma_t \, \vec{v}\cdot\vec{J} \ud \x = \int \vec{v}\cdot\vec{Q}_1 \ud \x \,, \quad \forall \vec{v} \in W_p \,, 
 	\end{multline}
 where $\nablah\cdot\paren{\E\varphi}$ is evaluated as $\nablah\cdot\paren{\E\varphi} = \E\nablah \varphi + \paren{\nablah\cdot\E}\!\varphi$, and the term $\nablah\cdot\E$ is computed using Eq.~\ref{dgvef:Ediv}. 
 
@@ -82,54 +81,54 @@ where $\vec{\tau}$ and $\vec{\chi}$ are vector functions that are singled-valued
 Note that the lifting operators are finite element grid functions just as the current is and that the left hand sides are simply the $W_p$ total interaction mass matrix.
 Since $W_p$ is piecewise discontinuous, the $W_p$ mass matrix is block-diagonal by element and thus the systems of equations corresponding to Eqs. \ref{dgvef:lift-r} and \ref{dgvef:lift-l} are amenable to efficient direct factorization (see \ref{sec:lifting}). 
 
-Setting $\vec{\tau} = \jump{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}}$ and $\vec{\chi} = \avg{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}}$ and using the definitions of the lifting operators, Eq.~\ref{dgvef:weak_strong} can be written entirely in terms of volumetric integrals as: 
+Setting $\vec{\tau} = \jump{\widehat{\E\varphi}\n - \E\varphi\n}$ and $\vec{\chi} = \avg{\widehat{\E\varphi}\n - \E\varphi\n}$ and using the definitions of the lifting operators, Eq.~\ref{dgvef:weak_strong} can be written entirely in terms of volumetric integrals as: 
 	\begin{equation}
-		\int \sigma_t\, \vec{v}\cdot\vec{J} \ud \x = \int \sigma_t\, \vec{v}\cdot\bracket{\frac{1}{\sigma_t} \paren{\vec{Q}_1 - \nablah\cdot\paren{\E\varphi}} + \vec{r}\!\paren{\jump{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}}} + \vec{\ell}\!\paren{\avg{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}}}} \ud \x 
+		\int \sigma_t\, \vec{v}\cdot\vec{J} \ud \x = \int \sigma_t\, \vec{v}\cdot\bracket{\frac{1}{\sigma_t} \paren{\vec{Q}_1 - \nablah\cdot\paren{\E\varphi}} + \vec{r}\!\paren{\jump{\widehat{\E\varphi}\n - \E\varphi\n}} + \vec{\ell}\!\paren{\avg{\widehat{\E\varphi}\n - \E\varphi\n}}} \ud \x 
 	\end{equation}
 for all $\vec{v}\in W_p$. Subtracting the right hand side and setting the integrand to zero implies that 
 	\begin{equation} \label{dgvef:current_form}
-		\vec{J} = \frac{1}{\sigma_t}\paren{\vec{Q}_1 - \nablah\cdot\paren{\E\varphi}} + \vec{r}\!\paren{\jump{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}}} + \vec{\ell}\!\paren{\avg{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}}}\,. 
+		\vec{J} = \frac{1}{\sigma_t}\paren{\vec{Q}_1 - \nablah\cdot\paren{\E\varphi}} + \vec{r}\!\paren{\jump{\widehat{\E\varphi}\n - \E\varphi\n}} + \vec{\ell}\!\paren{\avg{\widehat{\E\varphi}\n - \E\varphi\n}}\,. 
 	\end{equation}
 Observe that the above represents the element-local strong form of the current, $\frac{1}{\sigma_t}\paren{\vec{Q}_1 - \nablah\cdot\paren{\E\varphi}}$ found by analytically eliminating the current, with additional terms that capture the effect of the numerical fluxes. In other words, we have derived the \emph{discrete} elimination of the current. 
 
 Using this discrete form for the current and the definitions of the lifting operators to convert from volumetric integrals back to surface integrals, the zeroth moment becomes: 
 	\begin{multline} \label{dgvef:familynobc}
-		\int_\Gamma \jump{u} \avg{\widehat{\vec{J}}\cdot\hat{n}} \ud s + \int_{\Gamma_0} \avg{u}\!\jump{\widehat{\vec{J}}\cdot\hat{n}} \ud s + \int_\Gamma \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}} \ud s \\ 
-		+ \int_{\Gamma_0} \jump{\frac{\nablah u}{\sigma_t}} \cdot \avg{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}} \ud s + \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x \\ 
+		\int_\Gamma \jump{u} \avg{\widehat{\vec{J}}\cdot\n} \ud s + \int_{\Gamma_0} \avg{u}\!\jump{\widehat{\vec{J}}\cdot\n} \ud s + \int_\Gamma \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\widehat{\E\varphi}\n - \E\varphi\n} \ud s \\ 
+		+ \int_{\Gamma_0} \jump{\frac{\nablah u}{\sigma_t}} \cdot \avg{\widehat{\E\varphi}\n - \E\varphi\n} \ud s + \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x \\ 
 		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x \,, \quad \forall u \in Y_p \,. 
 	\end{multline}
 On boundary faces, we apply the Miften-Larsen boundary conditions by setting 
 	\begin{equation} \label{dgvef:ml_bdr_flux}
-		\widehat{\vec{J}}\cdot\hat{n} = 2g + E_b \varphi \,, \quad \widehat{\E\varphi}\hat{n} = \E\varphi\hat{n} \,, \quad \text{on} \ \mathcal{F} \in \Gamma_b \,. 
+		\widehat{\vec{J}}\cdot\n = 2g + E_b \varphi \,, \quad \widehat{\E\varphi}\n = \E\varphi\n \,, \quad \text{on} \ \mathcal{F} \in \Gamma_b \,. 
 	\end{equation}
 % All the methods we consider use 
 % 	\begin{equation} \label{dgvef:num_scalar_flux}
-% 		\widehat{\E\varphi}\hat{n} = \avg{\E\varphi\hat{n}} \,, \quad \text{on} \ \mathcal{F} \in \Gamma \,, 
+% 		\widehat{\E\varphi}\n = \avg{\E\varphi\n} \,, \quad \text{on} \ \mathcal{F} \in \Gamma \,, 
 % 	\end{equation}
-% where on a boundary face $\avg{\E\varphi\hat{n}} = \E\varphi\hat{n}$ from the definition of the average on a boundary face. In this way, the second condition of the Miften-Larsen boundary condition is encompassed in this definition. Using this numerical flux, we have that 
+% where on a boundary face $\avg{\E\varphi\n} = \E\varphi\n$ from the definition of the average on a boundary face. In this way, the second condition of the Miften-Larsen boundary condition is encompassed in this definition. Using this numerical flux, we have that 
 % 	\begin{subequations}
 % 	\begin{equation}
-% 		\jump{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}} = \begin{cases}
-% 			-\jump{\E\varphi\hat{n}} \,, & \mathcal{F} \in \Gamma_0 \\ 
+% 		\jump{\widehat{\E\varphi}\n - \E\varphi\n} = \begin{cases}
+% 			-\jump{\E\varphi\n} \,, & \mathcal{F} \in \Gamma_0 \\ 
 % 			0 \,, & \mathcal{F} \in \Gamma_b 
 % 		\end{cases} \,,
 % 	\end{equation}
 % 	\begin{equation}
-% 		\avg{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}} = 0 \,, \quad \forall \mathcal{F} \in \Gamma \,. 
+% 		\avg{\widehat{\E\varphi}\n - \E\varphi\n} = 0 \,, \quad \forall \mathcal{F} \in \Gamma \,. 
 % 	\end{equation}
 % 	\end{subequations}
 All the methods we consider use so-called conservative numerical fluxes such that 
 	\begin{subequations}
 	\begin{equation}
-		\jump{\widehat{\vec{J}}\cdot\hat{n}} = 0 \,, \quad \avg{\widehat{\vec{J}}\cdot\hat{n}} = \widehat{\vec{J}}\cdot\hat{n} \,, \quad \text{on} \ \mathcal{F} \in \Gamma_0 \,, 
+		\jump{\widehat{\vec{J}}\cdot\n} = 0 \,, \quad \avg{\widehat{\vec{J}}\cdot\n} = \widehat{\vec{J}}\cdot\n \,, \quad \text{on} \ \mathcal{F} \in \Gamma_0 \,, 
 	\end{equation}
 	\begin{equation}
-		\jump{\widehat{\E\varphi}\hat{n}} = 0 \,, \quad \avg{\widehat{\E\varphi}\hat{n}} = \widehat{\E\varphi}\hat{n} \,, \quad \text{on} \ \mathcal{F} \in \Gamma_0 \,. 
+		\jump{\widehat{\E\varphi}\n} = 0 \,, \quad \avg{\widehat{\E\varphi}\n} = \widehat{\E\varphi}\n \,, \quad \text{on} \ \mathcal{F} \in \Gamma_0 \,. 
 	\end{equation}
 	\end{subequations}
 Using the boundary conditions and the assumption of conservative numerical fluxes, Eq.~\ref{dgvef:familynobc} becomes: 
 	\begin{multline} \label{dgvef:family}
-		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int_{\Gamma_0} \jump{u} \widehat{\vec{J}}\cdot\hat{n} \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\hat{n}} \ud s \\+ \int_{\Gamma_0} \jump{\frac{\nablah u}{\sigma_t}} \cdot \avg{\widehat{\E\varphi}\hat{n} - \E\varphi\hat{n}} \ud s + \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x \\ 
+		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int_{\Gamma_0} \jump{u} \widehat{\vec{J}}\cdot\n \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\n} \ud s \\+ \int_{\Gamma_0} \jump{\frac{\nablah u}{\sigma_t}} \cdot \avg{\widehat{\E\varphi}\n - \E\varphi\n} \ud s + \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x \\ 
 		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - 2\int_{\Gamma_b} u\, g \ud s \,, \quad \forall u \in Y_p \,. 
 	\end{multline}
 Equation \ref{dgvef:family} defines a \emph{family} of DG methods. That is, through the specification of the numerical flux for the current on interior faces, analogues of all the methods listed in \cite{Arnold2002} can be derived.
@@ -138,31 +137,31 @@ Equation \ref{dgvef:family} defines a \emph{family} of DG methods. That is, thro
 All the methods we consider use numerical fluxes of the form 
 	\begin{subequations}
 	\begin{equation}
-		\widehat{\vec{J}}\cdot\hat{n} = \avg{\frac{1}{\sigma_t}\paren{\vec{Q}_1 - \nablah\cdot\paren{\E\varphi}}\cdot\hat{n}} + \alpha(\varphi) \,, \quad \text{on} \ \Gamma_0 \,, 
+		\widehat{\vec{J}}\cdot\n = \avg{\frac{1}{\sigma_t}\paren{\vec{Q}_1 - \nablah\cdot\paren{\E\varphi}}\cdot\n} + \alpha(\varphi) \,, \quad \text{on} \ \Gamma_0 \,, 
 	\end{equation}
 	\begin{equation}
-		\widehat{\E\varphi}\hat{n} = \avg{\E\varphi\hat{n}} + \vec{\theta}(\varphi) \,,\quad \text{on} \ \Gamma_0 \,, 
+		\widehat{\E\varphi}\n = \avg{\E\varphi\n} + \vec{\theta}(\varphi) \,,\quad \text{on} \ \Gamma_0 \,, 
 	\end{equation}
 	\end{subequations}
 where $\alpha(\varphi)$ and $\vec{\theta}(\varphi)$ are single-valued functions whose purpose is to ensure a stable discretization.
 The IP, BR2, and LDG methods differ only in the choice of $\alpha(\varphi)$ and $\vec{\theta}(\varphi)$. With these numerical fluxes, Eq.~\ref{dgvef:family} becomes: 
 	\begin{multline} \label{dgvef:family_alpha}
-		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int_{\Gamma_0} \jump{u} \alpha(\varphi) \ud s - \int_{\Gamma_0} \jump{u} \avg{\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi}\cdot\hat{n}} \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\hat{n}} \ud s \\ + \int_{\Gamma_0} \jump{\frac{\nablah u}{\sigma_t}} \cdot \vec{\theta}(\varphi) \ud s
+		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int_{\Gamma_0} \jump{u} \alpha(\varphi) \ud s - \int_{\Gamma_0} \jump{u} \avg{\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi}\cdot\n} \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\n} \ud s \\ + \int_{\Gamma_0} \jump{\frac{\nablah u}{\sigma_t}} \cdot \vec{\theta}(\varphi) \ud s
 		+ \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x \\ 
-		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_0} \jump{u} \avg{\frac{\vec{Q}_1\cdot\hat{n}}{\sigma_t}} \ud s - 2\int_{\Gamma_b} u\, g \ud s \,, \quad \forall u \in Y_p \,. 
+		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_0} \jump{u} \avg{\frac{\vec{Q}_1\cdot\n}{\sigma_t}} \ud s - 2\int_{\Gamma_b} u\, g \ud s \,, \quad \forall u \in Y_p \,. 
 	\end{multline}
 Recall that this form has already applied boundary conditions according to Eq.~\ref{dgvef:ml_bdr_flux}. In other words, the above corresponds to a DG scheme with the following numerical fluxes:
 		\begin{subequations}
 		\begin{equation}
-			\widehat{\vec{J}}\cdot\hat{n} = \begin{cases}
-				\avg{\frac{1}{\sigma_t}\paren{\vec{Q}_1 - \nablah\cdot\paren{\E\varphi}}\cdot\hat{n}} + \alpha(\varphi) \,, & \text{on} \ \Gamma_0 \\ 
+			\widehat{\vec{J}}\cdot\n = \begin{cases}
+				\avg{\frac{1}{\sigma_t}\paren{\vec{Q}_1 - \nablah\cdot\paren{\E\varphi}}\cdot\n} + \alpha(\varphi) \,, & \text{on} \ \Gamma_0 \\ 
 				2g + E_b \varphi \,, & \text{on} \ \Gamma_b 
 			\end{cases} \,, 
 		\end{equation}
 		\begin{equation}
-			\widehat{\E\varphi}\hat{n} = \begin{cases}
-				\avg{\E\varphi\hat{n}} + \vec{\theta}(\varphi) \,, & \text{on} \ \Gamma_0 \\ 
-				\E\varphi\hat{n} \,, & \text{on} \ \Gamma_b 
+			\widehat{\E\varphi}\n = \begin{cases}
+				\avg{\E\varphi\n} + \vec{\theta}(\varphi) \,, & \text{on} \ \Gamma_0 \\ 
+				\E\varphi\n \,, & \text{on} \ \Gamma_b 
 			\end{cases} \,.
 		\end{equation}
 		\end{subequations}
@@ -174,26 +173,26 @@ An interior penalty (IP)-like method uses
 	\end{equation}
 where $\kappa$ is the penalty parameter. IP methods require that $\kappa \propto \sigma_t^{-1} p^2/h$ in order to guarantee stability. The full IP weak form is then: find $\varphi \in Y_p$ such that 
 	\begin{multline} \label{dgvef:ip}
-		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int_{\Gamma_0} \kappa \jump{u} \jump{\varphi} \ud s - \int_{\Gamma_0} \jump{u} \avg{\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi}\cdot\hat{n}} \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\hat{n}} \ud s \\
+		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int_{\Gamma_0} \kappa \jump{u} \jump{\varphi} \ud s - \int_{\Gamma_0} \jump{u} \avg{\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi}\cdot\n} \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\n} \ud s \\
 		+ \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x \\ 
-		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_0} \jump{u} \avg{\frac{\vec{Q}_1\cdot\hat{n}}{\sigma_t}} \ud s - 2\int_{\Gamma_b} u\, g \ud s \,, \quad \forall u \in Y_p \,. 
+		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_0} \jump{u} \avg{\frac{\vec{Q}_1\cdot\n}{\sigma_t}} \ud s - 2\int_{\Gamma_b} u\, g \ud s \,, \quad \forall u \in Y_p \,. 
 	\end{multline}
 
 \subsection{The Second Method of Bassi and Rebay (BR2)}
 The second method of Bassi and Rebay (BR2) uses an alternative penalty term. Let $\vec{\rho}_f(\omega)\in W_p$ be a face-local lifting operator defined by 
 	\begin{equation} \label{dgvef:rhof}
-		\int \vec{v}\cdot\vec{\rho}_f(\omega) \ud \x = -\int_f \avg{\vec{v} \cdot\hat{n}} \omega \ud s \,, \quad \forall \vec{v} \in W_p\,, \quad \text{on} \ f\in \Gamma_0 \,. 
+		\int \vec{v}\cdot\vec{\rho}_f(\omega) \ud \x = -\int_f \avg{\vec{v} \cdot\n} \omega \ud s \,, \quad \forall \vec{v} \in W_p\,, \quad \text{on} \ f\in \Gamma_0 \,. 
 	\end{equation}
 Here, $\omega$ is a scalar function that is single-valued on the interior face $f$. Note that the integration on the left hand side is over the entire domain while the right hand side is localized to a single interior face. This means the right hand side, and thus $\vec{\rho}_f(\omega)$, will be non-zero only for DOFs in elements that share the face $f$. 
 
 A BR2-like discretization sets 
 	\begin{equation}
-		\alpha(\varphi) = -\eta\avg{\vec{\rho}_f(\jump{\varphi})\cdot\hat{n}} \,, \quad \text{on} \ f \in \Gamma_0 \,, \quad \vec{\theta}(\varphi) = 0 \,,
+		\alpha(\varphi) = -\eta\avg{\vec{\rho}_f(\jump{\varphi})\cdot\n} \,, \quad \text{on} \ f \in \Gamma_0 \,, \quad \vec{\theta}(\varphi) = 0 \,,
 	\end{equation}
 so that the relevant term is 
 	\begin{equation}
 	\begin{aligned}
-		\int_{\Gamma_0} \jump{u} \alpha(\varphi) \ud s &= -\sum_{f\in\Gamma_0}\int_{f} \eta\,\jump{u}\!\avg{\vec{\rho}_f(\jump{u})\cdot\hat{n}} \ud s \\
+		\int_{\Gamma_0} \jump{u} \alpha(\varphi) \ud s &= -\sum_{f\in\Gamma_0}\int_{f} \eta\,\jump{u}\!\avg{\vec{\rho}_f(\jump{u})\cdot\n} \ud s \\
 		&= \sum_{f\in\Gamma_0}\int \eta\,\vec{\rho}_f(\jump{u})\cdot\vec{\rho}_f(\jump{\varphi}) \ud \x \,.
 	\end{aligned}
 	\end{equation}
@@ -201,34 +200,34 @@ This BR2 numerical flux avoids the need to tune the penalty parameter while stil
 
 The BR2 DG VEF discretization is then: find $\varphi \in Y_p$ such that 
 	\begin{multline} \label{dgvef:br2}
-		\int_{\Gamma_b} E_b\, u \varphi \ud s - \int_{\Gamma_0} \jump{u} \avg{\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi}\cdot\hat{n}} \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\hat{n}} \ud s \\
+		\int_{\Gamma_b} E_b\, u \varphi \ud s - \int_{\Gamma_0} \jump{u} \avg{\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi}\cdot\n} \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\n} \ud s \\
 		+ \sum_{f\in\Gamma_0} \int \eta\, \vec{\rho}_f(\jump{u}) \cdot \vec{\rho}_f(\jump{\varphi}) \ud \x + \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x \\ 
-		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_0} \jump{u} \avg{\frac{\vec{Q}_1\cdot\hat{n}}{\sigma_t}} \ud s - 2\int_{\Gamma_b} u\, g \ud s \,, \quad \forall u \in Y_p \,. 
+		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_0} \jump{u} \avg{\frac{\vec{Q}_1\cdot\n}{\sigma_t}} \ud s - 2\int_{\Gamma_b} u\, g \ud s \,, \quad \forall u \in Y_p \,. 
 	\end{multline}
 
 \subsection{Minimal Dissipation Local Discontinuous Galerkin}
 Finally, we consider the Local Discontinuous Galerkin (LDG) method. In general, LDG uses the following numerical fluxes:
 	\begin{subequations}
 	\begin{equation}
-		\widehat{\vec{J}}\cdot\hat{n} = \avg{\vec{J}\cdot\hat{n}} + \beta\jump{\vec{J}\cdot\hat{n}} + \kappa \jump{\varphi} \,,
+		\widehat{\vec{J}}\cdot\n = \avg{\vec{J}\cdot\n} + \beta\jump{\vec{J}\cdot\n} + \kappa \jump{\varphi} \,,
 	\end{equation}
 	\begin{equation}
-		\widehat{\E\varphi}\hat{n} = \avg{\E\varphi\hat{n}} - \beta\jump{\E\varphi\hat{n}} \,,
+		\widehat{\E\varphi}\n = \avg{\E\varphi\n} - \beta\jump{\E\varphi\n} \,,
 	\end{equation}
 	\end{subequations}
 where $\vec{J}$ is defined as the discrete elimination of the current derived in Eq.~\ref{dgvef:current_form}. The scalar parameter $\beta$ can be defined as 
 	\begin{equation}
 		\beta = \begin{cases}
-			1/2 \,, & \vec{w}\cdot\hat{n} > 0 \\ 
-			-1/2\,, & \vec{w} \cdot\hat{n} < 0 
+			1/2 \,, & \vec{w}\cdot\n > 0 \\ 
+			-1/2\,, & \vec{w} \cdot\n < 0 
 		\end{cases} \,,
-		% \beta = \frac{1}{2}\sign(\vec{w}\cdot\hat{n}) \,, 
+		% \beta = \frac{1}{2}\sign(\vec{w}\cdot\n) \,, 
 	\end{equation}
 where $\vec{w}$ is any constant, non-zero vector. This choice imposes an arbitrary upwinding on the current that is balanced by an opposing choice for the scalar flux.
 With this choice of $\beta$, the LDG method is stable for any $\kappa \geq 0$; if $\kappa\equiv 0$, the method is referred to as the Minimial Dissipation LDG (MDLDG) method \cite{10.1007/s10915-007-9130-3}.
 Using the numerical flux for the scalar flux, the discrete current simplifies to 
 	\begin{equation}
-		\vec{J} = \frac{1}{\sigma_t}\paren{\vec{Q}_1 - \nablah \cdot\paren{\E\varphi}} - \vec{r}_0\!\paren{\jump{\E\varphi\hat{n}}} - \vec{\ell}\!\paren{\beta\jump{\E\varphi\hat{n}}} \,,
+		\vec{J} = \frac{1}{\sigma_t}\paren{\vec{Q}_1 - \nablah \cdot\paren{\E\varphi}} - \vec{r}_0\!\paren{\jump{\E\varphi\n}} - \vec{\ell}\!\paren{\beta\jump{\E\varphi\n}} \,,
 	\end{equation}
 where $\vec{r}_0(\vec{\tau}) \in W_p$ is another lifting operator defined by 
 	\begin{equation}
@@ -237,29 +236,29 @@ where $\vec{r}_0(\vec{\tau}) \in W_p$ is another lifting operator defined by
 that differs from $\vec{r}(\vec{\tau})$ only in the region of integration on the right hand side. The LDG method is then equivalent to setting 
 	\begin{subequations}
 	\begin{multline}
-		\alpha(\varphi) = -\avg{\vec{r}_0\!\paren{\jump{\E\varphi\hat{n}}}\cdot\hat{n} + \vec{\ell}\!\paren{\beta\jump{\E\varphi\hat{n}}}\cdot\hat{n}} \\+ \beta\jump{\frac{1}{\sigma_t}\paren{\vec{Q}_1 - \nablah\cdot\paren{\E\varphi}}\cdot\hat{n} - \vec{r}_0\!\paren{\jump{\E\varphi\hat{n}}}\cdot\hat{n} - \vec{\ell}\!\paren{\beta\jump{\E\varphi\hat{n}}}\cdot\hat{n}} + \kappa\jump{\varphi} \,,
+		\alpha(\varphi) = -\avg{\vec{r}_0\!\paren{\jump{\E\varphi\n}}\cdot\n + \vec{\ell}\!\paren{\beta\jump{\E\varphi\n}}\cdot\n} \\+ \beta\jump{\frac{1}{\sigma_t}\paren{\vec{Q}_1 - \nablah\cdot\paren{\E\varphi}}\cdot\n - \vec{r}_0\!\paren{\jump{\E\varphi\n}}\cdot\n - \vec{\ell}\!\paren{\beta\jump{\E\varphi\n}}\cdot\n} + \kappa\jump{\varphi} \,,
 	\end{multline}
 	\begin{equation}
-		\vec{\theta}(\varphi) = -\beta\jump{\E\varphi\hat{n}} \,.
+		\vec{\theta}(\varphi) = -\beta\jump{\E\varphi\n} \,.
 	\end{equation}
 	\end{subequations}
 We then have that 
 	\begin{multline}
-		\int_{\Gamma_0} \jump{u} \alpha(\varphi) \ud s = \int_{\Gamma_0} \beta \jump{u}\jump{\frac{\vec{Q}_1\cdot\hat{n}}{\sigma_t}} \ud s - \int_{\Gamma_0}\beta\jump{u}\jump{\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi}\cdot\hat{n}} \ud s \\
-		+ \int \paren{\vec{\rho}_0\!\paren{\jump{u}} + \vec{\lambda}\!\paren{\beta\jump{u}}}\cdot\paren{\vec{r}_0\!\paren{\jump{\E\varphi\hat{n}}} + \vec{\ell}\!\paren{\beta\jump{\E\varphi\hat{n}}}} \ud \x + \int_{\Gamma_0} \kappa \jump{u}\jump{\varphi} \ud s 
+		\int_{\Gamma_0} \jump{u} \alpha(\varphi) \ud s = \int_{\Gamma_0} \beta \jump{u}\jump{\frac{\vec{Q}_1\cdot\n}{\sigma_t}} \ud s - \int_{\Gamma_0}\beta\jump{u}\jump{\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi}\cdot\n} \ud s \\
+		+ \int \paren{\vec{\rho}_0\!\paren{\jump{u}} + \vec{\lambda}\!\paren{\beta\jump{u}}}\cdot\paren{\vec{r}_0\!\paren{\jump{\E\varphi\n}} + \vec{\ell}\!\paren{\beta\jump{\E\varphi\n}}} \ud \x + \int_{\Gamma_0} \kappa \jump{u}\jump{\varphi} \ud s 
 	\end{multline}
 where $\vec{\rho}_0(\omega), \vec{\lambda}(\upsilon) \in W_p$ such that 
 	\begin{equation}
-		\int \vec{v} \cdot \vec{\rho}_0(\omega) \ud \x = -\int_{\Gamma_0} \avg{\vec{v}\cdot\hat{n}} \omega \ud s \,, \quad \forall \vec{v} \in W_p \,,
+		\int \vec{v} \cdot \vec{\rho}_0(\omega) \ud \x = -\int_{\Gamma_0} \avg{\vec{v}\cdot\n} \omega \ud s \,, \quad \forall \vec{v} \in W_p \,,
 	\end{equation}
 	\begin{equation}
-		\int \vec{v} \cdot \vec{\lambda}(\upsilon) \ud \x = -\int_{\Gamma_0} \jump{\vec{v}\cdot\hat{n}} \upsilon \ud s \,, \quad \forall \vec{v} \in W_p \,, 
+		\int \vec{v} \cdot \vec{\lambda}(\upsilon) \ud \x = -\int_{\Gamma_0} \jump{\vec{v}\cdot\n} \upsilon \ud s \,, \quad \forall \vec{v} \in W_p \,, 
 	\end{equation}
 are analogues of $\vec{r}_0(\vec{\tau})$ and $\vec{\ell}(\vec{\chi})$, respectively, that do not include the total interaction cross section in the left hand side mass matrices and have scalar arguments. The LDG VEF discretization is then: find $\varphi \in Y_p$ such that 
 	\begin{multline} \label{dgvef:ldg}
-		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int_{\Gamma_0} \kappa\, \jump{u}\jump{\varphi} \ud s - \int_{\Gamma_0} \jump{u} \avg{\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi}\cdot\hat{n}} \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\hat{n}} \ud s \\
-		+ \int \paren{\vec{\rho}_0\!\paren{\jump{u}} + \vec{\lambda}\!\paren{\beta\jump{u}}}\cdot\paren{\vec{r}_0\!\paren{\jump{\E\varphi\hat{n}}} + \vec{\ell}\!\paren{\beta\jump{\E\varphi\hat{n}}}} \ud \x \\+ \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x 
-		\\= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_0} \jump{u} \paren{\avg{\frac{\vec{Q}_1\cdot\hat{n}}{\sigma_t}} + \beta\jump{\frac{\vec{Q}_1\cdot\hat{n}}{\sigma_t}}} \ud s - 2\int_{\Gamma_b} u\, g \ud s \,, \quad \forall u \in Y_p \,. 
+		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int_{\Gamma_0} \kappa\, \jump{u}\jump{\varphi} \ud s - \int_{\Gamma_0} \jump{u} \avg{\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi}\cdot\n} \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\n} \ud s \\
+		+ \int \paren{\vec{\rho}_0\!\paren{\jump{u}} + \vec{\lambda}\!\paren{\beta\jump{u}}}\cdot\paren{\vec{r}_0\!\paren{\jump{\E\varphi\n}} + \vec{\ell}\!\paren{\beta\jump{\E\varphi\n}}} \ud \x \\+ \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x 
+		\\= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_0} \jump{u} \paren{\avg{\frac{\vec{Q}_1\cdot\n}{\sigma_t}} + \beta\jump{\frac{\vec{Q}_1\cdot\n}{\sigma_t}}} \ud s - 2\int_{\Gamma_b} u\, g \ud s \,, \quad \forall u \in Y_p \,. 
 	\end{multline}
 The advantage of LDG is that the penalty parameter does not need to scale with the mesh size. However, the LDG stabilization term has a non-compact stencil that connects neighbors of neighbors, leading to less sparsity than the IP or BR2 methods. 
 
@@ -272,15 +271,15 @@ Let $u,\varphi \in V_p$, the degree-$p$ continuous finite element space, then
 	\end{equation}
 However, since the Eddington tensor is still discontinuous, we have that 
 	\begin{equation}
-		\jump{\E\varphi\hat{n}} = \jump{\E\hat{n}} \varphi \,. 
+		\jump{\E\varphi\n} = \jump{\E\n} \varphi \,. 
 	\end{equation}
 Note that, for $u\in V_p$, $\nabla u \in W_p$. In other words, while $u\in V_p$ is continuous $\nabla u$ is not. Thus, by starting from the DG VEF discretization and assembling onto $V_p$, we arrive at a CG VEF discretization of the form: find $\varphi \in V_p$ such that 
 	\begin{multline} \label{dgvef:cg}
-		\int_{\Gamma_b} E_b\, u \varphi \ud s - \int_{\Gamma_0} \avg{\frac{\nabla u}{\sigma_t}} \cdot \jump{\E\hat{n}}\!\varphi \ud s 
+		\int_{\Gamma_b} E_b\, u \varphi \ud s - \int_{\Gamma_0} \avg{\frac{\nabla u}{\sigma_t}} \cdot \jump{\E\n}\!\varphi \ud s 
 		+ \int \nabla u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x \\ 
 		= \int u\, Q_0 \ud \x + \int \nabla u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - 2\int_{\Gamma_b} u\, g \ud s \,, \quad \forall u \in V_p \,. 
 	\end{multline}
-Observe that in the thick diffusion limit, where $\E = \frac{1}{3}\I$ and $E_b = 1/2$, a CG discretization of radiation diffusion with Marshak boundary conditions arises since $\jump{\E\hat{n}} = 0$ and $\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} = \frac{1}{3\sigma_t}\nabla \varphi$. 
+Observe that in the thick diffusion limit, where $\E = \frac{1}{3}\I$ and $E_b = 1/2$, a CG discretization of radiation diffusion with Marshak boundary conditions arises since $\jump{\E\n} = 0$ and $\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} = \frac{1}{3\sigma_t}\nabla \varphi$. 
 
 \section{Uniform Subspace Correction Preconditioner}
 
@@ -521,7 +520,7 @@ Table \ref{dgvef:weak_mock} shows the number of BiCGStab iterations to convergen
 
 Note that AMG is effective on the standard continuous finite element discretization of diffusion. It is then expected that AMG will be effective in approximating the inverse of a symmetrized CG operator. By lagging the terms 
 	\begin{equation}
-		-\int_{\Gamma_0} \avg{\frac{\nabla u}{\sigma_t}}\cdot \jump{\E\varphi\hat{n}} \ud s + \int \nabla u \cdot \frac{1}{\sigma_t} \paren{\nablah\cdot\E}\!\varphi \ud \x
+		-\int_{\Gamma_0} \avg{\frac{\nabla u}{\sigma_t}}\cdot \jump{\E\varphi\n} \ud s + \int \nabla u \cdot \frac{1}{\sigma_t} \paren{\nablah\cdot\E}\!\varphi \ud \x
 	\end{equation}
 in the CG VEF discretization (Eq.~\ref{eq:cg}), a symmetric operator more amenable to accurate inversion via AMG is found. The symmetrized operator is then:
 	\begin{equation}

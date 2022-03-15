@@ -10,7 +10,7 @@ SMMs use an alternative closure for the moment equations. Where VEF uses a multi
 		\P = \T(\psi) + \frac{1}{3}\I \varphi 
 	\end{equation}
 where $\T(\psi)$ is a \emph{correction tensor} defined as: 
-	\begin{equation}
+	\begin{equation} \label{smm:corrten}
 		\T(\psi) = \int \Omegahat\otimes\Omegahat\, \psi \ud \Omega - \frac{1}{3}\I\int \psi \ud \Omega \,. 
 	\end{equation}
 Note that this is simply an algebraic reformulation of the second moment $\P = \int \Omegahat\otimes\Omegahat\, \psi \ud \Omega$ where an isotropic pressure tensor proportional to the zeroth moment is added and subtracted. That is, in the same way that VEF multiplies and divides by the zeroth moment, SMM adds and subtracts. 
@@ -29,7 +29,7 @@ We can now add and subtract $1/2 \int \psi \ud \Omega$ to arrive at the closed b
 		\vec{J}\cdot\n = 2J_n^- + \frac{1}{2}\varphi + \beta(\psi) \,, 
 	\end{equation}
 where 
-	\begin{equation}
+	\begin{equation} \label{smm:corrfac}
 		\beta(\psi) = \int |\Omegahat\cdot\n|\,\psi \ud \Omega - \frac{1}{2}\int\psi \ud \Omega 
 	\end{equation}
 is the boundary correction factor. 
@@ -43,8 +43,9 @@ The factors of one third and one half used in the closures of $\P$ and $\vec{J}\
 	\end{equation}
 Thus, the closures simplify to 
 	\begin{equation}
-		\P = \frac{1}{3}\I \varphi \,, \quad \vec{J}\cdot\n = 2 J_n^- + \frac{1}{2}\varphi \,. 
+		\P = \frac{1}{3}\I \varphi \,, \quad \vec{J}\cdot\n = 2 J_n^- + \frac{1}{2}\varphi 
 	\end{equation}
+in the thick diffusion limit. 
 In other words, the moment equations with SMM closures are equivalent to radiation diffusion with Marshak boundary conditions when the angular flux is linearly anisotropic. 
 
 With these closures, the SMM equations are 
@@ -56,11 +57,11 @@ With these closures, the SMM equations are
 		\nabla\cdot\paren{\T(\psi) + \frac{1}{3}\I \varphi} + \sigma_t \vec{J} = \vec{Q}_1 \,, \quad \x \in \D\,,
 	\end{equation}
 	\begin{equation} \label{smm:bc}
-		\vec{J}\cdot\n = \frac{1}{2}\varphi + \Jin + \beta(\psi) \,, \quad \x \in \partial \D \,. 
+		\vec{J}\cdot\n = \frac{1}{2}\varphi + 2\Jin + \beta(\psi) \,, \quad \x \in \partial \D \,. 
 	\end{equation}
 	\end{subequations}
 The second-order form is found by eliminating the current: 
-	\begin{equation}
+	\begin{equation} \label{smm:drift}
 		-\nabla\cdot\frac{1}{3\sigma_t}\nabla\varphi + \sigma_a \varphi = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t} + \nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T(\psi) \,. 
 	\end{equation}
 SMM solves the coupled system: 
@@ -75,14 +76,14 @@ SMM solves the coupled system:
 where boundary conditions are specified by Eqs. \todo{transport BC} and \ref{smm:bc}. 
 Since the closures are linear functions of the angular flux, the coupling between the transport and SMM equations is linear. 
 Let $\mat{L} = \Omegahat\cdot\nabla + \sigma_t$, $\mat{S} = \frac{\sigma_s}{4\pi}$, and 
-	\begin{equation}
+	\begin{equation} \label{smm:diff_op}
 		\mat{D} = -\nabla\cdot\frac{1}{3\sigma_t}\nabla + \sigma_a
 	\end{equation}
 be the streaming and collision, scattering, and diffusion operators. By eliminating the angular flux, the SMM algorithm is equivalent to: 
 	\begin{equation}
 		\mat{D}\varphi = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t} + \nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T(\mat{L}^{-1}(\mat{S}\varphi + q)) \,. 
 	\end{equation}
-By applying the inverse of the diffusion system to both sides, we see that the solution of the coupled transport-SMM system is the fixed-point: 
+By applying the inverse of the diffusion operator to both sides, we see that the solution of the coupled transport-SMM system is the fixed-point: 
 	\begin{equation}
 		\varphi = G(\varphi)
 	\end{equation}
@@ -90,7 +91,7 @@ where
 	\begin{equation}
 		G(\varphi) = \mat{D}^{-1}\bracket{Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t} + \nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T(\mat{L}^{-1}(\mat{S}\varphi + q))} \,. 
 	\end{equation}
-The fixed-point operator $G(\varphi)$ is applied in two stages: 1) solve the transport equation using a scattering source formed from the VEF scalar flux and 2) solve the SMM equation using the correction tensor computed from the angular flux found in stage 1). As with VEF, this fixed point problem can be solved with simple fixed-point iteration or more advanced techniques such as Anderson acceleration. 
+The fixed-point operator $G(\varphi)$ is applied in two stages: 1) solve the transport equation using a scattering source formed from the SMM scalar flux and 2) solve the SMM drift-diffusion equation using the correction tensor computed from the angular flux found in stage 1). As with VEF, this fixed point problem can be solved with simple fixed-point iteration or more advanced techniques such as Anderson acceleration. 
 
 We now discuss algorithmic differences between SMM and VEF. Evaluating the fixed-point operators for SMM and VEF requires solving systems of the form: 
 	\begin{subequations}
@@ -103,12 +104,150 @@ We now discuss algorithmic differences between SMM and VEF. Evaluating the fixed
 	\end{subequations}
 for SMM and VEF, respectively. The right hand side terms $b$ represent generic source terms. The dependences on the angular flux are explicitly denoted in the SMM right hand side source and the VEF Eddington tensor to highlight the location of the couplings to the transport equation. Observe that the SMM left hand side is a radiation diffusion equation with a transport-dependent source term. In contrast, VEF has a transport-dependent, non-symmetric left hand side but a fixed right hand side source term. This is a key difference that makes the evaluation of the SMM fixed-point operator cheaper than the VEF operator. Solving the VEF equations requires the use of iterative methods compatible with non-symmetric systems. These generally require either more storage or more computation compared to methods designed to solve symmetric systems. Second, the SMM left hand side does not need to be recomputed at each evaluation of the fixed-point operator. For VEF, the left hand side must be reassembled at each iteration. In addition, the SMM left hand side can be directly discretized and solved with existing techniques. 
 
-\section{Derivation by Linearizing VEF}
+\section{Connection to Linearized VEF} \label{smm_sec:linearize}
+In the process of performing a Fourier stability analysis of the VEF algorithm, \textcite{cefus} showed that SMM is equivalent to the VEF algorithm linearized about a linearly anisotropic solution. Let 
+	\begin{equation}
+		\mat{V}(\psi,\varphi) = -\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\paren{\E(\psi)\varphi} + \sigma_a \varphi - Q = 0 \,, \quad \x \in \D \,,
+	\end{equation}
+	\begin{equation}
+		\mat{B}(\psi,\varphi) = \vec{J}\cdot\n - E_b \varphi - 2\Jin = 0 \,, \quad \x \in \partial\D \,,
+	\end{equation}
+represent the VEF drift-diffusion equation and Miften-Larsen boundary conditions, respectively. Here, $Q = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t}$ is used for brevity. The coupled transport-VEF system can be written as the root-finding problem: 
+	\begin{equation}
+		F(\y) = \begin{bmatrix} 
+			\mat{L}\psi - \mat{S}\varphi - q \\ 
+			\mat{V}(\psi,\varphi) \\ 
+			\mat{B}(\psi,\varphi)
+		\end{bmatrix}
+		= 0 \,, 
+	\end{equation}
+where $\y = \vector{\psi & \varphi}$. In this section, we show that the SMM algorithm is equivalent to a first-order Taylor series of $F$ expanded about $\y_0 = \vector{\psi_0 & \varphi_0}$ where $\psi_0$ is linearly anisotropic and $\varphi_0 = \int \psi_0 \ud \Omega$. 
+The first-order Taylor series approximation to the root finding problem $F(\y) = 0$ is: 
+	\begin{equation}
+		0 = F(\y) \xrightarrow{\text{TSE}} F(\y_0) + \pderiv{F}{\y}\biggr\rvert_{\y_0}(\y - \y_0) \,. 
+	\end{equation}
+The Jacobian is given by: 
+	\begin{equation}
+		\pderiv{F}{\y} = \begin{bmatrix} 
+			\pderiv{F_1}{\psi} & \pderiv{F_1}{\varphi} \\ 
+			\pderiv{F_2}{\psi} & \pderiv{F_2}{\varphi} \\ 
+			\pderiv{F_3}{\psi} & \pderiv{F_3}{\varphi} 
+		\end{bmatrix} 
+	\end{equation}
+with $F_i$ the rows of $F$. The transport equation is linear in both $\psi$ and $\varphi$ so the first row of the Jacobian is simply: 
+	\begin{equation}
+		\pderiv{F_1}{\y} = \begin{bmatrix} 
+			\mat{L} & -\mat{S} 
+		\end{bmatrix} \,. 
+	\end{equation}
+The second and third rows are complicated by the nonlinear dependence on $\psi$ in the operators $\mat{V}$ and $\mat{B}$. The second row of the Jacobian is: 
+	\begin{equation}
+	\begin{aligned}
+		\pderiv{F_2}{\y}\biggr\rvert_{\y_0} &= \begin{bmatrix} 
+			\displaystyle\pderiv{\mat{V}}{\psi} & \displaystyle\pderiv{\mat{V}}{\varphi} 
+		\end{bmatrix} \biggr\rvert_{\y_0} \\
+		&= \begin{bmatrix} 
+			\displaystyle-\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\paren{\pderiv{\E}{\psi}\biggr\rvert_{\psi_0}\varphi_0} & 
+			\displaystyle-\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\E(\psi_0) + \sigma_a 
+		\end{bmatrix} 
+	\end{aligned}
+	\end{equation}
+where 
+	\begin{equation}
+	 	\pderiv{\E}{\psi}\biggr\rvert_{\psi_0} = \frac{1}{\phi_0}\paren{\int \Omegahat\otimes\Omegahat\paren{\cdot}\ud\Omega - \E_0\int \paren{\cdot}\ud\Omega}
+	\end{equation} 
+is derived in Eq.~\todo{ref}. Here, $\phi_0 = \int \psi_0 \ud \Omega$ and $\E_0 = \E(\psi_0)$. Since $\psi_0$ is defined to be a linearly anisotropic function in angle, $\E_0 = \frac{1}{3}\I$. 
+In addition, since $\varphi_0 = \int \psi_0 \ud \Omega$, $\varphi_0/\phi_0 = 1$ and thus  
+	\begin{equation}
+		\pderiv{\E}{\psi}\biggr\rvert_{\psi_0} \varphi_0 = \int \Omegahat\otimes\Omegahat\, \paren{\cdot}\ud\Omega  - \frac{1}{3}\I \int \paren{\cdot}\ud\Omega \equiv \T(\cdot) \,. 
+	\end{equation}
+In other words, the product $\pderiv{\E}{\psi}|_{\psi_0}\varphi_0$ is equivalent to the additive closure used in SMM (see Eq.~\ref{smm:corrten}). Thus, the second row of the Jacobian becomes
+	\begin{equation}
+		\pderiv{F_2}{\y} = \begin{bmatrix} 
+			-\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T & \mat{D} 
+		\end{bmatrix}
+	\end{equation}
+where $\mat{D}$ is the diffusion operator defined in Eq.~\ref{smm:diff_op}. 
 
-\section{A Connection to Newton's Method}
+For the boundary conditions, an analogous process yields
+	\begin{equation}
+	\begin{aligned}
+		\pderiv{F_3}{\y} &= \begin{bmatrix} 
+			\displaystyle-\pderiv{E_b}{\psi}\biggr\rvert_{\psi_0} \varphi_0 & -E_b(\psi_0) 
+		\end{bmatrix} \\
+		&= \begin{bmatrix} 
+			-\beta & -\frac{1}{2} 
+		\end{bmatrix} \,,
+	\end{aligned}
+	\end{equation}
+where we have used the form of the derivative of the Eddington boundary factor derived in Eq.~\todo{ref} and $\beta$ is the correction factor given in Eq.~\ref{smm:corrfac}. 
+
+The Taylor series approximation of $F$ is then 
+	\begin{equation}
+	\begin{aligned}
+		F(\y) &\approx F(\y_0) + \pderiv{F}{\y}\biggr\rvert_{\y_0}(\y - \y_0)\\
+		&= \begin{bmatrix} 
+			\mat{L}\psi_0 - \mat{S}\varphi_0 - q \\
+			-\mat{D}\varphi_0 - Q \\ 
+			\vec{J}\cdot\n - \frac{1}{2}\varphi_0 - 2\Jin 
+		\end{bmatrix}
+		+  \begin{bmatrix} 
+			\mat{L} & -\mat{S} \\
+			-\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T & \mat{D} \\ 
+			-\beta & -\frac{1}{2} 
+		\end{bmatrix} \begin{bmatrix} 
+			\psi - \psi_0 \\ \varphi - \varphi_0 
+		\end{bmatrix} \\
+		&= \begin{bmatrix} 
+			\mat{L}\psi - \mat{S}\varphi - q \\
+			-\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T(\psi - \psi_0) + \mat{D}\varphi \\
+			\vec{J}\cdot\n - \frac{1}{2}\varphi - 2\Jin - \beta(\psi - \psi_0)
+		\end{bmatrix} \\
+		&= \begin{bmatrix} 
+			\mat{L}\psi - \mat{S}\varphi - q \\
+			-\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T(\psi) + \mat{D}\varphi \\
+			\vec{J}\cdot\n - \frac{1}{2}\varphi - 2\Jin - \beta(\psi)
+		\end{bmatrix}
+	\end{aligned}
+	\end{equation}
+where the last equivalence is due to the fact that $\T(\psi_0) = 0$ and $\beta(\psi_0) = 0$ since 
+	\begin{equation}
+		\pderiv{\E}{\psi}\biggr\rvert_{\psi_0}(\psi_0) = 0 \,, \quad \pderiv{E_b}{\psi}\biggr\rvert_{\psi_0}(\psi_0) = 0 \,. 
+	\end{equation}
+Converting the operator notation back to equations, the first-order Taylor series approximation to the root-finding problem $F(\y) = 0$ is equivalent to 
+	\begin{subequations} \label{smm:trans_rewrite}
+	\begin{equation}
+		\Omegahat\cdot\nabla\psi + \sigma_t \psi = \frac{\sigma_s}{4\pi}\varphi + q \,, \quad \x \in \D \,,
+	\end{equation}
+	\begin{equation}
+		\psi(\x,\Omegahat) = \bar{\psi}(\x,\Omegahat) \,, \quad \x \in \partial\D \ \mathrm{and} \ \Omegahat\cdot\n < 0 \,,
+	\end{equation}
+	\end{subequations}
+	\begin{subequations} \label{smm:linearized}
+	\begin{equation}
+		-\nabla\cdot\frac{1}{3\sigma_t}\nabla\varphi + \sigma_a \varphi = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t} + \nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T(\psi) \,, \quad \x \in \D \,, 
+	\end{equation}
+	\begin{equation}
+		\vec{J}\cdot\n = \frac{1}{2}\varphi + \Jin + \beta(\psi) \,, \quad \x \in \partial \D \,. 
+	\end{equation}
+	\end{subequations}
+Observe that these equations are equivalent to the transport equation and the SMM drift-diffusion equation given in Eq.~\ref{smm:drift} with the corrected Marshak boundary condition from Eq.~\ref{smm:bc}. 
+An equivalent fixed-point operator can be derived by eliminating the angular flux and operating by the inverse of the diffusion operator. Thus, SMMs are both 1) an algorithm based on a reformulation of the transport equation using additive closures and 2) VEF algorithms linearized about a linearly anisotropic solution. 
+
+% Note that a solution procedure for Eqs.~\ref{smm:trans_rewrite} and \ref{smm:linearized} that does not iteratively lag the correction tensor and boundary factor would be equivalent to a Newton scheme to solve the VEF equations. Such an algorithm would converge with the quadratic convergence characteristic of Newton's method. However, forming and solving the operator $\pderiv{\mat{V}}{\psi}$ is prohibitively expensive due to its dependence on the high-dimensional angular flux. Iteratively lagging the correction tensor and factor then represents a``quasi-Newton'' scheme in that the inverse of the Jacobian is approximated by lagging the $\psi$-dependent terms. Unfortunately, lagging these terms degrades the convergence so that the SMM algorithm has linear convergence. 
 
 \section{Discrete Second Moment Methods}
+The equivalence of SMM and VEF linearized about a linearly anisotropic solution provides a systematic path toward deriving discrete SMMs. Any VEF method can be converted to an SMM method through the linearization process described in Section \ref{smm_sec:linearize}. In the following subsections, the methods derived in Chapters \ref{chap:dgvef} and \ref{chap:rtvef} are linearized to form SMMs. 
+
+\todo{talk about general form where just need partial derivative}
+
 \subsection{Interior Penalty and Continuous Finite Element}
+The DG VEF discretization is: find $\varphi\in Y_p$ such that 
+	\begin{multline} \label{smm:ipvef}
+		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int_{\Gamma_0} \kappa \jump{u} \jump{\varphi} \ud s - \int_{\Gamma_0} \jump{u} \avg{\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi}\cdot\n} \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\n} \ud s \\
+		+ \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x \\ 
+		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_0} \jump{u} \avg{\frac{\vec{Q}_1\cdot\n}{\sigma_t}} \ud s - 2\int_{\Gamma_b} u\, \Jin \ud s \,, \quad \forall u \in Y_p \,. 
+	\end{multline}
 
 \subsection{Mixed Finite Element}
 

@@ -2,7 +2,7 @@
 \documentclass[../doc.tex]{subfiles}
 
 \begin{document}
-\chapter{Mixed Finite Element VEF Discretizations}
+\chapter{Mixed Finite Element VEF Discretizations} \label{chap:rtvef}
 Here, we derive mixed finite element discretizations for the VEF equations with Miften-Larsen boundary conditions. We seek approximations to the scalar flux and current in the finite-dimensional spaces $\mathcal{E}$ and $\mathcal{V}$, respectively, and test the zeroth and first moments with functions in the spaces $\mathcal{E}'$ and $\mathcal{V}'$, respectively. We consider Galerkin discretizations so that the test and trial spaces for the scalar flux and current are the same. In other words, we restrict ourselves to the case that $\mathcal{E}' = \mathcal{E}$ and $\mathcal{V}' = \mathcal{V}$. We proceed by first informally deriving the weak form assuming the spaces $\mathcal{E}$ and $\mathcal{V}$ have the requisite regularity to allow the resulting weak form to be well defined. We will see that there is no ambiguity in the choice $\mathcal{E} = Y_p \subset L^2(\D)$. However, due to the presence of the Eddington tensor, the standard Raviart Thomas methods are inappropriate and so two choices for $\mathcal{V}$ are presented: a method with $\mathcal{V} = W_{p+1} \subset \Hone$ and a non-conforming method where $\mathcal{V} = \RT_p\subset H(\div;\D)$. 
 
 \section{Weak Form}
