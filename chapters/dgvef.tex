@@ -166,7 +166,7 @@ Recall that this form has already applied boundary conditions according to Eq.~\
 		\end{equation}
 		\end{subequations}
 
-\subsection{Interior Penalty}
+\subsection{Interior Penalty} \label{dgvef_sec:ip}
 An interior penalty (IP)-like method uses 
 	\begin{equation}
 		\alpha(\varphi) = \kappa \jump{\varphi} \,, \quad \vec{\theta}(\varphi) = 0 \,, 
@@ -262,7 +262,7 @@ are analogues of $\vec{r}_0(\vec{\tau})$ and $\vec{\ell}(\vec{\chi})$, respectiv
 	\end{multline}
 The advantage of LDG is that the penalty parameter does not need to scale with the mesh size. However, the LDG stabilization term has a non-compact stencil that connects neighbors of neighbors, leading to less sparsity than the IP or BR2 methods. 
 
-\section{Extracting a Continuous Discretization from the DG Framework}
+\section{Extracting a Continuous Discretization from the DG Framework} \label{dgvef_sec:cfem}
 We now show how a continuous finite element (CG) discretization of the VEF drift-diffusion equation can be extracted from the DG framework presented above. An approximate inversion of this operator is one stage of the subspace correction preconditioner described in Section \ref{sec:subspace} that is used to efficiently solve the IP and BR2 VEF discretizations. This CG operator is also a VEF method itself and represents an extension to multiple dimensions, arbitrary-order, and curved meshes of the algorithm in \cite{two-level-independent-warsa}. A CG VEF method has fewer unknowns than an analogous DG method and requires simpler methods to solve the resulting linear system. We will show that this CG discretization has similar accuracy to DG and does not degrade convergence of the fixed-point iteration even in the asymptotic thick diffusion limit. However, it is unclear if using a continuous finite element space would negatively impact robustness and stability in the larger radiation-hydrodynamics multiphysics setting. 
 
 Let $u,\varphi \in V_p$, the degree-$p$ continuous finite element space, then 
