@@ -32,7 +32,7 @@ TABS = cp eps_table\
 dgvef/weak dgvef/mock dgvef/mms_table\
 rtvef/weak rtvef/solvers rtvef/mms rtvef/mms_elev rtvef/mms_diff \
 smm/weak smm/vmms smm/mms_diff smm/mms_elev \
-anderson eps3
+disc/anderson disc/eps3
 TABS := $(addsuffix .tex, $(TABS))
 TABS := $(addprefix $(figdir)/, $(TABS))
 
@@ -54,7 +54,7 @@ all : $(MAIN).pdf
 # create a directory called $(figdir) if needed 
 $(figdir) : 
 	mkdir -p $(figdir)
-	mkdir -p $(figdir)/dgvef $(figdir)/rtvef $(figdir)/smm
+	mkdir -p $(figdir)/dgvef $(figdir)/rtvef $(figdir)/smm $(figdir)/disc
 
 # make figures from python code. save to figdir directory 
 %.pdf : %.py $(MPL) $(datadir)/*
