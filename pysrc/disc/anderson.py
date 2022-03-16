@@ -8,7 +8,7 @@ import texTools as tex
 from OutputCycler import * 
 oc = OutputCycler()
 
-base = 'data/dgvef/anderson/'
+base = 'data/disc/anderson/'
 types = ['fp', 'low', 'aug']
 eps = np.arange(1,5)
 
