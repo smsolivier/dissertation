@@ -10,9 +10,14 @@ import re
 
 oc = OutputCycler()
 files = [
-	{'base': 'data/rtvef/cp/', 'types': ['h1', 'rtgs', 'hrt'], 'ext': 'rtvef'}, 
-	{'base': 'data/dgvef/cp/', 'types': ['ip', 'br2', 'cg', 'mdldg'], 'ext': 'dgvef'}, 
-	{'base': 'data/smm/cp/', 'types': ['ip', 'cg', 'rt_bicg', 'hrt'], 'ext': 'smm'}
+	{'base': 'data/rtvef/cp/', 'types': ['h1', 'rtgs', 'hrt'], 'ext': 'rtvef', 
+		'labels': ['H1', 'RT', 'HRT'], 'ikeys': ['max', 'min', 'avg']}, 
+	{'base': 'data/dgvef/cp/', 'types': ['ip', 'br2', 'cg', 'mdldg'], 'ext': 'dgvef', 
+		'labels': ['IP', 'BR2', 'CG', 'MDLDG'], 'ikeys': ['max', 'min', 'avg']}, 
+	{'base': 'data/smm/cp/', 'types': ['ip', 'cg', 'rt_bicg', 'hrt'], 'ext': 'smm', 
+		'labels': ['IP', 'CG', 'RT', 'HRT'], 'ikeys': ['max', 'min', 'avg']}, 
+	{'base': 'data/disc/iguess/', 'types': ['outer_true', 'outer_false'], 'ext': 'iguess', 
+		'labels': ['Previous', 'Zero'], 'ikeys': ['max', 'min', 'inner']}
 ]
 for file in files:
 	d = {}
@@ -23,10 +28,6 @@ for file in files:
 				Ne = int(re.findall(r'([0-9]*) elements', line)[0])
 			if ('fe order = ' in line):
 				p = int(re.findall(r'fe order = ([0-9]*)', line)[0])
-			if ('vef type = ' in line):
-				t = re.findall(r'vef type = (.*)', line)[0]
-				if ('SM' in t):
-					t = t.strip('SM')
 
 			if ('outer = ' in line):
 				outer = int(re.findall(r'outer = ([0-9]*),', line)[0])
@@ -53,10 +54,10 @@ for file in files:
 	l = len(types)
 	ele = list(d[types[0]][1].keys())
 	table = tex.Tabular()
-	keys = ['max', 'min', 'avg']
-	table.SetHeader('$N_e$', *(types*(len(keys)+1)))
-	fmt = {'max': '{}', 'min': '{}', 'avg': '{:.2f}'}
-	titles = {'outer': 'Outer', 'max': 'Max Inner', 'min': 'Min Inner', 'avg': 'Avg. Inner'}
+	keys = file['ikeys']
+	table.SetHeader('$N_e$', *(file['labels']*(len(keys)+1)))
+	fmt = {'max': '{}', 'min': '{}', 'inner': '{}', 'avg': '{:.2f}'}
+	titles = {'outer': 'Outer', 'max': 'Max Inner', 'min': 'Min Inner', 'avg': 'Avg. Inner', 'inner': 'Total Inner'}
 	for p in [1,2,3]:
 		for n in ele:
 			si = [str(n)] 

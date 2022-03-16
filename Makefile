@@ -23,8 +23,9 @@ GLOSS = glossary.tex
 MAIN = doc
 
 # list of figures to be built for the document 
-FIGS = lor lor4 lor8 lor_dist lor_dist4 lor_dist8 sweep \
-dgvef/mms dgvef/unified rtvef/hyb_sparsity smm/mms eps_lineout quad_mesh
+FIGS = lor lor4 lor8 lor_dist lor_dist4 lor_dist8 sweep eps_lineout quad_mesh \
+dgvef/mms dgvef/unified rtvef/hyb_sparsity smm/mms \
+disc/iguess
 FIGS := $(addsuffix .pdf, $(FIGS))
 
 # list of tables to build
