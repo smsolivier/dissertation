@@ -121,7 +121,7 @@ represent the VEF drift-diffusion equation and Miften-Larsen boundary conditions
 		\end{bmatrix}
 		= 0 \,, 
 	\end{equation}
-where $\y = \vector{\psi & \varphi}$. In this section, we show that the SMM algorithm is equivalent to a first-order Taylor series of $F$ expanded about $\y_0 = \vector{\psi_0 & \varphi_0}$ where $\psi_0$ is linearly anisotropic and $\varphi_0 = \int \psi_0 \ud \Omega$. 
+where $\y = \vector{\psi & \varphi}$. In this section, we show that the SMM algorithm is equivalent to a first-order Taylor series of $F$ expanded about $\y_0 = \vector{\psi_0 & \varphi_0}$ where $\psi_0$ is a linearly anisotropic solution of the transport equation and $\varphi_0 = \int \psi_0 \ud \Omega$. In other words, $\psi_0$ is the diffusion approximation to the transport problem at hand. We assume that the $\psi_0$ and $\varphi_0$ satisfy the transport and Marshak diffusion boundary conditions, respectively. 
 
 The first-order Taylor series approximation to the root finding problem $F(\y) = 0$ is: 
 	\begin{equation}
@@ -162,7 +162,7 @@ In addition, since $\varphi_0 = \int \psi_0 \ud \Omega$, $\varphi_0/\phi_0 = 1$ 
 	\begin{equation}
 		\pderiv{\E}{\psi}\biggr\rvert_{\psi_0} \varphi_0 = \int \Omegahat\otimes\Omegahat\, \paren{\cdot}\ud\Omega  - \frac{1}{3}\I \int \paren{\cdot}\ud\Omega \equiv \T(\cdot) \,. 
 	\end{equation}
-In other words, the product $\pderiv{\E}{\psi}|_{\psi_0}\varphi_0$ is equivalent to the additive closure used in SMM (see Eq.~\ref{smm:corrten}). Thus, the second row of the Jacobian becomes
+In other words, the product $\pderiv{\E}{\psi}|_{\psi_0}\varphi_0$ is equivalent to the correction tensor used in SMM (see Eq.~\ref{smm:corrten}). Thus, the second row of the Jacobian becomes
 	\begin{equation}
 		\pderiv{F_2}{\y} = \begin{bmatrix} 
 			-\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T & \mat{D} 
@@ -236,6 +236,12 @@ Observe that these equations are equivalent to the transport equation and the SM
 An equivalent fixed-point operator can be derived by eliminating the angular flux and operating by the inverse of the diffusion operator. Thus, SMMs are both 1) an algorithm based on a reformulation of the transport equation using additive closures and 2) VEF algorithms linearized about a linearly anisotropic solution. 
 
 % Note that a solution procedure for Eqs.~\ref{smm:trans_rewrite} and \ref{smm:linearized} that does not iteratively lag the correction tensor and boundary factor would be equivalent to a Newton scheme to solve the VEF equations. Such an algorithm would converge with the quadratic convergence characteristic of Newton's method. However, forming and solving the operator $\pderiv{\mat{V}}{\psi}$ is prohibitively expensive due to its dependence on the high-dimensional angular flux. Iteratively lagging the correction tensor and factor then represents a``quasi-Newton'' scheme in that the inverse of the Jacobian is approximated by lagging the $\psi$-dependent terms. Unfortunately, lagging these terms degrades the convergence so that the SMM algorithm has linear convergence. 
+
+\section{VEF and SMM as Newton Methods}
+Newton's method solves the root-finding problem $F(\y) = 0$ by linearizing $F$ about the previous iteration. The iterative scheme is then 
+	\begin{equation}
+		0 = F(\y) \xrightarrow{\text{TSE}} F(\y_n) + \pderiv{F}{\y}\biggr\rvert_{\y_n}(\y_{n+1} - \y_n) \Rightarrow \y_{n+1} = \y_n - \bracket{\pderiv{F}{\y}\biggr\rvert_{\y_n}}^{-1} F(\y_n) \,. 
+	\end{equation}
 
 \section{Discrete Second Moment Methods}
 The equivalence of SMM and VEF linearized about a linearly anisotropic solution provides a systematic path toward deriving discrete SMMs. Any VEF method can be converted to an SMM through the linearization process described in Section \ref{smm_sec:linearize}. We make use of the structure of the coupled transport-VEF system to simplify the derivations. Consider
