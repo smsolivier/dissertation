@@ -263,6 +263,58 @@ are analogues of $\vec{r}_0(\vec{\tau})$ and $\vec{\ell}(\vec{\chi})$, respectiv
 The advantage of LDG is that the penalty parameter does not need to scale with the mesh size. However, the LDG stabilization term has a non-compact stencil that connects neighbors of neighbors, leading to less sparsity than the IP or BR2 methods. 
 
 \section{Implementation of Lifting Operators}
+Consider the face-local lifting operator $\vec{\rho}_f(\omega)$ used in the BR2 stabilization term defined in Eq.~\ref{dgvef:rhof} with $\omega = \jump{u}$ which satisfies
+	\begin{equation} \label{eq:lift_particularize}
+		\int \vec{v}\cdot\vec{\rho}_f(\jump{u}) \ud \x = -\int_{f} \avg{\vec{v}\cdot\hat{n}} \jump{u} \ud s \,, \quad \forall \vec{v} \in W_p\,, \quad \text{on} \ f \in \Gamma_0 \,. 
+	\end{equation}
+Let $\underline{y}$ represent the vector of DOFs corresponding to a $Y_p$ or $W_p$ grid function $y$. Let $\vec{v},\vec{w} \in W_p$ and define 
+	\begin{equation}
+		\underline{v}^T \mat{M} \underline{w} = \int \vec{v}\cdot\vec{w} \ud \x 
+	\end{equation}
+as the $W_p$ mass matrix. Further, define 
+	\begin{equation}
+		\underline{v}^T \mat{A}_f \underline{u} = - \int_f \avg{\vec{v}\cdot\hat{n}} \jump{u} \ud s \,, \quad \text{on} \ f \in \Gamma_0 \,, 
+	\end{equation}
+for $u \in Y_p$. 
+Equation \ref{eq:lift_particularize} is then equivalent to 
+	\begin{equation}
+		\mat{M} \underline{\rho}_f(\jump{u}) = \mat{A}_f \underline{u} \iff \underline{\rho}_f(\jump{u}) = \mat{M}^{-1} \mat{A}_f \underline{u} \,. 
+	\end{equation}
+Since the $W_p$ mass matrix is block diagonal by element, its inverse can be computed and stored without fill-in by simply inverting each block individually. The BR2 stabilization term can then be written as 
+	\begin{equation}
+	\begin{aligned}
+		\sum_{f\in\Gamma_0}\int \vec{\rho}_f(\jump{u}) \cdot\vec{\rho}_f(\jump{\varphi}) \ud \x &= \sum_{f\in\Gamma_0}\underline{\rho}_f(\jump{u})^T \mat{M} \underline{\rho}_f(\jump{\varphi}) \\
+		&= \sum_{f\in\Gamma_0}\underline{u}^T \mat{A}_f^T \mat{M}^{-T} \mat{M} \mat{M}^{-1} \mat{A}_f \underline{\varphi} \\
+		&= \sum_{f\in\Gamma_0}\underline{u}^T \mat{A}_f^T \mat{M}^{-1} \mat{A}_f \underline{\varphi} 
+	\end{aligned}
+	\end{equation}
+since $\mat{M}$ is symmetric. Again, since $\mat{M}^{-1}$ is block diagonal by element and the products $\mat{A}_f\underline{\varphi}$ and $\underline{u}^T \mat{A}_f^T$ are non-zero only on DOFs that share the face $f$, each argument of the sum only contributes to the DOFs that share the face $f$. Due to this, the matrix $\sum_{f\in\Gamma_0} \mat{A}_f^T \mat{M}^{-1} \mat{A}_f$ can be assembled face by face. 
+
+Next, consider one part of the LDG stabilization term: 
+	\begin{equation}
+		\int \vec{\rho}_0(\jump{u}) \cdot \vec{r}_0(\jump{\E\varphi\hat{n}}) \ud \x \,. 
+	\end{equation}
+Let, 
+	\begin{equation}
+		\underline{v}^T \mat{B} \underline{\varphi} = -\int_{\Gamma_0} \avg{\vec{v}}\cdot \jump{\E\varphi\hat{n}} \ud s \,,
+	\end{equation}
+and further define the total interaction $W_p$ mass matrix as 
+	\begin{equation}
+		\underline{v}^T \mat{M}_t \underline{w} = \int \sigma_t\, \vec{v} \cdot \vec{w} \ud \x \,, 
+	\end{equation}
+so that $\underline{r}_0\!\paren{\jump{\E\varphi\hat{n}}} = \mat{M}_t^{-1} \mat{B} \underline{\varphi}$. In addition, define 
+	\begin{equation}
+		\underline{v}^T \mat{A} \underline{u} = - \int_{\Gamma_0} \avg{\vec{v}\cdot\hat{n}} \jump{u} \ud s \,, 
+	\end{equation}
+such that $\mat{A} = \sum_{f\in\Gamma_0} \mat{A}_f$. The LDG stabilization term under consideration is then 
+	\begin{equation}
+	\begin{aligned}
+	 	\int \vec{\rho}_0(\jump{u})\cdot\vec{r}_0\!\paren{\jump{\E\varphi\hat{n}}} \ud \x &= \underline{\rho}_0(\jump{u})^T \mat{M} \underline{r}_0\!\paren{\jump{\E\varphi\hat{n}}} \\
+		&= \underline{u}^T \mat{A}^T \mat{M}^{-T} \mat{M} \mat{M}_t^{-1} \mat{B} \underline{\varphi} \\
+		&= \underline{u}^T \mat{A}^T\mat{M}_t^{-1}\mat{B} \underline{\varphi} \,.
+	\end{aligned}
+	\end{equation} 
+Note that since the matrices $\mat{A}$ and $\mat{B}$ are not face-local, this term cannot be assembled locally. The LDG stabilization term is instead formed through matrix multiplication as $\mat{A}^T\mat{M}_t^{-1}\mat{B}$. 
 
 \section{Extracting a Continuous Discretization from the DG Framework} \label{dgvef_sec:cfem}
 We now show how a continuous finite element (CG) discretization of the VEF drift-diffusion equation can be extracted from the DG framework presented above. An approximate inversion of this operator is one stage of the subspace correction preconditioner described in Section \ref{sec:subspace} that is used to efficiently solve the IP and BR2 VEF discretizations. This CG operator is also a VEF method itself and represents an extension to multiple dimensions, arbitrary-order, and curved meshes of the algorithm in \cite{two-level-independent-warsa}. A CG VEF method has fewer unknowns than an analogous DG method and requires simpler methods to solve the resulting linear system. We will show that this CG discretization has similar accuracy to DG and does not degrade convergence of the fixed-point iteration even in the asymptotic thick diffusion limit. However, it is unclear if using a continuous finite element space would negatively impact robustness and stability in the larger radiation-hydrodynamics multiphysics setting. 
