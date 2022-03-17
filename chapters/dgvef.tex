@@ -407,7 +407,7 @@ is the analytic solution of the Taylor Green vortex. The time integration is cal
 \begin{figure}
 \centering
 \includegraphics[width=.5\textwidth]{data/img/tgmesh0.3.png}
-\caption{}
+\caption{An example of a third-order mesh distorted by advecting the interior nodes according to the velocity field of the Taylor-Green hydrodynamics problem. }
 \label{dgvef:tgmesh}
 \end{figure}
 
@@ -416,14 +416,14 @@ Figure \ref{dgvef:mms_plot} shows the $L^2(\D)$ error between the VEF solution a
 % --- MMS tables --- 
 \begin{table}
 \centering
-\caption{}
+\caption{MMS error for each method as a function of the \emph{maximum} characteristic mesh size, $h$. The standard deviation of the four error values in each row is also provided. First-order polynomial basis functions were used. The order of accuracy and error constant were computed with logarithmic regression. }
 \label{dgvef:mms_table1}
 \input{figs/dgvef/mms_table}
 \end{table}
 
 \begin{table}
 \centering
-\caption{}
+\caption{MMS error for each method as a function of the \emph{maximum} characteristic mesh size, $h$. The standard deviation of the four error values in each row is also provided. Third-order polynomial basis functions were used. The order of accuracy and error constant were computed with logarithmic regression. }
 \label{dgvef:mms_table2}
 \input{figs/dgvef/mms_table_2}
 \end{table}
@@ -432,7 +432,7 @@ Figure \ref{dgvef:mms_plot} shows the $L^2(\D)$ error between the VEF solution a
 \begin{figure}
 \centering
 \includegraphics[width=.65\textwidth]{figs/dgvef/mms_1.pdf}
-\caption{}
+\caption{The error in the scalar flux as the mesh is refined. Quadratic basis functions were used. Comparison to the reference third-order slope indicates all methods converge with optimal third-order accuracy. }
 \label{dgvef:mms_plot}
 \end{figure}
 
@@ -447,7 +447,7 @@ We first demonstrate robust convergence on an $8\times 8$ linear mesh with $\D =
 % --- thick diffusion limit --- 
 \begin{table}
 \centering
-\caption{}
+\caption{Number of iterations to convergence in the thick diffusion limit on a coarse, orthogonal mesh.}
 \label{dgvef:tdl}
 \input{figs/eps_table}
 \end{table}
@@ -461,7 +461,7 @@ We first demonstrate robust convergence on an $8\times 8$ linear mesh with $\D =
 	\caption{}
 	\end{subfigure}	
 }
-\caption{}
+\caption{Lineouts of the 2D thick diffusion limit solutions taken at $y=\frac{1}{2}$ for the (a) IP, (b) BR2, (c) MDLDG, and (d) CG methods.}
 \label{dgvef:eps_lineout}
 \end{figure}
 
@@ -474,7 +474,7 @@ where $C = \max_{K_e \in \meshT} C_e$ with $C_e$ the condition number of the Jac
 \begin{figure}
 \centering
 \includegraphics[width=.65\textwidth]{data/img/3point.png}
-\caption{}
+\caption{A depiction of the triple point mesh used to stress test the VEF algorithms on a severely distorted, third-order mesh. The mesh was generated with a purely Lagrangian hydrodynamics simulation. }
 \label{dgvef:3point_mesh}
 \end{figure}
 
@@ -482,7 +482,7 @@ Table \ref{dgvef:tdl_3p} shows the number of fixed-point iterations to converge 
 % --- triple point TDL --- 
 \begin{table}
 \centering
-\caption{}
+\caption{Number of fixed-point iterations required for convergence on the triple point mesh as $\epsilon \rightarrow 0$. On the triple point mesh, reentrant faces mean the transport equation is not fully inverted at each iteration.}
 \label{dgvef:tdl_3p}
 \input{figs/eps_table_dgvef_3p}
 \end{table}
@@ -509,7 +509,7 @@ so that radiation enters the pipe at the left side of the domain. We use a Level
 \begin{figure}
 \centering
 \includegraphics[width=.65\textwidth]{figs/crooked_pipe.pdf}
-\caption{}
+\caption{Geometry, material data, and boundary conditions for the linearized crooked pipe problem.}
 \label{dgvef:cp_diag}
 \end{figure}
 
@@ -518,7 +518,7 @@ A VEF solution to the crooked pipe using the IP method with $p=2$ is shown in Fi
 \begin{figure}
 \centering
 \includegraphics[width=.65\textwidth]{data/img/cp.png}
-\caption{}
+\caption{VEF scalar flux solution to the linearized crooked pipe problem to show that VEF does capture the transport solution. The mesh is refined at the interface between thick and thin to adequately resolve the material interface. The IP VEF method with $p=2$ was used.}
 \label{dgvef:cp_sol}
 \end{figure}
 
@@ -528,7 +528,7 @@ Table \ref{dgvef:cphp} shows the number of outer Anderson-accelerated fixed-poin
 % --- crooked pipe hp scaling --- 
 \begin{table}
 \centering
-\caption{}
+\caption{The number of Anderson-accelerated fixed-point iterations until convergence to a tolerance of $10^{-6}$ for the IP, BR2, MDLDG, and CG discretizations of VEF on the linearized crooked pipe problem refined in $h$ and $p$. An Anderson space of size two is used.}
 \label{dgvef:cphp}
 \begin{adjustbox}{max width = \textwidth}
 \input{figs/cp_dgvef.tex}
@@ -567,7 +567,7 @@ Table \ref{dgvef:weak_mock} shows the number of BiCGStab iterations to convergen
 % --- weak scaling mock problem --- 
 \begin{table}
 \centering
-\caption{}
+\caption{Weak scaling the IP VEF method with $p=2$ on a non-physically difficult problem with mock VEF data. The preconditioner is parameterized by the method used for the approximate inverse of the continuous operator. The standard USC preconditioner with AMG on the continuous operator did not converge due to the large discontinuity in the VEF data. Convergence is recovered by applying AMG to a symmetrized version of the CG operator.}
 \label{dgvef:weak_mock}
 \input{figs/dgvef/mock}
 \end{table}
@@ -593,7 +593,7 @@ Next, we show weak scaling of the IP and CG VEF linear solves on the first outer
 % --- weak scaling on cp --- 
 \begin{table}
 \centering
-\caption{}
+\caption{Weak scaling the IP and CG VEF methods with $p=2$ on the first iteration of the linearized crooked pipe problem. A parallel block Jacobi sweep was used to generate the VEF data needed to form the VEF system. On this physically realistic problem, both the standard USC and USC with symmetrized CG operator converged uniformly. The iterative efficiency is compared to solving the corresponding IP and CG radiation diffusion problems. }
 \label{dgvef:weak_cp}
 \input{figs/dgvef/weak}
 \end{table}

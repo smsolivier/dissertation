@@ -14,7 +14,7 @@ sweeps = [1,2,3]
 method = 'ip'
 eps = np.arange(1,5)
 
-table = tex.Tabular(r'$\epsilon$', *[str(s) for s in sweeps], 'Orthogonal')
+table = tex.Tabular(r'$\epsilon$', *[str(s) for s in sweeps])
 for e in eps:
 	t = ['$10^{-' + str(e) + '}$']
 	for s in sweeps:
@@ -25,14 +25,14 @@ for e in eps:
 
 		t.append(str(outer))
 
-	f = open(orthog+method+str(e)+'.txt', 'r')
-	outer = int(re.findall(r'outer =\s([0-9]*)', f.read())[0])
-	t.append(str(outer))
-	f.close()
+	# f = open(orthog+method+str(e)+'.txt', 'r')
+	# outer = int(re.findall(r'outer =\s([0-9]*)', f.read())[0])
+	# t.append(str(outer))
+	# f.close()
 
 	table.AddRow(*t)
-table.AddColumnGroup('Triple Point', 1, len(sweeps))
-table.AddColumnBreak(0)
+# table.AddColumnGroup('Triple Point', 1, len(sweeps))
+# table.AddColumnBreak(0)
 if (oc.Good()):
 	table.Write(oc.Get())
 else:

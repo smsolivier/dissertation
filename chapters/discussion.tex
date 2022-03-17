@@ -29,7 +29,7 @@
 % --- outer and inner on crooked pipe hp --- 
 \begin{table}
 \centering
-\caption{}
+\caption{The number of Anderson-accelerated fixed-point iterations and the maximum, minimum, and total number of inner iterations performed across all outer iterations for the IP VEF method on the crooked pipe problem refined in $h$ and $p$. An Anderson space of size two is used. The effect of using the previous outer iteration's solution as an initial guess for the inner solver is compared to using an initial guess of zero at each inner iteration. }
 \label{}
 \input{figs/cp_iguess}
 \end{table}
@@ -39,7 +39,7 @@
 % --- multiple sweeps on triple point mesh --- 
 \begin{table}
 \centering
-\caption{}
+\caption{The number of fixed-point iterations to convergence on the triple point mesh in the thick diffusion limit. On the triple point mesh, the transport equation is not inverted exactly at each iteration due to the presence of re-entrant faces. The performance of the IP VEF method with $p=2$ is compared when 1, 2, and 3 partial inversions of the transport equation are performed at each fixed-point iteration. More transport inversions leads to faster convergence but not to the point that fewer total inversions are performed. }
 \label{disc:mult_sweeps}
 \input{figs/disc/eps3}
 \end{table}
@@ -47,7 +47,7 @@
 % --- anderson acceleration on triple point mesh --- 
 \begin{table}
 \centering
-\caption{}
+\caption{The number of Anderson-accelerated fixed-point iterations to solve the thick diffusion limit problem on the triple point mesh. Fixed-point iteration is compared to Anderson-accelerated fixed-point iteration with an Anderson space of five scalar flux solution vectors (Low Memory) and five scalar and angular flux solution vectors (Augmented). The slowdown of the Low Memory option indicates Anderson cannot accelerate the slowdown from inexact sweeps when the angular flux is not included in the Anderson space. }
 \label{disc:anderson}
 \input{figs/disc/anderson}
 \end{table}
