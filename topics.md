@@ -115,6 +115,7 @@
 	* point out correction terms are derivatives of VEF data => TSE 
 	* provides systematic path to convert VEF to SMM 
 * linearize IP, CG, RT, HRT 
+* do VEF and SMM differ with second order accuracy in TDL? 
 
 # Additional Results 
 * effect of initial guess from outer iteration 
