@@ -109,6 +109,7 @@
 \newcommand{\n}{\boldsymbol{\mathrm{n}}}
 \newcommand{\tang}{\boldsymbol{\mathrm{\tau}}}
 \newcommand{\Jin}{J_\text{in}}
+\newcommand\Q{\mathcal{Q}}
 
 % --- text highlighting --- 
 % highlights text to remind me to do look at it again

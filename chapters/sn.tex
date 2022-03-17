@@ -7,6 +7,22 @@
 \section{Discrete Ordinates and Discontinuous Galerkin}
 
 \section{The Transport Sweep}
+% --- sweep plot --- 
+\begin{figure}
+\centering
+\begin{subfigure}{.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/sweep.pdf}
+	\caption{}
+\end{subfigure}
+\begin{subfigure}{.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/sweep_1.pdf}
+	\caption{}
+\end{subfigure}
+\caption{Sparsity plots for a 1D DG \gls{sn} transport problem. The unknowns stride in space and then angle. In (a), scattering is included showing that all angles are coupled. By lagging the scattering term, (b) shows that each angle can now be solved independently. Furthermore, for each angle the system is either lower or upper block triangular by element. This means each angle can be solved element-by-element in a ``sweep''. In two and three dimensions, the block triangular structure can be revealed by a suitable reordering of the elements.}
+\label{sn:sweep}
+\end{figure}
 
 \section{Discrete VEF Data}
 

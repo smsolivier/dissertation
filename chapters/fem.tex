@@ -4,4 +4,106 @@
 \begin{document}
 \chapter{Finite Element Preliminaries}
 
+% --- element transformation --- 
+\begin{figure}
+\centering
+\begin{subfigure}{.4\textwidth}
+	\centering
+	\includegraphics[height=1.75in]{figs/quad_mesh.pdf}
+	\caption{}
+\end{subfigure}
+\begin{subfigure}{.59\textwidth}
+	\centering
+	\includegraphics[height=1.75in]{figs/eltrans.pdf}
+	\caption{}
+\end{subfigure}
+\caption{Depictions of (a) the mesh control points in a quadratic quadrilateral mesh and (b) the reference transformation used to describe the left element of (a).}
+\label{fem:eltrans}
+\end{figure}
+
+% --- jumps and averages --- 
+\begin{figure}
+\centering
+\includegraphics[width=.65\textwidth]{figs/jump_avg.pdf}
+\caption{A depiction of a discontinuous, piecewise quadratic solution across two quadrilateral elements. The normal vector, $\hat{n}$, is defined as pointing from $K_1$ to $K_2$ along the face between $K_1$ and $K_2$.}
+\label{fem:jump_avg}
+\end{figure}
+
+% --- fe support diagram --- 
+\begin{figure}
+\centering
+\includegraphics[width=.65\textwidth]{figs/fe_support.pdf}
+\caption{A depiction of a mesh of elements and a single basis function. Since the basis functions in the finite element method have local support, each basis function is non-zero only on the elements neighboring the shared node. }
+\label{fem:fe_support}
+\end{figure}
+
+% --- piola transform --- 
+\begin{figure}
+	\centering
+	\includegraphics[width=.5\textwidth]{figs/piola.pdf}
+	\caption{A depiction of the tangent and cotangent bases at the point $\vec{\xi} = (0,0)$ under a non-affine mesh transformation. }
+	\label{mms:piola}
+\end{figure}
+
+% --- RT quiver diagram --- 
+\begin{figure}
+	\centering
+	\includegraphics[width=.5\textwidth]{figs/quiver.pdf}
+	\caption{}
+	\label{mms:quiver}
+\end{figure}
+
+% --- DG FES --- 
+\begin{figure}
+\centering
+\includegraphics[width=.3\textwidth]{figs/dgfes.pdf}
+\caption{A depiction of the distribution of degrees of freedom in the linear DG space. The Legendre nodes are used to illustrate that degrees of freedom are not shared between elements. }
+\label{fem:dgfes}
+\end{figure}
+
+% --- CFEM FES ---
+\begin{figure}
+\centering
+\includegraphics[width=.3\textwidth]{figs/h1fes.pdf}
+\caption{A depiction of the distribution of degrees of freedom for the quadratic continuous finite element space. Continuity of members of the finite element space is enforced by sharing degrees of freedom across neighboring elements.}
+\label{fem:h1fes}
+\end{figure}
+
+% --- RT local polynomial space --- 
+\begin{figure}
+\centering
+\begin{subfigure}{.25\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/rt0.pdf}
+	\caption{}
+\end{subfigure}\qquad
+\begin{subfigure}{.25\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/rt1.pdf}
+	\caption{}
+\end{subfigure}\qquad
+\begin{subfigure}{.25\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/rt2.pdf}
+	\caption{}
+\end{subfigure}
+\caption{The interpolating points used for the nodal basis of the space $\Q_{p+1,p}\times \Q_{p,p+1}$ for (a) $p=0$, (b) $p=1$, and (c) $p=2$. Gauss-Legendre points are used in the tangential direction and Gauss-Lobatto in the normal direction for each component of the vector. Circles denote the degrees of freedom associated with the $\xi$ component and squares the $\eta$ component. }
+\label{fem:rt_local_poly}
+\end{figure}
+
+% --- RT FES --- 
+\begin{figure}
+\centering 
+\includegraphics[width=.3\textwidth]{figs/rtfes.pdf}
+\caption{The distribution of degrees of freedom corresponding to the first degree Raviart Thomas space. Continuity of the normal component is enforced by sharing the degrees of freedom corresponding to the normal component along the interior face between neighboring elements. The circles and squares denote degrees of freedom in the $x$ and $y$ directions, respectively. }
+\label{fem:rtfes}
+\end{figure}
+
+% --- RT trace space --- 
+\begin{figure}
+\centering
+\includegraphics[width=.3\textwidth]{figs/ifes0.pdf}
+\caption{The distribution of degrees of freedom corresponding to $\Lambda_1$, the space defined as the normal trace of the first degree Raviart Thomas space, on a $3\times 3$ mesh. }
+\label{fem:ifes}
+\end{figure}
 \end{document}
