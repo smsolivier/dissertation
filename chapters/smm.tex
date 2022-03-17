@@ -2,7 +2,11 @@
 \documentclass[../doc.tex]{subfiles}
 
 \begin{document}
-\chapter{Second Moment Methods}
+\chapter{Second Moment Methods} \label{chap:smm}
+Lewis and Miller's \cite{lewis_miller} \gls{smm} couples the transport equation to the moment equations with additive closures that depend linearly on the transport solution. This scheme is characterized by a two-stage process where 1) the transport equation is inverted with a scattering source defined from the previous iteration's SMM scalar flux and 2) a \emph{diffusion approximation} is solved with transport-dependent correction sources. By contrast, VEF uses nonlinear closures and the generally non-symmetric VEF moment system must be solved at each iteration. Since SMM solves the symetric diffusion equation instead of the non-symmetric VEF equations, less expensive solvers, such as conjugate gradient, can be used instead of the general purpose methods such as \gls{bicg} or the \gls{gmres} which generally require more computation and storage. In addition, where the VEF closures are well-defined only when $\psi>0$, the additive closures used in SMM are well-defined for any $\psi$. Finally, the SMM moment system can be discretized to exactly match the discretization for the radiation diffusion package in a multiphysics code. Such a method could be used in-place in a hydrodynamics code with an existing radiation diffusion solver where a transport solver would only need to compute the correction sources for the SMM diffusion equation. 
+This would allow reuse of existing linear and nonlinear solvers and ease code coupling while providing a high-fidelity transport solution. 
+
+In this chapter, we derive the continuous SMM algorithm in two ways: 1) using additive closures that limit to radiation diffusion when the transport solution is a linear function in angle and 2) as a linearization of the VEF algorithm. The connection to linearized VEF methods provides a systematic path to deriving discrete SMMs from existing VEF methods. This connection is used to derive analogs of the interior penalty, continuous finite element, and mixed finite element methods presented in Chapters \ref{chap:dgvef} and \ref{chap:rtvef}. The chapter concludes with numerical results demonstrating the accuracy and performance of the methods. 
 
 \section{The Continuous Algorithm}
 SMMs use an alternative closure for the moment equations. Where VEF uses a multiplicative closure $\P = \E\varphi$, SMM uses the additive closure: 
@@ -113,7 +117,7 @@ In the process of performing a Fourier stability analysis of the VEF algorithm, 
 		\mat{B}(\psi,\varphi) = \vec{J}\cdot\n - E_b \varphi - 2\Jin = 0 \,, \quad \x \in \partial\D \,,
 	\end{equation}
 represent the VEF drift-diffusion equation and Miften-Larsen boundary conditions, respectively. Here, $Q = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t}$ is used for brevity. The coupled transport-VEF system can be written as the root-finding problem: 
-	\begin{equation}
+	\begin{equation} \label{smm:vef_root}
 		F(\y) = \begin{bmatrix} 
 			\mat{L}\psi - \mat{S}\varphi - q \\ 
 			\mat{V}(\psi,\varphi) \\ 
@@ -124,7 +128,7 @@ represent the VEF drift-diffusion equation and Miften-Larsen boundary conditions
 where $\y = \vector{\psi & \varphi}$. In this section, we show that the SMM algorithm is equivalent to a first-order Taylor series of $F$ expanded about $\y_0 = \vector{\psi_0 & \varphi_0}$ where $\psi_0$ is a linearly anisotropic solution of the transport equation and $\varphi_0 = \int \psi_0 \ud \Omega$. In other words, $\psi_0$ is the diffusion approximation to the transport problem at hand. We assume that the $\psi_0$ and $\varphi_0$ satisfy the transport and Marshak diffusion boundary conditions, respectively. 
 
 The first-order Taylor series approximation to the root finding problem $F(\y) = 0$ is: 
-	\begin{equation}
+	\begin{equation} \label{smm:smm_root}
 		0 = F(\y) \xrightarrow{\text{TSE}} F(\y_0) + \pderiv{F}{\y}\biggr\rvert_{\y_0}(\y - \y_0) \,. 
 	\end{equation}
 The Jacobian is given by: 
@@ -235,13 +239,9 @@ Converting the operator notation back to equations, the first-order Taylor serie
 Observe that these equations are equivalent to the transport equation and the SMM diffusion equation given in Eq.~\ref{smm:drift} with the corrected Marshak boundary condition from Eq.~\ref{smm:bc}. 
 An equivalent fixed-point operator can be derived by eliminating the angular flux and operating by the inverse of the diffusion operator. Thus, SMMs are both 1) an algorithm based on a reformulation of the transport equation using additive closures and 2) VEF algorithms linearized about a linearly anisotropic solution. 
 
-% Note that a solution procedure for Eqs.~\ref{smm:trans_rewrite} and \ref{smm:linearized} that does not iteratively lag the correction tensor and boundary factor would be equivalent to a Newton scheme to solve the VEF equations. Such an algorithm would converge with the quadratic convergence characteristic of Newton's method. However, forming and solving the operator $\pderiv{\mat{V}}{\psi}$ is prohibitively expensive due to its dependence on the high-dimensional angular flux. Iteratively lagging the correction tensor and factor then represents a``quasi-Newton'' scheme in that the inverse of the Jacobian is approximated by lagging the $\psi$-dependent terms. Unfortunately, lagging these terms degrades the convergence so that the SMM algorithm has linear convergence. 
+The VEF algorithm solves the root-finding problem in Eq.~\ref{smm:vef_root} whereas SMM solves the linearized root-finding problem given in Eq.~\ref{smm:smm_root}. These problems are equivalent to $\mathcal{O}((\y-\y_0)^2)$ where $\y$ is the solution to VEF root-finding problem. Thus, the VEF and SMM algorithms are expected to differ on the order of the square of the difference between the true transport solution and the diffusion approximation. However, since both VEF and SMM are an equivalent reformulation of the transport equation, both methods still produce an approximation to the transport equation.  
 
-\section{VEF and SMM as Newton Methods}
-Newton's method solves the root-finding problem $F(\y) = 0$ by linearizing $F$ about the previous iteration. The iterative scheme is then 
-	\begin{equation}
-		0 = F(\y) \xrightarrow{\text{TSE}} F(\y_n) + \pderiv{F}{\y}\biggr\rvert_{\y_n}(\y_{n+1} - \y_n) \Rightarrow \y_{n+1} = \y_n - \bracket{\pderiv{F}{\y}\biggr\rvert_{\y_n}}^{-1} F(\y_n) \,. 
-	\end{equation}
+% Note that a solution procedure for Eqs.~\ref{smm:trans_rewrite} and \ref{smm:linearized} that does not iteratively lag the correction tensor and boundary factor would be equivalent to a Newton scheme to solve the VEF equations. Such an algorithm would converge with the quadratic convergence characteristic of Newton's method. However, forming and solving the operator $\pderiv{\mat{V}}{\psi}$ is prohibitively expensive due to its dependence on the high-dimensional angular flux. Iteratively lagging the correction tensor and factor then represents a``quasi-Newton'' scheme in that the inverse of the Jacobian is approximated by lagging the $\psi$-dependent terms. Unfortunately, lagging these terms degrades the convergence so that the SMM algorithm has linear convergence. 
 
 \section{Discrete Second Moment Methods}
 The equivalence of SMM and VEF linearized about a linearly anisotropic solution provides a systematic path toward deriving discrete SMMs. Any VEF method can be converted to an SMM through the linearization process described in Section \ref{smm_sec:linearize}. We make use of the structure of the coupled transport-VEF system to simplify the derivations. Consider
@@ -250,14 +250,14 @@ The equivalence of SMM and VEF linearized about a linearly anisotropic solution 
 			\mat{\Theta}(\psi,\varphi) \\ \mat{V}(\psi,\varphi) 
 		\end{bmatrix} = 0\,,
 	\end{equation}
-where $\mat{\Theta}(\psi,\varphi)$ represents a generic transport discretization and $\mat{V}(\psi,\varphi)$ a generic discretization of the VEF moment equations. Note that for a discretization in first-order form, $\mat{V}$ will also depend on the current. Given that the operators that make up the discretization of the transport equation are linear in both the angular and scalar flux and that the operators in the VEF discretization are nonlinear in the angular flux and linear in the scalar flux (and current where applicable), the linearization process will produce a system of the form: 
+where $\mat{\Theta}(\psi,\varphi)$ represents a generic transport discretization and $\mat{V}(\psi,\varphi)$ a generic discretization of the VEF moment equations. Here, $\mat{\Theta}$ and $\mat{V}$ include the inflow and Miften-Larsen boundary conditions, respectively. Note that for a discretization in first-order form, $\mat{V}$ will also depend on the current. Given that the operators that make up the discretization of the transport equation are linear in both the angular and scalar flux and that the operators in the VEF discretization are nonlinear in the angular flux and linear in the scalar flux (and current where applicable), the linearization process will produce a system of the form: 
 	\begin{equation}
 		\begin{bmatrix} 
 			\mat{\Theta}(\psi,\varphi) \\
 			\displaystyle\mat{V}(\psi_0,\varphi) + \pderiv{\mat{V}}{\psi}\big\rvert_{\psi_0}
 		\end{bmatrix} = 0 \,. 
 	\end{equation}
-That is, we have the original transport equation coupled to a discretization of diffusion with a $\psi$-dependent correction term arising from the derivative of the VEF operator, $\pderiv{\mat{V}}{\psi}\big\rvert_{\psi_0}$. 
+That is, we have the original transport equation coupled to a discretization of diffusion with a $\psi$-dependent correction term arising from the derivative of the VEF operator, $\pderiv{\mat{V}}{\psi}$, evaluated at the diffusion approximation to the transport problem denoted $\y_0$. 
 
 In the following subsections, the methods derived in Chapters \ref{chap:dgvef} and \ref{chap:rtvef} are linearized to form discrete SMMs by determining 1) the diffusion problem, $\mat{V}(\psi_0, \varphi)$, found by evaluating the VEF system using a linearly anisotropic angular flux and 2) the transport-dependent correction terms corresponding to $\pderiv{\mat{V}}{\psi}\big\rvert_{\psi_0}$. We will see that linearizing the \emph{discrete} VEF system provides a straightforward path toward discretizing the correction terms. 
 
@@ -268,7 +268,7 @@ From Section \ref{dgvef_sec:ip}, the IP VEF discretization is: find $\varphi\in 
 		+ \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x \\ 
 		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_0} \jump{u} \avg{\frac{\vec{Q}_1\cdot\n}{\sigma_t}} \ud s - 2\int_{\Gamma_b} u\, \Jin \ud s \,, \quad \forall u \in Y_p \,, 
 	\end{multline}
-where $\kappa$ is the penalty parameter. Evaluating this discretization when the angular flux is linearly anisotropic gives
+where $\kappa$ is the penalty parameter. Evaluating the VEF data when the angular flux is linearly anisotropic gives
 	\begin{equation}
 		\E = \frac{1}{3}\I \,, \quad E_b = \frac{1}{2} \,. 
 	\end{equation}
@@ -296,9 +296,10 @@ The IP SMM discretization is then: find $\varphi \in Y_p$ such that
 	\begin{multline}
 		\frac{1}{2}\int_{\Gamma_b} u\varphi \ud s + \int_{\Gamma_0} \kappa\, \jump{u}\jump{\varphi} \ud s - \int_{\Gamma_0} \jump{u}\avg{D\nablah\varphi\cdot\n} \ud s - \int_{\Gamma_0} \avg{D\nablah u\cdot\n} \jump{\varphi} \ud s \\
 		+ \int \nablah u \cdot D\nablah\varphi \ud \x + \int \sigma_a\, u \varphi \ud \x \\
-		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_0} \jump{u} \avg{\frac{\vec{Q}_1\cdot\n}{\sigma_t}} \ud s - \int_{\Gamma_b} u\paren{2\Jin + \beta(\psi)} \ud s \\
+		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_0} \jump{u} \avg{\frac{\vec{Q}_1\cdot\n}{\sigma_t}} \ud s - \int_{\Gamma_b} u\paren{2\Jin + \beta} \ud s \\
 		+ \int_{\Gamma_0} \jump{u}\avg{\frac{1}{\sigma_t}\nablah\cdot\T\cdot\n} \ud s + \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot\jump{\T\n} \ud s - \int \nablah u\cdot \frac{1}{\sigma_t}\nablah\cdot\T \ud \x \,, \quad \forall u \in Y_p \,. 
 	\end{multline}
+This represents the standard IP discretization of diffusion with Marshak boundary conditions that is corrected by transport-dependent volumetric and boundary source terms. 
 
 \subsection{Continuous Finite Element}
 As in Section \ref{dgvef_sec:cfem}, a continuous finite element discretization can be extracted from a DG method by setting $u,\varphi \in V_p$, where $V_p$ is the degree-$p$ continuous finite element space. For a continuous function $u \in Y_p$: 
@@ -308,7 +309,7 @@ As in Section \ref{dgvef_sec:cfem}, a continuous finite element discretization c
 As before with the Eddington tensor, the correction tensor is generally discontinuous across interior mesh interfaces since we assume DG is used for the transport discretization. The CG discretization is then: find $\varphi \in V_p$ such that 
 	\begin{multline}
 		\frac{1}{2}\int_{\Gamma_b} u\varphi \ud s + \int \nabla u \cdot D\nabla\varphi \ud \x + \int \sigma_a\, u \varphi \ud \x \\
-		= \int u\, Q_0 \ud \x + \int \nabla u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_b} u\paren{2\Jin + \beta(\psi)} \ud s \\
+		= \int u\, Q_0 \ud \x + \int \nabla u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_b} u\paren{2\Jin + \beta} \ud s \\
 		+ \int_{\Gamma_0} \avg{\frac{\nabla u}{\sigma_t}} \cdot\jump{\T\n} \ud s - \int \nabla u\cdot \frac{1}{\sigma_t}\nablah\cdot\T \ud \x \,, \quad \forall u \in V_p \,. 
 	\end{multline}
 Alternatively, a CG SMM discretization can be derived by linearizing the CG VEF discretization in Eq.~\ref{dgvef:cg}. 
@@ -323,35 +324,36 @@ From Eq.~\ref{rtvef:rtvef}, a Raviart Thomas discretization of VEF is: find $(\v
 		\int_{\Gamma_0} \jump{\vec{v}\cdot\avg{\E\n}} \avg{\varphi} \ud s - \int \nablah \vec{v} : \E\varphi \ud \x + \int \sigma_t\, \vec{v}\cdot\vec{J} \ud \x + \int_{\Gamma_b} \frac{1}{E_b}\!\paren{\vec{v}\cdot\E\n}\!\paren{\vec{J}\cdot\n} \ud s \\= \int \vec{v}\cdot\vec{Q}_1 \ud \x + 2\int_{\Gamma_b} \frac{1}{E_b}\vec{v}\cdot\E\n\, \Jin \ud s \,, \quad \forall \vec{v} \in \RT_p \,. 
 	\end{multline}
 	\end{subequations}
-The corresponding diffusion discretization is found by setting $\E = \frac{1}{3}\I$ and $E_b = E_{b0} = E_b(\psi_0)$: 
+The corresponding diffusion discretization is found by setting $\E \rightarrow \frac{1}{3}\I$ and $E_b \rightarrow E_{b0} = E_b(\psi_0)$: 
 	\begin{subequations} \label{smm:rtdiff}
 	\begin{equation}
 		\int u\, \nabla\cdot\vec{J} \ud \x + \int \sigma_a\, u\varphi \ud \x = \int u\, Q_0 \ud \x \,, \quad \forall u \in Y_p \,,
 	\end{equation}
 	\begin{multline}
-		-\frac{1}{3}\int \nabla\cdot\vec{v}\,\varphi \ud \x + \int \sigma_t\, \vec{v}\cdot\vec{J} \ud \x + \int_{\Gamma_b} \frac{1}{3E_{b0}}\!\paren{\vec{v}\cdot\n}\!\paren{\vec{J}\cdot\n} \ud s \\= \int \vec{v}\cdot\vec{Q}_1 \ud \x + 2\int_{\Gamma_b} \frac{1}{3E_{b0}}\vec{v}\cdot\n\, \Jin \ud s \,, \quad \forall \vec{v} \in \RT_p \,. 
+		-\frac{1}{3}\int \nabla\cdot\vec{v}\,\varphi \ud \x + \int \sigma_t\, \vec{v}\cdot\vec{J} \ud \x + \int_{\Gamma_b} \frac{1}{3E_{b0}}\!\paren{\vec{v}\cdot\n}\!\paren{\vec{J}\cdot\n} \ud s \\= \int \vec{v}\cdot\vec{Q}_1 \ud \x + 2\int_{\Gamma_b} \frac{1}{3E_{b0}}\vec{v}\cdot\n\, \Jin \ud s \,, \quad \forall \vec{v} \in \RT_p \,, 
 	\end{multline}
 	\end{subequations}
+where the jump term $\jump{\vec{v}\cdot\avg{\E\n}} = 0$ since $\vec{v}\in\RT_p$ is continuous in the normal component. 
 Here, we evaluate 
 	\begin{equation}
 		E_{b0} = \frac{\int |\Omegahat\cdot\n|\, \psi_0 \ud \Omega}{\int \psi_0 \ud \Omega} = \frac{\int |\Omegahat\cdot\n| \ud \Omega}{4\pi} 
 	\end{equation}
 with angular quadrature since it was found to be important that $\Jin$ and $\int |\Omegahat\cdot\n| \ud \Omega$ are integrated with the same numerical quadrature rule. This is because both $\int |\Omegahat\cdot\n|\ud \Omega$ and
 	\begin{equation}
-		\Jin = \int_{\Omegahat\cdot\n<0} \Omegahat\cdot\n\, \psi \ud \Omega = \int \mathbbm{1}_{\Omegahat\cdot\n<0}(\Omegahat)\,\Omegahat\cdot\n\, \psi \ud \Omega 
+		\Jin = \int_{\Omegahat\cdot\n<0} \Omegahat\cdot\n\, \psi \ud \Omega = \int \mathbbm{1}_{\Omegahat\cdot\n<0}(\Omegahat)\,\Omegahat\cdot\n\, \psi \ud \Omega \,,
 	\end{equation}
-where $\mathbbm{1}_A(x)$ is an indicator function that is one when $x\in A$ and zero otherwise have non-smooth integrands and therefore cannot be integrated exactly with an angular quadrature rule. 
+where $\mathbbm{1}_A(x)$ is the indicator function that is one when $x\in A$ and zero otherwise, have non-smooth integrands and therefore cannot be integrated exactly with an angular quadrature rule. 
 
-The correction terms are found by computing the partial derivative of the VEF discretization with respect to the angular flux evaluated at the linearly anisotropic function $\y_0 = \vector{\psi_0 & \varphi_0}$. As before, terms without VEF data are zero and we can replace $E_b\varphi \rightarrow \beta(\psi)$ and $\E\varphi \rightarrow \T(\psi)$. However, this replacement is valid only for terms with \emph{only} $E_b\varphi$ or $\E\varphi$ and not both. An additional linearization is required for the boundary terms due to the presence of both the Eddington tensor and boundary factor. 
+The correction terms are found by computing the partial derivative of the VEF discretization with respect to the angular flux evaluated at the linearly anisotropic function $\y_0 = \vector{\psi_0 & \varphi_0 & \vec{J}_0}$ where $\vec{J}_0 = \int \Omegahat\,\psi_0 \ud \Omega$. As before, terms without VEF data are zero and we can replace $E_b\varphi \rightarrow \beta(\psi)$ and $\E\varphi \rightarrow \T(\psi)$. However, this replacement is valid only for terms with \emph{only} $E_b\varphi$ or $\E\varphi$ and not both. 
 
-The linearization of the boundary term is: 
+An additional linearization is required for the boundary terms due to the presence of both the Eddington tensor and boundary factor. This linearization is: 
 	\begin{equation}
 	\begin{aligned}
 		\pderiv{}{\psi}\int_{\Gamma_b} \frac{1}{E_b}\!\paren{\vec{v}\cdot\E\n}\!\paren{\vec{J}\cdot\n - 2\Jin} \ud s \biggr\rvert_{\y_0} &= \int_{\Gamma_b} \vec{v}\cdot\pderiv{(\E/E_b)}{\psi}\biggr\rvert_{\psi_0}\n\paren{\vec{J}_0\cdot\n - 2\Jin} \ud s \\
 		&= \int_{\Gamma_b} \vec{v} \cdot \paren{\frac{1}{E_{b0}}\pderiv{\E}{\psi}\biggr\rvert_{\psi_0} - \frac{\E_0}{E_{b0}^2}\pderiv{E_b}{\psi}\biggr\rvert_{\psi_0}}\!\n\!\paren{\vec{J}_0\cdot\n - 2\Jin} \ud s \,. 
 	\end{aligned}
 	\end{equation}
-Since we have assumed that $\varphi_0$ satisfies the boundary conditions, we can subsitute 
+Since we have assumed that $\varphi_0$ and $\vec{J}_0$ satisfy the boundary conditions, we can subsitute 
 	\begin{equation}
 		\varphi_0 = \frac{1}{E_{b0}}\paren{\vec{J}_0\cdot\n - 2\Jin} 
 	\end{equation}
@@ -364,7 +366,7 @@ to arrive at
 		&= \int_{\Gamma_b} \vec{v}\cdot\paren{\T\n - \frac{\beta\n}{3E_{b0}}} \ud s \,, 
 	\end{aligned}
 	\end{equation}
-where we have used that $\pderiv{\E}{\psi}\rvert_{\psi_0}\varphi_0 = \T$, $\pderiv{E_b}{\psi}\rvert_{\psi_0}\varphi_0 = \beta$, and $\E_0 = \frac{1}{3}\I$. 
+where we have used the definition of the Miften-Larsen boundary condition (Eq.~\todo{ref}), $\pderiv{\E}{\psi}\rvert_{\psi_0}\varphi_0 = \T$, $\pderiv{E_b}{\psi}\rvert_{\psi_0}\varphi_0 = \beta$, and $\E_0 = \frac{1}{3}\I$. 
 
 The Raviart Thomas SMM discretization is then: find $(\varphi,\vec{J}) \in Y_p \times \RT_p$ such that 
 	\begin{subequations}
@@ -379,7 +381,7 @@ The Raviart Thomas SMM discretization is then: find $(\varphi,\vec{J}) \in Y_p \
 Note that MINRES requires the system to be symmetric indefinite. The RT SMM discretization can be written in symmetric indefinite form by by multiplying the zeroth moment by negative one and the first moment by positive three. 
 
 \subsection{Hybridized Raviart Thomas}
-The left hand side of the RT SMM discretization is equivalent to an RT discretization of radiation diffusion. Thus, the standard RT hybridization process outlined in Section \ref{rtvef_sec:hyb_diff} can be applied directly to the RT SMM method. That is, the current is approximated in the discontinuous space $\hRT_p$ and continuity of the current in the normal component is enforced with a Lagrange multiplier defined on the interior skeleton of the mesh, $\Gamma_0$. The use of a discontinuous approximation for the scalar flux and current allows eliminating these variables in favor of the Lagrange multiplier. This reduced system is significantly smaller than the block system and it can be effectively preconditioned with AMG. 
+The left hand side of the RT SMM discretization is equivalent to an RT discretization of radiation diffusion. Thus, the standard RT hybridization process outlined in Section \ref{rtvef_sec:hyb_diff} can be applied directly to the RT SMM method. That is, the current is approximated in the discontinuous space $\hRT_p$ and continuity of the current in the normal component is enforced with a Lagrange multiplier defined on the interior skeleton of the mesh, $\Gamma_0$. The use of a discontinuous approximation for the scalar flux and current allows eliminating these variables in favor of the Lagrange multiplier. This reduced system is both significantly smaller than the block system and can be effectively preconditioned with AMG. 
 
 The hybridized system is: find $(\vec{J},\varphi,\lambda) \in \hRT_p \times Y_p \times \Lambda_p$ such that 
 	\begin{subequations}
@@ -401,7 +403,7 @@ where
 is the source term for the RT SMM discretization. This system can be efficiently solved by eliminating the scalar flux and current to form a reduced system for the Lagrange multiplier only. Once $\lambda$ is known, the scalar flux and current can be solved in a post-processing step through element-local back-substitution. Details of an efficient implementation are provided in Section \ref{rtvef_sec:hyb_imp} for the VEF system. 
 
 \section{Results}
-The methods presented in this section were implemented in the MFEM finite element framework \cite{mfem-paper}. We use the conjugate gradient and MINRES solvers from MFEM along with \emph{hypre}'s \cite{hypre} BoomerAMG solver. KINSOL, from the Sundials \cite{hindmarsh2005sundials} package, is used to solve the fixed-point problems with fixed-point iteration and Anderson-accelerated fixed-point iteration. The high-order DG \gls{sn} solver from \cite{graph_sweeps} was used. Unless otherwise noted, the angular flux and scalar flux are approximated with equal degree finite element spaces. We refer to the four methods derived in this section as the interior penalty (IP), continuous finite element (CG), Raviart Thomas (RT), and hybridized Raviart Thomas (HRT) methods. 
+The methods presented in this chapter were implemented in the MFEM finite element framework \cite{mfem-paper}. We use the conjugate gradient, stabilized bi-conjugate gradient, and MINRES solvers from MFEM along with \emph{hypre}'s \cite{hypre} BoomerAMG solver. KINSOL, from the Sundials \cite{hindmarsh2005sundials} package, is used to solve the fixed-point problems with fixed-point iteration and Anderson-accelerated fixed-point iteration. The high-order DG \gls{sn} solver from \cite{graph_sweeps} was used. Unless otherwise noted, the angular flux and scalar flux are approximated with equal degree finite element spaces. We refer to the four methods derived in this section as the interior penalty (IP), continuous finite element (CG), Raviart Thomas (RT), and hybridized Raviart Thomas (HRT) methods. 
 
 \subsection{Method of Manufactured Solutions}
 The accuracy of the methods are determined with the Method of Manufactured Solutions (MMS). The solution is set to 
