@@ -3,7 +3,7 @@
 
 \begin{document}
 \chapter{Second Moment Methods} \label{chap:smm}
-Lewis and Miller's \cite{lewis_miller} \gls{smm} couples the transport equation to the moment equations with additive closures that depend linearly on the transport solution. This scheme is characterized by a two-stage process where 1) the transport equation is inverted with a scattering source defined from the previous iteration's SMM scalar flux and 2) a \emph{diffusion approximation} is solved with transport-dependent correction sources. By contrast, VEF uses nonlinear closures and the generally non-symmetric VEF moment system must be solved at each iteration. Since SMM solves the symetric diffusion equation instead of the non-symmetric VEF equations, less expensive solvers, such as conjugate gradient, can be used instead of the general purpose methods such as \gls{bicg} or the \gls{gmres} which generally require more computation and storage. In addition, where the VEF closures are well-defined only when $\psi>0$, the additive closures used in SMM are well-defined for any $\psi$. Finally, the SMM moment system can be discretized to exactly match the discretization for the radiation diffusion package in a multiphysics code. Such a method could be used in-place in a hydrodynamics code with an existing radiation diffusion solver where a transport solver would only need to compute the correction sources for the SMM diffusion equation. 
+Lewis and Miller's \gls{smm} \cite{lewis_miller} couples the transport equation to the moment equations with additive closures that depend linearly on the transport solution. This scheme is characterized by a two-stage process where 1) the transport equation is inverted with a scattering source defined from the previous iteration's SMM scalar flux and 2) a \emph{diffusion approximation} is solved with transport-dependent correction sources. By contrast, VEF uses nonlinear closures and the generally non-symmetric VEF moment system must be solved at each iteration. Since SMM solves the symetric diffusion equation instead of the non-symmetric VEF equations, less expensive solvers, such as conjugate gradient, can be used instead of the general purpose methods such as \gls{bicg} or the \gls{gmres} which generally require more computation and storage. In addition, where the VEF closures are well-defined only when $\psi>0$, the additive closures used in SMM are well-defined for any $\psi$. Finally, the SMM moment system can be discretized to exactly match the discretization for the radiation diffusion package in a multiphysics code. Such a method could be used in-place in a hydrodynamics code with an existing radiation diffusion solver where a transport solver would only need to compute the correction sources for the SMM diffusion equation. 
 This would allow reuse of existing linear and nonlinear solvers and ease code coupling while providing a high-fidelity transport solution. 
 
 In this chapter, we derive the continuous SMM algorithm in two ways: 1) using additive closures that limit to radiation diffusion when the transport solution is a linear function in angle and 2) as a linearization of the VEF algorithm. The connection to linearized VEF methods provides a systematic path to deriving discrete SMMs from existing VEF methods. This connection is used to derive analogs of the interior penalty, continuous finite element, and mixed finite element methods presented in Chapters \ref{chap:dgvef} and \ref{chap:rtvef}. The chapter concludes with numerical results demonstrating the accuracy and performance of the methods. 
@@ -95,7 +95,7 @@ where
 	\begin{equation}
 		G(\varphi) = \mat{D}^{-1}\bracket{Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t} + \nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T(\mat{L}^{-1}(\mat{S}\varphi + q))} \,. 
 	\end{equation}
-The fixed-point operator $G(\varphi)$ is applied in two stages: 1) solve the transport equation using a scattering source formed from the SMM scalar flux and 2) solve the SMM diffusion equation using the correction tensor computed from the angular flux found in stage 1). As with VEF, this fixed point problem can be solved with simple fixed-point iteration or more advanced techniques such as Anderson acceleration. 
+The fixed-point operator $G(\varphi)$ is applied in two stages: 1) solve the transport equation using a scattering source formed from the SMM scalar flux and 2) solve a diffusion equation with correction sources computed from the angular flux found in stage 1). As with VEF, this fixed point problem can be solved with simple fixed-point iteration or more advanced techniques such as Anderson acceleration. 
 
 We now discuss algorithmic differences between SMM and VEF. Evaluating the fixed-point operators for SMM and VEF requires solving systems of the form: 
 	\begin{subequations}
@@ -125,7 +125,7 @@ represent the VEF drift-diffusion equation and Miften-Larsen boundary conditions
 		\end{bmatrix}
 		= 0 \,, 
 	\end{equation}
-where $\y = \vector{\psi & \varphi}$. In this section, we show that the SMM algorithm is equivalent to a first-order Taylor series of $F$ expanded about $\y_0 = \vector{\psi_0 & \varphi_0}$ where $\psi_0$ is a linearly anisotropic solution of the transport equation and $\varphi_0 = \int \psi_0 \ud \Omega$. In other words, $\psi_0$ is the diffusion approximation to the transport problem at hand. We assume that the $\psi_0$ and $\varphi_0$ satisfy the transport and Marshak diffusion boundary conditions, respectively. 
+where $\y = \vector{\psi & \varphi}$. In this section, we show that the SMM algorithm is equivalent to a first-order Taylor series of $F$ expanded about $\y_0 = \vector{\psi_0 & \varphi_0}$ where $\psi_0$ is a linearly anisotropic solution of the transport equation and $\varphi_0 = \int \psi_0 \ud \Omega$. In other words, $\psi_0$ is the diffusion approximation to the transport problem at hand. We assume that $\psi_0$ and $\varphi_0$ satisfy the transport and Marshak diffusion boundary conditions, respectively. 
 
 The first-order Taylor series approximation to the root finding problem $F(\y) = 0$ is: 
 	\begin{equation} \label{smm:smm_root}
@@ -187,7 +187,7 @@ For the boundary conditions, an analogous process yields
 	\end{equation}
 where we have used the form of the derivative of the Eddington boundary factor derived in Eq.~\todo{ref} and $\beta$ is the correction factor given in Eq.~\ref{smm:corrfac}. 
 
-The Taylor series approximation of $F$ is then 
+The linear part of $F$ is then: 
 	\begin{equation}
 	\begin{aligned}
 		F(\y) &\approx F(\y_0) + \pderiv{F}{\y}\biggr\rvert_{\y_0}(\y - \y_0)\\
@@ -219,7 +219,7 @@ where the last equivalence is due to the fact that $\T(\psi_0) = 0$ and $\beta(\
 	\begin{equation}
 		\pderiv{\E}{\psi}\biggr\rvert_{\psi_0}(\psi_0) = 0 \,, \quad \pderiv{E_b}{\psi}\biggr\rvert_{\psi_0}(\psi_0) = 0 \,. 
 	\end{equation}
-Converting the operator notation back to equations, the first-order Taylor series approximation to the root-finding problem $F(\y) = 0$ is equivalent to 
+Converting the operator notation back to equations, this is equivalent to: 
 	\begin{subequations} \label{smm:trans_rewrite}
 	\begin{equation}
 		\Omegahat\cdot\nabla\psi + \sigma_t \psi = \frac{\sigma_s}{4\pi}\varphi + q \,, \quad \x \in \D \,,
@@ -239,7 +239,7 @@ Converting the operator notation back to equations, the first-order Taylor serie
 Observe that these equations are equivalent to the transport equation and the SMM diffusion equation given in Eq.~\ref{smm:drift} with the corrected Marshak boundary condition from Eq.~\ref{smm:bc}. 
 An equivalent fixed-point operator can be derived by eliminating the angular flux and operating by the inverse of the diffusion operator. Thus, SMMs are both 1) an algorithm based on a reformulation of the transport equation using additive closures and 2) VEF algorithms linearized about a linearly anisotropic solution. 
 
-The VEF algorithm solves the root-finding problem in Eq.~\ref{smm:vef_root} whereas SMM solves the linearized root-finding problem given in Eq.~\ref{smm:smm_root}. These problems are equivalent to $\mathcal{O}((\y-\y_0)^2)$ where $\y$ is the solution to VEF root-finding problem. Thus, the VEF and SMM algorithms are expected to differ on the order of the square of the difference between the true transport solution and the diffusion approximation. However, since both VEF and SMM are an equivalent reformulation of the transport equation, both methods still produce an approximation to the transport equation.  
+The VEF algorithm solves the root-finding problem in Eq.~\ref{smm:vef_root} whereas SMM solves the linearized root-finding problem given in Eq.~\ref{smm:smm_root}. These problems are equivalent to $\mathcal{O}(\Delta \y^2)$ where $\Delta\y = \y - \y_0$. Here, $\y$ is the solution to the coupled transport-VEF problem that satisfies $F(\y)=0$. Thus, the VEF and SMM algorithms are expected to differ on the order of the square of the difference between the true transport solution and the diffusion approximation. However, since both VEF and SMM are an equivalent reformulation of the transport equation, both methods still produce an approximation to the transport equation.  
 
 % Note that a solution procedure for Eqs.~\ref{smm:trans_rewrite} and \ref{smm:linearized} that does not iteratively lag the correction tensor and boundary factor would be equivalent to a Newton scheme to solve the VEF equations. Such an algorithm would converge with the quadratic convergence characteristic of Newton's method. However, forming and solving the operator $\pderiv{\mat{V}}{\psi}$ is prohibitively expensive due to its dependence on the high-dimensional angular flux. Iteratively lagging the correction tensor and factor then represents a``quasi-Newton'' scheme in that the inverse of the Jacobian is approximated by lagging the $\psi$-dependent terms. Unfortunately, lagging these terms degrades the convergence so that the SMM algorithm has linear convergence. 
 
@@ -250,14 +250,15 @@ The equivalence of SMM and VEF linearized about a linearly anisotropic solution 
 			\mat{\Theta}(\psi,\varphi) \\ \mat{V}(\psi,\varphi) 
 		\end{bmatrix} = 0\,,
 	\end{equation}
-where $\mat{\Theta}(\psi,\varphi)$ represents a generic transport discretization and $\mat{V}(\psi,\varphi)$ a generic discretization of the VEF moment equations. Here, $\mat{\Theta}$ and $\mat{V}$ include the inflow and Miften-Larsen boundary conditions, respectively. Note that for a discretization in first-order form, $\mat{V}$ will also depend on the current. Given that the operators that make up the discretization of the transport equation are linear in both the angular and scalar flux and that the operators in the VEF discretization are nonlinear in the angular flux and linear in the scalar flux (and current where applicable), the linearization process will produce a system of the form: 
+where $\mat{\Theta}(\psi,\varphi)$ represents a generic transport discretization and $\mat{V}(\psi,\varphi)$ a generic discretization of the VEF moment equations. Here, $\mat{\Theta}$ and $\mat{V}$ include the inflow and Miften-Larsen boundary conditions, respectively. Note that for a VEF discretization in first-order form, $\mat{V}$ will also depend on the current. Given that the operators that make up the discretization of the transport equation are linear in both the angular and scalar flux and that the operators in the VEF discretization are nonlinear in the angular flux and linear in the scalar flux (and current where applicable), the linearization process will produce a system of the form: 
 	\begin{equation}
 		\begin{bmatrix} 
 			\mat{\Theta}(\psi,\varphi) \\
-			\displaystyle\mat{V}(\psi_0,\varphi) + \pderiv{\mat{V}}{\psi}\big\rvert_{\psi_0}
-		\end{bmatrix} = 0 \,. 
+			\displaystyle\mat{V}(\psi_0,\varphi) + \pderiv{\mat{V}}{\psi}\biggr\rvert_{\psi_0}
+		\end{bmatrix} = 0 \,, 
 	\end{equation}
-That is, we have the original transport equation coupled to a discretization of diffusion with a $\psi$-dependent correction term arising from the derivative of the VEF operator, $\pderiv{\mat{V}}{\psi}$, evaluated at the diffusion approximation to the transport problem denoted $\y_0$. 
+where $\psi_0$ is the diffusion approximation of the transport problem. 
+In other words, we have the original transport equation coupled to a discretization of diffusion with a $\psi$-dependent correction term arising from the derivative of the VEF operator, $\pderiv{\mat{V}}{\psi}$, evaluated at the diffusion approximation to the transport problem. 
 
 In the following subsections, the methods derived in Chapters \ref{chap:dgvef} and \ref{chap:rtvef} are linearized to form discrete SMMs by determining 1) the diffusion problem, $\mat{V}(\psi_0, \varphi)$, found by evaluating the VEF system using a linearly anisotropic angular flux and 2) the transport-dependent correction terms corresponding to $\pderiv{\mat{V}}{\psi}\big\rvert_{\psi_0}$. We will see that linearizing the \emph{discrete} VEF system provides a straightforward path toward discretizing the correction terms. 
 
