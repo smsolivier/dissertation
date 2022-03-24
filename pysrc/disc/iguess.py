@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 from OutputCycler import * 
 oc = OutputCycler()
 
-r = oc.GetOpt(0, 3) 
+r = 3 
+cumulative = oc.GetOpt(0, False)
 orders = [1,2,3]
 
 for p in orders:
@@ -20,12 +21,23 @@ for p in orders:
 		df = np.loadtxt(base+f+'_{}_{}.txt'.format(p,r))
 		outer.append(df.shape[0])
 		tot.append(np.sum(df[:,0]))
-		plt.plot(np.arange(1,outer[i]+1), df[:,0], '-o', label=leg[i])
+		cum = np.zeros(df.shape[0])
+		cum[0] = df[0,0]
+		for j in range(1, df.shape[0]):
+			cum[j] = cum[j-1] + df[j,0]
+		plt.plot(np.arange(1,outer[i]+1), cum if cumulative else df[:,0], '-o', label=leg[i])
 		plt.xticks(np.arange(1,outer[i]+1, 2))
 	assert(len(np.unique(outer))==1)
-	plt.legend()
+	print((tot[1] - tot[0])/tot[1]*100)
+	if (cumulative):
+		plt.legend(loc='upper left')
+	else:
+		plt.legend(loc='lower left')
 	plt.xlabel('Outer Iteration Number')
-	plt.ylabel('Inner Iterations to Convergence')
+	if (cumulative):
+		plt.ylabel('Cumalative Number of Inner Iterations')
+	else:
+		plt.ylabel('Inner Iterations to Convergence')
 	if (oc.Good()):
 		plt.savefig(oc.Get())
 if not(oc.Good()):

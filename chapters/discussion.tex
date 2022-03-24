@@ -26,6 +26,28 @@
 \label{disc:iguess}
 \end{figure}
 
+% --- cumulative version --- 
+\begin{figure}
+\centering 
+\begin{subfigure}{.32\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/disc/ciguess.pdf}
+	\caption{}
+\end{subfigure}
+\begin{subfigure}{.32\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/disc/ciguess_1.pdf}
+	\caption{}
+\end{subfigure}
+\begin{subfigure}{.32\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/disc/ciguess_2.pdf}
+	\caption{}
+\end{subfigure}
+\caption{A comparison of the cumulative number of inner iterations to convergence as the outer iteration progresses when the inner solver used the previous outer iteration as the initial guess and when an initial guess of zero was used for each iteration. The most refined mesh for polynomials orders (a) 1, (b), 2, and (c) 3 are shown. Using the previous outer iteration as the initial guess reduced the total number of inner iterations to solve the problem by 53, 82, and 118, respectively. This represents a reduction in inner iterations of 25\%, 30\%, and 31\%, respectively.}
+\label{disc:ciguess}
+\end{figure}
+
 % --- outer and inner on crooked pipe hp --- 
 \begin{table}
 \centering
@@ -53,6 +75,22 @@
 \end{table}
 
 \section{Comparison of Methods}
+\subsection{Solution Quality on the Triple Point Mesh}
+\begin{figure}
+\centering
+\foreach \f in {ip.png, mdldg.png, cg.png, hrt.png}{
+	\begin{subfigure}{.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{data/img/3psol/\f}
+		\caption{}
+	\end{subfigure}
+}
+\caption{Plots of the scalar flux from the thick diffusion limit problem with $\epsilon = 10^{-2}$ on the triple point mesh for the (a) interior penalty, (b) MDLDG, (c) CG, and (d) HRT VEF methods. The solution should be smoothly varying and obey a maximum principle. Deviations from this behavior are due to mesh imprinting. These plots show that the IP and CG methods have nearly identical solution quality and in particular have continuous contour lines. The MDLDG and HRT methods produced solutions with discontinuous contour lines.}
+\label{disc:3psol}
+\end{figure}
+
+\subsection{Implementation Details}
+\subsection{VEF vs SMM}
 
 \section{Recommendations for Implementation in Production}
 

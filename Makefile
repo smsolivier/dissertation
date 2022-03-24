@@ -25,7 +25,7 @@ MAIN = doc
 # list of figures to be built for the document 
 FIGS = lor lor4 lor8 lor_dist lor_dist4 lor_dist8 sweep eps_lineout quad_mesh \
 dgvef/mms dgvef/unified rtvef/hyb_sparsity smm/mms \
-disc/iguess
+disc/iguess disc/ciguess
 FIGS := $(addsuffix .pdf, $(FIGS))
 
 # list of tables to build
@@ -129,3 +129,7 @@ $(figdir)/smm/mms_elev.tex : $(pysrc)/smm/vmms.py
 	$(PYTHON) $< $@ data/smm/mms_elev/
 $(figdir)/smm/mms_diff.tex : $(pysrc)/smm/vmms.py 
 	$(PYTHON) $< $@ data/smm/mms_diff/
+
+# plot cumulative inner solves for initial guess comparison 
+$(figdir)/disc/ciguess.pdf : $(pysrc)/disc/iguess.py $(MPL) 
+	$(PYTHON) $< $@ 1

@@ -121,8 +121,10 @@
 * effect of initial guess from outer iteration 
 * additional sweeps on triple point 
 * anderson on triple point 
-* solution quality on triple point mesh 
-* comparison of SMM and VEF 
+* comparison of methods 
+	* solution quality on triple point mesh 
+	* implementation aspects 
+	* comparison of SMM and VEF 
 * recommendations for use in production code 
 
 # Conclusions 
