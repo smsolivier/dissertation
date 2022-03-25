@@ -3,7 +3,7 @@
 
 \begin{document}
 \chapter{Discontinuous Galerkin VEF Discretizations} \label{chap:dgvef}
-In this chapter, we adapt the derivation of a unified framework for DG methods designed for the Poisson equation from \cite{Arnold2002} to the VEF equations. This enables the use of any of the DG methods described there. \textcite{Arnold2002} derive a family of DG methods for:
+In this chapter, we adapt the derivation of a unified framework for \gls{dg} methods designed for the Poisson equation from \cite{Arnold2002} to the VEF equations. This enables the use of any of the DG methods described there. \textcite{Arnold2002} derive a family of DG methods for:
 	\begin{subequations}
 	\begin{equation}
 		\vec{q} = \nabla u \,, 
@@ -21,9 +21,9 @@ with Dirichlet boundary conditions. The present goal is to adapt their derivatio
 		\nabla\cdot\vec{J} + \sigma_a \varphi = Q_0 \,, 
 	\end{equation}
 	\end{subequations}
-with the Robin style boundary conditions given in Eq.~\ref{dgvef:mlbc}. We will see significant differences in the final equation since the Eddington tensor is inside the divergence.
+with the Robin style boundary conditions given in Eq.~\todo{ref}. We will see significant differences in the final equation since the Eddington tensor is inside the divergence.
 Additionally, the presence of a right-hand side in the first moment equation as well as non-unit coefficients introduce further complications.
-We will then derive analogues of the interior penalty (IP), second method of Bassi and Rebay (BR2), and Minimial Dissipation Local Discontinuous Galerkin (MDLDG) variants.
+We will then derive analogues of the \gls{ip}, \gls{br2}, and \gls{mdldg} variants.
 Finally, we will show how to extract a continuous finite element method from this framework. 
 
 \section{Adaption of the Unified Framework to VEF}
@@ -54,7 +54,7 @@ Summing the zeroth moment over all elements:
 	\begin{equation}
 		\int_\Gamma \jump{u} \avg{\widehat{\vec{J}}\cdot\n} \ud s + \int_{\Gamma_0} \avg{u}\jump{\widehat{\vec{J}}\cdot\n} \ud s - \int \nablah u \cdot \vec{J} \ud \x + \int \sigma_a \, u\varphi \ud \x = \int u\, Q_0 \ud \x \,,
 	\end{equation}
-where the jumps and averages identity (Eq.~\ref{ref:jump_avg_id}) was used. We will now use the discrete first moment to determine a functional form for $\vec{J}$. Integrating by parts locally over element $K$, we have that 
+where the jumps and averages identity (Eq.~\todo{ref}) was used. We will now use the discrete first moment to determine a functional form for $\vec{J}$. Integrating by parts locally over element $K$, we have that 
 	\begin{equation} \label{dgvef:identity}
 		\int_K \nabla\vec{v} : \E \varphi \ud \x = \int_{\partial K} \vec{v}\cdot\E\varphi\n_K \ud s - \int_K \vec{v}\cdot\nabla\cdot\paren{\E\varphi} \ud \x \,. 
 	\end{equation}
@@ -66,7 +66,7 @@ Summing over all elements and using the jumps and averages identity, the weak fo
 	\begin{multline} \label{dgvef:weak_strong}
 		\int_\Gamma \avg{\vec{v}}\cdot\jump{\widehat{\E\varphi}\n - \E\varphi\n} \ud s + \int_{\Gamma_0} \jump{\vec{v}} \cdot \avg{\widehat{\E\varphi}\n - \E\varphi\n} \ud s \\+ \int \vec{v}\cdot\nablah \cdot\paren{\E\varphi} \ud \x + \int \sigma_t \, \vec{v}\cdot\vec{J} \ud \x = \int \vec{v}\cdot\vec{Q}_1 \ud \x \,, \quad \forall \vec{v} \in W_p \,, 
 	\end{multline}
-where $\nablah\cdot\paren{\E\varphi}$ is evaluated as $\nablah\cdot\paren{\E\varphi} = \E\nablah \varphi + \paren{\nablah\cdot\E}\!\varphi$, and the term $\nablah\cdot\E$ is computed using Eq.~\ref{dgvef:Ediv}. 
+where $\nablah\cdot\paren{\E\varphi}$ is evaluated as $\nablah\cdot\paren{\E\varphi} = \E\nablah \varphi + \paren{\nablah\cdot\E}\!\varphi$, and the term $\nablah\cdot\E$ is computed using Eq.~\todo{ref}. 
 
 We now wish to write all terms as volumetric integrals so that a functional form for the current can be found. To that end, define \emph{lifting operators} $\vec{r}(\vec{\tau}) \in W_p$ and $\vec{\ell}(\vec{\chi}) \in W_p$ such that 
 	\begin{subequations}
@@ -317,7 +317,7 @@ such that $\mat{A} = \sum_{f\in\Gamma_0} \mat{A}_f$. The LDG stabilization term 
 Note that since the matrices $\mat{A}$ and $\mat{B}$ are not face-local, this term cannot be assembled locally. The LDG stabilization term is instead formed through matrix multiplication as $\mat{A}^T\mat{M}_t^{-1}\mat{B}$. 
 
 \section{Extracting a Continuous Discretization from the DG Framework} \label{dgvef_sec:cfem}
-We now show how a continuous finite element (CG) discretization of the VEF drift-diffusion equation can be extracted from the DG framework presented above. An approximate inversion of this operator is one stage of the subspace correction preconditioner described in Section \ref{sec:subspace} that is used to efficiently solve the IP and BR2 VEF discretizations. This CG operator is also a VEF method itself and represents an extension to multiple dimensions, arbitrary-order, and curved meshes of the algorithm in \cite{two-level-independent-warsa}. A CG VEF method has fewer unknowns than an analogous DG method and requires simpler methods to solve the resulting linear system. We will show that this CG discretization has similar accuracy to DG and does not degrade convergence of the fixed-point iteration even in the asymptotic thick diffusion limit. However, it is unclear if using a continuous finite element space would negatively impact robustness and stability in the larger radiation-hydrodynamics multiphysics setting. 
+We now show how a \gls{cg} discretization of the VEF drift-diffusion equation can be extracted from the DG framework presented above. An approximate inversion of this operator is one stage of the subspace correction preconditioner described in Section \ref{dgvef_sec:subspace} that is used to efficiently solve the IP and BR2 VEF discretizations. This CG operator is also a VEF method itself and represents an extension to multiple dimensions, arbitrary-order, and curved meshes of the algorithm in \cite{two-level-independent-warsa}. A CG VEF method has fewer unknowns than an analogous DG method and requires simpler methods to solve the resulting linear system. We will show that this CG discretization has similar accuracy to DG and does not degrade convergence of the fixed-point iteration even in the asymptotic thick diffusion limit. However, it is unclear if using a continuous finite element space would negatively impact robustness and stability in the larger radiation-hydrodynamics multiphysics setting. 
 
 Let $u,\varphi \in V_p$, the degree-$p$ continuous finite element space, then 
 	\begin{equation}
@@ -335,7 +335,7 @@ Note that, for $u\in V_p$, $\nabla u \in W_p$. In other words, while $u\in V_p$ 
 	\end{multline}
 Observe that in the thick diffusion limit, where $\E = \frac{1}{3}\I$ and $E_b = 1/2$, a CG discretization of radiation diffusion with Marshak boundary conditions arises since $\jump{\E\n} = 0$ and $\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} = \frac{1}{3\sigma_t}\nabla \varphi$. 
 
-\section{\todo{Uniform Subspace Correction Preconditioner}}
+\section{\todo{Uniform Subspace Correction Preconditioner}} \label{dgvef_sec:subspace}
 
 \section{Results}
 The VEF algorithms described in this chapter were implemented using the MFEM \cite{MFEM,mfem-web} finite element framework. The stabilized bi-conjugate gradient (BiCGStab) and Jacobi solvers from MFEM were used to solve the VEF discretizations along with BoomerAMG, the AMG solver from the sparse linear algebra library \emph{hypre} \cite{hypre}. KINSOL, from the Sundials package \cite{hindmarsh2005sundials}, provided the Anderson-accelerated fixed-point solver. When iterative solver results are not presented, the parallel implementation of the sparse direct solver SuperLU \cite{lidemmel03} was used. We use the high-order DG \gls{sn} transport solver from \cite{graph_sweeps}.
