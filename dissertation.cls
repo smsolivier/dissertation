@@ -95,13 +95,14 @@
 \newcommand{\jump}[1]{\left\llbracket#1 \right\rrbracket}
 \renewcommand{\vector}[1]{\begin{bmatrix} #1 \end{bmatrix}^T}
 \newcommand{\Omegahat}{\vec{\Omega}}
-\newcommand{\Omegahatn}{\Omegahat\cdot\hat{n}}
+\newcommand{\Omegahatn}{\Omegahat\cdot\n}
 \newcommand{\nablah}{\nabla_h}
 \newcommand{\hnabla}{\hat{\nabla}}
 \renewcommand{\ang}[1]{\langle #1 \rangle}
 \newcommand{\Sn}{S$_N$\xspace}
 \newcommand{\Qone}{\vec{Q}_1}
-\newcommand{\Qcal}[1]{\mathcal{Q}_{#1}(\hat{K})}
+\newcommand{\Qcal}[1]{\mathcal{Q}_{#1}}
+\newcommand{\Pcal}[1]{\mathcal{P}_{#1}}
 \newcommand{\Qbb}[1]{\mathbb{Q}_{#1}}
 \newcommand{\RT}{\mathit{RT}}
 \newcommand{\hRT}{\hat{\RT}}

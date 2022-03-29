@@ -16,12 +16,14 @@
 * properties of VEF data 
 
 # FEM 
+* local polynomial spaces 
 * description of mesh 
 * integration transforms 
 * finite element spaces 
 * notation 
 * Galerkin's method 
 * assembly 
+* preconditioning 
 
 # Transport Discretizations
 * SN 

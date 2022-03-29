@@ -56,17 +56,21 @@
 	* discretization commuting diagram 
 
 # FEM 
+* local polynomial spaces 
+	* used to describe mesh and solution on each element 
+	* polynomial spaces in general 
+	* plot of 1D shape functions
+	* vandermonde 
+	* tensor product 
+	* horner's method 
+* sobolev spaces 
+	* L2 product is L2 
 * description of mesh 
 * integration transforms 
 	* scalar and vector 
 	* gradient of Piola 
 	* face transformations
 	* examples 
-* basis types/shape functions (Legendre vs Lobatto) 
-	* polynomial spaces in general 
-	* plot of 1D shape functions
-* sobolev spaces 
-	* L2 product is L2 
 * finite element spaces 
 	* sharing of DOFs for strong conditions
 	* proof of [v.n] = 0 for RT 

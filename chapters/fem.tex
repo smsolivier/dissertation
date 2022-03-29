@@ -1,9 +1,53 @@
-%!TEX root = ../doc.tex
+% !TEX root = ../doc.tex
 \documentclass[../doc.tex]{subfiles}
 
 \begin{document}
 \chapter{Finite Element Preliminaries}
 
+\section{Local Polynomial Spaces}
+Both the mesh and the solution are described with piecewise polynomial functions. We define 
+	\begin{equation}
+		\Pcal{k} = \{x^i\}_{i=0}^k = \{ 1, x, x^2, \ldots, x^k \} 
+	\end{equation}
+as the space of univariate polynomials of degree less than or equal to $k$. The tensor product polynomials are defined as 
+	\begin{equation}
+		\Qcal{m,n} = \{ p(x) q(y) : p \in \Pcal{m}\,, q \in \Pcal{n} \} 
+	\end{equation}
+in two dimensions and 
+	\begin{equation}
+		\Qcal{\ell,m,n} = \{ p(x) q(y) r(z) : p \in \Pcal{\ell}\,, q \in \Pcal{m}\,, r \in \Pcal{n}\} \,. 
+	\end{equation}
+We use 
+	\begin{equation}
+		\Qcal{p} = \begin{cases}
+			\Qcal{p,p} \,, & \dim = 2 \\ 
+			\Qcal{p,p,p} \,, & \dim = 3 
+		\end{cases} 
+	\end{equation}
+to denote tensor product polynomials of equal degree in each variable. 
+% --- shape functions in 1D --- 
+\begin{figure}
+\centering
+\begin{subfigure}{.30\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/shape1.pdf}
+	\caption{}
+\end{subfigure}
+\begin{subfigure}{.30\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/shape2.pdf}
+	\caption{}
+\end{subfigure}
+\begin{subfigure}{.30\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/shape3.pdf}
+	\caption{}
+\end{subfigure}
+\caption{Plots of the one-dimensional shape functions for (a) linear, (b) quadratic, and (c) cubic polynomial orders.}
+\label{fem:shape1d}
+\end{figure}
+
+\section{Description of the Mesh}
 % --- element transformation --- 
 \begin{figure}
 \centering
@@ -21,30 +65,16 @@
 \label{fem:eltrans}
 \end{figure}
 
-% --- jumps and averages --- 
-\begin{figure}
-\centering
-\includegraphics[width=.65\textwidth]{figs/jump_avg.pdf}
-\caption{A depiction of a discontinuous, piecewise quadratic solution across two quadrilateral elements. The normal vector, $\hat{n}$, is defined as pointing from $K_1$ to $K_2$ along the face between $K_1$ and $K_2$.}
-\label{fem:jump_avg}
-\end{figure}
-
-% --- fe support diagram --- 
-\begin{figure}
-\centering
-\includegraphics[width=.65\textwidth]{figs/fe_support.pdf}
-\caption{A depiction of a mesh of elements and a single basis function. Since the basis functions in the finite element method have local support, each basis function is non-zero only on the elements neighboring the shared node. }
-\label{fem:fe_support}
-\end{figure}
-
+\section{Integration Transformations}
 % --- piola transform --- 
 \begin{figure}
 	\centering
-	\includegraphics[width=.5\textwidth]{figs/piola.pdf}
+	\includegraphics[width=.85\textwidth]{figs/piola.pdf}
 	\caption{A depiction of the tangent and cotangent bases at the point $\vec{\xi} = (0,0)$ under a non-affine mesh transformation. }
 	\label{mms:piola}
 \end{figure}
 
+\section{Finite Element Spaces}
 % --- RT quiver diagram --- 
 \begin{figure}
 	\centering
@@ -106,4 +136,26 @@
 \caption{The distribution of degrees of freedom corresponding to $\Lambda_1$, the space defined as the normal trace of the first degree Raviart Thomas space, on a $3\times 3$ mesh. }
 \label{fem:ifes}
 \end{figure}
+
+\section{Mathematical Notation}
+% --- jumps and averages --- 
+\begin{figure}
+\centering
+\includegraphics[width=.65\textwidth]{figs/jump_avg.pdf}
+\caption{A depiction of a discontinuous, piecewise quadratic solution across two quadrilateral elements. The normal vector, $\hat{n}$, is defined as pointing from $K_1$ to $K_2$ along the face between $K_1$ and $K_2$.}
+\label{fem:jump_avg}
+\end{figure}
+
+\section{Galerkin's Method}
+
+\section{Finite Element Assembly}
+% --- fe support diagram --- 
+\begin{figure}
+\centering
+\includegraphics[width=.65\textwidth]{figs/fe_support.pdf}
+\caption{A depiction of a mesh of elements and a single basis function. Since the basis functions in the finite element method have local support, each basis function is non-zero only on the elements neighboring the shared node. }
+\label{fem:fe_support}
+\end{figure}
+
+\section{Iterative Solution Methods for Linear Systems}
 \end{document}

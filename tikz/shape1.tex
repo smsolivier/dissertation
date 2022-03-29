@@ -1,0 +1,24 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+\usepackage{xcolor}
+\definecolor{primary}{HTML}{003262} % berkeley blue
+\definecolor{secondary}{HTML}{FDB515} % cal gold
+\definecolor{founder}{HTML}{3B7EA1}
+\definecolor{medalist}{HTML}{C4820E}
+\definecolor{goldengate}{HTML}{ED4E33}
+\definecolor{ion}{HTML}{CFDD45}
+
+\begin{document}
+\begin{tikzpicture}
+	% \tikzset{shift=(current page.center), xshift=-4cm, yshift=-3.75cm}
+	\scriptsize
+	\draw (0,-.1) grid[step=2] (2,.1); 
+	\draw[domain=0:2, smooth, primary] plot (\x, 1-.5*\x); 
+	\draw[domain=0:2, smooth, secondary] plot (\x, .5*\x); 
+	\foreach \x in {0,2}{
+		\filldraw[black] (\x,0) circle[radius=1pt]; 
+	}
+	\node at (0,-.15) {}; 
+\end{tikzpicture}
+\end{document}
