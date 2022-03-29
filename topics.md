@@ -43,6 +43,7 @@
 * VEF algorithm in operator notation 
 	* fixed point and Anderson solution strategies 
 	* algorithm diagram 
+	* leverage sweep 
 * properties of VEF data 
 	* Gateaux of Eddington tensor 
 	* bounds 

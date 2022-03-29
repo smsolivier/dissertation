@@ -76,7 +76,7 @@ is the Eddington boundary factor. The VEF moment system with boundary conditions
 		\nabla\cdot\paren{\E\varphi} + \sigma_t\vec{J} = \Qone \,, \quad \x \in \D \,,
 	\end{equation}
 	\begin{equation} \label{vef:mlbc}
-		\vec{J}\cdot\n = E_b \varphi + \Jin \,, \quad \x \in \partial \D \,,
+		\vec{J}\cdot\n = E_b \varphi + 2\Jin \,, \quad \x \in \partial \D \,,
 	\end{equation}
 	\end{subequations}
 where $\Jin = \int_{\Omegahat\cdot\n<0} \Omegahat\cdot\n\, \bar{\psi} \ud \Omega$ is the incoming partial current computed using the inflow boundary function, $\bar{\psi}$. 
@@ -198,27 +198,37 @@ and thus
 		E_b = \frac{f(\x)/2}{f(\x)} = \frac{1}{2} 
 	\end{equation}
 in the thick diffusion limit. 
-
+Therefore, in the thick diffusion limit, the VEF drift-diffusion equation with Miften-Larsen boundary conditions limits to radiation diffusion with Marshak boundary condition: 
+	\begin{subequations}
+	\begin{equation}
+		-\nabla\cdot\frac{1}{3\sigma_t}\nabla\varphi + \sigma_a \varphi = Q \,, \quad \x \in \D \,, 
+	\end{equation}
+	\begin{equation}
+		\vec{J}\cdot\n = \frac{1}{2}\varphi + 2\Jin \,, \quad \x \in \partial \D\,. 
+	\end{equation}
+	\end{subequations}
+	
 \subsection{Functional Derivatives}
-Here, we use the Gateaux derivative to compute the derivative of the VEF data with respect to the angular flux. The Gateaux derivative is a generalization of the derivative that supports derivatives of functionals. The Gateaux derivative of a functional $f$ at $u$ in the direction $v$ is defined as: 
+\todo{relation to linearization/SMM}
+Here, we use the Gateaux derivative to investigate the dependence of the VEF data on the angular flux. The Gateaux derivative is a generalization of the directional derivative that supports derivatives of functionals. The Gateaux derivative of a functional $f$ at $u$ in the direction $v$ is defined as: 
 	\begin{equation}
 		D[f](u,v) = \pderiv{}{\omega}\bracket{f(u + \omega v)}_{\omega = 0} \,. 
 	\end{equation}
-Applying this to the Eddington tensor, the derivative of the Eddington tensor at $\psi_0$ in the direction $\psi$ is 
+Applying this to the Eddington tensor, the derivative of the Eddington tensor at $\psi_0$ in the direction $\psi'$ is 
 	\begin{equation}
 	\begin{aligned}
-		D[\E](\psi_0,\psi) &= \pderiv{}{\omega} \bracket{\E(\psi_0 + \omega\psi)}_{\omega=0} \\
-		&= \pderiv{}{\omega}\bracket{\frac{\int \Omegahat\otimes\Omegahat\paren{\psi_0 + \omega\psi}}{\int \psi_0 + \omega \psi \ud \Omega}}_{\omega=0} \\
-		&= \pderiv{}{\omega}\bracket{\frac{\P_0 + \omega\P}{\phi_0 + \omega\phi}}_{\omega=0} \,,
+		D[\E](\psi_0,\psi') &= \pderiv{}{\omega} \bracket{\E(\psi_0 + \omega\psi')}_{\omega=0} \\
+		&= \pderiv{}{\omega}\bracket{\frac{\int \Omegahat\otimes\Omegahat\paren{\psi_0 + \omega\psi'}}{\int \psi_0 + \omega \psi' \ud \Omega}}_{\omega=0} \\
+		&= \pderiv{}{\omega}\bracket{\frac{\P_0 + \omega\P'}{\phi_0 + \omega\phi'}}_{\omega=0} \,,
 	\end{aligned}
 	\end{equation}
-where $\phi_0$ and $\P_0$ are the zeroth and second moments of $\psi_0$ and $\phi$ and $\P$ the zeroth and second moments of $\psi$. Applying the quotient rule, 
+where $\phi_0$ and $\P_0$ are the zeroth and second moments of $\psi_0$ and $\phi'$ and $\P'$ the zeroth and second moments of $\psi'$. Applying the quotient rule, 
 	\begin{equation}
 	\begin{aligned}
-		\pderiv{}{\omega}\bracket{\frac{\P_0 + \omega\P}{\phi_0 + \omega\phi}}_{\omega=0} &= \frac{\P(\phi_0 + \omega \phi) - (\P_0 + \omega\P)\phi}{(\phi_0 + \omega\phi)^2} \biggr\rvert_{\omega=0} \\
+		\pderiv{}{\omega}\bracket{\frac{\P_0 + \omega\P'}{\phi_0 + \omega\phi'}}_{\omega=0} &= \frac{\P'(\phi_0 + \omega \phi') - (\P_0 + \omega\P')\phi'}{(\phi_0 + \omega\phi')^2} \biggr\rvert_{\omega=0} \\
 		&= \frac{\P' \phi_0 - \P_0 \phi}{\phi_0^2} \\
-		&= \frac{1}{\phi_0}\paren{\P - \frac{\P_0}{\phi_0} \phi} \\
-		&= \frac{1}{\phi_0}\paren{\P - \E_0 \phi} \,, 
+		&= \frac{1}{\phi_0}\paren{\P' - \frac{\P_0}{\phi_0} \phi'} \\
+		&= \frac{1}{\phi_0}\paren{\P' - \E_0 \phi'} \,, 
 	\end{aligned}
 	\end{equation}
 where $\E_0 = \P_0/\phi_0$ is the Eddington tensor evaluated at $\psi = \psi_0$. 
@@ -226,11 +236,12 @@ Thus, the derivative of the Eddington tensor evaluated at $\psi_0$ is
 	\begin{equation}
 		D[\E](\psi_0,\cdot) = \frac{1}{\phi_0} \paren{\int \Omegahat\otimes\Omegahat\paren{\cdot}\ud\Omega - \E_0\int \paren{\cdot}\ud \Omega} \,. 
 	\end{equation}
-Observe that when $\psi = \alpha \psi_0$, for some $\alpha \in \R$, 
+Observe that when $\psi' = \alpha \psi_0$, for some $\alpha \in \R$, 
 	\begin{equation}
 		D[\E](\psi_0,\alpha\psi_0) = \frac{1}{\phi_0}\paren{\int \Omegahat\otimes\Omegahat\,\alpha\psi_0 \ud\Omega - \E_0 \int \alpha \psi_0 \ud \Omega} = \frac{\alpha}{\phi_0}\paren{\P_0 - \P_0} = 0 \,,
 	\end{equation}
-since $\E_0 \int \psi_0 \ud \Omega = \P_0$. Additionally, if we add a perturbation to $\psi_0$ that is linear in angle, 
+since $\E_0 \int \psi_0 \ud \Omega = \P_0$. 
+Additionally, if we add a perturbation to $\psi_0$ that is linear in angle, 
 	\begin{equation}
 	\begin{aligned}
 		D[\E](\psi_0, \psi_0 + \Omegahat\cdot\vec{g}(\x)) &= \frac{1}{\phi_0}\paren{\int \Omegahat\otimes\Omegahat\paren{\psi_0 + \Omegahat\cdot\vec{g}(\x)}\ud \Omega - \E_0 \int \psi_0 + \Omegahat\cdot\vec{g}(\x) \ud \Omega}\\
@@ -239,14 +250,26 @@ since $\E_0 \int \psi_0 \ud \Omega = \P_0$. Additionally, if we add a perturbati
 	\end{aligned}
 	\end{equation}
 The above holds for any spatially-dependent function, $\vec{g}(\x)$, and also for any perturbation that is odd in angle. 
-The above examples show that the Eddington tensor is invariant under scaling of the angular flux and additive perturbations that are odd in angle. In addition, let $\psi_0$ and $\psi$ be linearly anisotropic in angle such that $\psi_0 = f_0(\x) + \Omegahat\cdot\vec{g}_0(\x)$ and $\psi = f(\x) + \Omegahat\cdot\vec{g}(\x)$, then 
+The above examples show that the Eddington tensor is invariant under scaling of the angular flux and additive perturbations that are odd in angle. In addition, let $\psi_0$ and $\psi'$ be linearly anisotropic in angle such that $\psi_0 = f_0(\x) + \Omegahat\cdot\vec{g}_0(\x)$ and $\psi' = f'(\x) + \Omegahat\cdot\vec{g}'(\x)$, then 
 	\begin{equation}
 	\begin{aligned}
-		D[\E](f_0(\x) + \Omegahat\cdot\vec{g}_0(\x), f(\x) + \Omegahat\cdot\vec{g}(\x)) &= \frac{1}{4\pi f}\paren{\frac{4\pi f}{3}\I - \frac{1}{3}\I \cdot 4\pi f} \\
-		&= \frac{1}{3}\I - \frac{1}{3}\I \\
+		D[\E](f_0(\x) + \Omegahat\cdot\vec{g}_0(\x), f'(\x) + \Omegahat\cdot\vec{g}'(\x)) &= \frac{1}{4\pi f_0}\paren{\frac{4\pi f'}{3}\I - \frac{1}{3}\I \cdot 4\pi f'} \\
+		&= \frac{f'}{f}\paren{\frac{1}{3}\I - \frac{1}{3}\I} \\
 		&= 0 \,. 
 	\end{aligned}
 	\end{equation}
+\todo{explain interpretation better}
+
+The Gateaux derivative of the boundary factor at $\psi_0$ in the direction $\psi'$ is 
+	\begin{equation}
+	\begin{aligned}
+		D[E_b](\psi_0,\psi') &= \pderiv{}{\omega}\bracket{E_b(\psi + \omega\psi')}_{\omega=0} \\ 
+		&= \pderiv{}{\omega}\bracket{\frac{\int |\Omegahat\cdot\n|\paren{\psi_0 + \omega\psi'} \ud \Omega}{\int \psi_0 + \omega\psi' \ud \Omega}}_{\omega=0} \\
+		&= \frac{\paren{\int \psi_0 + \omega\psi' \ud \Omega}\paren{\int |\Omegahat\cdot\n|\,\psi'\ud\Omega} - \paren{\int |\Omegahat\cdot\n|\paren{\psi_0 + \omega\psi'}\ud\Omega}\paren{\int\psi'\ud\Omega}}{\paren{\int \psi_0 + \omega\psi' \ud \Omega}^2} \biggr\rvert_{\omega=0} \\
+		&= \frac{1}{\phi_0}\bracket{\int |\Omegahat\cdot\n|\,\psi' \ud \Omega - E_{b0} \int \psi' \ud \Omega} \,,
+	\end{aligned}
+	\end{equation}
+where $E_{b0} = \int |\Omegahat\cdot\n|\,\psi_0 \ud \Omega/\phi_0$. As for the Eddington tensor, the derivative of the boundary factor in the directions of a scalar multiple and any odd-in-angle additive perturbation are zero. In addition, the derivative evaluated at a linearly anisotropic function in the direction of any linearly anisotropic function is zero. 
 
 \section{Mathematical Properties of the VEF Equations}
 The presence of the Eddington tensor inside the divergence in the VEF first moment equation leads to cross derivative terms not present in the standard form of the radiation diffusion equation. This can be seen in the differential term in the drift-diffusion form of the VEF equations given by
@@ -265,12 +288,23 @@ Defining
 		\mat{D} = \frac{\E}{\sigma_t}\,,\quad \vec{c} = -\frac{\nabla\cdot\E}{\sigma_t}\,, \quad \gamma = \nabla\cdot\frac{\nabla\cdot\E}{\sigma_t} \,,
 	\end{equation}
 the VEF drift-diffusion equation can be written as the diffusion-advection-reaction equation: 
-	\begin{equation}
+	\begin{equation} \label{vef:standard_elliptic}
 		-\nabla\cdot\mat{D}\nabla\varphi + \vec{c}\cdot\nabla\varphi + (\sigma_a - \gamma) \varphi = Q \,. 
 	\end{equation}
-\todo{however, not differentiable}
+Here, it is clear that the VEF drift-diffusion equation is not symmetric due to the presence of the advective term, $\vec{c}\cdot\nabla\varphi$. In addition, since $\mat{D}$ is symmetric positive definite (since the Eddington tensor is symmetric positive definite), the VEF drift-diffusion equation is an elliptic partial differential equation. 
+
+However, since the transport equation allows discontinuous solutions in space and angle, the Eddington tensor is generally not differtiable in space. Numerically, it is common to use a \gls{dg} spatial discretization for the transport equation. In such case, the solution is generally discontinuous across interior mesh interfaces. Thus, the VEF drift-diffusion equation cannot be written in the standard elliptic form of Eq.~\ref{vef:standard_elliptic} since the Eddington tensor does not have the required regularity to have $\nabla\cdot\E$ be well defined. This means discretization techniques must be extended to handle the non-standard form of the VEF drift-diffusion equation. 
 
 \section{Discrete VEF Schemes}
+The goal of this dissertation is to evaluate 
+	\begin{equation}
+		G(\varphi) = \mat{R}\!\paren{\mat{L}^{-1}\!\paren{\frac{\sigma_s}{4\pi}\varphi + q}}^{-1} Q \,. 
+	\end{equation}
+numerically in a computationally efficient manner. Numerically approximating this operator requires defining 1) a discretization of the transport equation, 2) a representation for the Eddington tensor and boundary factor, and 3) a discretization for the VEF moment system. VEF methods are generally classified as consistent and independent. Consistent methods are characterized by having discrete transport and VEF equations that are algebraically consistent. These methods produce solutions for the moment system that match the moments of the discrete transport equation to machine precision (or the minimum solver tolerance). In other words, the difference between the moments of the transport solution and the solution of the VEF moment system differ in a manner that is independent of the mesh size. Consistent methods are derived by forming moment equations from the \emph{discrete} transport equation and applying the VEF closures. This leads to a VEF discretization that is an equivalent reformulation of the discrete transport equation leading to the discrete equivalence that characterizes these methods. 
+
+On the other hand, independent VEF methods are characterized as having discrete transport and VEF equations that are not algebraically consistent. Due to this, the moments of the discrete transport solution and the VEF solution differ on the order of the spatial discretization error and are thus only equivalent in the limit as the spatial mesh is refined. Independent methods are derived by discretizing the continuous VEF equations without regard for the discretization used for the transport equation. 
+
+Figure \ref{vef:commuting} depicts a commuting diagram for approximating the continuous transport problem with a discrete VEF moment system. The consistent approach moves down and to the right from the continuous transport equation corresponding to discretizing and using discrete moments and closures to form the VEF system. Independent methods move right and then down corresponding to forming the continuous VEF equations and then discretizing. It is important to note that both approaches lead to discrete VEF systems that approximate the continuous transport problem. However, only the consistent approach produces a method with an equivalence in the bottom row of the commuting diagram.
 % --- VEF commuting diagram --- 
 \begin{figure}
 \centering
@@ -278,5 +312,10 @@ the VEF drift-diffusion equation can be written as the diffusion-advection-react
 \caption{The commuting diagram for VEF approximations of the transport equation. Consistent VEF methods apply discrete closures to a discretized transport equation whereas the independent methods discretize the continuous VEF equations formed through continuous closures of the continuous transport equation. In both cases, the discrete VEF system is an approximation to the continuous transport equation. However, independent methods generally do not have equivalence of the bottom row. That is discrete VEF and transport are in general not equivalent.}
 \label{vef:commuting}
 \end{figure}
+
+Consistent methods are attractive in that they can be used in place of an existing transport method without changing the solution. This is particularly important in reactor physics applications where licensing restrictions may require that new methods exactly reproduce solutions produced by older methods. In addition, forming the discrete VEF system from the discrete transport equation provides a systematic process for steps 2) and 3) of the VEF method. While this provides a straightforward process for defining a consistent VEF method given a discrete transport equation, this often leads to VEF discretizations that are difficult to solve efficiently with existing linear solver technology. Furthermore, use of negative flux fixups to ensure positivity of the transport equation will render an otherwise consistent VEF method inconsistent. 
+
+By contrast, the independent approach allows significant algorithmic flexibility. 
+\textcite{two-level-independent-warsa} compared the iterative efficiency of consistent and independent methods and saw equivalent convergence as long as the independent method properly represented the VEF data. In particular, using \gls{sn} angular quadrature and finite element interpolation produced independent methods that converged as rapidly as a consistent method. \todo{more independent benefits}
 
 \end{document}
