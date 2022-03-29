@@ -3,35 +3,272 @@
 
 \begin{document}
 \chapter{The VEF Algorithm}
-
-\section{Linear Transport Equation}
-The steady-state, mono-energetic, fixed-source transport problem with isotropic scattering and inflow boundary conditions is: 
+In this document, we develop \gls{vef} methods for the linear, steady-state, mono-energetic, fixed-source transport problem with isotropic scatttering. This problem represents the basic kernel for many more complicated problems such as \gls{trt}. 
+The linear Boltzmann equation that models this problem is: 
 	\begin{subequations}
-	\begin{equation} \label{eq:transport}
+	\begin{equation} \label{vef:transport}
 		\Omegahat\cdot\nabla\psi + \sigma_t \psi = \frac{\sigma_s}{4\pi}\int \psi \ud \Omega' + q \,, \quad \x \in \D \,,
 	\end{equation}
-	\begin{equation}
+	\begin{equation} \label{vef:inflow}
 		\psi(\x,\Omegahat) = \bar{\psi}(\x,\Omegahat) \,, \quad \x \in \partial \D \ \mathrm{and} \ \Omegahat\cdot\n < 0 \,, 
 	\end{equation}
 	\end{subequations}
 where $\psi(\x,\Omegahat)$ is the angular flux, $\D$ the domain of the problem with $\partial\D$ its boundary, $\sigma_t(\x)$ and $\sigma_s(\x)$ the total and scattering macroscopic cross sections, respectively, $q(\x,\Omegahat)$ the fixed-source, and $\bar{\psi}(\x,\Omegahat)$ the inflow boundary function. 
-The independent variables are $\x \in \R^{\dim}$ and $\Omegahat \in \mathbb{S}^2$ where $\x$ defines a location in $\dim$-dimensional space and $\Omegahat$ a direction on the unit sphere, $\mathbb{S}^2$. The direction variable is represented using the polar and azimuthal angles $(\theta,\varphi)$ as shown in Fig. \ref{vef:omega_diagram}. Its projections onto the Cartesian coordinate axes $(\e_x, \e_y, \e_z)$ are given by: 
-	\begin{equation}
-		\mu = \sin \varphi \cos\theta \,, \quad \eta = \sin\varphi \sin\theta \,, \quad \xi = \cos\varphi \,,  
-	\end{equation}
-so that $\Omegahat = \mu\e_x + \eta\e_y + \xi\e_z$. The streaming term can then be written as 
-	\begin{equation}
-		\Omegahat\cdot\nabla\psi = \mu\pderiv{\psi}{x} + \eta\pderiv{\psi}{y} + \xi\pderiv{\psi}{z} \,. 
-	\end{equation}
 
-% --- spherical coordinates for Omega --- 
+In this chapter, we derive the \gls{vef} algorithm by taking angular moments of the transport equation given by Eq.~\ref{vef:transport}. Due to the streaming term, $\Omegahat\cdot\nabla\psi$, angular moments always produce more unknowns than equations. In VEF, an exact, trivial closure of the second moment is used so that the moment system is an \emph{equivalent reformulation} of the transport problem. Since the VEF closures are weak functions of the solution, iterative scheme can be designed to converge rapidly. \todo{finish summary}
+
+\section{Derivation of the VEF Equations}
+Integrating the transport equation over angle yields 
+	\begin{equation}
+		\nabla\cdot\vec{J} + \sigma_a \varphi = Q_0 \,, 
+	\end{equation}
+where $\varphi$ and $\vec{J}$ are the zeroth and first angular moments of the angular flux, $Q_0$ the zeroth moment of the fixed source, $q$, and $\sigma_a(\x) = \sigma_t(\x) - \sigma_s(\x)$ the absorption cross section. Multiplying by $\Omegahat$ and integrating over angle yields the first moment equation: 
+	\begin{equation}
+		\nabla\cdot\P + \sigma_t \vec{J} = \vec{Q}_1 \,, 
+	\end{equation}
+where $\P = \int \Omegahat\otimes\Omegahat\,\psi \ud \Omega$ is the second moment of $\psi$ and $\vec{Q}_1$ is the first angular moment of $q$. We refer to the first three moments as the scalar flux, current, and pressure, respectively. In three dimensions, we have 10 unknowns corresponding to the scalar flux, three components of the current, and the six unique components of the symmetric pressure tensor but only four equations arising from the scalar zeroth moment and vector first moment equations. 
+
+VEF introduces an additional equation, known as a closure, that expresses the pressure in terms of the scalar flux. This is achieved with an exact but trivial multiplicative closure of the form: 
+	\begin{equation}
+		\P = \E\varphi \,,
+	\end{equation}
+where 
+	\begin{equation}
+		\E = \frac{\int \Omegahat\otimes\Omegahat\,\psi \ud \Omega}{\int \psi \ud \Omega} 
+	\end{equation}
+is the Eddington tensor. Note that this closure is an algebraic reformulation of the pressure derived by multiplying and dividing by the scalar flux. This is a trivial closure in that the solution to the transport equation, $\psi$, must be known to define the Eddington tensor. The VEF equations are then: 
+	\begin{subequations} \label{vef:vefeq}
+	\begin{equation}
+		\nabla\cdot\vec{J} + \sigma_a \varphi = Q_0 \,, 
+	\end{equation}
+	\begin{equation}
+		\nabla\cdot\paren{\E\varphi} + \sigma_t \vec{J} = \Qone \,. 
+	\end{equation}
+	\end{subequations}
+By eliminating the current, the VEF equations can be cast as a drift-diffusion equation: 
+	\begin{equation} \label{vef:drift}
+		-\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\paren{\E\varphi} + \sigma_a \varphi = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t} \,. 
+	\end{equation}
+In both the first-order form (Eq.~\ref{vef:vefeq}) and the second-order form (Eq.~\ref{vef:drift}), the presence of the Eddington tensor inside the divergence leads to diffusion, advection, and reaction-like terms that make applying existing discretization techniques difficult. 
+
+The Miften-Larsen boundary conditions \cite{QDBC} are derived using an analogous closure. Let $J_n^\pm = \int_{\Omegahat\cdot\n\gtrless 0} \Omegahat\cdot\n\, \psi \ud \Omega$ be the positive and negative partial currents such that $\vec{J}\cdot\n = J_n^+ + J_n^-$. We can then write, 
+	\begin{equation}
+	\begin{aligned}
+		\vec{J}\cdot\n &= J_n^+ + J_n^- \\ 
+		&= (J_n^+ - J_n^-) + 2J_n^- \\
+		&= \int |\Omegahat\cdot\n|\, \psi \ud \Omega + 2J_n^- \,. 
+	\end{aligned}
+	\end{equation}
+Here, it is assumed that the incoming partial current, $J_n^-$, is computed from the inflow boundary condition, $\bar{\psi}$, and that $\int |\Omegahat\cdot\n|\,\psi \ud \Omega$ is computed from the transport solution. Applying a similar multiplicative closure yields: 
+	\begin{equation}
+		\vec{J}\cdot\n = E_b \varphi + 2J_n^- \,,
+	\end{equation}
+where 
+	\begin{equation}
+		E_b = \frac{\int |\Omegahat\cdot\n|\,\psi \ud \Omega}{\int \psi \ud \Omega} 
+	\end{equation}
+is the Eddington boundary factor. The VEF moment system with boundary conditions is
+	\begin{subequations}
+	\begin{equation}
+		\nabla\cdot\vec{J} + \sigma_a \varphi = Q_0 \,, \quad \x \in \D \,, 
+	\end{equation}
+	\begin{equation}
+		\nabla\cdot\paren{\E\varphi} + \sigma_t\vec{J} = \Qone \,, \quad \x \in \D \,,
+	\end{equation}
+	\begin{equation} \label{vef:mlbc}
+		\vec{J}\cdot\n = E_b \varphi + \Jin \,, \quad \x \in \partial \D \,,
+	\end{equation}
+	\end{subequations}
+where $\Jin = \int_{\Omegahat\cdot\n<0} \Omegahat\cdot\n\, \bar{\psi} \ud \Omega$ is the incoming partial current computed using the inflow boundary function, $\bar{\psi}$. 
+
+If the Eddington tensor and boundary factor are known, the VEF equations with Miften-Larsen boundary conditions define the zeroth and first moments of the angular flux. That is, they are an equivalent reformulation of the transport equation. However, this is a trivial closure in that the solution to the transport equation must be known in order to define the VEF data. VEF methods rely on the fact that the VEF data are weak functions of the solution and thus simple iterative schemes can converge rapidly. 
+
+Note that when an independent discretization is used for the VEF equations, the discretized VEF scalar flux and VEF current will not be equivalent to the zeroth and first angular moments of the discrete angular flux; the two solutions will differ on the order of the spatial discretization error. To notationally separate the two scalar flux solutions, we use $\varphi$ (varphi) to denote the VEF scalar flux and $\phi = \int \psi \ud \Omega$ (phi) for the zeroth moment of the angular flux. 
+
+\section{The VEF Algorithm}
+VEF methods seek the solution of the coupled transport-VEF moment equations. For brevity, we use the drift-diffusion form of the VEF equations. The coupled system is: 
+	\begin{subequations}
+	\begin{equation}
+		\Omegahat\cdot\nabla\psi + \sigma_t \psi = \frac{\sigma_s}{4\pi}\varphi + q \,,  
+	\end{equation}
+	\begin{equation}
+		-\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\paren{\E\varphi} + \sigma_a \varphi = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t} \,.
+	\end{equation}
+	\end{subequations}
+Boundary conditions are specified in Eqs.~\ref{vef:inflow} and \ref{vef:mlbc} for the transport and VEF drift-diffusion equations, respectively. Here, the transport equation's scattering source is coupled to the VEF drift-diffusion equation and the data for the VEF drift-diffusion equation are nonlinearly coupled to the transport equation through the Eddington tensor and boundary factor. We have increased the complexity of the problem by adding the VEF scalar flux as an additional unknown and by casting the linear transport problem as nonlinear. However, properties of the VEF data and the transport equation allow this coupled, nonlinear system to be solved for efficiently than the transport equation in isolation. 
+
+Let, 
+	\begin{equation}
+		\mat{L}\psi = \Omegahat\cdot\nabla\psi + \sigma_t \psi \,,
+	\end{equation}
+	\begin{equation}
+		\mat{R}(\psi)\varphi = -\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\paren{\E\varphi} + \sigma_a \varphi 
+	\end{equation}
+be the streaming and collision and VEF drift-diffusion operators, respectively, where $\paren{\cdot}$ indicates a nonlinear dependence on the argument. Furthermore, let $Q = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t}$ be the source for the VEF drift-diffusion equation. The coupled transport-VEF system can then be written 
+	\begin{subequations}
+	\begin{equation}
+		\mat{L} \psi = \frac{\sigma_s}{4\pi} \varphi + q \,, 
+	\end{equation}
+	\begin{equation}
+		\mat{R}(\psi)\varphi = Q \,,
+	\end{equation}
+	\end{subequations}
+By linearly eliminating the angular flux, the coupled system is equivalent to 
+	\begin{equation} \label{vef:lin_elim}
+		\mat{R}\!\paren{\mat{L}^{-1}\!\paren{\frac{\sigma_s}{4\pi}\varphi + q}}\varphi = Q \,. 
+	\end{equation}
+Applying the inverse of the drift-diffusion operator, the solution of the coupled transport-VEF system is the fixed-point 
+	\begin{equation} \label{vef:fixedpoint}
+		\varphi = G(\varphi) \,,
+	\end{equation}
+where 
+	\begin{equation}
+		G(\varphi) = \mat{R}\!\paren{\mat{L}^{-1}\!\paren{\frac{\sigma_s}{4\pi}\varphi + q}}^{-1}Q \,. 
+	\end{equation}
+The fixed-point operator $G$ is applied in two stages: 1) solve the transport equation using a scattering source formed from the VEF scalar flux or an initial guess and 2) solve the VEF drift-diffusion equation using the VEF data computed from the angular flux from stage 1). Note that by eliminating the angular flux, it only appears as an auxiliary variable used to compute the VEF data. This iteration is depicted in Fig.~\ref{vef:vef_alg}. 
+% --- depiction of coupling between VEF and transport --- 
 \begin{figure}
 \centering
-\includegraphics[width=.65\textwidth]{figs/omega.pdf}
-\caption{A depiction of the spherical coordinate system used for the direction of particle travel variable, $\Omegahat$. Here, $\theta \in [0,2\pi]$ is the azimuthal angle and $\varphi \in [0,\pi]$ the polar angle. }
-\label{vef:omega_diagram}
+\includegraphics{figs/vef_alg.pdf}
+\caption{A depiction of the iteration scheme used in VEF algorithms. The transport equation informs the VEF system through the VEF data while the VEF equations drive the transport equation through computation of the scattering source. By lagging the scattering term, the transport equation can be efficiently inverted. Rapid convergence occurs because the VEF data are weak functions of the solution.}
+\label{vef:vef_alg}
 \end{figure}
 
+The simplest algorithm to solve Eq.~\ref{vef:fixedpoint} is fixed-point iteration: 
+	\begin{equation}
+		\varphi^{k+1} = G(\varphi^k) 
+	\end{equation}
+where $\varphi^0$ is an initial guess. This process is repeated until the difference between successive iterates is small enough. 
+
+Iterative efficiency can be improved with the use of Anderson acceleration. Anderson acceleration defines the next iterate as the linear combination of the previous $m$ iterates that minimizes the residual $\varphi - G(\varphi)$. For the storage cost of $m$ previous iterates, Anderson acceleration increases the convergence rate and improves robustness. While it is not practical to store multiple copies of the \emph{angular} flux, it is reasonable to expect that a small set of \emph{scalar} flux-sized vectors can be stored. The process of linearly eliminating the transport equation, codified in Eq.~\ref{vef:lin_elim}, allows the Anderson space to be built from the much smaller scalar flux-sized vectors only. In the case where a subset of the angular flux unknowns are not eliminated, such as when a parallel block Jacobi sweep is used to avoid communication costs or when mesh cycles or reentrant faces are present, the solution vector can be augmented with these un-eliminated unknowns so that they are included in the Anderson space. This is the nonlinear analog to the ideas used for Krylov-accelerated source iteration \cite{doi:10.13182/NSE02-14}. 
+
+In addition, defining the nonlinear residual as 
+	\begin{equation}
+		F(\varphi) = \varphi - G(\varphi) = 0 \,,
+	\end{equation}
+root-finding methods such as \gls{jfnk} can be used. JFNK builds a new Krylov space to approximate the gradient of $F$ \emph{at each iteration} meaning information across iterations is not kept. JFNK typically required significantly more evaluations of $G$ than Anderson-accelerated fixed-point iteration. Since evaluating $G$ involves inverting the transport equation, this significantly increases the expense of the algorithm. Thus, we present results using fixed-point iteration and Anderson-accelerated fixed-point iteration only. 
+
+\section{Properties of the VEF Data}
+The Eddington tensor and boundary factor are defined as 
+	\begin{equation}
+		\E = \frac{\int\Omegahat\otimes\Omegahat\,\psi \ud \Omega}{\int \psi \ud \Omega}\,,
+	\end{equation}
+	\begin{equation}
+		E_b = \frac{\int|\Omegahat\cdot\n|\,\psi \ud \Omega}{\int \psi \ud \Omega} \,,
+	\end{equation}
+respectively. Observe that the Eddington tensor and boundary factor are $\psi$-weighted averages of $\Omegahat\otimes\Omegahat$ and $|\Omegahat\cdot\n|$, respectively. This means the VEF data are bounded functions of $\psi$. 
+The following subsections use this fact to establish bounds and asymptotic limits for the Eddington tensor and boundary factor. We also derive the Gateaux derivative of the VEF data to show their weak dependence on the solution. 
+
+\subsection{Bounds and Asymptotic Limits}
+Since the Eddington tensor is a $\psi$-weighted average of $\Omegahat\otimes\Omegahat$, its maximum and minimum occur at the maximum and minimum of $\Omegahat\otimes\Omegahat$. This can be seen by setting $\psi$ to be a Dirac delta function centered at an extreme value of $\Omegahat\otimes\Omegahat$. Due to to this, the Eddington tensor obeys the bounds 
+	\begin{equation}
+		\E_{ij} \in \begin{cases}
+			[0,1] \,, & i=j \\ 
+			[-1/2,1/2] \,, & i\neq j
+		\end{cases} \,. 
+	\end{equation}
+Likewise, the boundary factor has the extreme values of $|\Omegahat\cdot\n|$. Thus, 
+	\begin{equation}
+		E_b \in [0,1] \,. 
+	\end{equation}
+
+In the thick diffusion limit, the angular flux is a linearly anisotropic function in angle. In other words, for some spatially-dependent functions $f(\x)$ and $\vec{g}(\x)$, 
+	\begin{equation}
+		\psi(\x,\Omegahat) = \frac{1}{4\pi}\paren{f(\x) + \Omegahat\cdot\vec{g}(\x)} \,. 
+	\end{equation}
+The zeroth and second moments of this linearly anisotropic solution are 
+	\begin{equation}
+		\int \psi \ud \Omega = \frac{1}{4\pi} \int f(\x) + \Omegahat\cdot\vec{g}(\x) \ud \Omega = f(\x) \,, 
+	\end{equation}
+	\begin{equation}
+		\int \Omegahat\otimes\Omegahat\,\psi \ud \Omega = \frac{1}{4\pi}\int \Omegahat\otimes\Omegahat\paren{f(\x) + \Omegahat\cdot\vec{g}(\x)} \ud \Omega = \frac{f(\x)}{3}\I \,, 
+	\end{equation}
+since integrals of odd functions in angle over the unit sphere are zero. Thus, in the thick diffusion limit, the Eddington tensor is 
+	\begin{equation}
+		\E = \frac{f(\x)/3\I}{f(\x)} = \frac{1}{3}\I \,. 
+	\end{equation}
+For the boundary factor, 
+	\begin{equation}
+		\int |\Omegahat\cdot\n|\,\psi \ud \Omega = \frac{1}{4\pi}\int |\Omegahat\cdot\n|\paren{f(\x) + \Omegahat\cdot\vec{g}(\x)} \ud \Omega = \frac{f(\x)}{2} \,, 
+	\end{equation}
+and thus 
+	\begin{equation}
+		E_b = \frac{f(\x)/2}{f(\x)} = \frac{1}{2} 
+	\end{equation}
+in the thick diffusion limit. 
+
+\subsection{Functional Derivatives}
+Here, we use the Gateaux derivative to compute the derivative of the VEF data with respect to the angular flux. The Gateaux derivative is a generalization of the derivative that supports derivatives of functionals. The Gateaux derivative of a functional $f$ at $u$ in the direction $v$ is defined as: 
+	\begin{equation}
+		D[f](u,v) = \pderiv{}{\omega}\bracket{f(u + \omega v)}_{\omega = 0} \,. 
+	\end{equation}
+Applying this to the Eddington tensor, the derivative of the Eddington tensor at $\psi_0$ in the direction $\psi$ is 
+	\begin{equation}
+	\begin{aligned}
+		D[\E](\psi_0,\psi) &= \pderiv{}{\omega} \bracket{\E(\psi_0 + \omega\psi)}_{\omega=0} \\
+		&= \pderiv{}{\omega}\bracket{\frac{\int \Omegahat\otimes\Omegahat\paren{\psi_0 + \omega\psi}}{\int \psi_0 + \omega \psi \ud \Omega}}_{\omega=0} \\
+		&= \pderiv{}{\omega}\bracket{\frac{\P_0 + \omega\P}{\phi_0 + \omega\phi}}_{\omega=0} \,,
+	\end{aligned}
+	\end{equation}
+where $\phi_0$ and $\P_0$ are the zeroth and second moments of $\psi_0$ and $\phi$ and $\P$ the zeroth and second moments of $\psi$. Applying the quotient rule, 
+	\begin{equation}
+	\begin{aligned}
+		\pderiv{}{\omega}\bracket{\frac{\P_0 + \omega\P}{\phi_0 + \omega\phi}}_{\omega=0} &= \frac{\P(\phi_0 + \omega \phi) - (\P_0 + \omega\P)\phi}{(\phi_0 + \omega\phi)^2} \biggr\rvert_{\omega=0} \\
+		&= \frac{\P' \phi_0 - \P_0 \phi}{\phi_0^2} \\
+		&= \frac{1}{\phi_0}\paren{\P - \frac{\P_0}{\phi_0} \phi} \\
+		&= \frac{1}{\phi_0}\paren{\P - \E_0 \phi} \,, 
+	\end{aligned}
+	\end{equation}
+where $\E_0 = \P_0/\phi_0$ is the Eddington tensor evaluated at $\psi = \psi_0$. 
+Thus, the derivative of the Eddington tensor evaluated at $\psi_0$ is 
+	\begin{equation}
+		D[\E](\psi_0,\cdot) = \frac{1}{\phi_0} \paren{\int \Omegahat\otimes\Omegahat\paren{\cdot}\ud\Omega - \E_0\int \paren{\cdot}\ud \Omega} \,. 
+	\end{equation}
+Observe that when $\psi = \alpha \psi_0$, for some $\alpha \in \R$, 
+	\begin{equation}
+		D[\E](\psi_0,\alpha\psi_0) = \frac{1}{\phi_0}\paren{\int \Omegahat\otimes\Omegahat\,\alpha\psi_0 \ud\Omega - \E_0 \int \alpha \psi_0 \ud \Omega} = \frac{\alpha}{\phi_0}\paren{\P_0 - \P_0} = 0 \,,
+	\end{equation}
+since $\E_0 \int \psi_0 \ud \Omega = \P_0$. Additionally, if we add a perturbation to $\psi_0$ that is linear in angle, 
+	\begin{equation}
+	\begin{aligned}
+		D[\E](\psi_0, \psi_0 + \Omegahat\cdot\vec{g}(\x)) &= \frac{1}{\phi_0}\paren{\int \Omegahat\otimes\Omegahat\paren{\psi_0 + \Omegahat\cdot\vec{g}(\x)}\ud \Omega - \E_0 \int \psi_0 + \Omegahat\cdot\vec{g}(\x) \ud \Omega}\\
+		&= \frac{1}{\phi_0} \paren{\P_0 - \P_0} \\
+		&= 0 \,. 
+	\end{aligned}
+	\end{equation}
+The above holds for any spatially-dependent function, $\vec{g}(\x)$, and also for any perturbation that is odd in angle. 
+The above examples show that the Eddington tensor is invariant under scaling of the angular flux and additive perturbations that are odd in angle. In addition, let $\psi_0$ and $\psi$ be linearly anisotropic in angle such that $\psi_0 = f_0(\x) + \Omegahat\cdot\vec{g}_0(\x)$ and $\psi = f(\x) + \Omegahat\cdot\vec{g}(\x)$, then 
+	\begin{equation}
+	\begin{aligned}
+		D[\E](f_0(\x) + \Omegahat\cdot\vec{g}_0(\x), f(\x) + \Omegahat\cdot\vec{g}(\x)) &= \frac{1}{4\pi f}\paren{\frac{4\pi f}{3}\I - \frac{1}{3}\I \cdot 4\pi f} \\
+		&= \frac{1}{3}\I - \frac{1}{3}\I \\
+		&= 0 \,. 
+	\end{aligned}
+	\end{equation}
+
+\section{Mathematical Properties of the VEF Equations}
+The presence of the Eddington tensor inside the divergence in the VEF first moment equation leads to cross derivative terms not present in the standard form of the radiation diffusion equation. This can be seen in the differential term in the drift-diffusion form of the VEF equations given by
+	\begin{equation}
+		\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\paren{\E\varphi} \,. 
+	\end{equation}
+Assuming the Eddington tensor and total cross section have the required differentiability, we can use the product rule to write 
+	\begin{equation}
+	\begin{aligned}
+		\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\paren{\E\varphi} &= \nabla\cdot\frac{\E}{\sigma_t}\nabla\varphi + \nabla\cdot\paren{\frac{\nabla\cdot\E}{\sigma_t}\varphi} \\
+		&= \nabla\cdot\frac{\E}{\sigma_t}\nabla\varphi + \frac{\nabla\cdot\E}{\sigma_t}\cdot\nabla\varphi + \paren{\nabla\cdot\frac{\nabla\cdot\E}{\sigma_t}} \varphi \,. 
+	\end{aligned}
+	\end{equation}
+Defining 
+	\begin{equation}
+		\mat{D} = \frac{\E}{\sigma_t}\,,\quad \vec{c} = -\frac{\nabla\cdot\E}{\sigma_t}\,, \quad \gamma = \nabla\cdot\frac{\nabla\cdot\E}{\sigma_t} \,,
+	\end{equation}
+the VEF drift-diffusion equation can be written as the diffusion-advection-reaction equation: 
+	\begin{equation}
+		-\nabla\cdot\mat{D}\nabla\varphi + \vec{c}\cdot\nabla\varphi + (\sigma_a - \gamma) \varphi = Q \,. 
+	\end{equation}
+\todo{however, not differentiable}
+
+\section{Discrete VEF Schemes}
 % --- VEF commuting diagram --- 
 \begin{figure}
 \centering

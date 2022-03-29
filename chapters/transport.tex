@@ -1,0 +1,26 @@
+%!TEX root = ../doc.tex
+\documentclass[../doc.tex]{subfiles}
+
+\begin{document}
+\chapter{Radiation Transport Background}
+
+% The independent variables are $\x \in \R^{\dim}$ and $\Omegahat \in \mathbb{S}^2$ where $\x$ defines a location in $\dim$-dimensional space and $\Omegahat$ a direction on the unit sphere, $\mathbb{S}^2$. The direction variable is represented using the polar and azimuthal angles $(\theta,\varphi)$ as shown in Fig.~\ref{vef:omega_diagram}. Its projections onto the Cartesian coordinate axes $(\e_x, \e_y, \e_z)$ are given by: 
+% 	\begin{equation}
+% 		\mu = \sin \varphi \cos\theta \,, \quad \eta = \sin\varphi \sin\theta \,, \quad \xi = \cos\varphi \,,  
+% 	\end{equation}
+% so that $\Omegahat = \mu\e_x + \eta\e_y + \xi\e_z$. The streaming term can then be written as 
+% 	\begin{equation}
+% 		\Omegahat\cdot\nabla\psi = \mu\pderiv{\psi}{x} + \eta\pderiv{\psi}{y} + \xi\pderiv{\psi}{z} \,. 
+% 	\end{equation}
+% In a two-dimensional approximation, it is assumed that the solution does not change in the $z$ direction meaning $\pderiv{\psi}{z} = 0$. 
+
+
+% --- spherical coordinates for Omega --- 
+\begin{figure}
+\centering
+\includegraphics[width=.65\textwidth]{figs/omega.pdf}
+\caption{A depiction of the spherical coordinate system used for the direction of particle travel variable, $\Omegahat$. Here, $\theta \in [0,2\pi]$ is the azimuthal angle and $\varphi \in [0,\pi]$ the polar angle. }
+\label{vef:omega_diagram}
+\end{figure}
+
+\end{document}

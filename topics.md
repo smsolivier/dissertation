@@ -20,6 +20,7 @@
 * derivation of intensity 
 	* track length density 
 * cross sections (reaction rate experiment)
+* useful angular identities 
 * TRT to linear 
 * f vs psi v I 
 * derive transport equation 
@@ -32,12 +33,12 @@
 	* derivation of diffusion + Marshak BCs
 * VEF assumptions 
 	* positive psi
+* level symmetric quadrature 
 
 # VEF 
 * derivation of VEF equations 
 	* drift-diffusion form 
 * derivation of Miften Larsen BCs 
-* definition of elliptic PDE 
 * connection to diffusion w/ Marshak
 * VEF algorithm in operator notation 
 	* fixed point and Anderson solution strategies 
@@ -46,8 +47,12 @@
 	* Gateaux of Eddington tensor 
 	* bounds 
 	* asymptotic limits
-* discretization commuting diagram 
-* diffusion advection reaction structure 
+* properties of VEF equations 
+	* diffusion advection reaction structure 
+	* div(E) -> advection 
+	* definition of elliptic PDE 
+* independent vs consistent methods 
+	* discretization commuting diagram 
 
 # FEM 
 * description of mesh 
