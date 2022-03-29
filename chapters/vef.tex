@@ -95,14 +95,14 @@ VEF methods seek the solution of the coupled transport-VEF moment equations. For
 		-\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\paren{\E\varphi} + \sigma_a \varphi = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t} \,.
 	\end{equation}
 	\end{subequations}
-Boundary conditions are specified in Eqs.~\ref{vef:inflow} and \ref{vef:mlbc} for the transport and VEF drift-diffusion equations, respectively. Here, the transport equation's scattering source is coupled to the VEF drift-diffusion equation and the data for the VEF drift-diffusion equation are nonlinearly coupled to the transport equation through the Eddington tensor and boundary factor. We have increased the complexity of the problem by adding the VEF scalar flux as an additional unknown and by casting the linear transport problem as nonlinear. However, properties of the VEF data and the transport equation allow this coupled, nonlinear system to be solved for efficiently than the transport equation in isolation. 
+Boundary conditions are specified in Eqs.~\ref{vef:inflow} and \ref{vef:mlbc} for the transport and VEF drift-diffusion equations, respectively. Here, the transport equation's scattering source is coupled to the VEF drift-diffusion equation and the VEF drift-diffusion equation is nonlinearly coupled to the transport equation through the Eddington tensor and boundary factor. We have increased the complexity of the problem by adding the VEF scalar flux as an additional unknown and by casting the linear transport problem as nonlinear. However, properties of the VEF data and the transport equation allow this coupled, nonlinear system to be solved for efficiently than the transport equation in isolation. 
 
 Let, 
 	\begin{equation}
 		\mat{L}\psi = \Omegahat\cdot\nabla\psi + \sigma_t \psi \,,
 	\end{equation}
 	\begin{equation}
-		\mat{R}(\psi)\varphi = -\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\paren{\E\varphi} + \sigma_a \varphi 
+		\mat{R}(\psi)\varphi = -\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\paren{\E(\psi)\varphi} + \sigma_a \varphi 
 	\end{equation}
 be the streaming and collision and VEF drift-diffusion operators, respectively, where $\paren{\cdot}$ indicates a nonlinear dependence on the argument. Furthermore, let $Q = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t}$ be the source for the VEF drift-diffusion equation. The coupled transport-VEF system can then be written 
 	\begin{subequations}
@@ -125,7 +125,9 @@ where
 	\begin{equation}
 		G(\varphi) = \mat{R}\!\paren{\mat{L}^{-1}\!\paren{\frac{\sigma_s}{4\pi}\varphi + q}}^{-1}Q \,. 
 	\end{equation}
-The fixed-point operator $G$ is applied in two stages: 1) solve the transport equation using a scattering source formed from the VEF scalar flux or an initial guess and 2) solve the VEF drift-diffusion equation using the VEF data computed from the angular flux from stage 1). Note that by eliminating the angular flux, it only appears as an auxiliary variable used to compute the VEF data. This iteration is depicted in Fig.~\ref{vef:vef_alg}. 
+The fixed-point operator $G$ is applied in two stages: 1) solve the transport equation using a scattering source formed from the VEF scalar flux and 2) solve the VEF drift-diffusion equation using the VEF data computed from the angular flux from stage 1). 
+Note that eliminating the angular means it appears only as an auxiliary variable used to computed the VEF data
+This iteration is depicted in Fig.~\ref{vef:vef_alg}. 
 % --- depiction of coupling between VEF and transport --- 
 \begin{figure}
 \centering
@@ -172,7 +174,7 @@ Likewise, the boundary factor has the extreme values of $|\Omegahat\cdot\n|$. Th
 		E_b \in [0,1] \,. 
 	\end{equation}
 
-In the thick diffusion limit, the angular flux is a linearly anisotropic function in angle. In other words, for some spatially-dependent functions $f(\x)$ and $\vec{g}(\x)$, 
+In the thick diffusion limit, the angular flux is a linearly anisotropic function in angle. In other words, for some spatially-dependent functions $f(\x)$ and $\vec{g}(\x)$, the angular flux is of the form: 
 	\begin{equation}
 		\psi(\x,\Omegahat) = \frac{1}{4\pi}\paren{f(\x) + \Omegahat\cdot\vec{g}(\x)} \,. 
 	\end{equation}
