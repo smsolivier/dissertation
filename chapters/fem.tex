@@ -5,7 +5,7 @@
 \chapter{Finite Element Preliminaries}
 
 \section{Local Polynomial Spaces}
-Both the mesh and the solution are described with piecewise polynomial functions. We define 
+Both the mesh and the solution are represented with a polynomial space defined locally on each element. We define 
 	\begin{equation}
 		\Pcal{k} = \{x^i\}_{i=0}^k = \{ 1, x, x^2, \ldots, x^k \} 
 	\end{equation}
@@ -15,17 +15,18 @@ as the space of univariate polynomials of degree less than or equal to $k$. The 
 	\end{equation}
 in two dimensions and 
 	\begin{equation}
-		\Qcal{\ell,m,n} = \{ p(x) q(y) r(z) : p \in \Pcal{\ell}\,, q \in \Pcal{m}\,, r \in \Pcal{n}\} \,. 
+		\Qcal{\ell,m,n} = \{ p(x) q(y) r(z) : p \in \Pcal{\ell}\,, q \in \Pcal{m}\,, r \in \Pcal{n}\} 
 	\end{equation}
-We use 
+in three dimensions. 
+The tensor production polynomial space of equal degree in each variable is denoted by 
 	\begin{equation}
 		\Qcal{p} = \begin{cases}
 			\Qcal{p,p} \,, & \dim = 2 \\ 
 			\Qcal{p,p,p} \,, & \dim = 3 
-		\end{cases} 
+		\end{cases} \,. 
 	\end{equation}
-to denote tensor product polynomials of equal degree in each variable. 
-% --- shape functions in 1D --- 
+Nodal bases for the space $\Pcal{p}$ are constructed using Lagrange interpolating polynomials. We consider interpolation through the Gauss-Lobatto and Gauss-Legendre points. Let $\{\xi_i\}$ represent the $p+1$ one-dimensional Gauss-Lobatto or Gauss-Legendre points in the interval $[0,1]$. Let $\ell_i$ denote the Lagrange interpolating polynomial satisfying $\ell_i(\xi_j) = \delta_{ij}$ where $\delta_{ij}$ is the Kronecker delta. The set of functions $\{\ell_i\}$ form a basis for $\Pcal{p}$. The basis functions for $\Pcal{1}$, $\Pcal{2}$, and $\Pcal{3}$ through the Gauss-Lobatto and Gauss-Legendre points are shown in Fig.~\ref{fem:shape1d} and \ref{fem:shape_leg1d}, respectively. Nodal bases for the spaces $\Qcal{m,n}$ and $\Qcal{\ell,m,n}$ are formed through tensor products of the corresponding one-dimensional nodal basis. 
+% --- shape functions in 1D (Lobatto) --- 
 \begin{figure}
 \centering
 \begin{subfigure}{.30\textwidth}
@@ -43,11 +44,44 @@ to denote tensor product polynomials of equal degree in each variable.
 	\includegraphics[width=\textwidth]{figs/shape3.pdf}
 	\caption{}
 \end{subfigure}
-\caption{Plots of the one-dimensional shape functions for (a) linear, (b) quadratic, and (c) cubic polynomial orders.}
+\caption{Plots of the one-dimensional shape functions through the Gauss-Lobatto nodes for (a) linear, (b) quadratic, and (c) cubic polynomial orders.}
 \label{fem:shape1d}
 \end{figure}
 
+% --- shape functions in 1D (Legendre) --- 
+\begin{figure}
+\centering
+\begin{subfigure}{.30\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/shape_leg1.pdf}
+	\caption{}
+\end{subfigure}
+\begin{subfigure}{.30\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/shape_leg2.pdf}
+	\caption{}
+\end{subfigure}
+\begin{subfigure}{.30\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/shape_leg3.pdf}
+	\caption{}
+\end{subfigure}
+\caption{Plots of the one-dimensional shape functions through the Gauss-Legendre nodes for (a) linear, (b) quadratic, and (c) cubic polynomial orders.}
+\label{fem:shape_leg1d}
+\end{figure}
+
+Interpolation through the Gauss-Lobatto and Gauss-Legendre points both have the required properties to be accurate in the limit as $p\rightarrow \infty$. Thus, the choice of interpolating points is typically dictated by other aspects of the overall algorithm. Note that the Gauss-Lobatto points include the interval end points $0$ and $1$ while the Gauss-Legendre points do not. The bases resulting from Lagrange interpolation through the Gauss-Lobatto and Gauss-Legendre points are referred to as closed and open, respectively, due to this. The Gauss-Legendre basis has the beneficial property of diagonal mass matrices on affine meshes while the closed Gauss-Lobatto basis typically leads to sparser globally coupled systems since closed bases couple fewer degrees of freedom on interior faces. 
+
 \section{Description of the Mesh}
+Let $\D \subset \R^{\dim}$ with $\dim = 2,3$ be the domain of the problem. Consider the tesselation 
+	\begin{equation}
+		\D = \bigcup_{K \in \meshT} K 
+	\end{equation}
+with $K$ an element in the mesh $\meshT$. Each element $K$ is obtained as $K = \T(\hat{K})$ where $\T \in [\Qcal{m}]^{\dim}$ is an invertible, polynomial mapping and $\hat{K} = [0,1]^{\dim}$ is the reference element. The mapping $\T$ is derived from a set of global control points and an element-local nodal basis. Figure \ref{fem:quadmesh} shows an example mesh where the control points labeled 2, 7, and 12 are shared so that the mesh coordinates are continuous across the interface between the two elements. Let $\{\ell_i\}$ denote the nodal basis functions for the space $\Qcal{m}$. On each element, the mapping is then 
+	\begin{equation}
+		\x(\vec{\xi}) = \T(\vec{\xi}) = \sum_i \x_i \ell_i(\vec{\xi}) 
+	\end{equation}
+where $\x \in K$, $\vec{\xi}\in \hat{K}$, and the $\x_i$ are the control points corresponding to element $K$. Figure \ref{fem:eltrans} depicts the mesh transformation used for the left element of Fig.~\ref{fem:quadmesh}. 
 % --- element transformation --- 
 \begin{figure}
 \centering
@@ -55,15 +89,39 @@ to denote tensor product polynomials of equal degree in each variable.
 	\centering
 	\includegraphics[height=1.75in]{figs/quad_mesh.pdf}
 	\caption{}
+	\label{fem:quadmesh}
 \end{subfigure}
 \begin{subfigure}{.59\textwidth}
 	\centering
 	\includegraphics[height=1.75in]{figs/eltrans.pdf}
 	\caption{}
+	\label{fem:eltrans}
 \end{subfigure}
 \caption{Depictions of (a) the mesh control points in a quadratic quadrilateral mesh and (b) the reference transformation used to describe the left element of (a).}
-\label{fem:eltrans}
 \end{figure}
+
+% The mesh transformations $\T$ are used to facilitate numerical integration on arbitrary elements. 
+Letting $\vec{\xi} = \vector{\xi & \eta} \in \hat{K}$ denote the reference coordinates and $\x = \vector{x & y} \in \D$ the physical coordinates such that $\x(\vec{\xi}) = \T(\vec{\xi})$, the Jacobian of the transformation is 
+	\begin{equation}
+		\F = \pderiv{\x}{\vec{\xi}} = \begin{bmatrix} 
+			\pderiv{x}{\xi} & \pderiv{x}{\eta} \\ 
+			\pderiv{y}{\xi} & \pderiv{y}{\eta} 
+		\end{bmatrix} \,, 
+	\end{equation}
+with $J = |\F|$ its determinant. The partial derivatives of the mesh transformation are computed by taking derivatives of the nodal basis functions. In other words, 
+	\begin{equation}
+		\F = \sum_i \x_{i} \otimes \hnabla \ell_i = \sum_{i} \begin{bmatrix} 
+			x_{i} \pderiv{\ell_i}{\xi} & x_{i} \pderiv{\ell_i}{\eta} \\
+			y_{i} \pderiv{\ell_i}{\xi} & y_{i} \pderiv{\ell_i}{\eta} 
+		\end{bmatrix} \,,
+	\end{equation}
+where $\x_{i} = \vector{x_{i} & y_{i}}$ and $\hnabla$ denotes the gradient with respect to $\vec{\xi}$. 
+
+A mesh transformation is called affine when it can be written as
+	\begin{equation}
+		\T = \mat{A}\vec{\xi} + b 
+	\end{equation}
+where $\mat{A}\in\R^{\dim\times\dim}$ and $b\in\R^{\dim}$ are constant with respect to $\vec{\xi}$. In such case, the Jacobian matrix is $\mat{F} = \mat{A}$ and the Hessian of the transformation, defined as $\frac{\partial^2 \x}{\partial^2 \vec{\xi}}$, is identically zero. Quadrilateral elements obtained by scaling, stretching along the $\xi$ or $\eta$ axes, or rotating the reference element are all affine while general quadrilateral elements, such as trapezoidal elements, and curved elements are not affine. 
 
 \section{Integration Transformations}
 % --- piola transform --- 
@@ -74,7 +132,7 @@ to denote tensor product polynomials of equal degree in each variable.
 	\label{mms:piola}
 \end{figure}
 
-\section{Finite Element Spaces}
+\section{Finite Element Spaces} \label{fem_sec:fes}
 % --- RT quiver diagram --- 
 \begin{figure}
 	\centering
@@ -138,6 +196,22 @@ to denote tensor product polynomials of equal degree in each variable.
 \end{figure}
 
 \section{Mathematical Notation}
+We define $\Gamma$ as the set of unique faces in the mesh with $\Gamma_0 = \Gamma\setminus \partial\D$ the set of interior faces and $\Gamma_b = \Gamma \cap \partial\D$ the set of boundary faces so that $\Gamma = \Gamma_0 \cup \Gamma_b$. We denote the outward unit normal to element $K$ as $\n_K$. On an interior face $\mathcal{F} \in \Gamma_0$ between elements $K_1$ and $K_2$, we use the convention that $\n$ is the unit vector perpendicular to the shared face $K_1 \cap K_2$ pointing from $K_1$ to $K_2$. On such an interior face, the jump, $\jump{\cdot}$, and average, $\avg{\cdot}$, are defined as 
+	\begin{equation} \label{eq:jump_avg}
+		\jump{u} = u_1 - u_2 \,, \quad \avg{u} = \frac{1}{2}(u_1 + u_2) \,, \quad \mathrm{on} \ \mathcal{F} \in \Gamma_0 \,, 
+	\end{equation}
+where $u_i = u|_{K_i}$ with analogous definitions for vectors. Note that a continuous function $u$ satisfies $\jump{u} = 0$ on each interior face. 
+On boundary faces, the jump and average are set to 
+	\begin{equation} \label{eq:jump_avg_bdr}
+		\jump{u} = u \,, \quad \avg{u} = u \,, \quad \mathrm{on} \ \mathcal{F} \in \Gamma_b \,,
+	\end{equation}
+and likewise for vector-valued functions on the boundary. 
+
+Finally, we define the ``broken'' gradient, denoted by $\nablah$, obtained by applying the gradient locally on each element. That is, 
+	\begin{equation} \label{eq:broken_grad}
+		(\nablah u)|_{K} = \nabla(u|_K) \,, \quad \forall K \in \meshT \,. 
+	\end{equation}
+This distinction is important for the piecewise polynomial spaces discussed in Section \ref{fem_sec:fes}. 
 % --- jumps and averages --- 
 \begin{figure}
 \centering
