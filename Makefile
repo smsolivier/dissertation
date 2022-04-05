@@ -75,6 +75,10 @@ $(MAIN).pdf: $(MAIN).tex $(figdir) $(FIGS) $(TABS) $(TIKZ) $(REF) $(GLOSS) $(sub
 		-pdflatex="pdflatex --interaction=nonstopmode --shell-escape %O %S" \
 		$(MAIN) > /dev/null
 
+# compile chapters individually 
+% : $(subfiles_dir)/%.tex $(figdir) $(FIGS) $(TABS) $(TIKZ) $(REF) $(GLOSS) Makefile 
+	cd $(subfiles_dir); latexmk -pdf $@ > /dev/null
+
 # list figure names 
 listfigs : 
 	@echo $(FIGS)
