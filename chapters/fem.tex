@@ -3,6 +3,131 @@
 
 \begin{document}
 \chapter{Finite Element Preliminaries}
+The \gls{fem} is a popular technique for numerically approximating a wide variety of problems from mathematical physics. In FEM, partial differential equations are numerically solved using Galerkin's method where finite-dimensional functional spaces are used to approximate the weak, or variational, form of the problem.
+The basic finite element method embellishes and extends Galerkin's method by defining a systematic process for building these approximation spaces such that they mimic the properties of the infinite-dimensional functional spaces associated with the continuous problem, lead to numerical solutions that increase in accuracy exponentially as the mesh is refined, and are amenable to efficient computer implementation. 
+
+Finite element methods are characterized by three basis aspects. First, the domain is divided into a finite set of smaller domains called elements. The union of these elements forms a computational approximation of the domain, known as a mesh, that enables the simulation of problems defined on complex and irregular geometries. Second, the approximation spaces are formed in terms of a finite number of parameters, known as degrees of freedom, corresponding to piecewise polynomial functions. 
+Suitable matching conditions are enforced so that these piecewise polynomial spaces are subsets of the desired infinite-dimensional function spaces. 
+Finally, the approximation spaces are designed to be easily described using a canonical basis that has small support. Use of this canonical basis in Galerkin's method yields algebraic systems of equations that are sparse, can be formed through operations associated with a single element, and can be solved efficiently with preconditioned iterative methods. 
+
+This chapter introduces the \gls{fem} and the required notation and machinery needed to understand and implement the finite element discretizations of the transport and VEF equations discussed in subsequent chapters. 
+
+\section{The Weak Form}
+Finite element methods discretize and solve the weak, or variational, form of a partial differential equation. Consider the abstract problem: find $u \in X$ such that 
+	\begin{equation} \label{fem:strong}
+		A(u) = q \,,
+	\end{equation}
+where, for example, the operator $A$ could be the Poisson operator, 
+	\begin{equation}
+		A(u) = -\nabla^2u
+	\end{equation}
+with $q$ representing a source term and the solution space $X = \mathcal{C}^1$, the space of twice differentiable functions. The problem in Eq.~\ref{fem:strong} is referred to as the strong form and its solutions are often plagued by needlessly restrictive differentiability requirements. For example, consider the radiation diffusion equation given by
+	\begin{equation} \label{fem:rad_strong}
+		-\nabla\cdot D \nabla\varphi + \sigma_a \varphi = Q \,. 
+	\end{equation}
+Here, the diffusion coefficient, $D$, must be once differentiable and the solution, $\varphi$, must be twice differentiable. In problems with multiple materials, the diffusion coefficient can be discontinuous. Solving radiation diffusion in strong form then necessitates the use of domain decomposition methods where the problem is solved with a set of subproblems corresponding to each material that are coupled through interface conditions.  Furthermore, in many physical problems discontinuities in the solution, known as shocks, are possible. In such cases, the solution itself is not differentiable. 
+
+This motivates the use of reformulations of the strong form that relax, or weaken, its requirements on the differentiability of the solution and its coefficients. These weak forms are derived by multiplying the strong form by a suitably smooth (i.e.~differentiable) function and integrating over the domain. By applying integration by parts formulae, derivatives can be offloaded to the test function, leading to a weakening of the differentiability requirements. 
+\todo{expand to introduce subsections}
+
+\subsection{Test Functions and Weak Derivatives}
+Consider a one-dimensional function $f$ defined on the interval $[a,b]$. We ``test'' $f$ by multiplying it by an arbitrary function $v$ and integrating over the interval $[a,b]$. If, for example, $v = 1$ or $v=x$, we can glean information about the mean and variance of $f$, respectively. In addition, by setting the test function to the Dirac delta function centered at an arbitrary position $x$ we have that 
+	\begin{equation}
+		\int_a^b \delta(x' - x)\, f(x') \ud x' = f(x) \,, 
+	\end{equation}
+meaning integrating $f$ against a test function $v$ can be viewed as a generalization of inspecting a function with the familiar means of point-wise evaluation. Testing $f$ with $v$ is simply an alternative method for investigating the properties of $f$. 
+
+Integrating against a test function is particularly useful for inspecting the properties of derivatives. Consider $f = \dderiv{g}{x}$ for some function $g$. Let $v$ be a differentiable function that satisfies $v = 0$ at $x = a$ and $x=b$. Testing $f$ with $v$ and integrating by parts yields 
+	\begin{equation}
+		\int_a^b v\dderiv{g}{x} \ud x = -\int_a^b \dderiv{v}{x} g \ud x \,. 
+	\end{equation}
+Thus, we can inspect the properties of $f = \dderiv{g}{x}$ without requiring that $g$ is differentiable! Leveraging these so-called ``weak derivatives'' is a key aspect of the success of the finite element method in modeling phenomena with discontinuous data or shocks in the solution. 
+
+\subsection{An Abstract Weak Form}
+For the abstract problem, multiplying by a test function $v$ and integrating over the domain yields 
+	\begin{equation} \label{fem:weak_inter}
+		\int v A(u) \ud \x = \int v\, q \ud \x \,.
+	\end{equation}
+Let the bilinear form $a(v,u)$ represent the operator derived by applying an integration by parts formula to $\int v\,A(u) \ud \x$ and the linear form $b(v) = \int v \, q \ud \x$. Furthermore, let $u,v \in V$ be a space of functions such that $a(v,u)$ is well defined. The statement $a(v,u) = b(v)$ is then an equivalent reformulation of Eq.~\ref{fem:weak_inter}. 
+If we add a condition that this holds for all ($\equiv \forall$) test functions $v\in V$ then 
+	\begin{equation} \label{fem:weak_abstract}
+		a(v,u) = b(v) \,, \quad \forall v \in V\,,
+	\end{equation}
+implies that the strong form, $A(u) = q$, is satisfied provided that there exists a solution to the strong form. That is, when there exists $u \in X$ such that $A(u) = q$, the weak form in Eq.~\ref{fem:weak_abstract} is equivalent to the strong form. Note that if there does not exist a $u \in X$ that satisfies $A(u) = q$, there may still be a $u \in V$ that satisfies $a(v,u) = b(v)\,, \forall v \in V$. In general, we have that $X \subset V$ meaning the weak form allows a broader class of solutions. A sufficiently weak form defined over $V$ allows the solution of problems with discontinuous data or shocks in the solution that would not be possible using the strong form defined over $X$. 
+
+In problems where it is possible, the solution space is typically restricted to functions that satisfy the boundary conditions. For example, if the problem contains the Dirichlet boundary condition $u = u^*$ for $\x \in \partial\D$, the solution space would be restricted to 
+	\begin{equation}
+		V_{u^*} = \{ u \in V : u|_{\partial\D} = u^* \} \,, 
+	\end{equation}
+the space of functions $u\in V$ that attain $u = u^*$ for $\x \in \partial\D$. 
+This restricted solution space is supported by correspondingly restricting the test space to be zero on the boundary. That is, the test function $v \in V_0$. This modified weak form then reads: find $u \in V_{u^*}$ such that 
+	\begin{equation}
+		a(v,u) = b(v) \,, \quad \forall v \in V_0 \,. 
+	\end{equation}
+
+\subsection{Radiation Diffusion Example}
+Returning to the radiation diffusion example in Eq.~\ref{fem:rad_strong} with the additional requirement of a Dirichlet boundary condition $\varphi = 0$ on $\x\in\partial\D$, the weak form is: find $\varphi \in V$ such that 
+	\begin{equation} \label{fem:rad_weak}
+		\int \nabla u \cdot D \nabla\varphi \ud \x + \int \sigma_a\, u \varphi \ud \x = \int u\, Q \ud \x \,,\quad \forall u \in V \,. 
+	\end{equation}
+Here, $V = \{ u \in C^0 : u|_{\partial\D} = 0 \}$ is the space of continuous functions that are zero on the boundary of the domain. 
+We have used the integration by parts formula: 
+	\begin{equation}
+		\int u\, \nabla\cdot\vec{v} \ud \x = \oint_{\partial\D} u\,\vec{v}\cdot\n \ud s - \int \nabla u \cdot \vec{v} \ud \x \,, 
+	\end{equation}
+along with the fact that $u = 0$ for $\x \in \partial\D$ since $u \in V$.  
+Observe that the weak form in Eq.~\ref{fem:rad_weak} has reduced the differentiability requirements of both the solution and the diffusion coefficient. In particular, the test function and solution need only be once differentiable. In addition, there are no longer any differentiability requirements on diffusion coefficient. 
+The weak form expands the space of possible solutions from the space of twice differentiable functions to the space of once differentiable functions. 
+
+\subsection{Sobolev Spaces}
+A key question is the choice of the space $V$ the weak form is defined over. For the strong form, the spaces $\mathcal{C}^i$ corresponding to functions having $i$ continuous derivatives for $i = 0,1,\ldots$ are a natural choice. However, the integrations used in the weak form require a more nuanced approach (see ``The Lebesgue integral'' from \textcite{reed1981functional}), the goal being to define the largest possible spaces such that the integrals in the weak form remain finite. That is, in the radiation diffusion example, we seek to define the space for $u$ and $\varphi$ such that 
+	\begin{equation} \label{fem:want_finite}
+		\int \nabla u \cdot D\nabla\varphi \ud \x < \infty \,, \quad \int \sigma_a\, u \varphi \ud\x < \infty \,, \quad \int u\,q \ud \x < \infty \,. 
+	\end{equation}
+Such properties are achieved by using Hilbertian Sobolev spaces. These spaces are used frequently throughout mathematical physics. Following standard notation, we define 
+	\begin{equation}
+		L^2(\D) = \{ u : \int u^2 \ud \x < \infty \} \,, 
+	\end{equation}
+as the space of square-integrable functions. Note that this space does not place any requirements on the differentiability of its elements; functions in $L^2(\D)$ need only be square integrable. We will also use the space of functions with square-integrable gradient defined as: 
+	\begin{equation}
+		H^1(\D) = \{ u \in L^2(\D) : \int \nabla u \cdot \nabla u \ud \x < \infty \} \,, 
+	\end{equation}
+and the space of vector-valued functions with square-integrable divergence: 
+	\begin{equation}
+		H(\div;\D) = \{ \vec{v} \in [L^2(\D)]^{\dim} : \nabla\cdot\vec{v} \in L^2(\D) \} \,. 
+	\end{equation}
+Square integrability is a desired property due to the following result. 
+\begin{prop}
+The integral of the product of two square-integrable functions is finite. 
+\end{prop}
+\begin{proof}
+We must show that given $u,v \in L^2(\D)$, $\int u v \ud \x < \infty$. Observe that 
+	$$ (u + v)^2 = u^2 + 2 uv + v^2 \geq 0 \iff uv \leq \frac{1}{2}\paren{u^2 + v^2} \,. $$ 
+Thus, 
+	$$ \int uv \ud \x \leq \int \frac{1}{2}\paren{u^2 + v^2} \ud \x = \frac{1}{2}\int u^2 \ud \x + \frac{1}{2} \int v^2 \ud \x < \infty \,, $$
+since $u,v \in L^2(\D)$ are square-integrable. 
+\end{proof}
+Thus, under mild assumptions on the data $D$, $\sigma_a$, and $q$, we have that
+	\begin{subequations}
+	\begin{equation}
+		\int \sigma_a\, u \varphi \ud \x < \infty \,, \quad \forall u,\varphi \in L^2(\D) \,,
+	\end{equation}
+	\begin{equation}
+		\int u\, q \ud \x < \infty \,, \quad \forall u \in L^2(\D) \,,
+	\end{equation}
+	\begin{equation}
+		\int \nabla u \cdot D \nabla\varphi \ud \x < \infty \,, \quad \forall u, \varphi \in H^1(\D) \,. 
+	\end{equation}
+	\end{subequations}
+Thus, since $H^1(\D) \subset L^2(\D)$, taking $u,\varphi \in H^1(\D)$ makes all terms in the radiation diffusion weak form well defined. In other words, the proper choice for the test and solution space is $V = H^1(\D)$. 
+
+% --- best approximation diagram --- 
+\begin{figure}
+\centering
+\includegraphics{figs/galerkin.pdf}
+\caption{}
+\label{fem:best_app}
+\end{figure}
 
 \section{Local Polynomial Spaces}
 Both the mesh and the solution are represented with a polynomial space defined locally on each element. We define 
@@ -18,14 +143,14 @@ in two dimensions and
 		\Qcal{\ell,m,n} = \{ p(x) q(y) r(z) : p \in \Pcal{\ell}\,, q \in \Pcal{m}\,, r \in \Pcal{n}\} 
 	\end{equation}
 in three dimensions. 
-The tensor production polynomial space of equal degree in each variable is denoted by 
+The tensor product polynomial space of equal degree in each variable is denoted by 
 	\begin{equation}
 		\Qcal{p} = \begin{cases}
 			\Qcal{p,p} \,, & \dim = 2 \\ 
 			\Qcal{p,p,p} \,, & \dim = 3 
 		\end{cases} \,. 
 	\end{equation}
-Nodal bases for the space $\Pcal{p}$ are constructed using Lagrange interpolating polynomials. We consider interpolation through the Gauss-Lobatto and Gauss-Legendre points. Let $\{\xi_i\}$ represent the $p+1$ one-dimensional Gauss-Lobatto or Gauss-Legendre points in the interval $[0,1]$. Let $\ell_i$ denote the Lagrange interpolating polynomial satisfying $\ell_i(\xi_j) = \delta_{ij}$ where $\delta_{ij}$ is the Kronecker delta. The set of functions $\{\ell_i\}$ form a basis for $\Pcal{p}$. The basis functions for $\Pcal{1}$, $\Pcal{2}$, and $\Pcal{3}$ through the Gauss-Lobatto and Gauss-Legendre points are shown in Fig.~\ref{fem:shape1d} and \ref{fem:shape_leg1d}, respectively. Nodal bases for the spaces $\Qcal{m,n}$ and $\Qcal{\ell,m,n}$ are formed through tensor products of the corresponding one-dimensional nodal basis. 
+Nodal bases for the space $\Pcal{p}$ are constructed using Lagrange interpolating polynomials. We consider interpolation through the Gauss-Lobatto and Gauss-Legendre points. Let $\{\xi_i\}$ represent the $p+1$ one-dimensional Gauss-Lobatto or Gauss-Legendre points in the interval $[0,1]$. Let $\ell_i$ denote the Lagrange interpolating polynomial satisfying $\ell_i(\xi_j) = \delta_{ij}$ where $\delta_{ij}$ is the Kronecker delta. The set of functions $\{\ell_i\}$ form a basis for $\Pcal{p}$. The basis functions for $\Pcal{1}$, $\Pcal{2}$, and $\Pcal{3}$ through the Gauss-Lobatto and Gauss-Legendre points are shown in Fig.~\ref{fem:shape1d} and \ref{fem:shape_leg1d}, respectively. Nodal bases for the spaces $\Qcal{m,n}$ and $\Qcal{\ell,m,n}$ are formed through tensor products of the corresponding one-dimensional nodal bases. 
 % --- shape functions in 1D (Lobatto) --- 
 \begin{figure}
 \centering
@@ -70,9 +195,34 @@ Nodal bases for the space $\Pcal{p}$ are constructed using Lagrange interpolatin
 \label{fem:shape_leg1d}
 \end{figure}
 
+% --- shape functions in 2D --- 
+\begin{figure}
+\centering
+\includegraphics[width=.85\textwidth]{figs/shape2d.pdf}
+\caption{Location of the interpolating points (upper) and a selection of nodal basis functions (lower) for the tensor product polynomial spaces $\Qcal{1}$, $\Qcal{2}$, and $\Qcal{3}$ in two dimensions.}
+\label{fem:shape2d}
+\end{figure}
+
 Interpolation through the Gauss-Lobatto and Gauss-Legendre points both have the required properties to be accurate in the limit as $p\rightarrow \infty$. Thus, the choice of interpolating points is typically dictated by other aspects of the overall algorithm. Note that the Gauss-Lobatto points include the interval end points $0$ and $1$ while the Gauss-Legendre points do not. The bases resulting from Lagrange interpolation through the Gauss-Lobatto and Gauss-Legendre points are referred to as closed and open, respectively, due to this. The Gauss-Legendre basis has the beneficial property of diagonal mass matrices on affine meshes while the closed Gauss-Lobatto basis typically leads to sparser globally coupled systems since closed bases couple fewer degrees of freedom on interior faces. 
 
 \section{Description of the Mesh}
+% --- admissible meshes --- 
+\begin{figure}
+\centering
+\begin{subfigure}{.45\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/admissible.pdf}
+	\caption{}
+\end{subfigure}
+\begin{subfigure}{.45\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/inadmissible.pdf}
+	\caption{}
+\end{subfigure}
+\caption{Examples of (a) an admissible tesselation and (b) an inadmissible tesselation.}
+\label{fem:admissible}
+\end{figure}
+
 Let $\D \subset \R^{\dim}$ with $\dim = 2,3$ be the domain of the problem. Consider the tesselation 
 	\begin{equation}
 		\D = \bigcup_{K \in \meshT} K 
@@ -100,6 +250,7 @@ where $\x \in K$, $\vec{\xi}\in \hat{K}$, and the $\x_i$ are the control points 
 \caption{Depictions of (a) the mesh control points in a quadratic quadrilateral mesh and (b) the reference transformation used to describe the left element of (a).}
 \end{figure}
 
+\section{Integration Transformations}
 % The mesh transformations $\T$ are used to facilitate numerical integration on arbitrary elements. 
 Letting $\vec{\xi} = \vector{\xi & \eta} \in \hat{K}$ denote the reference coordinates and $\x = \vector{x & y} \in \D$ the physical coordinates such that $\x(\vec{\xi}) = \T(\vec{\xi})$, the Jacobian of the transformation is 
 	\begin{equation}
@@ -123,7 +274,6 @@ A mesh transformation is called affine when it can be written as
 	\end{equation}
 where $\mat{A}\in\R^{\dim\times\dim}$ and $b\in\R^{\dim}$ are constant with respect to $\vec{\xi}$. In such case, the Jacobian matrix is $\mat{F} = \mat{A}$ and the Hessian of the transformation, defined as $\frac{\partial^2 \x}{\partial^2 \vec{\xi}}$, is identically zero. Quadrilateral elements obtained by scaling, stretching along the $\xi$ or $\eta$ axes, or rotating the reference element are all affine while general quadrilateral elements, such as trapezoidal elements, and curved elements are not affine. 
 
-\section{Integration Transformations}
 % --- piola transform --- 
 \begin{figure}
 	\centering
@@ -219,8 +369,6 @@ This distinction is important for the piecewise polynomial spaces discussed in S
 \caption{A depiction of a discontinuous, piecewise quadratic solution across two quadrilateral elements. The normal vector, $\hat{n}$, is defined as pointing from $K_1$ to $K_2$ along the face between $K_1$ and $K_2$.}
 \label{fem:jump_avg}
 \end{figure}
-
-\section{Galerkin's Method}
 
 \section{Finite Element Assembly}
 % --- fe support diagram --- 

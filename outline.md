@@ -16,12 +16,37 @@
 * properties of VEF data 
 
 # FEM 
+* basic aspects of FEM 
+	* weak forms
+		* test functions 
+		* weak derivatives 
+		* examples -> variational forms 
+	* galerkin 
+		* variational interpretation 
+		* weighted residual interpretation 
+		* allows weaker requirements on solution 
+	* sobolev 
+		* example applications 
+		* conforming vs non-conforming 
+	* fundamental components 
+		* mesh
+		* local approximation with matching conditions 
+		* integration by parts 
+		* canonical basis with local support 
+			* leads to sparse matrices 
 * local polynomial spaces 
 * description of mesh 
+	* requirements of mesh
+	* local gradient 
+	* jumps averages
+	* boundaries 
 * integration transforms 
+	* scalar case 
+	* vector case 
+	* gradient of piola 
 * finite element spaces 
-* notation 
-* Galerkin's method 
+	* matching conditions for piecewise 
+	* distribution of DOFs 
 * assembly 
 * preconditioning 
 

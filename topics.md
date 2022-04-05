@@ -56,16 +56,34 @@
 	* discretization commuting diagram 
 
 # FEM 
+* overview of methods 
+	* least squares 
+	* weighted residuals 
+	* galerkin 
+* motivations 
+	* meshing 
+		* handles irregular geometry 
+		* piecewise handles less regularity better 
+		* local support -> sparse matrix 
+		* can do any boundary condition
+	* sparse matrix key to efficient solution via iterative methods 
+	* nodal basis allows easy enforcement of continuity 
+	* galerkin provides best solution (in energy norm) 
+	* seeking in sobolev space is natural 
 * local polynomial spaces 
 	* used to describe mesh and solution on each element 
 	* polynomial spaces in general 
-	* plot of 1D shape functions
+	* plots 
+		* shape functions: 1D, 2D, Legendre, Lobatto 
+		* node locations in 2D 
 	* vandermonde 
 	* tensor product 
 	* horner's method 
+	* change of basis
 * sobolev spaces 
 	* L2 product is L2 
 * description of mesh 
+	* mesh as H1 FES 
 * integration transforms 
 	* scalar and vector 
 	* gradient of Piola 
@@ -84,6 +102,7 @@
 * assembly (local support) 
 	* apply to generic operator
 	* linear algebra operations 
+	* how to assemble VEF gradient term via flattening 
 * high level idea of local approximations -> sparse systems 
 * idea of weak forms
 * quadrature 
