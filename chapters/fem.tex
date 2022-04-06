@@ -8,11 +8,11 @@ The basic finite element method embellishes and extends Galerkin's method by def
 
 Finite element methods are characterized by three basis aspects. First, the domain is divided into a finite set of smaller domains called elements. The union of these elements forms a computational approximation of the domain, known as a mesh, that enables the simulation of problems defined on complex and irregular geometries. Second, the approximation spaces are formed in terms of a finite number of parameters, known as degrees of freedom, corresponding to piecewise polynomial functions. 
 Suitable matching conditions are enforced so that these piecewise polynomial spaces are subsets of the desired infinite-dimensional function spaces. 
-Finally, the approximation spaces are designed to be easily described using a canonical basis that has small support. Use of this canonical basis in Galerkin's method yields algebraic systems of equations that are sparse, can be formed through operations associated with a single element, and can be solved efficiently with preconditioned iterative methods. 
+Finally, the approximation spaces are designed to be easily described using a canonical basis that has small support. Use of this canonical basis in Galerkin's method yields algebraic systems of equations that can be formed through computations associated with a single element and are sparse in that their entries are primarily zero. This means that, through a process known as finite element assembly, the matrices associated with the systems of equations can be formed efficiently and that the resulting systems can be stored in special data structures that reduce the memory and computational cost of applying iterative solution methods. \todo{check}
 
 This chapter introduces the \gls{fem} and the required notation and machinery needed to understand and implement the finite element discretizations of the transport and VEF equations discussed in subsequent chapters. 
 
-\section{The Weak Form}
+\section{The Weak Form and Galerkin's Method}
 Finite element methods discretize and solve the weak, or variational, form of a partial differential equation. Consider the abstract problem: find $u \in X$ such that 
 	\begin{equation} \label{fem:strong}
 		A(u) = q \,,
@@ -27,7 +27,7 @@ with $q$ representing a source term and the solution space $X = \mathcal{C}^1$, 
 	\end{equation}
 Here, the diffusion coefficient, $D$, must be once differentiable and the solution, $\varphi$, must be twice differentiable. In problems with multiple materials, the diffusion coefficient can be discontinuous. Solving radiation diffusion in strong form then necessitates the use of domain decomposition methods where the problem is solved with a set of subproblems corresponding to each material that are coupled through interface conditions.  Furthermore, in many physical problems discontinuities in the solution, known as shocks, are possible. In such cases, the solution itself is not differentiable. 
 
-This motivates the use of reformulations of the strong form that relax, or weaken, its requirements on the differentiability of the solution and its coefficients. These weak forms are derived by multiplying the strong form by a suitably smooth (i.e.~differentiable) function and integrating over the domain. By applying integration by parts formulae, derivatives can be offloaded to the test function, leading to a weakening of the differentiability requirements. 
+This motivates the use of reformulations of the strong form that relax, or weaken, the requirements on the differentiability of the solution and its coefficients. These weak forms are derived by multiplying the strong form by a suitably smooth (i.e.~differentiable) function and integrating over the domain. By applying integration by parts formulae, derivatives can be offloaded to the test function, leading to a weakening of the differentiability requirements. 
 \todo{expand to introduce subsections}
 
 \subsection{Test Functions and Weak Derivatives}
@@ -121,6 +121,30 @@ Thus, under mild assumptions on the data $D$, $\sigma_a$, and $q$, we have that
 	\end{subequations}
 Thus, since $H^1(\D) \subset L^2(\D)$, taking $u,\varphi \in H^1(\D)$ makes all terms in the radiation diffusion weak form well defined. In other words, the proper choice for the test and solution space is $V = H^1(\D)$. 
 
+\subsection{Galerkin's Method}
+We now construct a finite-dimensional approximation for the abstract problem in weak form given by: find $u \in V$ such that 
+	\begin{equation} \label{fem:weak_gm}
+		a(v,u) = b(v) \,, \quad \forall v \in V \,. 
+	\end{equation}
+The Lax-Milgram theorem (Cf. 6.2.1 \textcite{evans2010partial}) states that Eq.~\ref{fem:weak_gm} has a unique solution when $a(\cdot,\cdot)$ is continuous, i.e., there exists $\alpha>0$ such that 
+	\begin{equation}
+		|a(v,u)| \leq \alpha \|u\|\|v\| \,, \quad \forall u,v \in V \,,
+	\end{equation}
+and coercive, i.e., there exists $\beta > 0$ such that 
+	\begin{equation}
+		a(u,u) \geq \beta \|u\|^2 \,, \quad \forall u \in V \,. 
+	\end{equation}
+Note that the condition of coercivity is a stronger form of positive definiteness. Furthermore, \textcite{la2fa} connects the constants $\alpha,\beta$ to the condition number of the bilinear form $a(\cdot,\cdot)$, denoted $\kappa(a)$, as 
+	\begin{equation}
+		\kappa(a) \leq \alpha/\beta \,. 
+	\end{equation}
+The condition number is commonly used as a proxy for the ``difficulty'' of solving a problem with iterative methods. The constants $\alpha$ and $\beta$ depend on the bilinear form $a$ and on the choice for the space $V$. Thus, the choice of $V$ impacts both the existence and uniqueness of the solution to Eq.~\ref{fem:weak_gm} as well as the ease with which it can be solved. 
+
+\todo{define Galerkin for conforming}
+By defining the approximation as a restriction of the infinite-dimensional space, the discrete operators inherit the analytic structure of the underlying PDE. \todo{extend estimates to discrete case} 
+
+\todo{best approx}
+
 % --- best approximation diagram --- 
 \begin{figure}
 \centering
@@ -129,7 +153,8 @@ Thus, since $H^1(\D) \subset L^2(\D)$, taking $u,\varphi \in H^1(\D)$ makes all 
 \label{fem:best_app}
 \end{figure}
 
-\section{Local Polynomial Spaces}
+\section{Finite Element Spaces}
+\subsection{Local Polynomial Spaces}
 Both the mesh and the solution are represented with a polynomial space defined locally on each element. We define 
 	\begin{equation}
 		\Pcal{k} = \{x^i\}_{i=0}^k = \{ 1, x, x^2, \ldots, x^k \} 
