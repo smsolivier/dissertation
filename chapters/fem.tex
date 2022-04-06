@@ -8,7 +8,7 @@ The basic finite element method embellishes and extends Galerkin's method by def
 
 Finite element methods are characterized by three basis aspects. First, the domain is divided into a finite set of smaller domains called elements. The union of these elements forms a computational approximation of the domain, known as a mesh, that enables the simulation of problems defined on complex and irregular geometries. Second, the approximation spaces are formed in terms of a finite number of parameters, known as degrees of freedom, corresponding to piecewise polynomial functions. 
 Suitable matching conditions are enforced so that these piecewise polynomial spaces are subsets of the desired infinite-dimensional function spaces. 
-Finally, the approximation spaces are designed to be easily described using a canonical basis that has small support. Use of this canonical basis in Galerkin's method yields algebraic systems of equations that can be formed through computations associated with a single element and are sparse in that their entries are primarily zero. This means that, through a process known as finite element assembly, the matrices associated with the systems of equations can be formed efficiently and that the resulting systems can be stored in special data structures that reduce the memory and computational cost of applying iterative solution methods. \todo{check}
+Finally, the approximation spaces are designed to be easily described using a canonical basis that has small support. Use of this canonical basis in Galerkin's method yields algebraic systems of equations that can be formed through computations associated with a single element and are sparse in that their entries are primarily zero. This means that, through a process known as finite element assembly, the entries of the linear system can be computed efficiently. In addition, the sparsity of the matrices allows use of specialized data structures that reduce the memory and computational costs of storing and solving the linear system.
 
 This chapter introduces the \gls{fem} and the required notation and machinery needed to understand and implement the finite element discretizations of the transport and VEF equations discussed in subsequent chapters. 
 
@@ -49,7 +49,7 @@ For the abstract problem, multiplying by a test function $v$ and integrating ove
 		\int v A(u) \ud \x = \int v\, q \ud \x \,.
 	\end{equation}
 Let the bilinear form $a(v,u)$ represent the operator derived by applying an integration by parts formula to $\int v\,A(u) \ud \x$ and the linear form $b(v) = \int v \, q \ud \x$. Furthermore, let $u,v \in V$ be a space of functions such that $a(v,u)$ is well defined. The statement $a(v,u) = b(v)$ is then an equivalent reformulation of Eq.~\ref{fem:weak_inter}. 
-If we add a condition that this holds for all ($\equiv \forall$) test functions $v\in V$ then 
+If we add a condition that this holds for all ($\equiv \forall$) test functions $v\in V$, then 
 	\begin{equation} \label{fem:weak_abstract}
 		a(v,u) = b(v) \,, \quad \forall v \in V\,,
 	\end{equation}
@@ -86,11 +86,11 @@ A key question is the choice of the space $V$ the weak form is defined over. For
 	\end{equation}
 Such properties are achieved by using Hilbertian Sobolev spaces. These spaces are used frequently throughout mathematical physics. Following standard notation, we define 
 	\begin{equation}
-		L^2(\D) = \{ u : \int u^2 \ud \x < \infty \} \,, 
+		L^2(\D) = \{u : \D \rightarrow \R : \int_\D u^2 \ud \x < \infty \} \,, 
 	\end{equation}
 as the space of square-integrable functions. Note that this space does not place any requirements on the differentiability of its elements; functions in $L^2(\D)$ need only be square integrable. We will also use the space of functions with square-integrable gradient defined as: 
 	\begin{equation}
-		H^1(\D) = \{ u \in L^2(\D) : \int \nabla u \cdot \nabla u \ud \x < \infty \} \,, 
+		H^1(\D) = \{ u \in L^2(\D) : \int_\D \nabla u \cdot \nabla u \ud \x < \infty \} \,, 
 	\end{equation}
 and the space of vector-valued functions with square-integrable divergence: 
 	\begin{equation}
@@ -98,7 +98,7 @@ and the space of vector-valued functions with square-integrable divergence:
 	\end{equation}
 Square integrability is a desired property due to the following result. 
 \begin{prop}
-The integral of the product of two square-integrable functions is finite. 
+The product of two square-integrable functions is integrable. 
 \end{prop}
 \begin{proof}
 We must show that given $u,v \in L^2(\D)$, $\int u v \ud \x < \infty$. Observe that 
@@ -134,48 +134,71 @@ and coercive, i.e., there exists $\beta > 0$ such that
 	\begin{equation}
 		a(u,u) \geq \beta \|u\|^2 \,, \quad \forall u \in V \,. 
 	\end{equation}
-Note that the condition of coercivity is a stronger form of positive definiteness. Furthermore, \textcite{la2fa} connects the constants $\alpha,\beta$ to the condition number of the bilinear form $a(\cdot,\cdot)$, denoted $\kappa(a)$, as 
+Note that the condition of coercivity is a stronger form of positive definiteness. \textcite{la2fa} connects the constants $\alpha,\beta$ to the condition number of the bilinear form $a(\cdot,\cdot)$, denoted $\kappa(a)$, as 
 	\begin{equation}
 		\kappa(a) \leq \alpha/\beta \,. 
 	\end{equation}
 The condition number is commonly used as a proxy for the ``difficulty'' of solving a problem with iterative methods. The constants $\alpha$ and $\beta$ depend on the bilinear form $a$ and on the choice for the space $V$. Thus, the choice of $V$ impacts both the existence and uniqueness of the solution to Eq.~\ref{fem:weak_gm} as well as the ease with which it can be solved. 
 
-\todo{define Galerkin for conforming}
-By defining the approximation as a restriction of the infinite-dimensional space, the discrete operators inherit the analytic structure of the underlying PDE. \todo{extend estimates to discrete case} 
+Galerkin's method for approximating the problem in Eq.~\ref{fem:weak_gm} consists of defining similar problems in finite-dimensional spaces $V_h$. The conforming finite element method restricts the finite-dimensional approximation space to be $V_h \subset V$. To be specific, any finite-dimensional subspace $V_h\subset V$ we define the discrete problem to be: find $u_h \in V_h$ such that 
+	\begin{equation} \label{fem:galerkin}
+	 	a(v_h,u_h) = b(v_h) \,, \quad \forall v_h \in V_h \,. 
+	\end{equation} 
+Since $V_h \subset V$, we can directly apply the Lax-Milgram theorem to show that the discrete problem in \ref{fem:galerkin} has a unique solution. Furthermore, we have that 
+	\begin{equation}
+		\kappa(a_h) \leq \alpha/\beta \,, 
+	\end{equation}
+where $a_h$ is $a$ restricted to the space $V_h$ \cite[Corollary 2.4]{la2fa}. Thus, by defining the approximation space as a subset of the infinite-dimensional space, the discrete operator inherits the analytic structure of the underlying weak problem. 
 
-\todo{best approx}
+Such a general framework as Galerkin's method, however, does not provide a way to define the approximation space $V_h$. \todo{lead into description of FES}
 
 % --- best approximation diagram --- 
-\begin{figure}
-\centering
-\includegraphics{figs/galerkin.pdf}
-\caption{}
-\label{fem:best_app}
-\end{figure}
+% \begin{figure}
+% \centering
+% \includegraphics{figs/galerkin.pdf}
+% \caption{}
+% \label{fem:best_app}
+% \end{figure}
 
-\section{Finite Element Spaces}
-\subsection{Local Polynomial Spaces}
-Both the mesh and the solution are represented with a polynomial space defined locally on each element. We define 
+\section{Local Polynomial Spaces}
+Both the mesh and the solution are represented with a polynomial space defined locally on each element. Let $\hat{K}$ denote the reference element defined as the unit $\dim$-dimension cube $\hat{K} = [0,1]^{\dim}$. We define 
 	\begin{equation}
-		\Pcal{k} = \{x^i\}_{i=0}^k = \{ 1, x, x^2, \ldots, x^k \} 
+		\Pcal{k}(\hat{K}) = \{ p : \hat{K} \rightarrow \R : p = \sum_{i=0}^{k} \alpha_i x^i \,, \alpha_i \in \R\ \forall\,i \in [0,k]\} = \spn\{ 1, x, x^2, \ldots, x^k \} 
 	\end{equation}
-as the space of univariate polynomials of degree less than or equal to $k$. The tensor product polynomials are defined as 
+as the space of univariate polynomials of degree less than or equal to $k$ defined on $\hat{K}$. The tensor product polynomials are defined as 
 	\begin{equation}
-		\Qcal{m,n} = \{ p(x) q(y) : p \in \Pcal{m}\,, q \in \Pcal{n} \} 
+		\Qcal{m,n}(\hat{K}) = \{ p(x) q(y) : p \in \Pcal{m}(\hat{K})\,, q \in \Pcal{n}(\hat{K}) \} 
 	\end{equation}
 in two dimensions and 
 	\begin{equation}
-		\Qcal{\ell,m,n} = \{ p(x) q(y) r(z) : p \in \Pcal{\ell}\,, q \in \Pcal{m}\,, r \in \Pcal{n}\} 
+		\Qcal{\ell,m,n}(\hat{K}) = \{ p(x) q(y) r(z) : p \in \Pcal{\ell}(\hat{K})\,, q \in \Pcal{m}(\hat{K})\,, r \in \Pcal{n}(\hat{K})\} 
 	\end{equation}
 in three dimensions. 
 The tensor product polynomial space of equal degree in each variable is denoted by 
 	\begin{equation}
-		\Qcal{p} = \begin{cases}
-			\Qcal{p,p} \,, & \dim = 2 \\ 
-			\Qcal{p,p,p} \,, & \dim = 3 
+		\Qcal{p}(\hat{K}) = \begin{cases}
+			\Qcal{p,p}(\hat{K}) \,, & \dim = 2 \\ 
+			\Qcal{p,p,p}(\hat{K}) \,, & \dim = 3 
 		\end{cases} \,. 
 	\end{equation}
-Nodal bases for the space $\Pcal{p}$ are constructed using Lagrange interpolating polynomials. We consider interpolation through the Gauss-Lobatto and Gauss-Legendre points. Let $\{\xi_i\}$ represent the $p+1$ one-dimensional Gauss-Lobatto or Gauss-Legendre points in the interval $[0,1]$. Let $\ell_i$ denote the Lagrange interpolating polynomial satisfying $\ell_i(\xi_j) = \delta_{ij}$ where $\delta_{ij}$ is the Kronecker delta. The set of functions $\{\ell_i\}$ form a basis for $\Pcal{p}$. The basis functions for $\Pcal{1}$, $\Pcal{2}$, and $\Pcal{3}$ through the Gauss-Lobatto and Gauss-Legendre points are shown in Fig.~\ref{fem:shape1d} and \ref{fem:shape_leg1d}, respectively. Nodal bases for the spaces $\Qcal{m,n}$ and $\Qcal{\ell,m,n}$ are formed through tensor products of the corresponding one-dimensional nodal bases. 
+
+Nodal bases for the space $\Pcal{p}(\hat{K})$ are constructed using Lagrange interpolating polynomials. We consider interpolation through the Gauss-Lobatto and Gauss-Legendre points. Let $\{\xi_i\}$ represent the $p+1$ one-dimensional Gauss-Lobatto or Gauss-Legendre points in the interval $[0,1]$. Let $\ell_i$ denote the Lagrange interpolating polynomial satisfying $\ell_i(\xi_j) = \delta_{ij}$ where $\delta_{ij}$ is the Kronecker delta. The set of functions $\{\ell_i\}$ form a basis for $\Pcal{p}(\hat{K})$. The basis functions can be written as:  
+	\begin{equation}
+		\ell_i(\xi) = \prod_{\substack{0\leq j \leq k\\i\neq j}} \frac{\xi - \xi_j}{\xi_i - \xi_j} \,, \quad i \in [0,k] \,. 
+	\end{equation}
+Alternatively, writing $\ell_i(\xi) = \sum_{j=0}^k c_{ij} \xi^j$, the coefficients $c_{ij}$ that interpolate through the $\xi_i$ can be found by solving the Vandermonde system 
+	\begin{equation}
+		\begin{bmatrix} 
+			1 & \xi_0 & \xi_0^2 & \ldots & \xi_0^k \\
+			1 & \xi_{1} & \xi_{1}^2 & \ldots & \xi_{1}^k \\
+			\vdots & \vdots & \vdots & \ddots & \vdots \\
+			1 & \xi_{k} & \xi_{k}^2 & \ldots & \xi_{k}^k 
+		\end{bmatrix}
+		\mat{C} = \I \,,
+	\end{equation}
+where $\mat{C} \in \R^{(k+1)\times(k+1)}$ is the matrix of coefficients with entries $c_{ij}$. The Vandermonde system is simply a change of basis from $\{1,x,x^2,\ldots\}$ to the nodal basis. Nodal bases for the spaces $\Qcal{m,n}(\hat{K})$ and $\Qcal{\ell,m,n}(\hat{K})$ are formed through tensor products of the corresponding one-dimensional nodal bases.
+
+The basis functions for $\Pcal{1}(\hat{K})$, $\Pcal{2}(\hat{K})$, and $\Pcal{3}(\hat{K})$ through the Gauss-Lobatto and Gauss-Legendre points are shown in Fig.~\ref{fem:shape1d} and \ref{fem:shape_leg1d}, respectively.  Figure \ref{fem:shape2d} shows a selection of the nodal basis functions through the Gauss-Lobatto points for the spaces $\Qcal{1}(\hat{K})$, $\Qcal{2}(\hat{K})$, and $\Qcal{3}(\hat{K})$. 
 % --- shape functions in 1D (Lobatto) --- 
 \begin{figure}
 \centering
@@ -224,7 +247,7 @@ Nodal bases for the space $\Pcal{p}$ are constructed using Lagrange interpolatin
 \begin{figure}
 \centering
 \includegraphics[width=.85\textwidth]{figs/shape2d.pdf}
-\caption{Location of the interpolating points (upper) and a selection of nodal basis functions (lower) for the tensor product polynomial spaces $\Qcal{1}$, $\Qcal{2}$, and $\Qcal{3}$ in two dimensions.}
+\caption{Location of the interpolating points (upper) and a selection of nodal basis functions (lower) for the tensor product polynomial spaces $\Qcal{1}(\hat{K})$, $\Qcal{2}(\hat{K})$, and $\Qcal{3}(\hat{K})$ in two dimensions.}
 \label{fem:shape2d}
 \end{figure}
 
@@ -275,8 +298,6 @@ where $\x \in K$, $\vec{\xi}\in \hat{K}$, and the $\x_i$ are the control points 
 \caption{Depictions of (a) the mesh control points in a quadratic quadrilateral mesh and (b) the reference transformation used to describe the left element of (a).}
 \end{figure}
 
-\section{Integration Transformations}
-% The mesh transformations $\T$ are used to facilitate numerical integration on arbitrary elements. 
 Letting $\vec{\xi} = \vector{\xi & \eta} \in \hat{K}$ denote the reference coordinates and $\x = \vector{x & y} \in \D$ the physical coordinates such that $\x(\vec{\xi}) = \T(\vec{\xi})$, the Jacobian of the transformation is 
 	\begin{equation}
 		\F = \pderiv{\x}{\vec{\xi}} = \begin{bmatrix} 
@@ -299,78 +320,6 @@ A mesh transformation is called affine when it can be written as
 	\end{equation}
 where $\mat{A}\in\R^{\dim\times\dim}$ and $b\in\R^{\dim}$ are constant with respect to $\vec{\xi}$. In such case, the Jacobian matrix is $\mat{F} = \mat{A}$ and the Hessian of the transformation, defined as $\frac{\partial^2 \x}{\partial^2 \vec{\xi}}$, is identically zero. Quadrilateral elements obtained by scaling, stretching along the $\xi$ or $\eta$ axes, or rotating the reference element are all affine while general quadrilateral elements, such as trapezoidal elements, and curved elements are not affine. 
 
-% --- piola transform --- 
-\begin{figure}
-	\centering
-	\includegraphics[width=.85\textwidth]{figs/piola.pdf}
-	\caption{A depiction of the tangent and cotangent bases at the point $\vec{\xi} = (0,0)$ under a non-affine mesh transformation. }
-	\label{mms:piola}
-\end{figure}
-
-\section{Finite Element Spaces} \label{fem_sec:fes}
-% --- RT quiver diagram --- 
-\begin{figure}
-	\centering
-	\includegraphics[width=.5\textwidth]{figs/quiver.pdf}
-	\caption{}
-	\label{mms:quiver}
-\end{figure}
-
-% --- DG FES --- 
-\begin{figure}
-\centering
-\includegraphics[width=.3\textwidth]{figs/dgfes.pdf}
-\caption{A depiction of the distribution of degrees of freedom in the linear DG space. The Legendre nodes are used to illustrate that degrees of freedom are not shared between elements. }
-\label{fem:dgfes}
-\end{figure}
-
-% --- CFEM FES ---
-\begin{figure}
-\centering
-\includegraphics[width=.3\textwidth]{figs/h1fes.pdf}
-\caption{A depiction of the distribution of degrees of freedom for the quadratic continuous finite element space. Continuity of members of the finite element space is enforced by sharing degrees of freedom across neighboring elements.}
-\label{fem:h1fes}
-\end{figure}
-
-% --- RT local polynomial space --- 
-\begin{figure}
-\centering
-\begin{subfigure}{.25\textwidth}
-	\centering
-	\includegraphics[width=\textwidth]{figs/rt0.pdf}
-	\caption{}
-\end{subfigure}\qquad
-\begin{subfigure}{.25\textwidth}
-	\centering
-	\includegraphics[width=\textwidth]{figs/rt1.pdf}
-	\caption{}
-\end{subfigure}\qquad
-\begin{subfigure}{.25\textwidth}
-	\centering
-	\includegraphics[width=\textwidth]{figs/rt2.pdf}
-	\caption{}
-\end{subfigure}
-\caption{The interpolating points used for the nodal basis of the space $\Q_{p+1,p}\times \Q_{p,p+1}$ for (a) $p=0$, (b) $p=1$, and (c) $p=2$. Gauss-Legendre points are used in the tangential direction and Gauss-Lobatto in the normal direction for each component of the vector. Circles denote the degrees of freedom associated with the $\xi$ component and squares the $\eta$ component. }
-\label{fem:rt_local_poly}
-\end{figure}
-
-% --- RT FES --- 
-\begin{figure}
-\centering 
-\includegraphics[width=.3\textwidth]{figs/rtfes.pdf}
-\caption{The distribution of degrees of freedom corresponding to the first degree Raviart Thomas space. Continuity of the normal component is enforced by sharing the degrees of freedom corresponding to the normal component along the interior face between neighboring elements. The circles and squares denote degrees of freedom in the $x$ and $y$ directions, respectively. }
-\label{fem:rtfes}
-\end{figure}
-
-% --- RT trace space --- 
-\begin{figure}
-\centering
-\includegraphics[width=.3\textwidth]{figs/ifes0.pdf}
-\caption{The distribution of degrees of freedom corresponding to $\Lambda_1$, the space defined as the normal trace of the first degree Raviart Thomas space, on a $3\times 3$ mesh. }
-\label{fem:ifes}
-\end{figure}
-
-\section{Mathematical Notation}
 We define $\Gamma$ as the set of unique faces in the mesh with $\Gamma_0 = \Gamma\setminus \partial\D$ the set of interior faces and $\Gamma_b = \Gamma \cap \partial\D$ the set of boundary faces so that $\Gamma = \Gamma_0 \cup \Gamma_b$. We denote the outward unit normal to element $K$ as $\n_K$. On an interior face $\mathcal{F} \in \Gamma_0$ between elements $K_1$ and $K_2$, we use the convention that $\n$ is the unit vector perpendicular to the shared face $K_1 \cap K_2$ pointing from $K_1$ to $K_2$. On such an interior face, the jump, $\jump{\cdot}$, and average, $\avg{\cdot}$, are defined as 
 	\begin{equation} \label{eq:jump_avg}
 		\jump{u} = u_1 - u_2 \,, \quad \avg{u} = \frac{1}{2}(u_1 + u_2) \,, \quad \mathrm{on} \ \mathcal{F} \in \Gamma_0 \,, 
@@ -393,6 +342,293 @@ This distinction is important for the piecewise polynomial spaces discussed in S
 \includegraphics[width=.65\textwidth]{figs/jump_avg.pdf}
 \caption{A depiction of a discontinuous, piecewise quadratic solution across two quadrilateral elements. The normal vector, $\hat{n}$, is defined as pointing from $K_1$ to $K_2$ along the face between $K_1$ and $K_2$.}
 \label{fem:jump_avg}
+\end{figure}
+
+\section{Integration Transformations}
+In this document, integration over the domain is implicitly computed as the following sum over reference elements: 
+	\begin{equation}
+		\int_\D \paren{\cdot} \ud \x = \sum_{K\in\meshT} \int_K \paren{\cdot} \ud \x = \sum_{K\in\meshT} \int_{\hat{K}} \paren{\cdot}\,J\!\ud \vec{\xi} \,. 
+	\end{equation}
+\subsection{The Scalar Case}
+For a scalar function $u : \D \rightarrow \R$, denote by $\hat{u} : \hat{K} \rightarrow \R$ its representation in reference space. The functions $u$ and $\hat{u}$ are related by 
+	\begin{equation} \label{eq:scalar_trans}
+		u(\x) = \hat{u}(\T^{-1}(\x)) \,.  	
+	\end{equation}
+Integration over the physical element is then equivalent to 
+	\begin{equation}
+		\int_K u \ud \x = \int_{\hat{K}} \hat{u}\, J\!\ud\vec{\xi} \,. 
+	\end{equation}
+Using the chain rule, the gradient of a scalar function transforms as 
+	\begin{equation} \label{eq:scalar_trans_grad}
+		\nabla u = \nabla \hat{u} = \begin{bmatrix} 
+			\pderiv{\hat{u}}{\xi}\pderiv{\xi}{x} + \pderiv{\hat{u}}{\eta}\pderiv{\eta}{x} \\
+			\pderiv{\hat{u}}{\xi}\pderiv{\xi}{y} + \pderiv{\hat{u}}{\eta}\pderiv{\eta}{y} 
+		\end{bmatrix}
+		= \mat{F}^{-T} \hnabla \hat{u} \,. 
+	\end{equation}
+
+\subsection{The Vector Case}
+For vector-valued functions, the basis the vector is defined on must also be considered. The simplest basis is the canonical basis, $\e_i$, corresponding to the $x$ and $y$ axes. In this case, a vector $\vec{v} : \D \rightarrow \R^2$ is 
+	\begin{equation} \label{eq:scalar_copies}
+		\vec{v} = v_1 \e_1 + v_2 \e_2 
+	\end{equation}
+and each component transforms independently as $v_i = \hat{v}_i(\T^{-1}(\x))$. Writing
+	\begin{equation}
+		\nabla\vec{v} = \begin{bmatrix} 
+			\pderiv{v_1}{x} & \pderiv{v_1}{y} \\ 
+			\pderiv{v_2}{x} & \pderiv{v_2}{y}
+		\end{bmatrix} = \begin{bmatrix} 
+			(\nabla v_1)^T \\ 
+			(\nabla v_2)^T 
+		\end{bmatrix}		
+	\end{equation}
+then the gradient of a vector defined as in Eq.~\ref{eq:scalar_copies} transforms as 
+	\begin{equation} \label{eq:scalar_copies_grad}
+		\nabla\vec{v} = \begin{bmatrix} 
+			(\mat{F}^{-T} \hnabla\hat{v}_1)^T \\
+			(\mat{F}^{-T}\hnabla\hat{v}_2)^T 
+		\end{bmatrix} \,. 
+	\end{equation}
+Note that defining a vector in this way does not preserve the normal or tangential components under a rotation. That is, $\vec{v}\cdot\n$ and $\vec{v}\cdot\tang$ are linear combinations of the $v_i$ instead of a single component representing the normal or tangential components, respectively. 
+
+Alternatively, the contravariant Piola transform represents vectors on the so-called tangent basis so that the normal component can be preserved \cite{ciarlet_elasticity,piola_cisc}. Such a transformation is required by the Raviart Thomas space introduced in Section \ref{fem_sec:fes_rt} in order to strongly enforce continuity in the normal component of the current. The contravariant Piola transform is: 
+	\begin{equation} \label{eq:piola}
+		\vec{v} = \frac{1}{J}\mat{F}\hvec{v}\circ\T^{-1} \,. 
+	\end{equation}
+Here, $\hvec{v} : \hat{K} \rightarrow \R^2$ is a vector in reference space. 
+Writing the columns of the Jacobian matrix as 
+	\begin{equation}
+		\mat{F} = \begin{bmatrix} 
+			\bvec{t}_1 & \bvec{t}_2 
+		\end{bmatrix} \,,
+	\end{equation}
+the contravariant Piola transformation is equivalent to
+	\begin{equation}
+		\vec{v} = \frac{1}{J}(\hat{v}_1 \bvec{t}_1 + \hat{v}_2 \bvec{t}_2) \,.
+	\end{equation}
+Observe that, on the reference canonical basis $\hat{\e}_i$, $\vec{v} = \hat{v}_1 \hat{\e}_1 + \hat{v}_2 \hat{\e}_2$, and thus the contravariant Piola transform maps the canonical reference basis to the tangent space spanned by $\{\bvec{t}_1,\bvec{t}_2\}$ and scales by $1/J$. 
+
+When the mesh transformation $\T_e$ is not affine, the tangent basis is not orthogonal. In this case, the usual method of selecting components of a vector through the dot product (e.g.~$v_i = \bvec{t}_i \cdot \vec{v}$) is inappropriate since $\bvec{t}_i \cdot \bvec{t}_j \neq \delta_{ij}$. Instead, a dual basis, referred to as the cotangent basis, is constructed such that 
+	\begin{equation}
+		\bvec{n}_i \cdot \bvec{t}_j = \delta_{ij} \,. 
+	\end{equation}
+Since the $\bvec{t}_i$ are the columns of the Jacobian matrix, defining the cotangent basis as the rows of the inverse of the Jacobian matrix satisfies $\bvec{n}_i \cdot \bvec{t}_j = \delta_{ij}$ since $\mat{F}^{-1}\mat{F} = \I$. In other words, the cotangent basis is defined such that 
+	\begin{equation}
+		\mat{F}^{-1} = \begin{bmatrix} 
+			\bvec{n}_1^T \\ \bvec{n}_2^T 
+		\end{bmatrix} \,. 
+	\end{equation}
+For a contravariant vector, the usual method of selecting a component is now replaced with $v_i = \bvec{n}_i \cdot \vec{v}$. 
+The cotangent space is associated with vectors normal to the faces. By representing the vector on the tangent space, the contravariant Piola transform allows selection of the component representing the normal component through $\n\cdot\vec{v}$. 
+Note that for non-affine meshes, $\mat{F}$ depends on $\vec{\xi}$ and thus the tangent and cotangent bases also depend on $\vec{\xi}$. 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=.5\textwidth]{figs/piola.pdf}
+	\caption{A depiction of the tangent and cotangent bases at the point $\vec{\xi} = (0,0)$ under a non-affine mesh transformation. }
+	\label{fig:piola}
+\end{figure}
+Figure \ref{fem:piola} depicts an example non-affine mesh transformation and the tangent and cotangent bases evaluated at the point $\vec{\xi} = (0,0)$. Observe that the pairs $(\bvec{t}_1, \bvec{n}_2)$ and $(\bvec{t}_2, \bvec{n}_1)$ are perpendicular. The pairs $(\bvec{t}_1, \bvec{n}_1)$ and $(\bvec{t}_2, \bvec{n}_2)$ do not point in the same direction but their magnitudes and directions balance so that $\bvec{t}_i\cdot \bvec{n}_i = 1$. Thus, the bi-orthogonality condition $\bvec{n}_i\cdot\bvec{t}_j = \delta_{ij}$ is satisfied. In addition, the tangent vectors and cotangent vectors are tangential and normal, respectively, to one of the faces connecting at the point $\vec{\xi} = (0,0)$. 
+
+For a contravariant vector, 
+	\begin{equation} \label{eq:piola_ibp1}
+		\int_K \nabla u \cdot \vec{v} \ud \x = \int_{\hat{K}} \mat{F}^{-T}\hnabla \hat{u} \cdot \frac{1}{J}\mat{F} \hat{v}\, J\!\ud\vec{\xi} = \int_{\hat{K}} \hnabla \hat{u} \cdot \hvec{v} \ud\vec{\xi} \,. 
+	\end{equation}
+The gradient transforms as 
+	\begin{equation} \label{eq:piola_grad}
+		\nabla\vec{v} = \nabla\paren{\frac{1}{J}\mat{F}\hat{v}\circ\mat{T}^{-1}} = \frac{1}{J}\mat{F}\!\paren{\hnabla\hvec{v} - \hat{\mat{B}}}\!\mat{F}^{-1} 
+	\end{equation}
+where 
+	\begin{equation}
+		\hat{\mat{B}} = \frac{1}{J}\hnabla\!\paren{J\mat{F}^{-1}}\!\mat{F}\hvec{v} \,. 
+	\end{equation}
+This result is derived by direct computation in Appendix \ref{chap:grad_piola} along with the details required to implement this transformation using the machinery commonly provided in finite element libraries. It is also shown that $\hmat{B} = 0$ when the mesh transformation is affine and that $\tr(\hat{\mat{B}}) = 0$. This last result is known as the Piola identity \cite{ciarlet_elasticity}. Using the Piola identity, the linearity of the trace, and the invariance of the trace under similarity transformations, the divergence transforms as
+	\begin{equation} \label{eq:piola_div}
+		\nabla\cdot\vec{v} = \tr\paren{\nabla\vec{v}} = \frac{1}{J}\tr\!\paren{\mat{F}\!\paren{\hnabla\hvec{v} - \hat{\mat{B}}}\!\mat{F}^{-1}} = \frac{1}{J}\hnabla\cdot\hvec{v} \,. 
+	\end{equation}
+Thus, 
+	\begin{equation} \label{eq:piola_ibp2}
+		\int_K u\, \nabla\cdot\vec{v} \ud \x = \int_{\hat{K}} \hat{u}\, \hnabla\cdot\hvec{v} \ud\vec{\xi} \,. 
+	\end{equation}
+Combining the results from Eqs.~\ref{eq:piola_ibp1} and \ref{eq:piola_ibp2} yields: 
+	\begin{equation}
+		\int_{\partial K} u\,\vec{v}\cdot\n \ud s = \int_{\partial\hat{K}} \hat{u}\, \hvec{v}\cdot\hat{\n} \ud \hat{s} \,, 
+	\end{equation}
+where $\hat{\n}$ is the normal vector in reference space corresponding to the physical space normal $\n$. 
+In other words, the contravariant Piola transformation preserves the normal component. 
+
+In this document, all integrals are implicitly computed using numerical quadrature on the reference element. 
+Integration over surfaces is performed over the one-dimensional reference element using the transformed element of surface area. 
+% --- piola transform --- 
+\begin{figure}
+	\centering
+	\includegraphics[width=.85\textwidth]{figs/piola.pdf}
+	\caption{A depiction of the tangent and cotangent bases at the point $\vec{\xi} = (0,0)$ under a non-affine mesh transformation. }
+	\label{fem:piola}
+\end{figure}
+
+\section{Finite Element Spaces} \label{fem_sec:fes}
+In this section, we define the finite element spaces used to approximate the VEF equations. Finite element spaces are defined on the mesh $\meshT$ or the interior skeleton of the mesh $\Gamma_0$ and consist of an element-local function space and a set of inter-element matching conditions. 
+The inter-element matching conditions enforce various types of continuity of the solution between elements. The combination of a locally smooth function space and suitable matching conditions allows finite element spaces to be discrete subspaces of Sobolev spaces such as $L^2(\D)$, $H^1(\D)$, and $H(\div;\D)$. The following subsections define the element-local function space and matching conditions used for the scalar flux, current, and the interface variable used later in hybridization of the mixed finite element method. 
+
+\subsection{Discontinuous Galerkin}
+The Discontinuous Galerkin (DG) space is a discrete subspace of $L^2(\D)$, the space of square-integrable functions. In other words, if $u$ is an element of the DG space, 
+	\begin{equation}
+		\int u^2 \ud \x < \infty \,. 
+	\end{equation}
+Since only square integrability is required, functions in $L^2(\D)$, and thus DG spaces, do not need to be continuous. DG functions are represented using piecewise-discontinuous polynomials that are defined on the reference element and mapped to the physical element using the inverse mesh transformation $\T_e^{-1}: K_e \rightarrow \hat{K}$. In other words, on each element, the solution belongs to: 
+	\begin{equation}
+		\Qbb{p}(K_e) = \{ u = \hat{u} \circ \T_e^{-1} : \hat{u} \in \mathcal{Q}_p(\hat{K}) \}\,. 
+	\end{equation}
+The distinction between $\Qcal{p}$ and $\Qbb{p}(K_e)$ is important for non-affine mesh transformations. In such case, the inverse mesh transformation is generally non-polynomial so that the composition $u = \hat{u}\circ\T_e^{-1}$ is also non-polynomial. 
+
+The degree-$p$ DG space is 
+	\begin{equation}
+		Y_p = \{ u \in L^2(\D) : u|_{K_e} \in \Qbb{p}(K_e) \,, \quad \forall K_e \in \meshT \} \,. 
+	\end{equation}
+An example of the distribution of the degrees of freedom in a linear DG space on a $3\times 3$ mesh is shown in Fig.~\ref{fem:dgfes}. Note that degrees of freedom are not shared between elements. Since there are no continuity requirements in the DG space, the basis for the local polynomials can use either open or closed points. That is, a nodal basis can be formed with Lagrange interpolating polynomials through the two-fold Cartesian product of either the closed Gauss-Lobatto points or the open Gauss-Legendre points. 
+% --- DG FES --- 
+\begin{figure}
+\centering
+\includegraphics[width=.3\textwidth]{figs/dgfes.pdf}
+\caption{A depiction of the distribution of degrees of freedom in the linear DG space. The Legendre nodes are used to illustrate that degrees of freedom are not shared between elements. }
+\label{fem:dgfes}
+\end{figure}
+
+\subsection{Continuous Finite Element}
+Let the degree-$p$, scalar continuous finite element space be
+	\begin{equation}
+		V_p = \{ u \in C_0(\D) : u|_{K_e} \in \Qbb{p}(K_e) \,, \quad \forall K_e \in\meshT \} 
+	\end{equation}
+so that each function $u\in V_p$ is a piecewise-continuous polynomial mapped from the reference element. Since $u \in V_p$ is locally smooth and $V_p \subset C_0(\D)$, it can be shown that for $u\in V_p$, $\nabla u = \nablah u \in [L^2(\D)]^2$. The distribution of degrees of freedom for the space $V_2$ is shown in Fig.~\ref{fem:h1fes}. Here, continuity is enforced by sharing degrees of freedom between elements. Due to this, a nodal basis using closed points, such as the Gauss-Lobatto points, must be used. 
+% --- CFEM FES ---
+\begin{figure}
+\centering
+\includegraphics[width=.3\textwidth]{figs/h1fes.pdf}
+\caption{A depiction of the distribution of degrees of freedom for the quadratic continuous finite element space. Continuity of members of the finite element space is enforced by sharing degrees of freedom across neighboring elements.}
+\label{fem:h1fes}
+\end{figure}
+
+The vector-valued analog 
+	\begin{equation}
+		W_p = \{ \vec{v} : v_1 \in V_p \ \mathrm{and} \ v_2 \in V_p \} 
+	\end{equation}
+uses the scalar continuous finite element space for each component. In this way, $\vec{v} \in W_p \subset \Hone$ and thus $\nabla\vec{v} = \nablah\vec{v} \in [L^2(\D)]^{2\times 2}$. Since each component is defined independently using the scalar space, vectors $\vec{v} \in W_p$ transform according to Eq.~\ref{eq:scalar_copies}. 
+
+\subsection{Raviart Thomas} \label{fem_sec:fes_rt}
+The Raviart Thomas (RT) space is a discrete subspace of $H(\div;\D)$, the space of vector-valued functions with square-integrable divergence. That is, 
+	\begin{equation}
+		H(\div;\D) = \{ \vec{v} \in [L^2(\D)]^2 : \nabla\cdot\vec{v} \in L^2(\D) \} \,. 
+	\end{equation}
+The requirements of a discrete subspace are codified in the following proposition. 
+\begin{prop}[Cf.~\cite{quateroni}, Proposition 3.2.2] \label{prop:div}
+Let $\vec{v} : \D \rightarrow \R^2$ be such that 
+\begin{enumerate}
+	\item $\vec{v}|_K \in \H^1(K)$ for each $K \in \meshT$  
+	\item $\jump{\vec{v}\cdot\n} = 0$ for each $\mathcal{F} \in \Gamma_0$ 
+\end{enumerate}
+then $\vec{v} \in H(\div;\D)$. Conversely, if $\vec{v} \in H(\div;\D)$ and (a) is satisfied, then (b) holds. 
+\end{prop}
+\begin{proof}
+It must be shown that, given (a) and (b), $\nabla\cdot\vec{v} \in L^2(\D)$. From (a), $\nablah\cdot\vec{v} \in L^2(\D)$. Using Green's identity and (b): 
+	\begin{equation}
+	\begin{aligned}
+		\int u\nablah\cdot\vec{v} \ud \x &= \sum_{K\in\meshT} \bracket{\int_{\partial K} u \vec{v}\cdot\n \ud s - \int_K \nabla u \cdot \vec{v} \ud \x } \\
+		&= \int_{\Gamma_0} u \jump{\vec{v}\cdot\n} \ud s - \int \nabla u \cdot \vec{v} \ud \x \\
+		&= \int u\, \nabla\cdot\vec{v} \ud \x \,, 
+	\end{aligned}
+	\end{equation}
+holds for $u$ sufficiently smooth and vanishing on the boundary (i.e.~$u \in C_0^\infty(\D)$). Thus, $\nabla\cdot\vec{v} = \nablah\cdot\vec{v} \in L^2(\D)$. 
+
+On the other hand, if $\vec{v} \in H(\div;\D)$ then $\nabla\cdot\vec{v} = \nablah\cdot\vec{v}$ and, given $\vec{v}|_K \in \H^1(K)$, we obtain 
+	\begin{equation}
+		\int_{\Gamma_0} u \jump{\vec{v}\cdot\n} \ud s = 0 \,, \quad \forall u \in C_0^\infty(\D) \,, 
+	\end{equation}
+hence, (b) holds.
+\end{proof}
+In other words, a discrete subspace of $H(\div;\D)$ must (a) have a smooth function space on each element and (b) have suitable matching conditions so that the normal component is continuous across interior mesh interfaces. 
+Figure \ref{fig:quiver} depicts an example vector in the space $H(\div;\D)$. 
+% --- RT quiver diagram --- 
+\begin{figure}
+	\centering
+	\includegraphics[width=.5\textwidth]{figs/quiver.pdf}
+	\caption{An example vector in $H(\div;\D)$. Note that the normal component is continuous across the shared face between the two elements while the tangential component is discontinuous. }
+	\label{fem:quiver}
+\end{figure}
+
+The RT space uses the local polynomial space $\Qcal{p+1,p} \times \Qcal{p,p+1}$. This choice can be motivated by the discrete de Rham complex \cite{mfem_brezzi} in that 
+	\begin{equation}
+		\Qcal{p+1} \xrightarrow{\nabla\times} \Qcal{p+1,p}\times \Qcal{p,p+1} \xrightarrow{\nabla\cdot} \Qcal{p} \,. 
+	\end{equation}
+As an example, the lowest-order polynomial space is
+	\begin{equation}
+		\Qcal{1,0} \times \Qcal{0,1} = \spn\bracet{\twovec{1}{0}\,, \twovec{\xi}{0} \,, \twovec{0}{1} \,, \twovec{0}{\eta}} \,, 
+	\end{equation}
+and thus we have that: 
+	\begin{equation}
+		\hat{\nabla}\cdot \Qcal{1,0} \times \Qcal{0,1} = \spn\bracet{1} = \Qcal{0} \,. 
+	\end{equation}
+The nodal basis for $\Qcal{p+1,p} \times \Qcal{p,p+1}$ uses the closed Gauss-Lobatto points in the normal direction and the open Gauss-Legendre points in the tangential direction. The interpolating points for the first three orders are shown in Fig.~\ref{fem:rt_local_poly}. The circles denote degrees of freedom corresponding to the $\xi$ component while squares denote the $\eta$ component. 
+% --- RT local polynomial space --- 
+\begin{figure}
+\centering
+\begin{subfigure}{.25\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/rt0.pdf}
+	\caption{}
+\end{subfigure}\qquad
+\begin{subfigure}{.25\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/rt1.pdf}
+	\caption{}
+\end{subfigure}\qquad
+\begin{subfigure}{.25\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/rt2.pdf}
+	\caption{}
+\end{subfigure}
+\caption{The interpolating points used for the nodal basis of the space $\Q_{p+1,p}\times \Q_{p,p+1}$ for (a) $p=0$, (b) $p=1$, and (c) $p=2$. Gauss-Legendre points are used in the tangential direction and Gauss-Lobatto in the normal direction for each component of the vector. Circles denote the degrees of freedom associated with the $\xi$ component and squares the $\eta$ component. }
+\label{fem:rt_local_poly}
+\end{figure}
+
+The contravariant Piola transformation is used to allow sharing the degrees of freedom associated with the normal component with neighboring elements. Combining the local function space $\Qcal{p+1,p}\times\Qcal{p,p+1}$ with the contravariant Piola transform yields: 
+	\begin{equation}
+		\mathbb{D}_p(K) = \{ \vec{v} = \frac{1}{J}\mat{F}\hat{\vec{v}}\circ\T^{-1} : \hat{\vec{v}} \in \Qcal{p+1,p} \times \Qcal{p,p+1} \} \,. 
+	\end{equation}
+Here, both the inverse mesh transformation and $1/J$ are generally non-polynomial when $\T$ is non-affine. 
+
+We now define the degree-$p$ RT space as: 
+	\begin{equation}
+		\RT_p = \{ \vec{v} \in H(\div;\D) : \vec{v}|_K \in \mathbb{D}_p(K) \,, \quad \forall K \in \meshT \} \,. 
+	\end{equation}
+Note that since the contravariant Piola transform is used, functions in RT transform according to Eqs.~\ref{eq:piola}, \ref{eq:piola_grad}, and \ref{eq:piola_div}. 
+The location of the degrees of freedom for $\RT_1$ are shown on a $3\times 3$ mesh in Fig.~\ref{fem:rtfes}. Continuity in the normal component is enforced by sharing the degrees of freedom corresponding to the normal component on interior faces. 
+From Proposition \ref{prop:div}, $\vec{v} \in \RT_p$ satisfies $\nabla\cdot\vec{v} = \nablah\cdot\vec{v} \in L^2(\D)$. However, the RT space does not have the continuity to allow a square-integrable gradient. In other words, $\nabla\vec{v} \notin [L^2(\D)]^{2\times 2}$ and $\nabla\vec{v} \neq \nablah\vec{v}$. 
+% --- RT FES --- 
+\begin{figure}
+\centering 
+\includegraphics[width=.3\textwidth]{figs/rtfes.pdf}
+\caption{The distribution of degrees of freedom corresponding to the first degree Raviart Thomas space. Continuity of the normal component is enforced by sharing the degrees of freedom corresponding to the normal component along the interior face between neighboring elements. The circles and squares denote degrees of freedom in the $x$ and $y$ directions, respectively. }
+\label{fem:rtfes}
+\end{figure}
+
+\subsection{Raviart Thomas Trace Space}
+The normal trace of the RT space is required for the hybridization procedure discussed in Section \ref{rtvef_sec:hyb}. This space is defined on the interior skeleton of the mesh $\Gamma_0$ and represents the normal component of the RT space along the interior mesh faces. Let $\mathcal{P}_p$ be the space of univariate polynomials with degree at most $p$ and 
+	\begin{equation}
+		\mathbb{P}_p(\mathcal{F}) = \{ u = \hat{u} \circ \T^{-1} : \hat{u} \in \mathcal{P}_p(\hat{\mathcal{F}}) \}
+	\end{equation}
+the space of univariate polynomials mapped from the reference line, $\hat{\mathcal{F}} = [0,1]$. 
+The RT trace space is then 
+	\begin{equation}
+		\Lambda_p = \{ \mu \in L^2(\Gamma_0) : \mu|_\mathcal{F} \in \mathbb{P}_p(\mathcal{F}) \,, \quad \forall \mathcal{F} \in \Gamma_0 \} \,. 
+	\end{equation}
+The degrees of freedom in $\Lambda_1$ are depicted in Fig.~\ref{fem:ifes}. Note that these degrees of freedom are exactly the degrees of freedom corresponding to the normal component of $\RT_1$ on the interior faces of the mesh. 
+% --- RT trace space --- 
+\begin{figure}
+\centering
+\includegraphics[width=.3\textwidth]{figs/ifes0.pdf}
+\caption{The distribution of degrees of freedom corresponding to $\Lambda_1$, the space defined as the normal trace of the first degree Raviart Thomas space, on a $3\times 3$ mesh. }
+\label{fem:ifes}
 \end{figure}
 
 \section{Finite Element Assembly}

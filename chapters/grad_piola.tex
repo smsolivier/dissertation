@@ -1,0 +1,160 @@
+%!TEX root = ../doc.tex
+\documentclass[../doc.tex]{subfiles}
+
+\begin{document}
+\chapter{The Gradient of the Piola Transformation} \label{chap:grad_piola}
+The goal of this appendix is to derive a formula for the transformation of the gradient of a vector defined under the contravariant Piola transformation. For the contravariant Piola transform $\vec{v} = \frac{1}{J}\mat{F}\hvec{v} \circ \T^{-1}$ the inverse transform is: 
+	\begin{equation}
+		\hvec{v} = J\mat{F}^{-1}\vec{v} \circ \T \,. 
+	\end{equation}
+Here, we seek to derive 
+	\begin{equation}
+		\hnabla\hvec{v} = \hnabla\!\paren{J\mat{F}^{-1}\vec{v}} \,, 
+	\end{equation}
+so that we can solve for $\nabla\vec{v}$. The goal is to derive the functional form of the transformation in terms of functionality commonly implemented in finite element codes. That is, we cast the computation in terms of the Jacobian matrix and Hessian of the transformation. 
+
+Through their connection to the Jacobian matrix and the inverse of the Jacobian matrix, the tangent and cotangent spaces are related by 
+	\begin{equation}
+		\bvec{n}_1 = \bvec{t}_2 \times \hat{\e}_3 \,, \quad \bvec{n}_2 = \hat{\e}_3 \times \bvec{t}_1 \,,
+	\end{equation}
+where $\hat{\e}_3$ points out of the page. In other words, $\bvec{n}_1$ is a 90 degree clockwise rotation of $\bvec{t}_2$ and $\bvec{n}_2$ is a 90 degree counterclockwise rotation of $\bvec{t}_1$ (see Fig.~\ref{fig:piola}). Thus, we can write 
+	\begin{equation}
+	\begin{aligned}
+		\hnabla\hvec{v} &= \hnabla \begin{bmatrix} 
+			J \bvec{n}_1\cdot\vec{v} \\ J \bvec{n}_2 \cdot \vec{v} 
+		\end{bmatrix}\\
+		&= \begin{bmatrix} 
+			\pderiv{}{\xi}(J\bvec{n}_1\cdot\vec{v}) & \pderiv{}{\eta}(J\bvec{n}_1\cdot\vec{v}) \\ 
+			\pderiv{}{\xi}(J\bvec{n}_2\cdot\vec{v}) & \pderiv{}{\eta}(J\bvec{n}_2 \cdot \vec{v}) 
+		\end{bmatrix} \\
+		&= \begin{bmatrix} 
+			\pderiv{}{\xi}(J\bvec{n}_1)\cdot\vec{v} & \pderiv{}{\eta}(J\bvec{n}_1)\cdot\vec{v} \\ 
+			\pderiv{}{\xi}(J\bvec{n}_2)\cdot\vec{v} & \pderiv{}{\eta}(J\bvec{n}_2)\cdot\vec{v} 
+		\end{bmatrix}
+		+ \begin{bmatrix} 
+			J\bvec{n}_1 \cdot\pderiv{\vec{v}}{\xi} & J\bvec{n}_1 \cdot\pderiv{\vec{v}}{\eta}\\
+			J\bvec{n}_2 \cdot\pderiv{\vec{v}}{\xi} & J\bvec{n}_2 \cdot\pderiv{\vec{v}}{\eta}
+		\end{bmatrix} \,.
+	\end{aligned}
+	\end{equation}
+The second term can be written as 
+	\begin{equation}
+		\begin{bmatrix} 
+			J\bvec{n}_1 \cdot\pderiv{\vec{v}}{\xi} & J\bvec{n}_1 \cdot\pderiv{\vec{v}}{\eta}\\
+			J\bvec{n}_2 \cdot\pderiv{\vec{v}}{\xi} & J\bvec{n}_2 \cdot\pderiv{\vec{v}}{\eta}
+		\end{bmatrix}
+		= J\mat{F}^{-1}\hnabla\vec{v} = J\mat{F}^{-1}\nabla\vec{v}\mat{F} \,, 
+	\end{equation}
+where $\hnabla\vec{v} = \nabla\vec{v}\mat{F}$ transforms the reference gradient to the physical gradient. The first term is a third-order tensor contracted with a vector to yield a second-order tensor. By expanding the dot products, we can emulate this contraction as a sum of two second-order tensors: 
+	\begin{equation}
+	\begin{aligned}
+		\begin{bmatrix} 
+			\pderiv{}{\xi}(J\bvec{n}_1) \cdot \vec{v} & \pderiv{}{\eta}(J\bvec{n}_1)\cdot\vec{v} \\ 
+			\pderiv{}{\xi}(J\bvec{n}_2)\cdot\vec{v} & \pderiv{}{\eta}(J\bvec{n}_2)\cdot\vec{v} 
+		\end{bmatrix} &= 
+		\begin{bmatrix} 
+			\pderiv{}{\xi}(Jn_{11})v_1 + \pderiv{}{\xi}(Jn_{12})v_2 & \pderiv{}{\eta}(Jn_{11})v_1 + \pderiv{}{\eta}(Jn_{12})v_2 \\
+			\pderiv{}{\xi}(Jn_{21})v_1 + \pderiv{}{\xi}(Jn_{22})v_2 & \pderiv{}{\eta}(Jn_{21})v_1 + \pderiv{}{\eta}(Jn_{22})v_2 
+		\end{bmatrix} \\
+		&= \begin{bmatrix} 
+			\pderiv{}{\xi}(Jn_{11}) & \pderiv{}{\eta}(Jn_{11}) \\ 
+			\pderiv{}{\xi}(Jn_{21}) & \pderiv{}{\eta}(Jn_{21}) 
+		\end{bmatrix} v_1 + 
+		\begin{bmatrix} 
+			\pderiv{}{\xi}(Jn_{12}) & \pderiv{}{\eta}(Jn_{12}) \\ 
+			\pderiv{}{\xi}(Jn_{22}) & \pderiv{}{\eta}(Jn_{22}) 
+		\end{bmatrix} v_2 \\
+		&= \hnabla (J\F_1^{-1}) v_1 + \hnabla(J \F_2^{-1}) v_2
+	\end{aligned}
+	\end{equation}
+where $\F^{-1}_i$ are the columns of $\F^{-1}$. Typically, finite element codes provide the Hessian matrix of the forward map but not the inverse map. Thus, to leverage existing functionality, we must write the above matrices in terms of $\H = \hnabla\mat{F}$ instead of $\hnabla\mat{F}^{-1}$. Assume that the code computes the Hessian matrix in \emph{flattened} and symmetric form as:  
+	\begin{equation}
+		\ang{\H} = \begin{bmatrix} 
+			\frac{\partial^2 x}{\partial \xi^2} & \frac{\partial^2 x}{\partial\xi\partial\eta} & \frac{\partial^2 x}{\partial\eta^2} \\
+			\frac{\partial^2 y}{\partial \xi^2} & \frac{\partial^2 y}{\partial\xi\partial\eta} & \frac{\partial^2 y}{\partial\eta^2}
+		\end{bmatrix} \,. 
+	\end{equation}
+Then the above can be rewritten as 
+	\begin{equation}
+	\begin{aligned}
+		\hnabla(J\F_1^{-1}) &= \hnabla \begin{bmatrix} 
+			F_{22} \\ -F_{21} 
+		\end{bmatrix} \\
+		&= \hnabla\begin{bmatrix} 
+			\pderiv{y}{\eta} \\ -\pderiv{y}{\xi} 
+		\end{bmatrix}\\
+		&= \begin{bmatrix} 
+			\frac{\partial^2 y}{\partial\xi\partial\eta} & \frac{\partial^2 y}{\partial\eta^2} \\ 
+			-\frac{\partial^2 y}{\partial\xi^2} & -\frac{\partial^2 y}{\partial\xi\partial\eta} 
+		\end{bmatrix}\\
+		&= \begin{bmatrix} 
+			H_{22} & H_{23} \\ -H_{21} & -H_{22}
+		\end{bmatrix} \,, 
+	\end{aligned}
+	\end{equation}
+	\begin{equation}
+	\begin{aligned}
+		\hnabla(J\F_2^{-1}) &= \hnabla \begin{bmatrix} 
+			-F_{12} \\ F_{11} 
+		\end{bmatrix} \\
+		&= \hnabla\begin{bmatrix} 
+			-\pderiv{x}{\eta} \\ \pderiv{x}{\xi} 
+		\end{bmatrix}\\
+		&= \begin{bmatrix} 
+			-\frac{\partial^2 x}{\partial\xi\partial\eta} & -\frac{\partial^2 x}{\partial\eta^2} \\ 
+			\frac{\partial^2 x}{\partial\xi^2} & \frac{\partial^2 x}{\partial\xi\partial\eta} 
+		\end{bmatrix}\\
+		&= \begin{bmatrix} 
+			-H_{12} & -H_{13} \\ H_{11} & H_{12} 
+		\end{bmatrix} \,. 
+	\end{aligned}
+	\end{equation}
+We can define the matrix 
+	\begin{equation} \label{eq:bmat_parts}
+		\hat{\mat{B}} = \hnabla(J\mat{F}^{-1}) \vec{v} = \begin{bmatrix} 
+			H_{22} & H_{23} \\ -H_{21} & -H_{22}
+		\end{bmatrix} v_1 + 
+		\begin{bmatrix} 
+			-H_{12} & -H_{13} \\ H_{11} & H_{12} 
+		\end{bmatrix} v_2 \,. 
+	\end{equation}
+This is computed in flattened form as 
+	\begin{equation} \label{eq:bhat_flat}
+	\begin{aligned}
+		\ang{\hat{\mat{B}}} &= \begin{bmatrix} 
+			\ang{\hnabla(J\F_1^{-1})} & \ang{\hnabla(J\F_2^{-1})}
+		\end{bmatrix} \vec{v} \\
+		&= \begin{bmatrix} 
+			H_{22} & -H_{12} \\ H_{23} & -H_{13} \\ -H_{21} & H_{11} \\ -H_{22} & H_{12} 
+		\end{bmatrix} \frac{1}{J}\F\hvec{v} 
+	\end{aligned}
+	\end{equation}
+where $\vec{v} = \frac{1}{J}\F\hvec{v}$ was used. Finally, we have that 
+	\begin{equation}
+		\hnabla \hvec{v} = \hat{\mat{B}} + J \F^{-1} \nabla\vec{v} \F \iff \nabla\vec{v} = \frac{1}{J}\F\!\paren{\hnabla\hvec{v} - \hat{\mat{B}}}\!\F^{-1} \,. 
+	\end{equation}
+We can then say that 
+	\begin{equation} \label{eq:nablaE_trans}
+	\begin{aligned}
+		\nabla\vec{v} : \E \ud \x &= \frac{1}{J}\F\!\paren{\hnabla\hvec{v} - \hat{\mat{B}}}\!\F^{-1} : \E \, J \!\ud \vec{\xi} \\
+		&= \paren{\hnabla\hvec{v} - \hat{\mat{B}}} : \F^{T} \E \F^{-T} \,\ud\vec{\xi} \,. 
+	\end{aligned}
+	\end{equation}
+Here, we use the fact that $\mat{A} : \mat{B} = \tr(\mat{A}\mat{B}^T)$ and apply the cyclic property of the trace to permute $\mat{F}$ and $\mat{F}^{-1}$. 
+In this form, we can implement the gradient calculation as a matrix-vector product of the flattened referential gradient and the coefficients of $\hvec{v}$. 
+
+When the mesh transformation is affine, $\hmat{B} = 0$ since the Hessian of an affine transformation is zero. In addition, the Piola identity states that $\tr\hmat{B} = 0$. This can be most easily seen in Eq.~\ref{eq:bmat_parts} where 
+	\begin{equation}
+		\tr\hmat{B} = (H_{22} - H_{22}) v_1 + (-H_{12} + H_{12}) v_2 = 0 \,. 
+	\end{equation}
+Using the Piola identity and Eq.~\ref{eq:nablaE_trans}, we have that 
+	\begin{equation}
+	\begin{aligned}
+		\nabla\cdot\vec{v} \ud \x &= \nabla\vec{v} : \I \ud \x \\
+		&= \paren{\hnabla\hvec{v} - \hmat{B}} : \mat{F}^T\I\mat{F}^{-T} \ud \vec{\xi} \\
+		&= \tr\paren{\hnabla\hvec{v} - \hmat{B}} \ud \vec{\xi} \\
+		&= \hnabla\cdot\hvec{v} \ud \vec{\xi} \,. 
+	\end{aligned}
+	\end{equation}
+Thus, in the thick diffusion limit when $\E \propto \I$, $\nabla\vec{v} : \E$ simplifies to the standard transformation for the divergence of a contravariant vector.
+\end{document}
