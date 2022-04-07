@@ -84,7 +84,7 @@ A key question is the choice of the space $V$ the weak form is defined over. For
 	\begin{equation} \label{fem:want_finite}
 		\int \nabla u \cdot D\nabla\varphi \ud \x < \infty \,, \quad \int \sigma_a\, u \varphi \ud\x < \infty \,, \quad \int u\,q \ud \x < \infty \,. 
 	\end{equation}
-Such properties are achieved by using Hilbertian Sobolev spaces. These spaces are used frequently throughout mathematical physics. Following standard notation, we define 
+Such properties are achieved by using Hilbertian Sobolev spaces. These spaces are used frequently throughout mathematical physics and are a natural choice for the bilinear and linear forms arising in finite element methods. Following standard notation, we define 
 	\begin{equation}
 		L^2(\D) = \{u : \D \rightarrow \R : \int_\D u^2 \ud \x < \infty \} \,, 
 	\end{equation}
@@ -107,7 +107,7 @@ Thus,
 	$$ \int uv \ud \x \leq \int \frac{1}{2}\paren{u^2 + v^2} \ud \x = \frac{1}{2}\int u^2 \ud \x + \frac{1}{2} \int v^2 \ud \x < \infty \,, $$
 since $u,v \in L^2(\D)$ are square-integrable. 
 \end{proof}
-Thus, under mild assumptions on the data $D$, $\sigma_a$, and $q$, we have that
+\noindent Thus, under mild assumptions on the data $D$, $\sigma_a$, and $q$, we have that
 	\begin{subequations}
 	\begin{equation}
 		\int \sigma_a\, u \varphi \ud \x < \infty \,, \quad \forall u,\varphi \in L^2(\D) \,,
@@ -126,7 +126,7 @@ We now construct a finite-dimensional approximation for the abstract problem in 
 	\begin{equation} \label{fem:weak_gm}
 		a(v,u) = b(v) \,, \quad \forall v \in V \,. 
 	\end{equation}
-The Lax-Milgram theorem (Cf. 6.2.1 \textcite{evans2010partial}) states that Eq.~\ref{fem:weak_gm} has a unique solution when $a(\cdot,\cdot)$ is continuous, i.e., there exists $\alpha>0$ such that 
+The Lax-Milgram theorem (\textcite[\S 6.2.1]{evans2010partial}) states that Eq.~\ref{fem:weak_gm} has a unique solution when $a(\cdot,\cdot)$ is continuous, i.e., there exists $\alpha>0$ such that 
 	\begin{equation}
 		|a(v,u)| \leq \alpha \|u\|\|v\| \,, \quad \forall u,v \in V \,,
 	\end{equation}
@@ -140,7 +140,7 @@ Note that the condition of coercivity is a stronger form of positive definitenes
 	\end{equation}
 The condition number is commonly used as a proxy for the ``difficulty'' of solving a problem with iterative methods. The constants $\alpha$ and $\beta$ depend on the bilinear form $a$ and on the choice for the space $V$. Thus, the choice of $V$ impacts both the existence and uniqueness of the solution to Eq.~\ref{fem:weak_gm} as well as the ease with which it can be solved. 
 
-Galerkin's method for approximating the problem in Eq.~\ref{fem:weak_gm} consists of defining similar problems in finite-dimensional spaces $V_h$. The conforming finite element method restricts the finite-dimensional approximation space to be $V_h \subset V$. To be specific, any finite-dimensional subspace $V_h\subset V$ we define the discrete problem to be: find $u_h \in V_h$ such that 
+Galerkin's method for approximating the problem in Eq.~\ref{fem:weak_gm} consists of defining similar problems in finite-dimensional spaces $V_h$. The conforming finite element method restricts the finite-dimensional approximation space to be $V_h \subset V$. To be specific, for any finite-dimensional subspace $V_h\subset V$ we define the discrete problem to be: find $u_h \in V_h$ such that 
 	\begin{equation} \label{fem:galerkin}
 	 	a(v_h,u_h) = b(v_h) \,, \quad \forall v_h \in V_h \,. 
 	\end{equation} 
@@ -161,28 +161,28 @@ Such a general framework as Galerkin's method, however, does not provide a way t
 % \end{figure}
 
 \section{Local Polynomial Spaces}
-Both the mesh and the solution are represented with a polynomial space defined locally on each element. Let $\hat{K}$ denote the reference element defined as the unit $\dim$-dimension cube $\hat{K} = [0,1]^{\dim}$. We define 
+Both the mesh and the solution are represented with a polynomial space defined locally on each element. Let $\hat{K}$ denote the reference element which we set to the unit $\dim$-dimensional cube, $\hat{K} = [0,1]^{\dim}$. We define 
 	\begin{equation}
-		\Pcal{k}(\hat{K}) = \{ p : \hat{K} \rightarrow \R : p = \sum_{i=0}^{k} \alpha_i x^i \,, \alpha_i \in \R\ \forall\,i \in [0,k]\} = \spn\{ 1, x, x^2, \ldots, x^k \} 
+		\Pcal{k} = \{ p : \hat{K} \rightarrow \R : p = \sum_{i=0}^{k} \alpha_i x^i \,, \alpha_i \in \R\ \forall\,i \in [0,k]\} = \spn\{ 1, x, x^2, \ldots, x^k \} 
 	\end{equation}
-as the space of univariate polynomials of degree less than or equal to $k$ defined on $\hat{K}$. The tensor product polynomials are defined as 
+as the space of univariate polynomials of degree less than or equal to $k$ defined on $\hat{K}$. Multi-dimensional polynomial spaces are built through tensor products of the one-dimensional space. The tensor product polynomial spaces are:  
 	\begin{equation}
-		\Qcal{m,n}(\hat{K}) = \{ p(x) q(y) : p \in \Pcal{m}(\hat{K})\,, q \in \Pcal{n}(\hat{K}) \} 
+		\Qcal{m,n} = \{ p(x) q(y) : p \in \Pcal{m}\,, q \in \Pcal{n} \} 
 	\end{equation}
 in two dimensions and 
 	\begin{equation}
-		\Qcal{\ell,m,n}(\hat{K}) = \{ p(x) q(y) r(z) : p \in \Pcal{\ell}(\hat{K})\,, q \in \Pcal{m}(\hat{K})\,, r \in \Pcal{n}(\hat{K})\} 
+		\Qcal{\ell,m,n} = \{ p(x) q(y) r(z) : p \in \Pcal{\ell}\,, q \in \Pcal{m}\,, r \in \Pcal{n}\} 
 	\end{equation}
 in three dimensions. 
 The tensor product polynomial space of equal degree in each variable is denoted by 
 	\begin{equation}
-		\Qcal{p}(\hat{K}) = \begin{cases}
-			\Qcal{p,p}(\hat{K}) \,, & \dim = 2 \\ 
-			\Qcal{p,p,p}(\hat{K}) \,, & \dim = 3 
+		\Qcal{p} = \begin{cases}
+			\Qcal{p,p} \,, & \dim = 2 \\ 
+			\Qcal{p,p,p} \,, & \dim = 3 
 		\end{cases} \,. 
 	\end{equation}
 
-Nodal bases for the space $\Pcal{p}(\hat{K})$ are constructed using Lagrange interpolating polynomials. We consider interpolation through the Gauss-Lobatto and Gauss-Legendre points. Let $\{\xi_i\}$ represent the $p+1$ one-dimensional Gauss-Lobatto or Gauss-Legendre points in the interval $[0,1]$. Let $\ell_i$ denote the Lagrange interpolating polynomial satisfying $\ell_i(\xi_j) = \delta_{ij}$ where $\delta_{ij}$ is the Kronecker delta. The set of functions $\{\ell_i\}$ form a basis for $\Pcal{p}(\hat{K})$. The basis functions can be written as:  
+Nodal bases for the space $\Pcal{p}$ are constructed using Lagrange interpolating polynomials. We consider interpolation through the Gauss-Lobatto and Gauss-Legendre points. Let $\{\xi_i\}$ represent the $p+1$ one-dimensional Gauss-Lobatto or Gauss-Legendre points in the interval $[0,1]$. Let $\ell_i$ denote the Lagrange interpolating polynomial satisfying $\ell_i(\xi_j) = \delta_{ij}$ where $\delta_{ij}$ is the Kronecker delta. The set of functions $\{\ell_i\}$ form a basis for $\Pcal{p}$. The basis functions can be written as:  
 	\begin{equation}
 		\ell_i(\xi) = \prod_{\substack{0\leq j \leq k\\i\neq j}} \frac{\xi - \xi_j}{\xi_i - \xi_j} \,, \quad i \in [0,k] \,. 
 	\end{equation}
@@ -196,9 +196,8 @@ Alternatively, writing $\ell_i(\xi) = \sum_{j=0}^k c_{ij} \xi^j$, the coefficien
 		\end{bmatrix}
 		\mat{C} = \I \,,
 	\end{equation}
-where $\mat{C} \in \R^{(k+1)\times(k+1)}$ is the matrix of coefficients with entries $c_{ij}$. The Vandermonde system is simply a change of basis from $\{1,x,x^2,\ldots\}$ to the nodal basis. Nodal bases for the spaces $\Qcal{m,n}(\hat{K})$ and $\Qcal{\ell,m,n}(\hat{K})$ are formed through tensor products of the corresponding one-dimensional nodal bases.
-
-The basis functions for $\Pcal{1}(\hat{K})$, $\Pcal{2}(\hat{K})$, and $\Pcal{3}(\hat{K})$ through the Gauss-Lobatto and Gauss-Legendre points are shown in Fig.~\ref{fem:shape1d} and \ref{fem:shape_leg1d}, respectively.  Figure \ref{fem:shape2d} shows a selection of the nodal basis functions through the Gauss-Lobatto points for the spaces $\Qcal{1}(\hat{K})$, $\Qcal{2}(\hat{K})$, and $\Qcal{3}(\hat{K})$. 
+where $\mat{C} \in \R^{(k+1)\times(k+1)}$ is the matrix of coefficients with entries $c_{ij}$. The Vandermonde system is simply a change of basis from $\{1,x,x^2,\ldots\}$ to the nodal basis. Nodal bases for the spaces $\Qcal{m,n}$ and $\Qcal{\ell,m,n}$ are formed through tensor products of the corresponding one-dimensional nodal bases.
+The basis functions for $\Pcal{1}$, $\Pcal{2}$, and $\Pcal{3}$ through the Gauss-Lobatto and Gauss-Legendre points are shown in Fig.~\ref{fem:shape1d} and \ref{fem:shape_leg1d}, respectively.  Figure \ref{fem:shape2d} shows a selection of the nodal basis functions through the Gauss-Lobatto points for the spaces $\Qcal{1}$, $\Qcal{2}$, and $\Qcal{3}$. 
 % --- shape functions in 1D (Lobatto) --- 
 \begin{figure}
 \centering
@@ -247,7 +246,7 @@ The basis functions for $\Pcal{1}(\hat{K})$, $\Pcal{2}(\hat{K})$, and $\Pcal{3}(
 \begin{figure}
 \centering
 \includegraphics[width=.85\textwidth]{figs/shape2d.pdf}
-\caption{Location of the interpolating points (upper) and a selection of nodal basis functions (lower) for the tensor product polynomial spaces $\Qcal{1}(\hat{K})$, $\Qcal{2}(\hat{K})$, and $\Qcal{3}(\hat{K})$ in two dimensions.}
+\caption{Location of the interpolating points (upper) and a selection of nodal basis functions (lower) for the tensor product polynomial spaces $\Qcal{1}$, $\Qcal{2}$, and $\Qcal{3}$ in two dimensions.}
 \label{fem:shape2d}
 \end{figure}
 
@@ -275,7 +274,7 @@ Let $\D \subset \R^{\dim}$ with $\dim = 2,3$ be the domain of the problem. Consi
 	\begin{equation}
 		\D = \bigcup_{K \in \meshT} K 
 	\end{equation}
-with $K$ an element in the mesh $\meshT$. Each element $K$ is obtained as $K = \T(\hat{K})$ where $\T \in [\Qcal{m}]^{\dim}$ is an invertible, polynomial mapping and $\hat{K} = [0,1]^{\dim}$ is the reference element. The mapping $\T$ is derived from a set of global control points and an element-local nodal basis. Figure \ref{fem:quadmesh} shows an example mesh where the control points labeled 2, 7, and 12 are shared so that the mesh coordinates are continuous across the interface between the two elements. Let $\{\ell_i\}$ denote the nodal basis functions for the space $\Qcal{m}$. On each element, the mapping is then 
+with $K$ an element in the mesh $\meshT$. \todo{restrict to tensor product elements} \todo{requirements of mesh} Each element $K$ is obtained as $K = \T(\hat{K})$ where $\T \in [\Qcal{m}]^{\dim}$ is an invertible, polynomial mapping and $\hat{K} = [0,1]^{\dim}$ is the reference element. The mapping $\T$ is derived from a set of global control points and an element-local nodal basis. Figure \ref{fem:quadmesh} shows an example mesh where the control points labeled 2, 7, and 12 are shared so that the mesh coordinates are continuous across the interface between the two elements. Let $\{\ell_i\}$ denote the nodal basis functions for the space $\Qcal{m}$. On each element, the mapping is then 
 	\begin{equation}
 		\x(\vec{\xi}) = \T(\vec{\xi}) = \sum_i \x_i \ell_i(\vec{\xi}) 
 	\end{equation}
@@ -320,7 +319,7 @@ A mesh transformation is called affine when it can be written as
 	\end{equation}
 where $\mat{A}\in\R^{\dim\times\dim}$ and $b\in\R^{\dim}$ are constant with respect to $\vec{\xi}$. In such case, the Jacobian matrix is $\mat{F} = \mat{A}$ and the Hessian of the transformation, defined as $\frac{\partial^2 \x}{\partial^2 \vec{\xi}}$, is identically zero. Quadrilateral elements obtained by scaling, stretching along the $\xi$ or $\eta$ axes, or rotating the reference element are all affine while general quadrilateral elements, such as trapezoidal elements, and curved elements are not affine. 
 
-We define $\Gamma$ as the set of unique faces in the mesh with $\Gamma_0 = \Gamma\setminus \partial\D$ the set of interior faces and $\Gamma_b = \Gamma \cap \partial\D$ the set of boundary faces so that $\Gamma = \Gamma_0 \cup \Gamma_b$. We denote the outward unit normal to element $K$ as $\n_K$. On an interior face $\mathcal{F} \in \Gamma_0$ between elements $K_1$ and $K_2$, we use the convention that $\n$ is the unit vector perpendicular to the shared face $K_1 \cap K_2$ pointing from $K_1$ to $K_2$. On such an interior face, the jump, $\jump{\cdot}$, and average, $\avg{\cdot}$, are defined as 
+We define $\Gamma$ as the set of unique faces in the mesh with $\Gamma_0 = \Gamma\setminus \partial\D$ the set of interior faces and $\Gamma_b = \Gamma \cap \partial\D$ the set of boundary faces so that $\Gamma = \Gamma_0 \cup \Gamma_b$. We denote the outward unit normal to element $K$ as $\n_K$. On an interior face $\mathcal{F} \in \Gamma_0$ between elements $K_1$ and $K_2$, we use the convention that $\n$ is the unit vector perpendicular to the shared face $K_1 \cap K_2$ pointing from $K_1$ to $K_2$ (see Fig.~\ref{fem:jump_avg}). On such an interior face, the jump, $\jump{\cdot}$, and average, $\avg{\cdot}$, are defined as 
 	\begin{equation} \label{eq:jump_avg}
 		\jump{u} = u_1 - u_2 \,, \quad \avg{u} = \frac{1}{2}(u_1 + u_2) \,, \quad \mathrm{on} \ \mathcal{F} \in \Gamma_0 \,, 
 	\end{equation}

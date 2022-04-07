@@ -101,8 +101,8 @@
 \renewcommand{\ang}[1]{\langle #1 \rangle}
 \newcommand{\Sn}{S$_N$\xspace}
 \newcommand{\Qone}{\vec{Q}_1}
-\newcommand{\Qcal}[1]{\mathcal{Q}_{#1}}
-\newcommand{\Pcal}[1]{\mathcal{P}_{#1}}
+\newcommand{\Qcal}[1]{\mathcal{Q}_{#1}(\hat{K})}
+\newcommand{\Pcal}[1]{\mathcal{P}_{#1}(\hat{K})}
 \newcommand{\Qbb}[1]{\mathbb{Q}_{#1}}
 \newcommand{\RT}{\mathit{RT}}
 \newcommand{\hRT}{\hat{\RT}}
