@@ -140,6 +140,7 @@
 \DeclareMathOperator{\tr}{trace}
 % \DeclareMathOperator{\diag}{diag}
 \DeclareMathOperator{\spn}{span}
+\DeclareMathOperator\supp{supp}
 
 % --- math environments --- 
 \newtheorem{cor}{Corollary}

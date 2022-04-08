@@ -713,7 +713,7 @@ called the set of degrees of freedom for the space $X_h$. Defining functions $b_
 	\begin{equation}
 		b_i \in X_h \,, \quad b_i(\x_j) = \delta_{ij}\,, 1 \leq i,j \leq \dim(X_h) \,, 
 	\end{equation}
-it is seen that $\{b_i\}$ forms a basis for $X_h$. The $b_i$ are referred to as basis functions. A selection of basis functions for $V_1$ and $V_2$ in one dimensions are depicted in Fig.~\ref{fem:fe_support_1d}. Observe that each $b_i$ is one at $x_i$ and zero for each $x_j$ where $i\neq j$ and that each basis function has a localized support. That is, the basis functions associated with the boundary of the domain are non-zero only on a single element. This is also true for the ``bubble'' basis functions corresponding to a node that is on the interior of an element (e.q.~$b_8$ in the lower diagram). Basis functions associated with a node shared by multiple elements are non-zero only those elements. This is demonstrated by $b_4$ and $b_7$ in the upper and lower diagrams, respectively. Figure \ref{fem:fe_support} shows a selection of basis functions for $V_1$ in two dimensions. Again, the basis functions are non-zero only in the elements that share a given node. This property of local support was constructed by design to to keep the resulting algebraic system as computationally manageable and memory efficient as possible. 
+it is seen that $\{b_i\}$ forms a basis for $X_h$. The $b_i$ are referred to as basis functions. A selection of basis functions for $V_1$, $V_2$, and $V_3$ in one dimension are depicted in Fig.~\ref{fem:fe_support_1d}. Observe that each $b_i$ is one at $x_i$ and zero for each $x_j$ where $i\neq j$ and that each basis function has a localized support. That is, the basis functions associated with the boundary of the domain are non-zero only on a single element. This is also true for the ``bubble'' basis functions corresponding to a node that is on the interior of an element (e.q.~$b_8$ in the middle diagram). Basis functions associated with a node shared by multiple elements are non-zero only those elements. This is demonstrated by $b_4$, $b_7$, and $b_{10}$ in the upper, middle, and lower diagrams, respectively. Figure \ref{fem:fe_support} shows a selection of basis functions for $V_1$ in two dimensions. Again, the basis functions are non-zero only in the elements that share a node. This property of local support was constructed by design to to keep the resulting algebraic system as computationally manageable and memory efficient as possible. 
 % --- 1D support diagram --- 
 \begin{figure}
 \centering
@@ -730,10 +730,61 @@ it is seen that $\{b_i\}$ forms a basis for $X_h$. The $b_i$ are referred to as 
 \label{fem:fe_support}
 \end{figure}
 
-\todo{fix typos}
-\todo{represent as dot product}
+For DG spaces, degrees of freedom are not shared between elements. Thus, the global basis is spanned by the of collection of the element-local basis functions corresponding to each element in the mesh. In this case, the support of the basis functions is limited to a single element. 
+
+Using this basis, a function $u \in X_h$ can be represented as 
+	\begin{equation}
+		u(\x) = \sum_i b_i(\T^{-1}(\x)) u_i 
+	\end{equation}
+where $u_i \in \Sigma_h$ is the degree of freedom corresponding to $b_i$. 
 
 \subsection{Finite Element Assembly}
+Consider the abstract problem: find $u \in V$ such that 
+	\begin{equation}
+		a(v,u) = f(v) \,, \quad \forall v \in V \,. 
+	\end{equation}
+Both the test function $v$ and the solution $u$ are represented as linear combination of the global basis functions $\{b_i\}$. That is, we write 
+	\begin{equation}
+		u = \sum_i b_i u_i \,, \quad v = \sum_i b_i v_i \,,
+	\end{equation}
+where $u_i$ and $v_i$ are the degrees of freedom that determine $u,v \in V$. Inserting this representation into the abstract problem yields 
+	\begin{equation}
+		a(\sum_i b_i v_i, \sum_j b_j u_j) = f(\sum_i b_i v_i) \iff \sum_i \sum_j v_i a(b_i,b_j) u_j = \sum_i v_i f(b_i) \,. 
+	\end{equation} 
+Letting $\mat{A}$ be the matrix with entries $a(b_i, b_j)$ and $\underline{f}$ the vector with entries $f(b_i)$, the above is equivalent to 
+	\begin{equation}
+		\underline{v}^T \mat{A} \underline{u} = \underline{v}^T \underline{f} \,. 
+	\end{equation}
+We wish to have this hold $\forall v \in V \Rightarrow \forall v_i$. Therefore, solving the abstract problem is equivalent to solving 
+	\begin{equation}
+		\mat{A} \underline{u} = \underline{f} \,, 
+	\end{equation}
+for the vector of degrees freedom $\underline{u}$. 
+
+We now show that the algebraic system $\mat{A}\underline{u} = \underline{f}$ is sparse in that most of its entries are zero. This fact arises from the local support of the basis functions $b_i$. Let $\supp(b_i) \subset \D$ denote the subset of the domain where $b_i$ is non-zero. In other words, $\supp(b_i)$ is the union of adjacent elements that share the node located at $\x_i$. Then, $a(b_i, b_j)$ is non-zero only where $\supp(b_i)$ and $\supp(b_j)$ overlap i.e.~when $\supp(b_i) \cap \supp(b_j) \neq \emptyset$. Using the basis functions depicted in the upper diagram of Fig.~\ref{fem:fe_support_1d} as an example, the term $a(b_1,b_7)$ is zero since $b_7$ is zero where $b_1$ is non-zero and vice versa. On the other hand, $a(b_4,b_5)$ is non-zero since $b_4$ and $b_5$ are both non-zero in $K_4$. Figure \ref{fem:sparse1d} shows the resulting sparsity pattern corresponding to the finite element spaces depicted in Fig.~\ref{fem:fe_support_1d}. 
+% --- 1D sparsity pattern --- 
+\begin{figure}
+\centering
+\begin{subfigure}{.32\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/sparse1d.pdf}
+	\caption{}
+\end{subfigure}
+\begin{subfigure}{.32\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/sparse1d_1.pdf}
+	\caption{}
+\end{subfigure}
+\begin{subfigure}{.32\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/sparse1d_2.pdf}
+	\caption{}
+\end{subfigure}
+\caption{Sparsity patterns associated with the finite element spaces depicted in Fig.~\ref{fem:fe_support_1d}. }
+\label{fem:sparse1d}
+\end{figure}
+
+\subsection{Examples}
 
 \section{Iterative Solution Methods for Linear Systems}
 \end{document}
