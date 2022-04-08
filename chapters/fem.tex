@@ -368,18 +368,21 @@ and is still polynomial. However, for non-affine elements, the inverse transform
 which is not polynomial in the first coordinate. 
 
 We define $\Gamma$ as the set of unique faces in the mesh with $\Gamma_0 = \Gamma\setminus \partial\D$ the set of interior faces and $\Gamma_b = \Gamma \cap \partial\D$ the set of boundary faces so that $\Gamma = \Gamma_0 \cup \Gamma_b$. We denote the outward unit normal to element $K$ as $\n_K$. On an interior face $\mathcal{F} \in \Gamma_0$ between elements $K_1$ and $K_2$, we use the convention that $\n$ is the unit vector perpendicular to the shared face $K_1 \cap K_2$ pointing from $K_1$ to $K_2$ (see Fig.~\ref{fem:jump_avg}). On such an interior face, the jump, $\jump{\cdot}$, and average, $\avg{\cdot}$, are defined as 
-	\begin{equation} \label{eq:jump_avg}
+	\begin{equation} \label{fem:jump_avg}
 		\jump{u} = u_1 - u_2 \,, \quad \avg{u} = \frac{1}{2}(u_1 + u_2) \,, \quad \mathrm{on} \ \mathcal{F} \in \Gamma_0 \,, 
 	\end{equation}
 where $u_i = u|_{K_i}$ with analogous definitions for vectors. Note that a continuous function $u$ satisfies $\jump{u} = 0$ on each interior face. 
 On boundary faces, the jump and average are set to 
-	\begin{equation} \label{eq:jump_avg_bdr}
+	\begin{equation} \label{fem:jump_avg_bdr}
 		\jump{u} = u \,, \quad \avg{u} = u \,, \quad \mathrm{on} \ \mathcal{F} \in \Gamma_b \,,
 	\end{equation}
-and likewise for vector-valued functions on the boundary. 
+and likewise for vector-valued functions on the boundary. \todo{jumps and averages}
+	\begin{equation} \label{fem:jumps_avg_id}
+		\jump{uv} = \jump{u}\avg{v} + \avg{u}\jump{v} \,. 
+	\end{equation}
 
 We define the ``broken'' gradient, denoted by $\nablah$, obtained by applying the gradient locally on each element. That is, 
-	\begin{equation} \label{eq:broken_grad}
+	\begin{equation} \label{fem:broken_grad}
 		(\nablah u)|_{K} = \nabla(u|_K) \,, \quad \forall K \in \meshT \,. 
 	\end{equation}
 This distinction is important for the piecewise polynomial spaces discussed in Section \ref{fem_sec:fes}. Finally, the characteristic mesh length, $h$, is computed with 
@@ -390,7 +393,7 @@ This distinction is important for the piecewise polynomial spaces discussed in S
 \begin{figure}
 \centering
 \includegraphics[width=.65\textwidth]{figs/jump_avg.pdf}
-\caption{A depiction of a discontinuous, piecewise quadratic solution across two quadrilateral elements. The normal vector, $\hat{n}$, is defined as pointing from $K_1$ to $K_2$ along the face between $K_1$ and $K_2$.}
+\caption{A depiction of a discontinuous, piecewise quadratic solution across two quadrilateral elements. The normal vector, $\n$, is defined as pointing from $K_1$ to $K_2$ along the face between $K_1$ and $K_2$.}
 \label{fem:jump_avg}
 \end{figure}
 
@@ -405,7 +408,7 @@ Integration over surfaces is performed over the one-dimensional reference elemen
 
 \subsection{The Scalar Case}
 For a scalar function $u : \D \rightarrow \R$, denote by $\hat{u} : \hat{K} \rightarrow \R$ its representation in reference space. The functions $u$ and $\hat{u}$ are related by 
-	\begin{equation} \label{eq:scalar_trans}
+	\begin{equation} \label{fem:scalar_trans}
 		u(\x) = \hat{u}(\T^{-1}(\x)) \,.  	
 	\end{equation}
 Integration over the physical element is then equivalent to 
@@ -413,7 +416,7 @@ Integration over the physical element is then equivalent to
 		\int_K u \ud \x = \int_{\hat{K}} \hat{u}\, J\!\ud\vec{\xi} \,. 
 	\end{equation}
 The gradient of a scalar function transforms as
-	\begin{equation} \label{eq:scalar_trans_grad}
+	\begin{equation} \label{fem:scalar_trans_grad}
 		\nabla u = \mat{F}^{-T} \hnabla \hat{u} \,, 
 	\end{equation}
 where $\mat{F}^{-T}$ is the inverse transpose of the Jacobian matrix. Note that the inverse of the Jacobian matrix represents
@@ -448,7 +451,7 @@ This derivation extends analogously to three dimensions.
 
 \subsection{The Vector Case}
 For vector-valued functions, the basis the vector is defined on must also be considered. The simplest basis is the canonical basis, $\e_i$, corresponding to the $x$ and $y$ axes. In this case, a vector $\vec{v} : \D \rightarrow \R^2$ is 
-	\begin{equation} \label{eq:scalar_copies}
+	\begin{equation} \label{fem:scalar_copies}
 		\vec{v} = v_1 \e_1 + v_2 \e_2 
 	\end{equation}
 and each component transforms independently as $v_i = \hat{v}_i(\T^{-1}(\x))$. Writing
@@ -461,8 +464,8 @@ and each component transforms independently as $v_i = \hat{v}_i(\T^{-1}(\x))$. W
 			(\nabla v_2)^T 
 		\end{bmatrix}		
 	\end{equation}
-then the gradient of a vector defined as in Eq.~\ref{eq:scalar_copies} transforms as 
-	\begin{equation} \label{eq:scalar_copies_grad}
+then the gradient of a vector defined as in Eq.~\ref{fem:scalar_copies} transforms as 
+	\begin{equation} \label{fem:scalar_copies_grad}
 		\nabla\vec{v} = \begin{bmatrix} 
 			(\mat{F}^{-T} \hnabla\hat{v}_1)^T \\
 			(\mat{F}^{-T}\hnabla\hat{v}_2)^T 
@@ -471,7 +474,7 @@ then the gradient of a vector defined as in Eq.~\ref{eq:scalar_copies} transform
 Note that defining a vector in this way does not preserve the normal or tangential components under a rotation. That is, $\vec{v}\cdot\n$ and $\vec{v}\cdot\tang$ are linear combinations of the $v_i$ instead of a single component representing the normal or tangential components, respectively. 
 
 Alternatively, the contravariant Piola transform represents vectors on the so-called tangent basis so that the normal component can be preserved \cite{ciarlet_elasticity,piola_cisc}. Such a transformation is required by the Raviart Thomas space introduced in Section \ref{fem_sec:fes_rt} in order to strongly enforce continuity in the normal component of the current. The contravariant Piola transform is: 
-	\begin{equation} \label{eq:piola}
+	\begin{equation} \label{fem:piola}
 		\vec{v} = \frac{1}{J}\mat{F}\hvec{v}\circ\T^{-1} \,. 
 	\end{equation}
 Here, $\hvec{v} : \hat{K} \rightarrow \R^2$ is a vector in reference space. 
@@ -511,11 +514,11 @@ Figure \ref{fem:piola} depicts an example non-affine mesh transformation and the
 \end{figure}
 
 For a contravariant vector, 
-	\begin{equation} \label{eq:piola_ibp1}
+	\begin{equation} \label{fem:piola_ibp1}
 		\int_K \nabla u \cdot \vec{v} \ud \x = \int_{\hat{K}} \mat{F}^{-T}\hnabla \hat{u} \cdot \frac{1}{J}\mat{F} \hat{v}\, J\!\ud\vec{\xi} = \int_{\hat{K}} \hnabla \hat{u} \cdot \hvec{v} \ud\vec{\xi} \,. 
 	\end{equation}
 The gradient transforms as 
-	\begin{equation} \label{eq:piola_grad}
+	\begin{equation} \label{fem:piola_grad}
 		\nabla\vec{v} = \nabla\paren{\frac{1}{J}\mat{F}\hat{v}\circ\mat{T}^{-1}} = \frac{1}{J}\mat{F}\!\paren{\hnabla\hvec{v} - \hat{\mat{B}}}\!\mat{F}^{-1} 
 	\end{equation}
 where 
@@ -523,14 +526,14 @@ where
 		\hat{\mat{B}} = \frac{1}{J}\hnabla\!\paren{J\mat{F}^{-1}}\!\mat{F}\hvec{v} \,. 
 	\end{equation}
 This result is derived by direct computation in Appendix \ref{chap:grad_piola} along with the details required to implement this transformation using the machinery commonly provided in finite element libraries. It is also shown that $\hmat{B} = 0$ when the mesh transformation is affine and that $\tr(\hat{\mat{B}}) = 0$. This last result is known as the Piola identity \cite{ciarlet_elasticity}. Using the Piola identity, the linearity of the trace, and the invariance of the trace under similarity transformations, the divergence transforms as
-	\begin{equation} \label{eq:piola_div}
+	\begin{equation} \label{fem:piola_div}
 		\nabla\cdot\vec{v} = \tr\paren{\nabla\vec{v}} = \frac{1}{J}\tr\!\paren{\mat{F}\!\paren{\hnabla\hvec{v} - \hat{\mat{B}}}\!\mat{F}^{-1}} = \frac{1}{J}\hnabla\cdot\hvec{v} \,. 
 	\end{equation}
 Thus, 
-	\begin{equation} \label{eq:piola_ibp2}
+	\begin{equation} \label{fem:piola_ibp2}
 		\int_K u\, \nabla\cdot\vec{v} \ud \x = \int_{\hat{K}} \hat{u}\, \hnabla\cdot\hvec{v} \ud\vec{\xi} \,. 
 	\end{equation}
-Combining the results from Eqs.~\ref{eq:piola_ibp1} and \ref{eq:piola_ibp2} yields: 
+Combining the results from Eqs.~\ref{fem:piola_ibp1} and \ref{fem:piola_ibp2} yields: 
 	\begin{equation}
 		\int_{\partial K} u\,\vec{v}\cdot\n \ud s = \int_{\partial\hat{K}} \hat{u}\, \hvec{v}\cdot\hat{\n} \ud \hat{s} \,, 
 	\end{equation}
@@ -541,7 +544,7 @@ In other words, the contravariant Piola transformation preserves the normal comp
 In this section, we define the finite element spaces used to approximate the VEF equations. Finite element spaces are defined on the mesh $\meshT$ or the interior skeleton of the mesh $\Gamma_0$ and consist of an element-local function space and a set of inter-element matching conditions. 
 The inter-element matching conditions enforce various types of continuity of the solution between elements. The combination of a locally smooth function space and suitable matching conditions allows finite element spaces to be discrete subspaces of Sobolev spaces such as $L^2(\D)$, $H^1(\D)$, and $H(\div;\D)$. The following subsections define the element-local function space and matching conditions used for the scalar flux, current, and the interface variable used later in hybridization of the mixed finite element method. 
 
-\subsection{Discontinuous Galerkin}
+\subsection{Discontinuous Galerkin} \label{fem_sec:dg}
 The Discontinuous Galerkin (DG) space is a discrete subspace of $L^2(\D)$, the space of square-integrable functions. In other words, if $u$ is an element of the DG space, 
 	\begin{equation}
 		\int u^2 \ud \x < \infty \,. 
@@ -583,7 +586,7 @@ The vector-valued analog
 	\begin{equation}
 		W_p = \{ \vec{v} : v_1 \in V_p \ \mathrm{and} \ v_2 \in V_p \} 
 	\end{equation}
-uses the scalar continuous finite element space for each component. In this way, $\vec{v} \in W_p \subset \Hone$ and thus $\nabla\vec{v} = \nablah\vec{v} \in [L^2(\D)]^{2\times 2}$. Since each component is defined independently using the scalar space, vectors $\vec{v} \in W_p$ transform according to Eq.~\ref{eq:scalar_copies}. 
+uses the scalar continuous finite element space for each component. In this way, $\vec{v} \in W_p \subset \Hone$ and thus $\nabla\vec{v} = \nablah\vec{v} \in [L^2(\D)]^{2\times 2}$. Since each component is defined independently using the scalar space, vectors $\vec{v} \in W_p$ transform according to Eq.~\ref{fem:scalar_copies}. 
 
 \subsection{Raviart Thomas} \label{fem_sec:fes_rt}
 The Raviart Thomas (RT) space is a discrete subspace of $H(\div;\D)$, the space of vector-valued functions with square-integrable divergence. That is, 
@@ -671,7 +674,7 @@ We now define the degree-$p$ RT space as:
 	\begin{equation}
 		\RT_p = \{ \vec{v} \in H(\div;\D) : \vec{v}|_K \in \mathbb{D}_p(K) \,, \quad \forall K \in \meshT \} \,. 
 	\end{equation}
-Note that since the contravariant Piola transform is used, functions in RT transform according to Eqs.~\ref{eq:piola}, \ref{eq:piola_grad}, and \ref{eq:piola_div}. 
+Note that since the contravariant Piola transform is used, functions in RT transform according to Eqs.~\ref{fem:piola}, \ref{fem:piola_grad}, and \ref{fem:piola_div}. 
 The location of the degrees of freedom for $\RT_1$ are shown on a $3\times 3$ mesh in Fig.~\ref{fem:rtfes}. Continuity in the normal component is enforced by sharing the degrees of freedom corresponding to the normal component on interior faces. 
 From Proposition \ref{prop:div}, $\vec{v} \in \RT_p$ satisfies $\nabla\cdot\vec{v} = \nablah\cdot\vec{v} \in L^2(\D)$. However, the RT space does not have the continuity to allow a square-integrable gradient. In other words, $\nabla\vec{v} \notin [L^2(\D)]^{2\times 2}$ and $\nabla\vec{v} \neq \nablah\vec{v}$. 
 % --- RT FES --- 
