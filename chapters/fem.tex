@@ -79,7 +79,7 @@ along with the fact that $u = 0$ for $\x \in \partial\D$ since $u \in V$.
 Observe that the weak form in Eq.~\ref{fem:rad_weak} has reduced the differentiability requirements of both the solution and the diffusion coefficient. In particular, the test function and solution need only be once differentiable. In addition, there are no longer any differentiability requirements on diffusion coefficient. 
 The weak form expands the space of possible solutions from the space of twice differentiable functions to the space of once differentiable functions. 
 
-\subsection{Sobolev Spaces}
+\subsection{Sobolev Spaces} \label{fem_sec:sobolev}
 A key question is the choice of the space $V$ the weak form is defined over. For the strong form, the spaces $\mathcal{C}^i$ corresponding to functions having $i$ continuous derivatives for $i = 0,1,\ldots$ are a natural choice. However, the integrations used in the weak form require a more nuanced approach (see ``The Lebesgue integral'' from \textcite{reed1981functional}), the goal being to define the largest possible spaces such that the integrals in the weak form remain finite. That is, in the radiation diffusion example, we seek to define the space for $u$ and $\varphi$ such that 
 	\begin{equation} \label{fem:want_finite}
 		\int \nabla u \cdot D\nabla\varphi \ud \x < \infty \,, \quad \int \sigma_a\, u \varphi \ud\x < \infty \,, \quad \int u\,q \ud \x < \infty \,. 
@@ -260,21 +260,33 @@ Interpolation through the Gauss-Lobatto and Gauss-Legendre points both have the 
 	\centering
 	\includegraphics[width=\textwidth]{figs/admissible.pdf}
 	\caption{}
+	\label{fem:admissible}
 \end{subfigure}
 \begin{subfigure}{.45\textwidth}
 	\centering
 	\includegraphics[width=\textwidth]{figs/inadmissible.pdf}
 	\caption{}
+	\label{fem:inadmissible}
 \end{subfigure}
 \caption{Examples of (a) an admissible tesselation and (b) an inadmissible tesselation.}
-\label{fem:admissible}
 \end{figure}
 
-Let $\D \subset \R^{\dim}$ with $\dim = 2,3$ be the domain of the problem. Consider the tesselation 
+Let $\D \subset \R^{\dim}$ with $\dim = 2,3$ be the domain of the problem. The domain is subdivided into a finite number of subsets $K$, called finite elements, such that 
 	\begin{equation}
-		\D = \bigcup_{K \in \meshT} K 
+		\D = \bigcup_{K \in \meshT} K \,, 
 	\end{equation}
-with $K$ an element in the mesh $\meshT$. \todo{restrict to tensor product elements} \todo{requirements of mesh} Each element $K$ is obtained as $K = \T(\hat{K})$ where $\T \in [\Qcal{m}]^{\dim}$ is an invertible, polynomial mapping and $\hat{K} = [0,1]^{\dim}$ is the reference element. The mapping $\T$ is derived from a set of global control points and an element-local nodal basis. Figure \ref{fem:quadmesh} shows an example mesh where the control points labeled 2, 7, and 12 are shared so that the mesh coordinates are continuous across the interface between the two elements. Let $\{\ell_i\}$ denote the nodal basis functions for the space $\Qcal{m}$. On each element, the mapping is then 
+where $\meshT$ denotes a tesselation of the domain called the mesh. 
+In this document, we only consider the use of tensor product elements. That is, in two dimensions each $K$ is a quadrilateral and in three dimensions each $K$ is a hexahedron. The tesselation of the domain satisfies the following properties: 
+	\begin{enumerate}
+		\item each $K$ is a closed set with an interior, denoted $\mathring{K}$, that is non-empty, 
+		\item the elements do not overlap i.e.~for each distinct $K_1,K_2 \in \meshT$, $K_1 \cap K_2 = \emptyset$,
+		\item \label{fem:adjacent_elements}any face of $K_1 \in \meshT$ is either a subset of the boundary of the domain or a face of another $K_2 \in \meshT$.  
+	\end{enumerate}
+An example of an admissible mesh is shown in Fig.~\ref{fem:admissible}. The elements have non-empty interior, do not overlap, and all faces are either a subset of the boundary or a face of another element in the mesh. Figure \ref{fem:inadmissible} shows an inadmissible mesh that violates requirement \ref{fem:adjacent_elements} since there are faces in the mesh that correspond to only a subset of another element's boundary. 
+
+Each element $K$ is obtained as the image of the reference element $\hat{K}$ under an invertible, polynomial mapping $\T : \hat{K} \rightarrow K$ with $\T \in [\Qcal{m}]^{\dim}$. 
+The mapping $\T$ is derived from a set of global control points and the element-local nodal basis for $\Qcal{m}$, denoted $\{\ell_i\}$. Figure \ref{fem:quadmesh} shows an example mesh where the control points labeled 2, 7, and 12 are shared so that the mesh coordinates are continuous across the interface between the two elements. 
+On each element, the mapping is 
 	\begin{equation}
 		\x(\vec{\xi}) = \T(\vec{\xi}) = \sum_i \x_i \ell_i(\vec{\xi}) 
 	\end{equation}
@@ -297,14 +309,39 @@ where $\x \in K$, $\vec{\xi}\in \hat{K}$, and the $\x_i$ are the control points 
 \caption{Depictions of (a) the mesh control points in a quadratic quadrilateral mesh and (b) the reference transformation used to describe the left element of (a).}
 \end{figure}
 
-Letting $\vec{\xi} = \vector{\xi & \eta} \in \hat{K}$ denote the reference coordinates and $\x = \vector{x & y} \in \D$ the physical coordinates such that $\x(\vec{\xi}) = \T(\vec{\xi})$, the Jacobian of the transformation is 
+Let $\vec{\xi} \in \hat{K}$ denote the reference coordinates and $\x \in \D$ the physical coordinates such that $\x = \T(\vec{\xi})$. The Jacobian matrix of the mapping is 
 	\begin{equation}
-		\F = \pderiv{\x}{\vec{\xi}} = \begin{bmatrix} 
+		\F = \pderiv{\T}{\vec{\xi}} \in \R^{\dim\times\dim} \,, 
+	\end{equation}
+with $J = |\F|$ its determinant. 
+In two dimensions, with $\x = \vector{x & y}$ and $\vec{\xi} = \vector{\xi & \eta}$, the Jacobian matrix is written as: 
+	\begin{equation}
+		\F = \begin{bmatrix} 
 			\pderiv{x}{\xi} & \pderiv{x}{\eta} \\ 
 			\pderiv{y}{\xi} & \pderiv{y}{\eta} 
-		\end{bmatrix} \,, 
+		\end{bmatrix} \,.
 	\end{equation}
-with $J = |\F|$ its determinant. The partial derivatives of the mesh transformation are computed by taking derivatives of the nodal basis functions. In other words, 
+By example, the transformation, Jacobian matrix, and determinant for the transformation depicted in Fig.~\ref{fem:trap_trans} are 
+	\begin{equation}
+		\T = \begin{bmatrix} 
+			h \xi + \alpha \eta(2\xi - 1) \\ 
+			h \eta 
+		\end{bmatrix} \,, \quad 
+		\F = \begin{bmatrix} 
+			2 \alpha \eta + h & \alpha(2\xi - 1) \\ 
+			& h 
+		\end{bmatrix} \,, \quad 
+		J = 2 \alpha \eta h + h^2 \,. 
+	\end{equation}
+% --- trapezoidal transformation example --- 
+\begin{figure}
+\centering
+\includegraphics[width=.85\textwidth]{figs/trap_trans.pdf}
+\caption{An example of the mesh transformation associated with a linear quadrilateral element. }
+\label{fem:trap_trans}
+\end{figure}
+
+The partial derivatives of the mesh transformation are computed by taking derivatives of the nodal basis functions. In other words, 
 	\begin{equation}
 		\F = \sum_i \x_{i} \otimes \hnabla \ell_i = \sum_{i} \begin{bmatrix} 
 			x_{i} \pderiv{\ell_i}{\xi} & x_{i} \pderiv{\ell_i}{\eta} \\
@@ -315,9 +352,20 @@ where $\x_{i} = \vector{x_{i} & y_{i}}$ and $\hnabla$ denotes the gradient with 
 
 A mesh transformation is called affine when it can be written as
 	\begin{equation}
-		\T = \mat{A}\vec{\xi} + b 
+		\T = \mat{A}\vec{\xi} + \vec{b}
 	\end{equation}
-where $\mat{A}\in\R^{\dim\times\dim}$ and $b\in\R^{\dim}$ are constant with respect to $\vec{\xi}$. In such case, the Jacobian matrix is $\mat{F} = \mat{A}$ and the Hessian of the transformation, defined as $\frac{\partial^2 \x}{\partial^2 \vec{\xi}}$, is identically zero. Quadrilateral elements obtained by scaling, stretching along the $\xi$ or $\eta$ axes, or rotating the reference element are all affine while general quadrilateral elements, such as trapezoidal elements, and curved elements are not affine. 
+where $\mat{A}\in\R^{\dim\times\dim}$ and $\vec{b}\in\R^{\dim}$ are constant with respect to $\vec{\xi}$. In such case, the Jacobian matrix is $\mat{F} = \mat{A}$ and the Hessian of the transformation, defined as $\frac{\partial^2 \x}{\partial^2 \vec{\xi}}$, is identically zero. Quadrilateral elements obtained by scaling, stretching along the $\xi$ or $\eta$ axes, or rotating the reference element are all affine while general quadrilateral elements, such as trapezoidal elements, and curved elements are not affine. Note that for affine elements, the inverse transformation, denoted $\T^{-1}$, is given by  
+	\begin{equation}
+		\T^{-1}(\x) = \mat{A}^{-1}(\x - \vec{b})
+	\end{equation}
+and is still polynomial. However, for non-affine elements, the inverse transformation is generally not polynomial. For example, the inverse of the transformation shown in Fig.~\ref{fem:trap_trans} is 
+	\begin{equation}
+		\T^{-1}(\x) = \begin{bmatrix} 
+			\frac{h x + \alpha y}{h^2 + 2\alpha y} \\ 
+			y/h 
+		\end{bmatrix} \,,
+	\end{equation}
+which is not polynomial in the first coordinate. 
 
 We define $\Gamma$ as the set of unique faces in the mesh with $\Gamma_0 = \Gamma\setminus \partial\D$ the set of interior faces and $\Gamma_b = \Gamma \cap \partial\D$ the set of boundary faces so that $\Gamma = \Gamma_0 \cup \Gamma_b$. We denote the outward unit normal to element $K$ as $\n_K$. On an interior face $\mathcal{F} \in \Gamma_0$ between elements $K_1$ and $K_2$, we use the convention that $\n$ is the unit vector perpendicular to the shared face $K_1 \cap K_2$ pointing from $K_1$ to $K_2$ (see Fig.~\ref{fem:jump_avg}). On such an interior face, the jump, $\jump{\cdot}$, and average, $\avg{\cdot}$, are defined as 
 	\begin{equation} \label{eq:jump_avg}
@@ -330,11 +378,14 @@ On boundary faces, the jump and average are set to
 	\end{equation}
 and likewise for vector-valued functions on the boundary. 
 
-Finally, we define the ``broken'' gradient, denoted by $\nablah$, obtained by applying the gradient locally on each element. That is, 
+We define the ``broken'' gradient, denoted by $\nablah$, obtained by applying the gradient locally on each element. That is, 
 	\begin{equation} \label{eq:broken_grad}
 		(\nablah u)|_{K} = \nabla(u|_K) \,, \quad \forall K \in \meshT \,. 
 	\end{equation}
-This distinction is important for the piecewise polynomial spaces discussed in Section \ref{fem_sec:fes}. 
+This distinction is important for the piecewise polynomial spaces discussed in Section \ref{fem_sec:fes}. Finally, the characteristic mesh length, $h$, is computed with 
+	\begin{equation}
+		h = \max_{K\in\meshT} \paren{\int_{\hat{K}} J \ud\vec{\xi}}^{1/\dim} \,.
+	\end{equation}
 % --- jumps and averages --- 
 \begin{figure}
 \centering
@@ -348,6 +399,10 @@ In this document, integration over the domain is implicitly computed as the foll
 	\begin{equation}
 		\int_\D \paren{\cdot} \ud \x = \sum_{K\in\meshT} \int_K \paren{\cdot} \ud \x = \sum_{K\in\meshT} \int_{\hat{K}} \paren{\cdot}\,J\!\ud \vec{\xi} \,. 
 	\end{equation}
+In addition, all integrals are implicitly computed using numerical quadrature on the reference element. 
+Integration over surfaces is performed over the one-dimensional reference element using the transformed element of surface area. 
+\todo{introduce}
+
 \subsection{The Scalar Case}
 For a scalar function $u : \D \rightarrow \R$, denote by $\hat{u} : \hat{K} \rightarrow \R$ its representation in reference space. The functions $u$ and $\hat{u}$ are related by 
 	\begin{equation} \label{eq:scalar_trans}
@@ -357,14 +412,39 @@ Integration over the physical element is then equivalent to
 	\begin{equation}
 		\int_K u \ud \x = \int_{\hat{K}} \hat{u}\, J\!\ud\vec{\xi} \,. 
 	\end{equation}
-Using the chain rule, the gradient of a scalar function transforms as 
+The gradient of a scalar function transforms as
 	\begin{equation} \label{eq:scalar_trans_grad}
-		\nabla u = \nabla \hat{u} = \begin{bmatrix} 
-			\pderiv{\hat{u}}{\xi}\pderiv{\xi}{x} + \pderiv{\hat{u}}{\eta}\pderiv{\eta}{x} \\
-			\pderiv{\hat{u}}{\xi}\pderiv{\xi}{y} + \pderiv{\hat{u}}{\eta}\pderiv{\eta}{y} 
-		\end{bmatrix}
-		= \mat{F}^{-T} \hnabla \hat{u} \,. 
+		\nabla u = \mat{F}^{-T} \hnabla \hat{u} \,, 
 	\end{equation}
+where $\mat{F}^{-T}$ is the inverse transpose of the Jacobian matrix. Note that the inverse of the Jacobian matrix represents
+	\begin{equation}
+		\mat{F}^{-1} = \pderiv{\vec{\xi}}{\x} \,, 
+	\end{equation}
+and in two dimensions is given by 
+	\begin{equation}
+		\mat{F}^{-1} = \begin{bmatrix} 
+			\pderiv{\xi}{x} & \pderiv{\xi}{y} \\ 
+			\pderiv{\eta}{x} & \pderiv{\eta}{y} 
+		\end{bmatrix} \,. 
+	\end{equation}
+The transformation of the gradient is derived using the chain rule. Observe that in two dimensions, 
+	\begin{equation}
+	\begin{aligned}
+		\nabla \hat{u} &= \begin{bmatrix} 
+			\pderiv{\hat{u}}{\xi} \pderiv{\xi}{x} + \pderiv{\hat{u}}{\eta}\pderiv{\eta}{x} \\[3pt]
+			\pderiv{\hat{u}}{\xi} \pderiv{\xi}{y} + \pderiv{\hat{u}}{\eta}\pderiv{\eta}{y}
+		\end{bmatrix} \\
+		&= \underbrace{\begin{bmatrix} 
+			\pderiv{\xi}{x} & \pderiv{\eta}{x} \\[3pt]
+			\pderiv{\xi}{y} & \pderiv{\eta}{y} 
+		\end{bmatrix}}_{\mat{F}^{-T}}
+		\underbrace{
+		\begin{bmatrix} 
+			\pderiv{\hat{u}}{\xi} \\[3pt] \pderiv{\hat{u}}{\eta} 
+		\end{bmatrix}}_{\hnabla \hat{u}} \,. 
+	\end{aligned}
+	\end{equation}
+This derivation extends analogously to three dimensions. 
 
 \subsection{The Vector Case}
 For vector-valued functions, the basis the vector is defined on must also be considered. The simplest basis is the canonical basis, $\e_i$, corresponding to the $x$ and $y$ axes. In this case, a vector $\vec{v} : \D \rightarrow \R^2$ is 
@@ -421,13 +501,14 @@ For a contravariant vector, the usual method of selecting a component is now rep
 The cotangent space is associated with vectors normal to the faces. By representing the vector on the tangent space, the contravariant Piola transform allows selection of the component representing the normal component through $\n\cdot\vec{v}$. 
 Note that for non-affine meshes, $\mat{F}$ depends on $\vec{\xi}$ and thus the tangent and cotangent bases also depend on $\vec{\xi}$. 
 
+Figure \ref{fem:piola} depicts an example non-affine mesh transformation and the tangent and cotangent bases evaluated at the point $\vec{\xi} = (0,0)$. Observe that the pairs $(\bvec{t}_1, \bvec{n}_2)$ and $(\bvec{t}_2, \bvec{n}_1)$ are perpendicular. The pairs $(\bvec{t}_1, \bvec{n}_1)$ and $(\bvec{t}_2, \bvec{n}_2)$ do not point in the same direction but their magnitudes and directions balance so that $\bvec{t}_i\cdot \bvec{n}_i = 1$. Thus, the bi-orthogonality condition $\bvec{n}_i\cdot\bvec{t}_j = \delta_{ij}$ is satisfied. In addition, the tangent vectors and cotangent vectors are tangential and normal, respectively, to one of the faces connecting at the point $\vec{\xi} = (0,0)$. 
+% --- piola transform --- 
 \begin{figure}
 	\centering
-	\includegraphics[width=.5\textwidth]{figs/piola.pdf}
+	\includegraphics[width=.85\textwidth]{figs/piola.pdf}
 	\caption{A depiction of the tangent and cotangent bases at the point $\vec{\xi} = (0,0)$ under a non-affine mesh transformation. }
-	\label{fig:piola}
+	\label{fem:piola}
 \end{figure}
-Figure \ref{fem:piola} depicts an example non-affine mesh transformation and the tangent and cotangent bases evaluated at the point $\vec{\xi} = (0,0)$. Observe that the pairs $(\bvec{t}_1, \bvec{n}_2)$ and $(\bvec{t}_2, \bvec{n}_1)$ are perpendicular. The pairs $(\bvec{t}_1, \bvec{n}_1)$ and $(\bvec{t}_2, \bvec{n}_2)$ do not point in the same direction but their magnitudes and directions balance so that $\bvec{t}_i\cdot \bvec{n}_i = 1$. Thus, the bi-orthogonality condition $\bvec{n}_i\cdot\bvec{t}_j = \delta_{ij}$ is satisfied. In addition, the tangent vectors and cotangent vectors are tangential and normal, respectively, to one of the faces connecting at the point $\vec{\xi} = (0,0)$. 
 
 For a contravariant vector, 
 	\begin{equation} \label{eq:piola_ibp1}
@@ -455,16 +536,6 @@ Combining the results from Eqs.~\ref{eq:piola_ibp1} and \ref{eq:piola_ibp2} yiel
 	\end{equation}
 where $\hat{\n}$ is the normal vector in reference space corresponding to the physical space normal $\n$. 
 In other words, the contravariant Piola transformation preserves the normal component. 
-
-In this document, all integrals are implicitly computed using numerical quadrature on the reference element. 
-Integration over surfaces is performed over the one-dimensional reference element using the transformed element of surface area. 
-% --- piola transform --- 
-\begin{figure}
-	\centering
-	\includegraphics[width=.85\textwidth]{figs/piola.pdf}
-	\caption{A depiction of the tangent and cotangent bases at the point $\vec{\xi} = (0,0)$ under a non-affine mesh transformation. }
-	\label{fem:piola}
-\end{figure}
 
 \section{Finite Element Spaces} \label{fem_sec:fes}
 In this section, we define the finite element spaces used to approximate the VEF equations. Finite element spaces are defined on the mesh $\meshT$ or the interior skeleton of the mesh $\Gamma_0$ and consist of an element-local function space and a set of inter-element matching conditions. 
@@ -520,7 +591,7 @@ The Raviart Thomas (RT) space is a discrete subspace of $H(\div;\D)$, the space 
 		H(\div;\D) = \{ \vec{v} \in [L^2(\D)]^2 : \nabla\cdot\vec{v} \in L^2(\D) \} \,. 
 	\end{equation}
 The requirements of a discrete subspace are codified in the following proposition. 
-\begin{prop}[Cf.~\cite{quateroni}, Proposition 3.2.2] \label{prop:div}
+\begin{prop}[Cf.~\textcite{quateroni}, Proposition 3.2.2] \label{prop:div}
 Let $\vec{v} : \D \rightarrow \R^2$ be such that 
 \begin{enumerate}
 	\item $\vec{v}|_K \in \H^1(K)$ for each $K \in \meshT$  
@@ -586,7 +657,7 @@ The nodal basis for $\Qcal{p+1,p} \times \Qcal{p,p+1}$ uses the closed Gauss-Lob
 	\includegraphics[width=\textwidth]{figs/rt2.pdf}
 	\caption{}
 \end{subfigure}
-\caption{The interpolating points used for the nodal basis of the space $\Q_{p+1,p}\times \Q_{p,p+1}$ for (a) $p=0$, (b) $p=1$, and (c) $p=2$. Gauss-Legendre points are used in the tangential direction and Gauss-Lobatto in the normal direction for each component of the vector. Circles denote the degrees of freedom associated with the $\xi$ component and squares the $\eta$ component. }
+\caption{The interpolating points used for the nodal basis of the space $\Qcal{p+1,p}\times \Qcal{p,p+1}$ for (a) $p=0$, (b) $p=1$, and (c) $p=2$. Gauss-Legendre points are used in the tangential direction and Gauss-Lobatto in the normal direction for each component of the vector. Circles denote the degrees of freedom associated with the $\xi$ component and squares the $\eta$ component. }
 \label{fem:rt_local_poly}
 \end{figure}
 
@@ -630,14 +701,39 @@ The degrees of freedom in $\Lambda_1$ are depicted in Fig.~\ref{fem:ifes}. Note 
 \label{fem:ifes}
 \end{figure}
 
-\section{Finite Element Assembly}
+\section{Computational Aspects}
+In the previous section, we defined piecewise polynomial spaces that, through a clever choice of degrees of freedom, are finite-dimensional subspaces of the Sobolev spaces introduced in Section \ref{fem_sec:sobolev}. \todo{in this section, we define computational bases for these spaces...}
+
+\subsection{The Canonical Basis}
+Let $X_h$ denote one of the finite element spaces described in the previous section and $\mathcal{N}_h$ denote the set of nodes associated with $X_h$. For example, if $X_h = V_1$, the linear continuous finite element space, then $\mathcal{N}_h$ is the set of locations, $\x_i$, in the domain corresponding to a vertex in the mesh. A function $u_h \in X_h$ is determined by the values it takes at the nodes in $\mathcal{N}_h$. That is, $u_h \in X_h$ is determined by the set 
+	\begin{equation}
+		\Sigma_h = \{ u_h(\x_i)\,, \quad \forall \x_i \in \mathcal{N}_h\} \,, 
+	\end{equation}
+called the set of degrees of freedom for the space $X_h$. Defining functions $b_i$ that satisfy 
+	\begin{equation}
+		b_i \in X_h \,, \quad b_i(\x_j) = \delta_{ij}\,, 1 \leq i,j \leq \dim(X_h) \,, 
+	\end{equation}
+it is seen that $\{b_i\}$ forms a basis for $X_h$. The $b_i$ are referred to as basis functions. A selection of basis functions for $V_1$ and $V_2$ in one dimensions are depicted in Fig.~\ref{fem:fe_support_1d}. Observe that each $b_i$ is one at $x_i$ and zero for each $x_j$ where $i\neq j$ and that each basis function has a localized support. That is, the basis functions associated with the boundary of the domain are non-zero only on a single element. This is also true for the ``bubble'' basis functions corresponding to a node that is on the interior of an element (e.q.~$b_8$ in the lower diagram). Basis functions associated with a node shared by multiple elements are non-zero only those elements. This is demonstrated by $b_4$ and $b_7$ in the upper and lower diagrams, respectively. Figure \ref{fem:fe_support} shows a selection of basis functions for $V_1$ in two dimensions. Again, the basis functions are non-zero only in the elements that share a given node. This property of local support was constructed by design to to keep the resulting algebraic system as computationally manageable and memory efficient as possible. 
+% --- 1D support diagram --- 
+\begin{figure}
+\centering
+\includegraphics[width=.85\textwidth]{figs/fe_support_1d.pdf}
+\caption{A selection of the global basis functions for a linear (upper), quadratic (middle), and cubic (lower) continuous finite element space in one dimension. The basis functions are zero outside of their local support. }
+\label{fem:fe_support_1d}
+\end{figure}
+
 % --- fe support diagram --- 
 \begin{figure}
 \centering
 \includegraphics[width=.65\textwidth]{figs/fe_support.pdf}
-\caption{A depiction of a mesh of elements and a single basis function. Since the basis functions in the finite element method have local support, each basis function is non-zero only on the elements neighboring the shared node. }
+\caption{A selection of global basis functions for a linear continuous finite element space in two dimensions. The basis functions are non-zero only the finite number of elements that share a node. }
 \label{fem:fe_support}
 \end{figure}
+
+\todo{fix typos}
+\todo{represent as dot product}
+
+\subsection{Finite Element Assembly}
 
 \section{Iterative Solution Methods for Linear Systems}
 \end{document}
