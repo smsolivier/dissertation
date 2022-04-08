@@ -3,8 +3,106 @@
 
 \begin{document}
 \chapter{Transport Discretization}
+This chapter presents the \gls{sn} and \gls{dg} discretization for the Boltzmann transport equation. We consider the steady-state, mono-energetic transport problem with isotropic scattering given by: 
+	\begin{subequations}
+	\begin{equation}
+		\Omegahat\cdot\nabla\psi + \sigma_t \psi = \frac{\sigma_s}{4\pi}\int \psi \ud \Omega' + q \,, \quad \x \in \D \,,
+	\end{equation}
+	\begin{equation}
+		\psi(\x,\Omegahat) = \bar{\psi}(\x,\Omegahat) \,, \quad \x \in \partial\D \ \mathrm{and} \ \Omegahat\cdot\n < 0 \,, 
+	\end{equation}
+	\end{subequations}
+where $\psi(\x,\Omegahat)$ is the angular flux, $\D$ the domain of the problem with $\partial\D$ its boundary, $\sigma_t(\x)$ and $\sigma_s(\x)$ the total and scattering macroscopic cross sections, respectively, $q(\x,\Omegahat)$ the fixed-source, and $\bar{\psi}(\x,\Omegahat)$ the inflow boundary function. 
 
-\section{Discrete Ordinates and Discontinuous Galerkin}
+\section{Discrete Ordinates}
+The \gls{sn} angular model collocates the transport equation at a set of discrete angles, $\Omegahat_d$, and integration is numerically approximated using a suitable angular quadrature rule $\{\Omegahat_d,w_d\}_{d=1}^{N_\Omega}$ on the unit sphere. The discrete-in-angle transport equation 
+	\begin{subequations}
+	\begin{equation}
+		\Omegahat_d \cdot\nabla\psi_d + \sigma_t\psi_d = \frac{\sigma_s}{4\pi} \sum_{d'=1}^{N_\Omega} w_{d'} \psi_{d'} + q_d \,, \quad \x \in \D \,,
+	\end{equation}
+	\begin{equation}
+		\psi_d(\x) = \bar{\psi}(\x,\Omegahat_d) \,, \quad \x \in \partial\D \ \mathrm{and} \ \Omegahat_d\cdot\n < 0 \,,
+	\end{equation}
+	\end{subequations}
+where $d \in [1,N_\Omega]$, $\psi_d(\x) = \psi(\x,\Omegahat_d)$ and $q_d(\x) = q(\x,\Omegahat_d)$ are the angular flux and fixed-source of particles traveling in the discrete direction $\Omegahat_d$, respectively. Figure \ref{sn:level_sym} shows an example of an octant of the Level Symmetric $S_6$ angular quadrature rule. A key property of \gls{sn} is that the angles are only coupled in the scattering term. That is, if the scattering source were known each $\psi_d(\x)$ could be solved for independently. 
+% --- level symmetric octant --- 
+\begin{figure}
+\centering
+\includegraphics[width=.65\textwidth]{figs/level_sym.pdf}
+\caption{The positive octant for the level symmetric $S_6$ angular quadrature rule. }
+\label{sn:level_sym}
+\end{figure}
+
+\section{Discontinuous Galerkin}
+We now apply a \gls{dg} discretization to the \gls{sn} transport equations. We derive a discretization for each angle independently by approximating each $\psi_d$ in the degree-$p$ DG space $Y_p$ introduced in Section \ref{fem_sec:dg}. The weak form is first derived on each element $K$. A global approximation is found by defining the upwind numerical flux that couples adjacent elements based on the direction of $\Omegahat_d$. We delay discussion of the computation of the scattering source until Section \ref{sn_sec:vef} and assume for the moment that the scattering source is included in the fixed-source $q$. 
+
+% --- upwind diagram --- 
+\begin{figure}
+\centering
+\includegraphics[width=.65\textwidth]{figs/upwind.pdf}
+\caption{A depiction of a grouping of mesh elements where, due to the direction of $\Omegahat$, the element $K_1$ is upwind of $K_2$.}
+\label{sn:upwind}
+\end{figure}
+The weak form on each element is: find $\psi_d \in Y_p$ such that for all $K \in \meshT$: 
+	\begin{equation}
+		\int_{\partial K} \Omegahat_d \cdot\n\, u \widehat{\psi}_d \ud s - \int_K \Omegahat_d\cdot\nabla u \, \psi_d \ud \x + \int_K \sigma_t\, u\psi_d \ud \x = \int_K u\, q_d \ud \x \,, 
+	\end{equation}
+where the numerical flux $\widehat{\psi}_d$ is either an approximation of $\psi_d$ on interior mesh interfaces or given by the inflow boundary function $\bar{\psi}$ on an inflow boundary. We use the upwind numerical flux that defines the incoming angular flux as the outflow from the upwind element. On a face $\mathcal{F}$ between elements $K_1$ and $K_2$ with normal pointing from $K_1$ to $K_2$ (see Fig.~\ref{sn:upwind}), the upwind numerical flux is defined as 
+	\begin{equation} \label{sn:upwind}
+		\widehat{\psi}_d = \begin{cases}
+			\psi_{d,1} \,, & \Omegahat_d\cdot\n > 0 \\
+			\psi_{d,2} \,, & \Omegahat_d\cdot\n < 0 
+		\end{cases} \,, \quad \forall \mathcal{F} \in \Gamma_0 \,, 
+	\end{equation}
+where $\psi_{d,i} = \psi_d|_{K_i}$. For boundary faces, we set 
+	\begin{equation} \label{sn:upwind_bdr}
+		\widehat{\psi}_d(\x) = \begin{cases}
+			\bar{\psi}(\x,\Omegahat_d) \,, & \Omegahat\cdot\n < 0 \\
+			\psi_d(\x) \,, & \Omegahat\cdot\n > 0 
+		\end{cases} \,, \quad \forall \mathcal{F} \in \Gamma_b \,. 
+	\end{equation}
+Note that for $\mathcal{F} \in \Gamma_b$, we use the convention that $\n$ is the outward unit normal. Thus, Eq.~\ref{sn:upwind_bdr} applies the inflow boundary condition when $\Omegahat_d\cdot\n<0$. Observe that the conditions in Eqs.~\ref{sn:upwind} and \ref{sn:upwind_bdr} can equivalently be written using the switch functions: 
+	\begin{equation}
+		\Omegahat\cdot\n\,\widehat{\psi}_d = \begin{cases}
+			\frac{1}{2}\paren{\Omegahat\cdot\n + |\Omegahat\cdot\n|}\!\psi_{d,1} + \frac{1}{2}(\Omegahat\cdot\n - |\Omegahat\cdot\n|)\psi_{d,2} \,, & \mathcal{F} \in \Gamma_0 \\ 
+			\frac{1}{2}(\Omegahat\cdot\n + |\Omegahat\cdot\n|)\psi_{d} + \frac{1}{2}(\Omegahat\cdot\n - |\Omegahat\cdot\n|)\bar{\psi}(\x,\Omegahat_d) \,, & \mathcal{F} \in \Gamma_b 
+		\end{cases} \,, 
+	\end{equation}
+since when $\Omegahat\cdot\n>0$, $\frac{1}{2}(\Omegahat\cdot\n + |\Omegahat\cdot\n|) = \Omegahat\cdot\n$ and $\frac{1}{2}(\Omegahat\cdot\n - |\Omegahat\cdot\n|) = 0$ with the opposite holding when $\Omegahat\cdot\n<0$. Using the definitions of the jump and average in Eq.~\ref{fem:jump_avg}, the switch functions can be rewritten as 
+	\begin{equation}
+		\Omegahat\cdot\n\,\widehat{\psi}_d = 
+			\Omegahat\cdot\n\avg{\psi_d} + \frac{1}{2}|\Omegahat\cdot\n|\jump{\psi_d} \,, \quad \mathcal{F} \in \Gamma_0 
+	\end{equation}
+with the boundary case left unchanged. Note that $\widehat{\psi}_d$ is single-valued on all faces in the mesh. Thus, the jumps and averages identity (Eq.~\ref{fem:jumps_avg_id}) simplifies to 
+	\begin{equation}
+		\jump{u\widehat{\psi}_d} = \jump{u} \widehat{\psi}_d \,. 
+	\end{equation}
+
+Using the upwind numerical flux and summing over all elements yields the global weak form: find $\psi_d \in Y_p$ such that 
+	\begin{multline}
+		\frac{1}{2}\int_{\Gamma_b} u\!\paren{\Omegahat_d\cdot\n + |\Omegahat_d\cdot\n|}\psi_d \ud s + \int_{\Gamma_0} \jump{u}\!\paren{\Omegahat_d\cdot\n\avg{\psi_d} + \frac{1}{2}|\Omegahat_d\cdot\n|\jump{\psi_d}} \ud s - \int \Omegahat_d\cdot\nablah u \, \psi_d \ud \x \\+ \int \sigma_t\, u \psi_d \ud \x = \int u\,q_d \ud \x - \frac{1}{2}\int_{\Gamma_b} u\!\paren{\Omegahat_d\cdot\n - |\Omegahat_d\cdot\n|}\bar{\psi}(\x,\Omegahat_d) \ud s \,, \quad \forall u \in Y_p \,,
+	\end{multline}
+where $\nablah$ denotes the broken gradient defined in Eq.~\ref{fem:broken_grad}. Defining the bilinear forms 
+	\begin{subequations}
+	\begin{equation}
+		\underline{u}^T\mat{M}_t \underline{\psi}_d = \int \sigma_t\, u\psi_d \ud \x \,,
+	\end{equation}
+	\begin{equation}
+		\underline{u}^T \mat{G} \underline{\psi}_d = -\int \Omegahat\cdot\nabla u \, \psi_d \ud \x \,,
+	\end{equation}
+	\begin{equation}
+		\underline{u}^T \mat{F} \underline{\psi}_d = \frac{1}{2}\int_{\Gamma_b} u\!\paren{\Omegahat_d\cdot\n + |\Omegahat_d\cdot\n|}\psi_d \ud s + \int_{\Gamma_0} \jump{u}\!\paren{\Omegahat_d\cdot\n\avg{\psi_d} + \frac{1}{2}|\Omegahat_d\cdot\n|\jump{\psi_d}} \ud s \,,
+	\end{equation}
+	\end{subequations}
+and the linear form 
+	\begin{equation}
+		\underline{u}^T \underline{b} = \int u\,q_d \ud \x - \frac{1}{2}\int_{\Gamma_b} u\!\paren{\Omegahat_d\cdot\n - |\Omegahat_d\cdot\n|}\bar{\psi}(\x,\Omegahat_d) \ud s \,, 
+	\end{equation}
+the discrete transport system is: 
+	\begin{equation}
+		\paren{\mat{F} + \mat{G} + \mat{M}_t}\underline{\psi}_d = \underline{b} \,, \quad 1 \leq d \leq N_{\Omega} \,. 
+	\end{equation}
+Since the space $Y_p$ does not share degrees of freedom across interior element interfaces, the matrices $\mat{G}$ and $\mat{M}_t$ are block diagonal by element. However, due to the coupling between elements in the numerical flux, $\mat{F}$ has additional couplings. 
 
 \section{The Transport Sweep}
 % --- sweep plot --- 
@@ -27,5 +125,7 @@
 \section{Discrete VEF Data}
 
 \section{Positivity Preserving Flux Fixups}
+
+\section{Connection to VEF Algorithm} \label{sn_sec:vef}
 
 \end{document}

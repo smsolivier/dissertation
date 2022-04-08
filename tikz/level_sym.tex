@@ -1,0 +1,73 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+
+\begin{document}
+\tdplotsetmaincoords{60}{115}
+\begin{tikzpicture}[scale=8,tdplot_main_coords, >=stealth]
+\Large
+\pgfmathsetmacro{\rvec}{.8}
+\pgfmathsetmacro{\phivec}{40}
+\pgfmathsetmacro{\thetavec}{50}
+\pgfmathsetmacro{\omegavec}{60}
+
+\coordinate (O) at (0,0,0);
+\draw[thick,->] (0,0,0) -- (1.1,0,0) node at +(.075,0,0) {$\mu$};
+\draw[thick,->] (0,0,0) -- (0,1.1,0) node at +(0,.05,0) {$\eta$};
+\draw[thick,->] (0,0,0) -- (0,0,1.1) node at +(0,0,.075) {$\xi$};
+
+\tdplotdrawarc[dashed]{(0,0,0)}{1}{0}{90}{anchor=north west}{}
+%
+\tdplotsetthetaplanecoords{0}
+\tdplotsetrotatedcoords{270}{270}{0}
+\tdplotsetrotatedcoordsorigin{(O)}
+\tdplotdrawarc[tdplot_rotated_coords,dashed]{(0,0,0)}{1}{0}{90}{anchor=south west}{}
+%
+\tdplotsetrotatedcoords{0}{270}{0}
+\tdplotsetrotatedcoordsorigin{(O)}
+\tdplotdrawarc[tdplot_rotated_coords,dashed]{(0,0,0)}{1}{0}{90}{anchor=west}{}
+
+% constant \xi
+\tdplotsetrotatedcoords{0}{0}{0}
+\tdplotsetrotatedcoordsorigin{(O)}
+\tdplotdrawarc[tdplot_rotated_coords,dashed]{(0,0,0.266)}{0.964}{0}{90}{anchor=east}{}
+\tdplotsetrotatedcoords{0}{0}{0}
+\tdplotsetrotatedcoordsorigin{(O)}
+\tdplotdrawarc[tdplot_rotated_coords,dashed]{(0,0,0.6815)}{0.7318}{0}{90}{anchor=west}{}
+\tdplotsetrotatedcoords{0}{0}{0}
+\tdplotsetrotatedcoordsorigin{(O)}
+\tdplotdrawarc[tdplot_rotated_coords,dashed]{(0,0,0.926)}{0.3775}{0}{90}{anchor=west}{}
+
+% constant \mu
+\tdplotsetrotatedcoords{0}{90}{90}
+\tdplotsetrotatedcoordsorigin{(O)}
+\tdplotdrawarc[tdplot_rotated_coords,dashed]{(0,0,0.266)}{0.964}{0}{90}{anchor=east}{}
+\tdplotsetrotatedcoords{0}{90}{90}
+\tdplotsetrotatedcoordsorigin{(O)}
+\tdplotdrawarc[tdplot_rotated_coords,dashed]{(0,0,0.6815)}{0.7318}{0}{90}{anchor=west}{}
+\tdplotsetrotatedcoords{0}{90}{90}
+\tdplotsetrotatedcoordsorigin{(O)}
+\tdplotdrawarc[tdplot_rotated_coords,dashed]{(0,0,0.926)}{0.3775}{0}{90}{anchor=west}{}
+
+% constant \eta
+\tdplotsetrotatedcoords{270}{270}{0}
+\tdplotsetrotatedcoordsorigin{(O)}
+\tdplotdrawarc[tdplot_rotated_coords,dashed]{(0,0,0.266)}{0.964}{0}{90}{anchor=east}{}
+\tdplotsetrotatedcoords{270}{270}{0}
+\tdplotsetrotatedcoordsorigin{(O)}
+\tdplotdrawarc[tdplot_rotated_coords,dashed]{(0,0,0.6815)}{0.7318}{0}{90}{anchor=west}{}
+\tdplotsetrotatedcoords{270}{270}{0}
+\tdplotsetrotatedcoordsorigin{(O)}
+\tdplotdrawarc[tdplot_rotated_coords,dashed]{(0,0,0.926)}{0.3775}{0}{90}{anchor=west}{}
+
+% discrete ordinate nodes
+\node[circle,draw,fill] at (0.2666,0.2666,0.92618){};
+\node[circle,draw,fill] at (0.2666,0.6815,0.6815){};
+\node[circle,draw,fill] at (0.2666,0.9262,0.2666){};
+\node[circle,draw,fill] at (0.6815,0.2666,0.6815){};
+\node[circle,draw,fill] at (0.6815,0.6815,0.2666){};
+\node[circle,draw,fill] at (0.9262,0.2666,0.2666){};
+
+\end{tikzpicture}
+\end{document}
