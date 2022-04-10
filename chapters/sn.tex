@@ -41,13 +41,13 @@ We now apply a \gls{dg} discretization to the \gls{sn} transport equations. We d
 \centering
 \includegraphics[width=.65\textwidth]{figs/upwind.pdf}
 \caption{A depiction of a grouping of mesh elements where, due to the direction of $\Omegahat$, the element $K_1$ is upwind of $K_2$.}
-\label{sn:upwind}
+\label{sn:upwind_diag}
 \end{figure}
 The weak form on each element is: find $\psi_d \in Y_p$ such that for all $K \in \meshT$: 
 	\begin{equation}
 		\int_{\partial K} \Omegahat_d \cdot\n\, u \widehat{\psi}_d \ud s - \int_K \Omegahat_d\cdot\nabla u \, \psi_d \ud \x + \int_K \sigma_t\, u\psi_d \ud \x = \int_K u\, q_d \ud \x \,, 
 	\end{equation}
-where the numerical flux $\widehat{\psi}_d$ is either an approximation of $\psi_d$ on interior mesh interfaces or given by the inflow boundary function $\bar{\psi}$ on an inflow boundary. We use the upwind numerical flux that defines the incoming angular flux as the outflow from the upwind element. On a face $\mathcal{F}$ between elements $K_1$ and $K_2$ with normal pointing from $K_1$ to $K_2$ (see Fig.~\ref{sn:upwind}), the upwind numerical flux is defined as 
+where the numerical flux $\widehat{\psi}_d$ is either an approximation of $\psi_d$ on interior mesh interfaces or given by the inflow boundary function $\bar{\psi}$ on an inflow boundary. We use the upwind numerical flux that defines the incoming angular flux as the outflow from the upwind element. On a face $\mathcal{F}$ between elements $K_1$ and $K_2$ with normal pointing from $K_1$ to $K_2$ (see Fig.~\ref{sn:upwind_diag}), the upwind numerical flux is defined as 
 	\begin{equation} \label{sn:upwind}
 		\widehat{\psi}_d = \begin{cases}
 			\psi_{d,1} \,, & \Omegahat_d\cdot\n > 0 \\
@@ -103,6 +103,14 @@ the discrete transport system is:
 		\paren{\mat{F} + \mat{G} + \mat{M}_t}\underline{\psi}_d = \underline{b} \,, \quad 1 \leq d \leq N_{\Omega} \,. 
 	\end{equation}
 Since the space $Y_p$ does not share degrees of freedom across interior element interfaces, the matrices $\mat{G}$ and $\mat{M}_t$ are block diagonal by element. However, due to the coupling between elements in the numerical flux, $\mat{F}$ has additional couplings. 
+
+% --- reentrant plot --- 
+\begin{figure}
+\centering
+\includegraphics[width=.65\textwidth]{figs/reentrant.pdf}
+\caption{A second-order curved mesh and an example direction $\Omegahat$. The element $K_1$ has a concave face that is shared with element $K_3$. For the direction shown by $\Omegahat$, $K_1$ is upwind of itself. This means that $\Omegahat\cdot\n$ changes sign along the face $\mathcal{F} = K_1 \cap K_3$. }
+\label{sn:reentrant_diag}
+\end{figure}
 
 \section{The Transport Sweep}
 % --- sweep plot --- 

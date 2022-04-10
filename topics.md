@@ -117,6 +117,9 @@
 * effect of S2
 * discrete algorithm (define scattering mass matrix)
 * SI as Richardson via sparsity plot 
+* lagging on curved meshes 
+* computing face matrices on reentrant faces 
+* need for HO?
 
 # DGVEF 
 * adaption of unified to vef 
