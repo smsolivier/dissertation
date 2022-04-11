@@ -64,7 +64,7 @@ for e in range(mesh.Ne):
 	for i in range(len(xi)):
 		x[i,:] = trans.Transform(np.array([xi[i],1]))
 	plt.plot(x[:,0], x[:,1], 'k')
-plt.annotate(r'$\boldsymbol{\mathrm{\Omega}}$', xy=(.025,.55), xytext=(.45,.65), xycoords='data', textcoords='data',
+plt.annotate(r'$\boldsymbol{\mathrm{\Omega}}$', xy=(.015,.55), xytext=(.475,.65), xycoords='data', textcoords='data',
 	arrowprops=dict(facecolor='black', arrowstyle='<|-', lw=1.5), fontsize=20)
 plt.axis('off')
 if (oc.Good()):
