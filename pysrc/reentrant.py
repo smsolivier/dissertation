@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from OutputCycler import * 
 from trans2d import * 
+import cycler 
 
 oc = OutputCycler()
 
@@ -49,7 +50,7 @@ plt.figure()
 for e in range(mesh.Ne):
 	trans = mesh.trans[e]
 	c = trans.Centroid()
-	plt.annotate('$K_' + str(e+1) + '$', xy=(c[0],c[1]), fontsize=16, 
+	plt.annotate('$K_' + str(e+1) + '$', xy=(c[0],c[1]), fontsize=20, 
 		horizontalalignment='center', verticalalignment='center')
 	xi = np.linspace(-1,1,100)
 	x = np.zeros((len(xi), 2))
@@ -80,7 +81,9 @@ if (oc.Good()):
 plt.figure()
 trans = mesh.trans[2] 
 c = trans.Centroid()
-plt.annotate('$K_' + str(trans.ElNo+1) + '$', xy=(c[0],c[1]), fontsize=16, 
+plt.annotate(r'$\boldsymbol{\mathrm{\Omega}}$', xy=start, xytext=end, xycoords='data', textcoords='data',
+	arrowprops=dict(facecolor='black', arrowstyle='<|-', lw=1.5), fontsize=20, zorder=0)
+plt.annotate('$K_' + str(trans.ElNo+1) + '$', xy=(c[0],c[1]), fontsize=20, 
 	horizontalalignment='center', verticalalignment='center')
 xi = np.linspace(-1,1,100)
 x = np.zeros((len(xi), 2))
@@ -97,14 +100,33 @@ for i in range(len(xi)):
 	x[i,:] = trans.Transform(np.array([xi[i],1]))
 plt.plot(x[:,0], x[:,1], 'k')
 face = FaceTrans(trans.box[:(p+1)])
+
+# root find Omega.nor = 0 with Newton
+sw = 0 
+OmegaR = np.array([Omega[1], -Omega[0]])
+for i in range(25):
+	H = face.H(sw) 
+	nor = face.Normal(sw) 
+	sw -= 1./OmegaR@H*(Omega@nor)
+
 xi = np.linspace(-1,1,13)
-for i in range(len(xi)):
-	X = face.Transform(xi[i])
-	nor = face.Normal(xi[i]) 
-	plt.quiver(X[0], X[1], nor[0], nor[1], clip_on=False)
-plt.annotate(r'$\boldsymbol{\mathrm{\Omega}}$', xy=start, xytext=end, xycoords='data', textcoords='data',
-	arrowprops=dict(facecolor='black', arrowstyle='<|-', lw=1.5), fontsize=20)
+xi1 = xi[np.argwhere(xi>sw)[:,0]]
+xi2 = xi[np.argwhere(xi<=sw)[:,0]]
+group = [{'xi': xi1, 'label': r'$\boldsymbol{\mathrm{\Omega}}\cdot \boldsymbol{\mathrm{n}} > 0$', 'color': '#1f77b4'},
+	{'xi': xi2, 'label': r'$\boldsymbol{\mathrm{\Omega}}\cdot \boldsymbol{\mathrm{n}} < 0$', 'color': '#ff7f0e'}]
+for g in group:
+	xi = g['xi']
+	Xs = np.zeros((len(xi), 2))
+	nors = np.zeros((len(xi), 2))
+	for i in range(len(xi)):
+		X = face.Transform(xi[i])
+		nor = face.Normal(xi[i]) 
+		Xs[i,:] = X 
+		nors[i,:] = nor/np.linalg.norm(nor)
+	plt.quiver(Xs[:,0], Xs[:,1], nors[:,0], nors[:,1], clip_on=True, label=g['label'], color=g['color'])
 plt.axis('off')
+plt.ylim(.4,1.05)
+plt.legend(bbox_to_anchor=(.7,0), loc='lower left')
 if (oc.Good()):
 	plt.savefig(oc.Get())
 

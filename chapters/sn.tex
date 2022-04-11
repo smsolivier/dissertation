@@ -104,23 +104,25 @@ the discrete transport system is:
 	\end{equation}
 Since the space $Y_p$ does not share degrees of freedom across interior element interfaces, the matrices $\mat{G}$ and $\mat{M}_t$ are block diagonal by element. However, due to the coupling between elements in the numerical flux, $\mat{F}$ has additional couplings. 
 
-% --- reentrant plot --- 
+% --- reentrant diagram --- 
 \begin{figure}
 \centering
-\begin{subfigure}{.45\textwidth}
-	\centering
-	\includegraphics[width=\textwidth]{figs/reentrant.pdf}
-	\caption{}	
-\end{subfigure}
-\foreach \f in {1,...,4}{
-	\begin{subfigure}{.45\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{figs/reentrant_\f.pdf}
-		\caption{}	
-	\end{subfigure}	
-}
-\caption{(a) a mesh of four cubic elements. The face $\mathcal{F} = K_1 \cap K_3$ is curved such that $K_3$ is upwind of itself in the example direction, $\Omegahat$. This means particles traveling in the direction $\Omegahat$ originating in $K_3$ can exit into $K_1$ and return back into $K_3$. Mathematically, this corresponds to $\Omegahat\cdot\n$ changing sign along $\mathcal{F}$. (b) shows $K_3$ and the outward normal vectors along $\mathcal{F}$. Letting $\xi \in [0,1]$ be the reference coordinate corresponding to $\mathcal{F}$, (c)--(e) plot $\Omegahat\cdot\n$ and the upwind/downwind parts of $\Omegahat\cdot\n$, respectively. Since $\Omegahat\cdot\n$ changes sign, the upwind and downwind parts of $\Omegahat\cdot\n$ are discontinuous. }
+\includegraphics[width=.65\textwidth]{figs/reentrant.pdf}
+\caption{A mesh of four cubic elements. The face $\mathcal{F} = K_1 \cap K_3$ is curved such that $K_3$ has a concave face. For the direction $\Omegahat$, this means particles can originate in $K_3$, exit into $K_1$, and then reenter $K_3$. Note that $\mathcal{F} = K_2 \cap K_4$ is also reentrant in the direction $\Omegahat$.}
 \label{sn:reentrant_diag}
+\end{figure}
+
+% --- companion to reentrant diagram ---
+\begin{figure}
+\foreach \f in {1,...,4}{
+	\begin{subfigure}{.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{{figs/reentrant_\f.pdf}}
+		\caption{}
+	\end{subfigure}
+}
+\caption{(a) a plot of $K_3$ from Fig.~\ref{sn:reentrant_diag} showing the normal vectors along the concave face along the bottom of $K_3$. For the depicted direction $\Omegahat$, $\Omegahat\cdot\n$ changes sign along the face as shown by the changing colors of the normal vectors. (b) plots $\Omegahat\cdot\n$ as a function of the reference coordinate, $\xi \in [0,1]$, corresponding to the bottom face of $K_3$. (c) and (d) plot the upwind and downwind parts of $\Omegahat\cdot\n$, respectively. Observe that the upwind and downwind parts have discontinuous derivatives.}
+\label{sn:reentrant_plots}
 \end{figure}
 
 \section{The Transport Sweep}
