@@ -8,7 +8,7 @@ from trans2d import *
 oc = OutputCycler()
 
 N = 2
-p = 2
+p = 3
 x,y = np.meshgrid(np.linspace(0,1,N*p+1), np.linspace(0,1,N*p+1))
 x = x.flatten()
 y = y.flatten()
@@ -45,12 +45,13 @@ for i in range(N):
 				ele[e,l+k*(p+1)] = base + (N*p+1)*k + l
 
 mesh = AbstractMesh(nodes, ele, p)
+plt.figure()
 for e in range(mesh.Ne):
 	trans = mesh.trans[e]
 	c = trans.Centroid()
 	plt.annotate('$K_' + str(e+1) + '$', xy=(c[0],c[1]), fontsize=16, 
 		horizontalalignment='center', verticalalignment='center')
-	xi = np.linspace(-1,1)
+	xi = np.linspace(-1,1,100)
 	x = np.zeros((len(xi), 2))
 	for i in range(len(xi)):
 		x[i,:] = trans.Transform(np.array([-1,xi[i]]))
@@ -64,9 +65,79 @@ for e in range(mesh.Ne):
 	for i in range(len(xi)):
 		x[i,:] = trans.Transform(np.array([xi[i],1]))
 	plt.plot(x[:,0], x[:,1], 'k')
-plt.annotate(r'$\boldsymbol{\mathrm{\Omega}}$', xy=(.015,.55), xytext=(.475,.65), xycoords='data', textcoords='data',
+start = (.015,.575)
+end = (.45,.625)
+Omega = np.zeros(2)
+Omega[0] = end[0] - start[0] 
+Omega[1] = end[1] - start[1] 
+Omega /= np.linalg.norm(Omega) 
+plt.annotate(r'$\boldsymbol{\mathrm{\Omega}}$', xy=start, xytext=end, xycoords='data', textcoords='data',
 	arrowprops=dict(facecolor='black', arrowstyle='<|-', lw=1.5), fontsize=20)
 plt.axis('off')
+if (oc.Good()):
+	plt.savefig(oc.Get())
+
+plt.figure()
+trans = mesh.trans[2] 
+c = trans.Centroid()
+plt.annotate('$K_' + str(trans.ElNo+1) + '$', xy=(c[0],c[1]), fontsize=16, 
+	horizontalalignment='center', verticalalignment='center')
+xi = np.linspace(-1,1,100)
+x = np.zeros((len(xi), 2))
+for i in range(len(xi)):
+	x[i,:] = trans.Transform(np.array([-1,xi[i]]))
+plt.plot(x[:,0], x[:,1], 'k')
+for i in range(len(xi)):
+	x[i,:] = trans.Transform(np.array([1,xi[i]]))
+plt.plot(x[:,0], x[:,1], 'k')
+for i in range(len(xi)):
+	x[i,:] = trans.Transform(np.array([xi[i],-1]))
+plt.plot(x[:,0], x[:,1], 'k')
+for i in range(len(xi)):
+	x[i,:] = trans.Transform(np.array([xi[i],1]))
+plt.plot(x[:,0], x[:,1], 'k')
+face = FaceTrans(trans.box[:(p+1)])
+xi = np.linspace(-1,1,13)
+for i in range(len(xi)):
+	X = face.Transform(xi[i])
+	nor = face.Normal(xi[i]) 
+	plt.quiver(X[0], X[1], nor[0], nor[1], clip_on=False)
+plt.annotate(r'$\boldsymbol{\mathrm{\Omega}}$', xy=start, xytext=end, xycoords='data', textcoords='data',
+	arrowprops=dict(facecolor='black', arrowstyle='<|-', lw=1.5), fontsize=20)
+plt.axis('off')
+if (oc.Good()):
+	plt.savefig(oc.Get())
+
+xi = np.linspace(-1,1,100)
+dot = np.zeros(len(xi))
+upw = np.zeros(len(xi))
+dnw = np.zeros(len(xi))
+for i in range(len(xi)):
+	nor = face.Normal(xi[i])
+	dot[i] = np.dot(Omega, nor)
+	upw[i] = .5*(dot[i] + abs(dot[i]))
+	dnw[i] = .5*(dot[i] - abs(dot[i]))
+mx = np.max(dot)
+mn = np.min(dot) 
+plt.figure()
+plt.plot(.5*xi+.5, dot)
+plt.xlabel(r'$\xi$')
+plt.ylabel(r'$\boldsymbol{\mathrm{\Omega}}\cdot\boldsymbol{\mathrm{n}}$')
+if (oc.Good()):
+	plt.savefig(oc.Get())
+
+plt.figure()
+plt.plot(.5*xi+.5, upw)
+plt.xlabel(r'$\xi$')
+plt.ylabel(r'$\frac{1}{2}\boldsymbol{\mathrm{\Omega}}\cdot\boldsymbol{\mathrm{n}} + \frac{1}{2}|\boldsymbol{\mathrm{\Omega}}\cdot\boldsymbol{\mathrm{n}}|$')
+if (oc.Good()):
+	plt.savefig(oc.Get())
+
+plt.figure()
+plt.plot(.5*xi+.5, dnw) 
+plt.xlabel(r'$\xi$')
+plt.ylabel(r'$\frac{1}{2}\boldsymbol{\mathrm{\Omega}}\cdot\boldsymbol{\mathrm{n}} - \frac{1}{2}|\boldsymbol{\mathrm{\Omega}}\cdot\boldsymbol{\mathrm{n}}|$')
+plt.xlabel(r'$\xi$')
 if (oc.Good()):
 	plt.savefig(oc.Get())
 else:

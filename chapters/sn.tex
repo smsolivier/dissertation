@@ -107,8 +107,19 @@ Since the space $Y_p$ does not share degrees of freedom across interior element 
 % --- reentrant plot --- 
 \begin{figure}
 \centering
-\includegraphics[width=.65\textwidth]{figs/reentrant.pdf}
-\caption{A second-order curved mesh and an example direction $\Omegahat$. The element $K_3$ has a concave face that is shared with element $K_1$. For the direction shown by $\Omegahat$, $K_3$ is upwind of itself. This means that $\Omegahat\cdot\n$ changes sign along the face $\mathcal{F} = K_1 \cap K_3$. }
+\begin{subfigure}{.45\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/reentrant.pdf}
+	\caption{}	
+\end{subfigure}
+\foreach \f in {1,...,4}{
+	\begin{subfigure}{.45\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figs/reentrant_\f.pdf}
+		\caption{}	
+	\end{subfigure}	
+}
+\caption{(a) a mesh of four cubic elements. The face $\mathcal{F} = K_1 \cap K_3$ is curved such that $K_3$ is upwind of itself in the example direction, $\Omegahat$. This means particles traveling in the direction $\Omegahat$ originating in $K_3$ can exit into $K_1$ and return back into $K_3$. Mathematically, this corresponds to $\Omegahat\cdot\n$ changing sign along $\mathcal{F}$. (b) shows $K_3$ and the outward normal vectors along $\mathcal{F}$. Letting $\xi \in [0,1]$ be the reference coordinate corresponding to $\mathcal{F}$, (c)--(e) plot $\Omegahat\cdot\n$ and the upwind/downwind parts of $\Omegahat\cdot\n$, respectively. Since $\Omegahat\cdot\n$ changes sign, the upwind and downwind parts of $\Omegahat\cdot\n$ are discontinuous. }
 \label{sn:reentrant_diag}
 \end{figure}
 
