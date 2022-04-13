@@ -15,7 +15,7 @@ This chapter presents the \gls{sn} and \gls{dg} discretization for the Boltzmann
 where $\psi(\x,\Omegahat)$ is the angular flux, $\D$ the domain of the problem with $\partial\D$ its boundary, $\sigma_t(\x)$ and $\sigma_s(\x)$ the total and scattering macroscopic cross sections, respectively, $q(\x,\Omegahat)$ the fixed-source, and $\bar{\psi}(\x,\Omegahat)$ the inflow boundary function. 
 
 \section{Discrete Ordinates}
-The \gls{sn} angular model collocates the transport equation at a set of discrete angles, $\Omegahat_d$, and integration is numerically approximated using a suitable angular quadrature rule $\{\Omegahat_d,w_d\}_{d=1}^{N_\Omega}$ on the unit sphere. The discrete-in-angle transport equation 
+The \gls{sn} angular model collocates the transport equation at a set of discrete angles, $\Omegahat_d$, and integration is numerically approximated using a suitable angular quadrature rule $\{\Omegahat_d,w_d\}_{d=1}^{N_\Omega}$ on the unit sphere. The discrete-in-angle transport equation is: 
 	\begin{subequations}
 	\begin{equation}
 		\Omegahat_d \cdot\nabla\psi_d + \sigma_t\psi_d = \frac{\sigma_s}{4\pi} \sum_{d'=1}^{N_\Omega} w_{d'} \psi_{d'} + q_d \,, \quad \x \in \D \,,
@@ -24,7 +24,7 @@ The \gls{sn} angular model collocates the transport equation at a set of discret
 		\psi_d(\x) = \bar{\psi}(\x,\Omegahat_d) \,, \quad \x \in \partial\D \ \mathrm{and} \ \Omegahat_d\cdot\n < 0 \,,
 	\end{equation}
 	\end{subequations}
-where $d \in [1,N_\Omega]$, $\psi_d(\x) = \psi(\x,\Omegahat_d)$ and $q_d(\x) = q(\x,\Omegahat_d)$ are the angular flux and fixed-source of particles traveling in the discrete direction $\Omegahat_d$, respectively. Figure \ref{sn:level_sym} shows an example of an octant of the Level Symmetric $S_6$ angular quadrature rule. A key property of \gls{sn} is that the angles are only coupled in the scattering term. That is, if the scattering source were known each $\psi_d(\x)$ could be solved for independently. 
+where $d \in [1,N_\Omega]$, and $\psi_d(\x) = \psi(\x,\Omegahat_d)$ and $q_d(\x) = q(\x,\Omegahat_d)$ are the angular flux and fixed-source of particles traveling in the discrete direction $\Omegahat_d$, respectively. Figure \ref{sn:level_sym} shows an example of an octant of the Level Symmetric $S_6$ angular quadrature rule. A key property of \gls{sn} is that the angles are only coupled in the scattering term. That is, if the scattering source were known, each $\psi_d(\x)$ could be solved for independently. 
 % --- level symmetric octant --- 
 \begin{figure}
 \centering
@@ -40,7 +40,7 @@ We now apply a \gls{dg} discretization to the \gls{sn} transport equations. We d
 \begin{figure}
 \centering
 \includegraphics[width=.65\textwidth]{figs/upwind.pdf}
-\caption{A depiction of a grouping of mesh elements where, due to the direction of $\Omegahat$, the element $K_1$ is upwind of $K_2$.}
+\caption{A depiction of a grouping of mesh elements where, due to the direction of $\Omegahat$, the element $K_1$ is upwind of $K_2$. A transport solve in the direction $\Omegahat$ would use the outflow from $K_1$ to compute the inflow for $K_2$.}
 \label{sn:upwind_diag}
 \end{figure}
 The weak form on each element is: find $\psi_d \in Y_p$ such that for all $K \in \meshT$: 
@@ -88,44 +88,54 @@ where $\nablah$ denotes the broken gradient defined in Eq.~\ref{fem:broken_grad}
 		\underline{u}^T\mat{M}_t \underline{\psi}_d = \int \sigma_t\, u\psi_d \ud \x \,,
 	\end{equation}
 	\begin{equation}
-		\underline{u}^T \mat{G} \underline{\psi}_d = -\int \Omegahat\cdot\nabla u \, \psi_d \ud \x \,,
+		\underline{u}^T \mat{G}_d \underline{\psi}_d = -\int \Omegahat\cdot\nabla u \, \psi_d \ud \x \,,
 	\end{equation}
-	\begin{equation}
-		\underline{u}^T \mat{F} \underline{\psi}_d = \frac{1}{2}\int_{\Gamma_b} u\!\paren{\Omegahat_d\cdot\n + |\Omegahat_d\cdot\n|}\psi_d \ud s + \int_{\Gamma_0} \jump{u}\!\paren{\Omegahat_d\cdot\n\avg{\psi_d} + \frac{1}{2}|\Omegahat_d\cdot\n|\jump{\psi_d}} \ud s \,,
+	\begin{equation} \label{sn:Fd}
+		\underline{u}^T \mat{F}_d \underline{\psi}_d = \frac{1}{2}\int_{\Gamma_b} u\!\paren{\Omegahat_d\cdot\n + |\Omegahat_d\cdot\n|}\psi_d \ud s + \int_{\Gamma_0} \jump{u}\!\paren{\Omegahat_d\cdot\n\avg{\psi_d} + \frac{1}{2}|\Omegahat_d\cdot\n|\jump{\psi_d}} \ud s \,,
 	\end{equation}
 	\end{subequations}
 and the linear form 
 	\begin{equation}
-		\underline{u}^T \underline{b} = \int u\,q_d \ud \x - \frac{1}{2}\int_{\Gamma_b} u\!\paren{\Omegahat_d\cdot\n - |\Omegahat_d\cdot\n|}\bar{\psi}(\x,\Omegahat_d) \ud s \,, 
+		\underline{u}^T \underline{b}_d = \int u\,q_d \ud \x - \frac{1}{2}\int_{\Gamma_b} u\!\paren{\Omegahat_d\cdot\n - |\Omegahat_d\cdot\n|}\bar{\psi}(\x,\Omegahat_d) \ud s \,, 
 	\end{equation}
 the discrete transport system is: 
 	\begin{equation}
-		\paren{\mat{F} + \mat{G} + \mat{M}_t}\underline{\psi}_d = \underline{b} \,, \quad 1 \leq d \leq N_{\Omega} \,. 
+		\paren{\mat{F}_d + \mat{G}_d + \mat{M}_t}\underline{\psi}_d = \underline{b}_d \,, \quad 1 \leq d \leq N_{\Omega} \,. 
 	\end{equation}
-Since the space $Y_p$ does not share degrees of freedom across interior element interfaces, the matrices $\mat{G}$ and $\mat{M}_t$ are block diagonal by element. However, due to the coupling between elements in the numerical flux, $\mat{F}$ has additional couplings. 
+Since the space $Y_p$ does not share degrees of freedom across interior element interfaces, the matrices $\mat{G}_d$ and $\mat{M}_t$ are block diagonal by element. However, the numerical flux couples neighboring elements meaning $\mat{F}_d$ has coupling between neighboring elements. On meshes without mesh cycles or reentrant faces, the elements in the mesh can be re-ordered so that the transport system $\mat{F}_d + \mat{G}_d + \mat{M}_t$ is block lower triangular by element. This means each direction of the angular flux can be solved with an element-by-element forward solve. This procedure is described in the next section. 
 
-% --- reentrant diagram --- 
-\begin{figure}
-\centering
-\includegraphics[width=.65\textwidth]{figs/reentrant.pdf}
-\caption{A mesh of four cubic elements. The face $\mathcal{F} = K_1 \cap K_3$ is curved such that $K_3$ has a concave face. For the direction $\Omegahat$, this means particles can originate in $K_3$, exit into $K_1$, and then reenter $K_3$. Note that $\mathcal{F} = K_2 \cap K_4$ is also reentrant in the direction $\Omegahat$.}
-\label{sn:reentrant_diag}
-\end{figure}
+\section{The Transport Sweep} \label{sn_sec:sweep}
+Here, we present the efficient solution procedure for the transport equation discretized in space with DG and in angle with \gls{sn} known as the transport sweep. The use of the transport sweep is motivated by the memory and computational cost associated with the extreme number of degrees of freedom in transport calculations. Let $N_{\x} = \dim(Y_p)$ be the number of spatial degrees of freedom corresponding to the space $Y_p$ and $N = N_\Omega \times N_{\x}$ be the total number of degrees of freedom in the discrete phase space. Storing the angular flux solution vector, a vector of size $N$, is challenging on even the largest computers. Thus, forming and storing an $N\times N$ system of equations is impractical even if the sparsity of the finite element systems was accounted for. In this section, we assume the mesh is linear and delay discussion of the transport sweep on meshes with curved surfaces to Section \ref{sn_sec:hosweep}. 
 
-% --- companion to reentrant diagram ---
-\begin{figure}
-\foreach \f in {1,...,4}{
-	\begin{subfigure}{.49\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{{figs/reentrant_\f.pdf}}
-		\caption{}
-	\end{subfigure}
-}
-\caption{(a) a plot of $K_3$ from Fig.~\ref{sn:reentrant_diag} showing the normal vectors along the concave face along the bottom of $K_3$. For the depicted direction $\Omegahat$, $\Omegahat\cdot\n$ changes sign along the face as shown by the changing colors of the normal vectors. (b) plots $\Omegahat\cdot\n$ as a function of the reference coordinate, $\xi \in [0,1]$, corresponding to the bottom face of $K_3$. (c) and (d) plot the upwind and downwind parts of $\Omegahat\cdot\n$, respectively. Observe that the upwind and downwind parts have discontinuous derivatives.}
-\label{sn:reentrant_plots}
-\end{figure}
+We first discuss properties of the discrete transport system corresponding to the entire phase space. We define 
+	\begin{equation}
+		\underline{\psi} = \vector{\underline{\psi}_1^T & \ldots & \underline{\psi}_{N_\Omega}^T} \in \R^N 
+	\end{equation}
+such that the solution vector groups the all the spatial unknowns corresponding to each angle together. In other words, $\underline{\psi}$ strides in space first then angle. 
+Let $\mat{L}_d = \mat{F}_d + \mat{G}_d + \mat{M}_t$ be the streaming and collision operator in each direction $\Omegahat_d$ and $\mat{L} = \diag(\mat{L}_d) \in \R^{N\times N}$ be the streaming and collision operator for all directions such that 
+	\begin{equation}
+		\mat{L} = \begin{bmatrix} 
+			\mat{L}_1 \\ 
+			& \ddots \\
+			&& \mat{L}_{N_\Omega}
+		\end{bmatrix} \,. 
+	\end{equation}
+For the scattering source, let $\mat{D} \in \R^{N_{\x} \times N}$ be the operator that represents computing the zeroth moment of each spatial degree of freedom. That is, 
+	\begin{equation}
+		\bracket{\mat{D}\underline{\psi}}_i = \sum_d w_d \psi_{d,i} \,, \quad 1 \leq i\leq N_{\x} \,,
+	\end{equation}
+where $\psi_{d,i}$ is the $i^{th}$ spatial degree of freedom in direction $\Omegahat_d$. The scattering mass matrix is defined as 
+	\begin{equation}
+		\underline{u}^T \mat{S} \underline{\phi} = \int \sigma_s\, u\phi \ud \x \,, 
+	\end{equation}
+where $u,\phi \in Y_p$. In addition, we define $\mat{M} = \diag(\I_{N_{\x}})\in \R^{N \times N_{\x}}$ as the operator that copies the isotropic scattering source into each discrete angle. The scattering source can then be written as $\mat{M}\mat{S}\mat{D} \underline{\psi}$. Finally, the fixed-source for the entire phase space is $\underline{b} = \vector{\underline{b}_1^T & \ldots & \underline{b}_{N_\Omega}^T}$. 
 
-\section{The Transport Sweep}
+With these definitions the transport equation can be written 
+	\begin{equation}
+		(\mat{L} - \mat{M}\mat{S}\mat{D})\underline{\psi} = \underline{b} \,. 
+	\end{equation}
+Figure \ref{sn:discrete_full} depicts the sparsity pattern for a one-dimensional transport problem using $S_4$ angular quadrature and five spatial elements. The sparsity pattern of the streaming and collision operator, $\mat{L}$, is shown in Fig.~\ref{sn:discrete_lag}. The vertical and horizontal lines split the system by angle so that each block corresponds to spatial degrees of freedom associated with a given direction. 
+In one-dimension, the trivial ordering of elements from left to right leads to $\mat{L}$ having an upper block triangular by element structure for negative angles and a lower block triangular by element structure for positive angles. These structures for negative and positive angles are seen in the upper two and lower two diagonal blocks of Fig.~\ref{sn:discrete_lag}. Including the scattering contribution, $\mat{M}\mat{S}\mat{D}\underline{\psi}$, couples all the angles corresponding to each spatial degree of freedom. This is seen in Fig.~\ref{sn:discrete_full} which has off-diagonal blocks corresponding to the quadrature sum performed by $\mat{D}$. These off-diagonal blocks couple the entire phase space and thus forming the $N\times N$ system corresponding to Fig.~\ref{sn:discrete_full} is impractical to store and invert. 
 % --- sweep plot --- 
 \begin{figure}
 \centering
@@ -133,20 +143,229 @@ Since the space $Y_p$ does not share degrees of freedom across interior element 
 	\centering
 	\includegraphics[width=\textwidth]{figs/sweep.pdf}
 	\caption{}
+	\label{sn:discrete_full}
 \end{subfigure}
 \begin{subfigure}{.49\textwidth}
 	\centering
 	\includegraphics[width=\textwidth]{figs/sweep_1.pdf}
 	\caption{}
+	\label{sn:discrete_lag}
 \end{subfigure}
 \caption{Sparsity plots for a 1D DG \gls{sn} transport problem. The unknowns stride in space and then angle. In (a), scattering is included showing that all angles are coupled. By lagging the scattering term, (b) shows that each angle can now be solved independently. Furthermore, for each angle the system is either lower or upper block triangular by element. This means each angle can be solved element-by-element in a ``sweep''. In two and three dimensions, the block triangular structure can be revealed by a suitable reordering of the elements.}
 \label{sn:sweep}
 \end{figure}
 
-\section{Discrete VEF Data}
+Practical transport algorithms use iterative methods that only require the inversion of $\mat{L}$. Observe that $\mat{L}$ does not couple the degrees of freedom in angle. That is, each $\mat{L}_d$ is decoupled and can be inverted independently. Furthermore, since each $\mat{L}_d$ is either upper or lower block triangular by element, an element-by-element forward or backward substitution can be applied. This is implemented as a sweep over the mesh along the direction $\Omegahat_d$. For negative angles, the sweep begins on the right edge of the domain where the inflow boundary condition is defined and solves each element in sequence. The outflow from the previous element is used to provide the inflow condition for the next. Positive angles begin on the left side of the domain and sweep from left to right. This allows solving the full operator $\mat{L}$ using only computations associated with the spatial degrees of freedom corresponding to a single element of a single angle at a time, drastically reducing the storage and computational costs of inverting the full $N\times N$ matrix $\mat{L}$. 
 
-\section{Positivity Preserving Flux Fixups}
+In multiple dimensions, it is typically possible to reorder the elements such that $\mat{L}_d$ is lower block triangular by element. Such a sweep ordering can be found by finding an element with no upwind dependencies (e.g.~a boundary element where all inflows are computed from the inflow boundary condition) and traversing the directed acyclic graph associated with the connectivity of the mesh. A solution procedure for approximately inverting $\mat{L}_d$ when curved faces in the mesh prevent reordering to block triangular by element system are discussed in Section \ref{sn_sec:hosweep}.  
+
+The most classical algorithm for solving the transport problem using only inversions of the streaming and collision operator is \gls{si}. SI can be viewed as a form of Richardson iteration where a matrix splitting is used to form an iterative solution scheme. The splitting is such that the scattering term is lagged. In equations, 
+	\begin{equation} \label{sn:sourceiteration}
+		\mat{L}\underline{\psi}^{\ell+1} = \mat{M}\mat{S}\mat{D}\underline{\psi}^\ell + \underline{b} \iff \underline{\psi}^{\ell+1} = \mat{L}^{-1}\!\paren{\mat{M}\mat{S}\mat{D}\underline{\psi}^\ell + \underline{b}} \,, 
+	\end{equation}
+where superscripts denote iteration index. Here, $\mat{L}^{-1}$ represents application of the transport sweep to solve the streaming and collision operator. Unfortunately, this iteration can be arbitrarily slow to converge when the scattering ratio, $\sigma_s/\sigma_t$, is large. That is the presence of optically thick materials causes the spectral radius of the iteration matrix $\mat{L}^{-1}\mat{M}\mat{S}\mat{D}$ to be greater than one. This motivates the use of preconditioning schemes such as \gls{dsa} or an acceleration scheme such as the \gls{vef} methods discussed in this dissertation. 
+
+\section{Solving on a High-Order Mesh} \label{sn_sec:hosweep}
+The use of curved meshes presents two primary complications for solving the streaming and collision operator in an efficient manner. Both complications arise from the fact that the normal vector along a high-order surface is in general not constant. It is then possible for the quantity $\Omegahat_d\cdot\n$ that appears in the bilinear forms corresponding to $\mat{F}_d$ can change sign along the face between elements. Since a change in sign corresponds to switching which element is upwind of the other, this leads to a mesh cycle where the inflow and outflow between two elements are coupled. The change of sign also leads to the integrand having a discontinuous derivative. In this section, we summarize recent advances in the literature that this dissertation leverages to form a high-order, \gls{vef}-based transport algorithm. This includes an algorithm to efficiently sweep on high-order meshes and a discussion of the numerical integration of the bilinear forms that comprise $\mat{F}_d$. 
+
+\subsection{Sweeping on a High-Order Mesh}
+Consider the example mesh of four cubic elements shown in Fig.~\ref{sn:reentrant_mesh}. 
+Observe that in the direction $\Omegahat$ depicted in the diagram, the faces $K_1 \cap K_3$ and $K_2 \cap K_4$ are reentrant. That is, particles traveling in the direction $\Omegahat$ can originate in $K_1$ or $K_2$, exit into their neighbor, and then return back. This is possible since $\Omegahat\cdot\n$ changes sign along the faces between these elements. This is shown for $K_3$ in Fig.~\ref{sn:reentrant_zoom} where the normal vectors are plotted along the bottom face of $K_3$. The vectors are colored to denote the subset of $\mathcal{F} = K_1\cap K_3$ that correspond to the inflow and outflow conditions, respectively. Thus, one cannot compute the solution in $K_1$ without already knowing the solution in $K_3$ and vice versa; the inflow for $K_1$ depends on the solution in $K_3$ but the inflow for $K_3$ also depends on the outflow of $K_1$. The same is true for the pair $K_2$ and $K_4$. Thus, it is not possible to sweep this mesh one element at a time. A direct solve on this mesh would require grouping the degrees of freedom corresponding to $(K_1, K_3)$ and $(K_2,K_4)$ and solving them simultaneously. Such a process would require extra communication to solve across a parallel boundary and would present a non-uniform computation pattern that may be difficult to perform efficiently on a \gls{gpu}.  
+
+In \textcite{graph_sweeps}, a pseudo-optimal reordering of the elements was developed. A graph algorithm is used to find an ordering of the elements that minimizes the strictly upper triangular components of the matrix $\mat{F}_d$. The strictly upper triangular contributions are iteratively lagged so that the classical sweep can be applied. This is implemented as a splitting of the matrix $\mat{F}_d$ such that: 
+	\begin{equation}
+		\mat{F}_d = \mat{F}_{d,\downarrow} + \mat{F}_{d,\uparrow} \,,
+	\end{equation}
+where $\mat{F}_{d,\downarrow}$ and $\mat{F}_{d,\uparrow}$ represent the lower and strictly upper triangular parts of $\mat{F}_d$, respectively. The graph algorithm finds the element order such that $\|\mat{F}_{d,\uparrow}\|$ is as small as possible. The inversion of the streaming and collision operator in direction $\Omegahat_d$ can then be iteratively solved using 
+	\begin{equation} \label{sn:horich}
+		(\mat{F}_{d,\downarrow} + \mat{G}_d + \mat{M}_t)\underline{\psi}_d^{k+1} = \underline{b}_d - \mat{F}_{d,\uparrow}\underline{\psi}_d^{k} \,,
+	\end{equation}
+where superscipts denote the iteration index. Since $\mat{F}_{d,\downarrow}$ is block lower triangular by element and $\mat{G}_d$ and $\mat{M}_t$ are block diagonal by element, the left hand side of Eq.~\ref{sn:horich} can be inverted element-by-element using a transport sweep. 
+
+When used in a source iteration solver (e.g.~Eq.~\ref{sn:sourceiteration}), the action of $\mat{L}^{-1}$ is approximated using the splitting of $\mat{F}_d$ for each direction. Thus, solving the transport problem on a mesh with reentrant faces requires a nested iteration scheme: for each source iteration, the streaming and collision operator is iteratively inverted. However, in practice, it has been seen that a single iteration of the iterative scheme in Eq.~\ref{sn:horich} per outer source iteration is enough for robust convergence when the previous outer iteration is used as the initial guess for the inner iteration. This algorithm solves 
+	\begin{equation}
+		\mat{L}_{\downarrow} \underline{\psi}^{\ell+1} = \mat{M}\mat{S}\mat{D}\underline{\psi}^\ell + \underline{b} - \mat{F}_{\uparrow} \underline{\psi}^\ell \,, 
+	\end{equation}
+where $\mat{L}_{\downarrow} = \diag(\mat{F}_{d,\downarrow} + \mat{G}_d + \mat{M}_t)$ and $\mat{F}_{\uparrow} = \diag(\mat{F}_{d,\uparrow})$. 
+Note that since more information is lagged, solving on a mesh with reentrant faces requires more iterations than a corresponding orthogonal mesh problem. 
+
+% --- reentrant diagram --- 
+\begin{figure}
+\centering
+\begin{subfigure}{.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/reentrant.pdf}
+	\caption{}
+	\label{sn:reentrant_mesh}
+\end{subfigure}
+\begin{subfigure}{.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/reentrant_1.pdf}
+	\caption{}
+	\label{sn:reentrant_zoom}
+\end{subfigure}
+\caption{(a) a mesh of four cubic elements. The face $\mathcal{F} = K_1 \cap K_3$ is curved such that $K_3$ has a concave face. For the direction $\Omegahat$, this means particles can originate in $K_3$, exit into $K_1$, and then reenter $K_3$. Note that $\mathcal{F} = K_2 \cap K_4$ is also reentrant in the direction $\Omegahat$. (b) depicts the element $K_3$ and plots the normal vectors along the face $\mathcal{F} = K_1 \cap K_3$. The normal vector varying along the face causes $\Omegahat\cdot\n$ to switch sign meaning this face acts as both an outflow and an inflow face for $K_3$. }
+\label{sn:reentrant_diag}
+\end{figure}
+
+\subsection{Numerical Integration on Curved Surfaces}
+Consider the bilinear form 
+	\begin{equation} \label{sn:face_int}
+		\int_{\Gamma_0} \jump{u}\!\paren{\Omegahat_d\cdot\n\avg{\psi_d} + \frac{1}{2}|\Omegahat_d\cdot\n|\jump{\psi_d}} \ud s
+	\end{equation}
+which corresponds to the matrix $\mat{F}_d$ defined in Eq.~\ref{sn:Fd} without the boundary term. Recall that Eq.~\ref{sn:face_int} is equivalent to 
+	\begin{equation}
+		\int_{\Gamma_0} \jump{u}\Omegahat\cdot\n\,\widehat{\psi}_d \ud s 
+	\end{equation}
+where $\widehat{\psi}_d$ is the upwind numerical flux defined in Eq.~\ref{sn:upwind}. Multiplying $\widehat{\psi}_d$ by $\Omegahat\cdot\n$ yields 
+	\begin{equation}
+		\Omegahat\cdot\n\,\widehat{\psi}_d = \begin{cases}
+			\Omegahat\cdot\n\,\psi_{d,1} \,, & \Omegahat\cdot\n<0 \\ 
+			\Omegahat\cdot\n\,\psi_{d,2} \,, & \Omegahat\cdot\n>0 
+		\end{cases} \,. 
+	\end{equation}
+Thus, as $\Omegahat\cdot\n$ passes through zero both cases evaluate to zero meaning $\Omegahat\cdot\n\,\widehat{\psi}_d$ is continuous. However, since $\psi_d \in Y_p$ is generally discontinuous across interior mesh interfaces, $\Omegahat\cdot\n\,\widehat{\psi}_d$ will generally have a discontinuous derivative. This is shown in Fig.~\ref{sn:reentrant_plots} where $\Omegahat\cdot\n$ is plotted as a function of the reference coordinate $\xi\in[0,1]$ along the face $K_1 \cap K_3$. Here, $\n$ corresponds to the normal vectors depicted in Fig.~\ref{sn:reentrant_zoom}. The upwind and downwind parts of $\Omegahat\cdot\n$ are also plotted. Observe that the variation of the normal vector with space causes $\Omegahat\cdot\n$ to change sign and that the upwind and downwind parts of $\Omegahat\cdot\n$ are continuous with a discontinuous derivative. 
+
+Numerical quadrature is expected to converge with first-order accuracy when the integrand is continuous but has discontinuous derivatives. Thus, accurate computation of the bilinear forms in $\mat{F}_d$ would require a large number of quadrature points. However, \textcite{reentrant_integration} proved that high-order accuracy is maintained even when the bilinear forms in $\mat{F}_d$ are not computed exactly. This suggests that specialized quadrature rules designed to accurately integrate $\Omegahat\cdot\n\,\widehat{\psi}_d$ do not need to be used. 
+% --- companion to reentrant diagram ---
+\begin{figure}
+\centering
+\foreach \f in {2,...,4}{
+	\begin{subfigure}{.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figs/reentrant_\f.pdf}
+		\caption{}
+	\end{subfigure}
+}
+\caption{(a) a plot of $K_3$ from Fig.~\ref{sn:reentrant_diag} showing the normal vectors along the concave face along the bottom of $K_3$. For the depicted direction $\Omegahat$, $\Omegahat\cdot\n$ changes sign along the face as shown by the changing colors of the normal vectors. (b) plots $\Omegahat\cdot\n$ as a function of the reference coordinate, $\xi \in [0,1]$, corresponding to the bottom face of $K_3$. (c) and (d) plot the upwind and downwind parts of $\Omegahat\cdot\n$, respectively. Observe that the upwind and downwind parts have discontinuous derivatives.}
+\label{sn:reentrant_plots}
+\end{figure}
+
+\section{Positivity-Preserving Flux Fixups}
+One significant challenge of using high-order methods is that they are prone to negativities in under-resolved regions of the solution, especially near material boundaries and other discontinuities. For any physical problem, the continuous \gls{sn} transport equations yield nonnegative solutions. Thus, an ideal discretization of the transport equation should be positivity-preserving. However, there is a well-known tradeoff between accuracy and positivity \cite{LATHROP1969475}. In addition, Godunov's theorem states that a linear method that guarantees a positive solution can be at most first-order accurate \cite{godunov_thesis}. This precludes the possibility of a high-order positive numerical method for the \gls{sn} transport equations. 
+
+Negative solutions are particularly problematic for multiphysics simulations as any of the numerical physics packages may fail due to unphysical inputs from other physics packages. For example, negative transport solutions produce a negative absorption term in the material energy balance equation which significantly increases the likelihood of a negative temperature. Without a positive temperature, many equations of states and opacity models are not well-defined and may cause the simulation to fail. Of particular importance in this work is that the VEF data are not well-defined when the transport solution is non-positive. In such case, the angular flux is no longer a valid weight function for computing the average of $\Omegahat\otimes\Omegahat$ and $|\Omegahat\cdot\n|$ used to compute the Eddington tensor and boundary factor, respectively. Use of a non-positive transport solution to the VEF data can cause the VEF data to diverge by effectively dividing by zero. 
+Thus, a negativity correction or ``fixup'' is needed. 
+
+It is important for the fixup to locally conserve the number of particles in each spatial element. A statement of local balance is found by integrating the transport equation over each element (i.e.~taking the zeroth spatial moment). Let the transport equation in direction $\Omegahat_d$ be written: 
+	\begin{equation}
+		\int_{\Gamma} \Omegahat\cdot\n\,\jump{u} \widehat{\psi}_d - \int \Omegahat\cdot\nablah u\, \psi_d \ud \x + \int \sigma_t\, u \psi \ud \x = \int u\, q \ud \x 
+	\end{equation}
+where $q$ includes the fixed and scattering sources and $\widehat{\psi}$ is the upwind numerical flux defined for both interior and boundary faces in Eqs.~\ref{sn:upwind} and \ref{sn:upwind_bdr}. By setting the test function $u = \mathbbm{1}_K$ where 
+	\begin{equation}
+		\mathbbm{1}_{K}(\x) = \begin{cases} 
+			1 \,, & \x \in K \\ 
+			0 \,, & \text{otherwise} 
+		\end{cases}
+	\end{equation}
+is the indicator function for element $K$, a statement of local balance over element $K$ is found: 
+	\begin{equation}
+		\int_{\partial K} \Omegahat\cdot\n\,\widehat{\psi}_d \ud s + \int_K \sigma_t\, \psi_d \ud \x = \int_K q \ud \x \,. 
+	\end{equation}
+Note that $\nablah \mathbbm{1}_K$ is zero since $\mathbbm{1}_K$ is constant on each element $K \in \meshT$. Defining $\partial K^\pm$ as the outflow and inflow parts of the boundary of the element $K$, the local balance statement is equivalently written 
+	\begin{equation} \label{sn:local_balance}
+		\int_{\partial K^+} \Omegahat\cdot\n\, \psi_d \ud s + \int_K \sigma_t\, \psi_d \ud \x = \int_K q \ud \x - \int_{\partial K^-} \Omegahat\cdot\n\,\psi_{d,\text{in}} \ud s \,, 
+	\end{equation}
+where $\psi_{d,\text{in}}$ is the boundary inflow function when $\partial K^+ \cap \Gamma_b \neq \emptyset$ or incoming angular flux from an upwind element otherwise. We now write the balance statement as $\underline{c}_{d,K}^T \underline{\psi}_{d,K} = s_{d,K}$ where 
+	\begin{equation}
+	 	\underline{c}_{d,K}^T \underline{\psi}_{d,K} = \int_{\partial K^+} \Omegahat\cdot\n\, \psi_d \ud s + \int_K \sigma_t\, \psi_d \ud \x 
+	\end{equation} 
+and $s_{d,K}$ is the right hand side of Eq.~\ref{sn:local_balance} and $\underline{\psi}_{d,K}$ is the vector of $\underline{\psi}_d$ degrees of freedom corresponding to element $K$. 
+
+Here, we present two methods for correcting the transport solution to be positive. Both methods are ``sweep-compatible'' in that they can be performed in each element as the sweep progresses. This is important so that the evaluation of the upwind numerical flux is positive. In addition, both methods preserve the local balance such that the corrected angular flux, denoted $\psi^*$, satisfies $\underline{c}_{d,K}^T \underline{\psi}_{d,K}^* = s_{d,K}$. In other words, the corrections preserve the balance of particles of the original solution. 
+
+\subsection{Zero and Rescale}
+The zero and rescale fixup \cite{hamilton2009negative} is a simple scheme for producing a positive solution that maintains particle balance that. The scheme is characterized by setting any negative degrees of freedom to zero and then rescaling the solution in each element so that particle balance is maintained before and after zeroing the degrees of freedom. The scheme is codified as 
+	\begin{subequations}
+	\begin{equation}
+		[\underline{\psi}_{d,K}]_i^Z = \max([\underline{\psi}_{d,K}]_i, 0) \,, \quad 1 \leq i \leq \dim(\Qbb{p}(K)) \,, 
+	\end{equation}
+	\begin{equation}
+		\underline{\psi}_{d,K}^* = \frac{s_{d,K}}{\underline{c}_{d,K}^T \underline{\psi}_{d,K}^Z} \underline{\psi}_{d,K}^Z \,. 
+	\end{equation}
+	\end{subequations}
+
+\subsection{Quadratic Programming Negative Flux Fixup}
+Here we summarize the quadratic programming-based fixup method from \textcite{YEE2020109696}. This method seeks to find a positive solution that is as close as possible to the original solution as measured in the $\ell_2$ norm (e.g.~the usual Euclidean inner product for vectors). The objective function is 
+	\begin{equation}
+		f(\underline{\psi}_{d,K}^*) = \| \underline{\psi}_{d,K}^* - \underline{\psi}_{d,K} \|_2^2 = (\underline{\psi}_{d,K}^* - \underline{\psi}_{d,K}) \cdot (\underline{\psi}_{d,K}^* - \underline{\psi}_{d,K}) \,. 
+	\end{equation}
+The constrained minimization problem is: find $\underline{\psi}_{d,K}^*$ such that 
+	\begin{equation}
+		\underline{\psi}_{d,K}^* = \min_{\underline{y}} f(\underline{y}) \,, 
+	\end{equation}
+under the constraints that 
+	\begin{equation}
+		\underline{c}_{d,K}^T \underline{y} = s_{d,k} \,,
+	\end{equation}
+	\begin{equation}
+		[\underline{y}]_i \geq 0 \,, \quad 1 \leq i \leq \dim(\Qbb{p}(K)) \,. 
+	\end{equation}
+Note that this method acts on the degrees of freedom directly and not the finite element interpolation function. That is, while the degrees of freedom of $\psi^*$ may be positive, the interpolation may not be. It is then crucial that a positive interpolating scheme is used. Such schemes guarantee the interpolation function is positive when the degrees of freedom are positive. In this document, we use the positive Bernstein polynomials \cite{doi:10.1137/11082539X} when the quadratic programming fixup is used. 
 
 \section{Connection to VEF Algorithm} \label{sn_sec:vef}
+The coupled transport-VEF system is 
+	\begin{subequations}
+	\begin{equation}
+		\Omegahat\cdot\nabla\psi + \sigma_t \psi = \frac{\sigma_s}{4\pi}\varphi + q \,, \quad \x \in \D \,, 
+	\end{equation}
+	\begin{equation}
+		\psi(\x,\Omegahat) = \bar{\psi}(\x,\Omegahat) \,, \quad \x \in \partial \D \ \mathrm{and} \ \Omegahat\cdot\n < 0 \,, 
+	\end{equation}
+	\end{subequations}
+	\begin{subequations}
+	\begin{equation}
+		\nabla\cdot\vec{J} + \sigma_a \varphi = Q_0 \,, \quad \x \in \D \,, 
+	\end{equation}
+	\begin{equation}
+		\nabla\cdot\paren{\E\varphi} + \sigma_t\vec{J} = \Qone \,, \quad \x \in \D \,,
+	\end{equation}
+	\begin{equation} \label{vef:mlbc}
+		\vec{J}\cdot\n = E_b \varphi + 2\Jin \,, \quad \x \in \partial \D \,. 
+	\end{equation}
+	\end{subequations}
+This section discusses the connections between the discrete transport and VEF equations. We present the computation of the VEF data from the discrete angular flux and discuss the evaluation of the transport scattering source from the VEF scalar flux. 
+
+\subsection{Discrete VEF Data}
+The VEF data are computed using the discrete representation of the angular flux in space and angle along with the \gls{sn} angular quadrature rule. The Eddington tensor and boundary factor are then 
+	\begin{subequations}
+	\begin{equation}
+		\E(\x) = \frac{\sum_{d=1}^{N_\Omega} w_d\,\Omegahat_d\otimes\Omegahat_d\, \psi_d(\x)}{\sum_{d=1}^{N_\Omega} w_d\psi_d(\x)} \,, 
+	\end{equation}
+	\begin{equation}
+		E_b(\x) = \frac{\sum_{d=1}^{N_\Omega} w_d\, |\Omegahat_d\cdot\n|\,\psi_d(\x)}{\sum_{d=1}^{N_\Omega} w_d\psi_d(\x)} \,.
+	\end{equation}
+	\end{subequations}
+The standard finite element interpolation procedure is used to evaluate $\psi_d$ at any location in the mesh. Note that it is important to interpolate the numerator and denominator of the VEF data \emph{separately}. That is, each component of the Eddington tensor and the boundary factor are represented as $q/p$ where $q,p \in\Qbb{p}(K)$ for each $K$ in the mesh and are thus piecewise discontinuous, improper rational polynomials mapped from the reference element. Since $\Omegahat = \sum_i^{\dim} \Omega_i \e_i$ is defined on the canonical basis $\e_i$, each component of the Eddington tensor transforms independently as a scalar. Thus, the Piola transform is not required to map the Eddington tensor between reference and physical space. 
+
+Since $\psi_d \in Y_p$ is in general discontinuous across interior mesh interfaces, the VEF data are also generally discontinuous. Thus, global derivatives of the VEF data are not well defined and, in particular, the Eddington tensor is not single-valued on interior mesh interfaces. Since $\psi_d|K \in \Qbb{p}(K)$ for each $K$, the VEF data are locally differentiable. Let  
+	\begin{equation}
+		\P(\x) = \sum_{d=1}^{N_\Omega} w_d\, \Omegahat_d\otimes\Omegahat_d\, \psi_d(\x) 
+	\end{equation}
+denote the discrete second moment of the angular flux. Using the quotient rule, the local divergence of the Eddington tensor is: 
+	\begin{equation}
+		\nablah\cdot\E = \frac{(\nablah\cdot\P)\phi - \P\cdot\nablah\phi}{\phi^2} \,. 
+	\end{equation}
+Here, the divergence of a second-order tensor is the vector formed by taking the divergence of each of the columns of the tensor. Note that the boundary factor is only needed on the boundary of the domain (e.g.~$\x \in \Gamma_b$) and is thus always single-valued.
+
+We restrict our attention to problems where $\psi\geq\delta$ for some $\delta > 0$. This assumption is reasonable for our applications but may be violated in shielding or deep penetration problems. Application of a positivity-preserving negative flux fixup ensures that the numerical approximation of $\phi$ is bounded away from zero so that $\E$, $E_b$, and $\nablah\cdot\E$ are all well defined. 
+
+\subsection{Computation of the Scattering Source}
+To support generality and algorithmic flexibility, we assume that $\psi_d \in Y_p$ but that the VEF scalar flux $\varphi \in X$ where $X$ may be different than the finite element space used for the angular flux in each direction. For example, we will develop VEF methods where $\varphi$ is discretized using continuous finite elements and when $\varphi$ and $\psi_d$ are approximated using different finite element polynomial degrees. 
+
+The scattering source is then computed as a mixed-space mass matrix that has test functions in the space for the angular flux and trial functions in the space for the VEF scalar flux. In other words, for $\varphi \in X$, the scattering operator is 
+	\begin{equation}
+		\frac{1}{4\pi}\int \sigma_s\, u \varphi \ud \x \,, \quad \forall u \in Y_p \,. 		
+	\end{equation}
+Let the scattering mass matrix $\mat{M}_s \in \R^{\dim(Y_p) \times \dim(X)}$ be defined as 
+	\begin{equation}
+		\underline{u}^T\mat{M}_s \underline{\varphi} = \frac{1}{4\pi}\int \sigma_s\, u\varphi \ud \x \,, \quad u \in Y_p \,, \varphi \in X \,. 
+	\end{equation}
+In a VEF algorithm, the scattering source is computed from the VEF scalar flux. Thus, the scattering source $\mat{M}\mat{S}\mat{D}\underline{\psi}$ is replaced with $\mat{M}\mat{M}_s\underline{\varphi}$. The resulting discrete transport problem is then: 
+	\begin{equation}
+		\mat{L}\underline{\psi} = \mat{M}\mat{M}_s \underline{\varphi} + \underline{b} \,. 
+	\end{equation}
+
+\subsection{Moments of the Fixed-Source}
 
 \end{document}

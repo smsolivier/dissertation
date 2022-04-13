@@ -87,8 +87,10 @@
 * integration transforms 
 	* scalar and vector 
 	* gradient of Piola 
-	* face transformations
+	* **face transformations**
+		* normal as rotation of Jacobian matrix/Nanson's formula 
 	* examples 
+	* inverse transformations
 * finite element spaces 
 	* sharing of DOFs for strong conditions
 	* proof of [v.n] = 0 for RT 
@@ -115,7 +117,9 @@
 * computation of VEF data + derivatives 
 * need for fixup 
 * effect of S2
-* discrete algorithm (define scattering mass matrix)
+* discrete algorithm 
+	* define mixed space scattering mass matrix 
+	* computation of source moments 
 * SI as Richardson via sparsity plot 
 * lagging on curved meshes 
 * computing face matrices on reentrant faces 

@@ -141,6 +141,7 @@
 % \DeclareMathOperator{\diag}{diag}
 \DeclareMathOperator{\spn}{span}
 \DeclareMathOperator\supp{supp}
+\DeclareMathOperator\diag{diag}
 
 % --- math environments --- 
 \newtheorem{cor}{Corollary}
