@@ -79,7 +79,7 @@ We now wish to write all terms as volumetric integrals so that a functional form
 	\end{subequations}
 where $\vec{\tau}$ and $\vec{\chi}$ are vector functions that are singled-valued on $\Gamma_0$. 
 Note that the lifting operators are finite element grid functions just as the current is and that the left hand sides are simply the $W_p$ total interaction mass matrix.
-Since $W_p$ is piecewise discontinuous, the $W_p$ mass matrix is block-diagonal by element and thus the systems of equations corresponding to Eqs. \ref{dgvef:lift-r} and \ref{dgvef:lift-l} are amenable to efficient direct factorization (see \ref{sec:lifting}). 
+Since $W_p$ is piecewise discontinuous, the $W_p$ mass matrix is block-diagonal by element and thus the systems of equations corresponding to Eqs. \ref{dgvef:lift-r} and \ref{dgvef:lift-l} are amenable to efficient direct factorization (see Section \ref{dgvef_sec:lifting}). 
 
 Setting $\vec{\tau} = \jump{\widehat{\E\varphi}\n - \E\varphi\n}$ and $\vec{\chi} = \avg{\widehat{\E\varphi}\n - \E\varphi\n}$ and using the definitions of the lifting operators, Eq.~\ref{dgvef:weak_strong} can be written entirely in terms of volumetric integrals as: 
 	\begin{equation}
@@ -196,7 +196,7 @@ so that the relevant term is
 		&= \sum_{f\in\Gamma_0}\int \eta\,\vec{\rho}_f(\jump{u})\cdot\vec{\rho}_f(\jump{\varphi}) \ud \x \,.
 	\end{aligned}
 	\end{equation}
-This BR2 numerical flux avoids the need to tune the penalty parameter while still allowing element-by-element assembly (see \ref{sec:lifting}). 
+This BR2 numerical flux avoids the need to tune the penalty parameter while still allowing element-by-element assembly (see Section \ref{dgvef_sec:lifting}). 
 
 The BR2 DG VEF discretization is then: find $\varphi \in Y_p$ such that 
 	\begin{multline} \label{dgvef:br2}
@@ -262,7 +262,7 @@ are analogues of $\vec{r}_0(\vec{\tau})$ and $\vec{\ell}(\vec{\chi})$, respectiv
 	\end{multline}
 The advantage of LDG is that the penalty parameter does not need to scale with the mesh size. However, the LDG stabilization term has a non-compact stencil that connects neighbors of neighbors, leading to less sparsity than the IP or BR2 methods. 
 
-\section{Implementation of Lifting Operators}
+\section{Implementation of Lifting Operators} \label{dgvef_sec:lifting}
 Consider the face-local lifting operator $\vec{\rho}_f(\omega)$ used in the BR2 stabilization term defined in Eq.~\ref{dgvef:rhof} with $\omega = \jump{u}$ which satisfies
 	\begin{equation} \label{eq:lift_particularize}
 		\int \vec{v}\cdot\vec{\rho}_f(\jump{u}) \ud \x = -\int_{f} \avg{\vec{v}\cdot\hat{n}} \jump{u} \ud s \,, \quad \forall \vec{v} \in W_p\,, \quad \text{on} \ f \in \Gamma_0 \,. 
@@ -576,7 +576,7 @@ Note that AMG is effective on the standard continuous finite element discretizat
 	\begin{equation}
 		-\int_{\Gamma_0} \avg{\frac{\nabla u}{\sigma_t}}\cdot \jump{\E\varphi\n} \ud s + \int \nabla u \cdot \frac{1}{\sigma_t} \paren{\nablah\cdot\E}\!\varphi \ud \x
 	\end{equation}
-in the CG VEF discretization (Eq.~\ref{eq:cg}), a symmetric operator more amenable to accurate inversion via AMG is found. The symmetrized operator is then:
+in the CG VEF discretization (\todo{ref for CG}), a symmetric operator more amenable to accurate inversion via AMG is found. The symmetrized operator is then:
 	\begin{equation}
 		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int \nablah u \cdot \frac{1}{\sigma_t}\E \nablah \varphi \ud \x + \int \sigma_a\, u \varphi \ud \x \,, 
 	\end{equation}

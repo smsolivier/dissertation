@@ -77,7 +77,11 @@ SMM solves the coupled system:
 		-\nabla\cdot\frac{1}{3\sigma_t}\nabla\varphi + \sigma_a \varphi = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t} + \nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T(\psi) \,. 
 	\end{equation}
 	\end{subequations}
-where boundary conditions are specified by Eqs. \todo{transport BC} and \ref{smm:bc}. 
+where the transport boundary condition is 
+	\begin{equation}
+		\psi(\x,\Omegahat) = \bar{\psi}(\x,\Omegahat) \,, \quad \x \in \partial\D \ \mathrm{and} \ \Omegahat\cdot\n < 0 \,, 
+	\end{equation}
+and the SMM boundary condition is defined in Eq.~\ref{smm:bc}.
 Since the closures are linear functions of the angular flux, the coupling between the transport and SMM equations is linear. 
 Let $\mat{L} = \Omegahat\cdot\nabla + \sigma_t$, $\mat{S} = \frac{\sigma_s}{4\pi}$, and 
 	\begin{equation} \label{smm:diff_op}
@@ -161,7 +165,7 @@ where
 	\begin{equation}
 	 	\pderiv{\E}{\psi}\biggr\rvert_{\psi_0} = \frac{1}{\phi_0}\paren{\int \Omegahat\otimes\Omegahat\paren{\cdot}\ud\Omega - \E_0\int \paren{\cdot}\ud\Omega}
 	\end{equation} 
-is derived in Eq.~\todo{ref}. Here, $\phi_0 = \int \psi_0 \ud \Omega$ and $\E_0 = \E(\psi_0)$. Since $\psi_0$ is defined to be a linearly anisotropic function in angle, $\E_0 = \frac{1}{3}\I$. 
+is derived in Eq.~\ref{vef:Edd_deriv}. Here, $\phi_0 = \int \psi_0 \ud \Omega$ and $\E_0 = \E(\psi_0)$. Since $\psi_0$ is defined to be a linearly anisotropic function in angle, $\E_0 = \frac{1}{3}\I$. 
 In addition, since $\varphi_0 = \int \psi_0 \ud \Omega$, $\varphi_0/\phi_0 = 1$ and thus  
 	\begin{equation}
 		\pderiv{\E}{\psi}\biggr\rvert_{\psi_0} \varphi_0 = \int \Omegahat\otimes\Omegahat\, \paren{\cdot}\ud\Omega  - \frac{1}{3}\I \int \paren{\cdot}\ud\Omega \equiv \T(\cdot) \,. 
@@ -185,7 +189,7 @@ For the boundary conditions, an analogous process yields
 		\end{bmatrix} \,,
 	\end{aligned}
 	\end{equation}
-where we have used the form of the derivative of the Eddington boundary factor derived in Eq.~\todo{ref} and $\beta$ is the correction factor given in Eq.~\ref{smm:corrfac}. 
+where we have used the form of the derivative of the Eddington boundary factor derived in Eq.~\ref{vef:Eb_deriv} and $\beta$ is the correction factor given in Eq.~\ref{smm:corrfac}. 
 
 The linear part of $F$ is then: 
 	\begin{equation}
@@ -217,8 +221,9 @@ The linear part of $F$ is then:
 	\end{equation}
 where the last equivalence is due to the fact that $\T(\psi_0) = 0$ and $\beta(\psi_0) = 0$ since 
 	\begin{equation}
-		\pderiv{\E}{\psi}\biggr\rvert_{\psi_0}(\psi_0) = 0 \,, \quad \pderiv{E_b}{\psi}\biggr\rvert_{\psi_0}(\psi_0) = 0 \,. 
+		\pderiv{\E}{\psi}\biggr\rvert_{\psi_0}(\psi_0) = 0 \,, \quad \pderiv{E_b}{\psi}\biggr\rvert_{\psi_0}(\psi_0) = 0 \,, 
 	\end{equation}
+as discussed in Section \ref{vef_sec:gateaux}. 
 Converting the operator notation back to equations, this is equivalent to: 
 	\begin{subequations} \label{smm:trans_rewrite}
 	\begin{equation}
@@ -238,8 +243,9 @@ Converting the operator notation back to equations, this is equivalent to:
 	\end{subequations}
 Observe that these equations are equivalent to the transport equation and the SMM diffusion equation given in Eq.~\ref{smm:drift} with the corrected Marshak boundary condition from Eq.~\ref{smm:bc}. 
 An equivalent fixed-point operator can be derived by eliminating the angular flux and operating by the inverse of the diffusion operator. Thus, SMMs are both 1) an algorithm based on a reformulation of the transport equation using additive closures and 2) VEF algorithms linearized about a linearly anisotropic solution. 
+% We stress that,  while SMM is a linearized form of VEF, 
 
-The VEF algorithm solves the root-finding problem in Eq.~\ref{smm:vef_root} whereas SMM solves the linearized root-finding problem given in Eq.~\ref{smm:smm_root}. These problems are equivalent to $\mathcal{O}(\Delta \y^2)$ where $\Delta\y = \y - \y_0$. Here, $\y$ is the solution to the coupled transport-VEF problem that satisfies $F(\y)=0$. Thus, the VEF and SMM algorithms are expected to differ on the order of the square of the difference between the true transport solution and the diffusion approximation. However, since both VEF and SMM are an equivalent reformulation of the transport equation, both methods still produce an approximation to the transport equation.  
+% The VEF algorithm solves the root-finding problem in Eq.~\ref{smm:vef_root} whereas SMM solves the linearized root-finding problem given in Eq.~\ref{smm:smm_root}. These problems are equivalent to $\mathcal{O}(\Delta \y^2)$ where $\Delta\y = \y - \y_0$. Here, $\y$ is the solution to the coupled transport-VEF problem that satisfies $F(\y)=0$. Thus, the VEF and SMM algorithms are expected to differ on the order of the square of the difference between the true transport solution and the diffusion approximation. However, since both VEF and SMM are an equivalent reformulation of the transport equation, both methods still produce an approximation to the transport equation.  
 
 % Note that a solution procedure for Eqs.~\ref{smm:trans_rewrite} and \ref{smm:linearized} that does not iteratively lag the correction tensor and boundary factor would be equivalent to a Newton scheme to solve the VEF equations. Such an algorithm would converge with the quadratic convergence characteristic of Newton's method. However, forming and solving the operator $\pderiv{\mat{V}}{\psi}$ is prohibitively expensive due to its dependence on the high-dimensional angular flux. Iteratively lagging the correction tensor and factor then represents a``quasi-Newton'' scheme in that the inverse of the Jacobian is approximated by lagging the $\psi$-dependent terms. Unfortunately, lagging these terms degrades the convergence so that the SMM algorithm has linear convergence. 
 

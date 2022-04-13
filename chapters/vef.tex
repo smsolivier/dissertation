@@ -15,7 +15,7 @@ The linear Boltzmann equation that models this problem is:
 	\end{subequations}
 where $\psi(\x,\Omegahat)$ is the angular flux, $\D$ the domain of the problem with $\partial\D$ its boundary, $\sigma_t(\x)$ and $\sigma_s(\x)$ the total and scattering macroscopic cross sections, respectively, $q(\x,\Omegahat)$ the fixed-source, and $\bar{\psi}(\x,\Omegahat)$ the inflow boundary function. 
 
-In this chapter, we derive the \gls{vef} algorithm by taking angular moments of the transport equation given by Eq.~\ref{vef:transport}. Due to the streaming term, $\Omegahat\cdot\nabla\psi$, angular moments always produce more unknowns than equations. In VEF, an exact, trivial closure of the second moment is used so that the moment system is an \emph{equivalent reformulation} of the transport problem. Since the VEF closures are weak functions of the solution, iterative scheme can be designed to converge rapidly. \todo{finish summary}
+In this chapter, we derive the \gls{vef} algorithm by taking angular moments of the transport equation given by Eq.~\ref{vef:transport}. Due to the streaming term, $\Omegahat\cdot\nabla\psi$, angular moments always produce more unknowns than equations. In VEF, an exact, trivial closure of the second moment is used so that the moment system is an \emph{equivalent reformulation} of the transport problem. Since the VEF closures are weak functions of the solution, iterative scheme can be designed to converge rapidly. We also discuss the mathematical properties of the VEF data and their impact on the structure of the VEF equations. The section concludes with a discussion of the two primary philosophies used to design discrete VEF methods. 
 
 \section{Derivation of the VEF Equations}
 Integrating the transport equation over angle yields 
@@ -208,7 +208,7 @@ Therefore, in the thick diffusion limit, the VEF drift-diffusion equation with M
 	\end{equation}
 	\end{subequations}
 	
-\subsection{Functional Derivatives}
+\subsection{Functional Derivatives} \label{vef_sec:gateaux}
 \todo{relation to linearization/SMM}
 Here, we use the Gateaux derivative to investigate the dependence of the VEF data on the angular flux. The Gateaux derivative is a generalization of the directional derivative that supports derivatives of functionals. The Gateaux derivative of a functional $f$ at $u$ in the direction $v$ is defined as: 
 	\begin{equation}
@@ -233,7 +233,7 @@ where $\phi_0$ and $\P_0$ are the zeroth and second moments of $\psi_0$ and $\ph
 	\end{equation}
 where $\E_0 = \P_0/\phi_0$ is the Eddington tensor evaluated at $\psi = \psi_0$. 
 Thus, the derivative of the Eddington tensor evaluated at $\psi_0$ is 
-	\begin{equation}
+	\begin{equation} \label{vef:Edd_deriv}
 		D[\E](\psi_0,\cdot) = \frac{1}{\phi_0} \paren{\int \Omegahat\otimes\Omegahat\paren{\cdot}\ud\Omega - \E_0\int \paren{\cdot}\ud \Omega} \,. 
 	\end{equation}
 Observe that when $\psi' = \alpha \psi_0$, for some $\alpha \in \R$, 
@@ -261,7 +261,7 @@ The above examples show that the Eddington tensor is invariant under scaling of 
 \todo{explain interpretation better}
 
 The Gateaux derivative of the boundary factor at $\psi_0$ in the direction $\psi'$ is 
-	\begin{equation}
+	\begin{equation} \label{vef:Eb_deriv}
 	\begin{aligned}
 		D[E_b](\psi_0,\psi') &= \pderiv{}{\omega}\bracket{E_b(\psi + \omega\psi')}_{\omega=0} \\ 
 		&= \pderiv{}{\omega}\bracket{\frac{\int |\Omegahat\cdot\n|\paren{\psi_0 + \omega\psi'} \ud \Omega}{\int \psi_0 + \omega\psi' \ud \Omega}}_{\omega=0} \\
