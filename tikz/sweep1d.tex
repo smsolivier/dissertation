@@ -1,0 +1,16 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+
+\begin{document}
+\begin{tikzpicture}[>=stealth]
+	\draw (0,-.1) grid (5,.1); 
+	\foreach \e in {1,...,5}{
+		\node[scale=.5] at (\e-.5,-.25) {$K_{\e}$}; 
+	}
+
+	\foreach[count=\c from 1] \x in {-0.86113631, -0.33998104, 0.33998104, 0.86113631}{
+		\draw[->] (-1.5,-.2) -- +({acos(\x)}:1cm) node[anchor=center, scale=.5, shift={({acos(\x)}:.35cm)}] {$\mu_\c$}; 
+	}
+\end{tikzpicture}
+\end{document}
