@@ -112,8 +112,8 @@ for i in range(25):
 xi = np.linspace(-1,1,13)
 xi1 = xi[np.argwhere(xi>sw)[:,0]]
 xi2 = xi[np.argwhere(xi<=sw)[:,0]]
-group = [{'xi': xi1, 'label': r'$\boldsymbol{\mathrm{\Omega}}\cdot \boldsymbol{\mathrm{n}} > 0$', 'color': '#1f77b4'},
-	{'xi': xi2, 'label': r'$\boldsymbol{\mathrm{\Omega}}\cdot \boldsymbol{\mathrm{n}} < 0$', 'color': '#ff7f0e'}]
+Odotn = r'\boldsymbol{\mathrm{\Omega}}\cdot \boldsymbol{\mathrm{n}}'
+group = [{'xi': xi2, 'color': '#1f77b4'}, {'xi': xi1, 'color': '#ff7f0e'}]
 for g in group:
 	xi = g['xi']
 	Xs = np.zeros((len(xi), 2))
@@ -123,7 +123,11 @@ for g in group:
 		nor = face.Normal(xi[i]) 
 		Xs[i,:] = X 
 		nors[i,:] = nor/np.linalg.norm(nor)
-	plt.quiver(Xs[:,0], Xs[:,1], nors[:,0], nors[:,1], clip_on=True, label=g['label'], color=g['color'])
+	if (nors[0,:]@Omega > 0):
+		label = '$' + Odotn + '> 0$'
+	else:
+		label = '$' + Odotn + '< 0$'
+	plt.quiver(Xs[:,0], Xs[:,1], nors[:,0], nors[:,1], clip_on=True, label=label, color=g['color'])
 plt.axis('off')
 plt.ylim(.4,1.05)
 plt.legend(bbox_to_anchor=(.7,0), loc='lower left')
