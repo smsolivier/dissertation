@@ -25,10 +25,11 @@ with $q$ representing a source term and the solution space $X = \mathcal{C}^1$, 
 	\begin{equation} \label{fem:rad_strong}
 		-\nabla\cdot D \nabla\varphi + \sigma_a \varphi = Q \,. 
 	\end{equation}
-Here, the diffusion coefficient, $D$, must be once differentiable and the solution, $\varphi$, must be twice differentiable. In problems with multiple materials, the diffusion coefficient can be discontinuous. Solving radiation diffusion in strong form then necessitates the use of domain decomposition methods where the problem is solved with a set of subproblems corresponding to each material that are coupled through interface conditions.  Furthermore, in many physical problems discontinuities in the solution, known as shocks, are possible. In such cases, the solution itself is not differentiable. 
+Here, the diffusion coefficient, $D$, must be once differentiable and the solution, $\varphi$, must be twice differentiable. In problems with multiple materials, the diffusion coefficient can be discontinuous. Solving radiation diffusion in strong form then necessitates the use of domain decomposition methods where the problem is solved with a set of subproblems corresponding to each material that are coupled through interface conditions.  Furthermore, in many physical problems discontinuities in the solution, known as shocks, are possible. In such cases, the solution itself is not differentiable. In addition, the location of the discontinuities are not known a priori making the use of domain decomposition methods much more difficult. 
 
 This motivates the use of reformulations of the strong form that relax, or weaken, the requirements on the differentiability of the solution and its coefficients. These weak forms are derived by multiplying the strong form by a suitably smooth (i.e.~differentiable) function and integrating over the domain. By applying integration by parts formulae, derivatives can be offloaded to the test function, leading to a weakening of the differentiability requirements. 
-\todo{expand to introduce subsections}
+
+In this section, we provide insight into the use of test functions and weak derivatives, derive the weak form for the abstract problem $A(u) = q$ along with an example weak form for the radiation diffusion problem, discuss the mathematical spaces that are required to make the weak form well-defined, and define Galerkin's method for approximating the weak form of a partial differential equation numerically that underpins the finite element method. 
 
 \subsection{Test Functions and Weak Derivatives}
 Consider a one-dimensional function $f$ defined on the interval $[a,b]$. We ``test'' $f$ by multiplying it by an arbitrary function $v$ and integrating over the interval $[a,b]$. If, for example, $v = 1$ or $v=x$, we can glean information about the mean and variance of $f$, respectively. In addition, by setting the test function to the Dirac delta function centered at an arbitrary position $x$ we have that 
@@ -76,8 +77,8 @@ We have used the integration by parts formula:
 		\int u\, \nabla\cdot\vec{v} \ud \x = \oint_{\partial\D} u\,\vec{v}\cdot\n \ud s - \int \nabla u \cdot \vec{v} \ud \x \,, 
 	\end{equation}
 along with the fact that $u = 0$ for $\x \in \partial\D$ since $u \in V$.  
-Observe that the weak form in Eq.~\ref{fem:rad_weak} has reduced the differentiability requirements of both the solution and the diffusion coefficient. In particular, the test function and solution need only be once differentiable. In addition, there are no longer any differentiability requirements on diffusion coefficient. 
-The weak form expands the space of possible solutions from the space of twice differentiable functions to the space of once differentiable functions. 
+Observe that the weak form in Eq.~\ref{fem:rad_weak} has reduced the differentiability requirements of both the solution and the diffusion coefficient. In particular, the test function and solution need only be once differentiable. In addition, there are no longer any differentiability requirements on the diffusion coefficient. 
+Thus, the weak form expands the space of possible solutions from the space of twice differentiable functions to the space of once differentiable functions and allows discontinuous data. 
 
 \subsection{Sobolev Spaces} \label{fem_sec:sobolev}
 A key question is the choice of the space $V$ the weak form is defined over. For the strong form, the spaces $\mathcal{C}^i$ corresponding to functions having $i$ continuous derivatives for $i = 0,1,\ldots$ are a natural choice. However, the integrations used in the weak form require a more nuanced approach (see ``The Lebesgue integral'' from \textcite{reed1981functional}), the goal being to define the largest possible spaces such that the integrals in the weak form remain finite. That is, in the radiation diffusion example, we seek to define the space for $u$ and $\varphi$ such that 
@@ -161,11 +162,12 @@ Such a general framework as Galerkin's method, however, does not provide a way t
 % \end{figure}
 
 \section{Local Polynomial Spaces}
-Both the mesh and the solution are represented with a polynomial space defined locally on each element. Let $\hat{K}$ denote the reference element which we set to the unit $\dim$-dimensional cube, $\hat{K} = [0,1]^{\dim}$. We define 
+Both the mesh and the solution are represented with a polynomial space defined locally on each element. Let $\hat{K}$ denote the reference element which we set to the unit $\dim$-dimensional cube, $\hat{K} = [0,1]^{\dim}$. We define the space of univariate polynomials of degree less than or equal to $k$ as: 
 	\begin{equation}
-		\Pcal{k} = \{ p : \hat{K} \rightarrow \R : p = \sum_{i=0}^{k} \alpha_i x^i \,, \alpha_i \in \R\ \forall\,i \in [0,k]\} = \spn\{ 1, x, x^2, \ldots, x^k \} 
+		\Pcal{k} = \{ p : \hat{K} \rightarrow \R : p = \sum_{i=0}^{k} \alpha_i x^i \,, \alpha_i \in \R\ \forall\,i \in [0,k]\} = \spn\{ 1, x, x^2, \ldots, x^k \} \,, 
 	\end{equation}
-as the space of univariate polynomials of degree less than or equal to $k$ defined on $\hat{K}$. Multi-dimensional polynomial spaces are built through tensor products of the one-dimensional space. The tensor product polynomial spaces are:  
+where, in one dimension, $\hat{K} = [0,1]$. 
+Multi-dimensional polynomial spaces are built through tensor products of the one-dimensional space. The tensor product polynomial spaces are:  
 	\begin{equation}
 		\Qcal{m,n} = \{ p(x) q(y) : p \in \Pcal{m}\,, q \in \Pcal{n} \} 
 	\end{equation}
@@ -197,7 +199,7 @@ Alternatively, writing $\ell_i(\xi) = \sum_{j=0}^k c_{ij} \xi^j$, the coefficien
 		\mat{C} = \I \,,
 	\end{equation}
 where $\mat{C} \in \R^{(k+1)\times(k+1)}$ is the matrix of coefficients with entries $c_{ij}$. The Vandermonde system is simply a change of basis from $\{1,x,x^2,\ldots\}$ to the nodal basis. Nodal bases for the spaces $\Qcal{m,n}$ and $\Qcal{\ell,m,n}$ are formed through tensor products of the corresponding one-dimensional nodal bases.
-The basis functions for $\Pcal{1}$, $\Pcal{2}$, and $\Pcal{3}$ through the Gauss-Lobatto and Gauss-Legendre points are shown in Fig.~\ref{fem:shape1d} and \ref{fem:shape_leg1d}, respectively.  Figure \ref{fem:shape2d} shows a selection of the nodal basis functions through the Gauss-Lobatto points for the spaces $\Qcal{1}$, $\Qcal{2}$, and $\Qcal{3}$. 
+The basis functions for $\Pcal{1}$, $\Pcal{2}$, and $\Pcal{3}$ through the Gauss-Lobatto and Gauss-Legendre points are shown in Fig.~\ref{fem:shape1d} and \ref{fem:shape_leg1d}, respectively.  Figure \ref{fem:shape2d} shows a selection of the two-dimensional nodal basis functions through the Gauss-Lobatto points for the spaces $\Qcal{1}$, $\Qcal{2}$, and $\Qcal{3}$. 
 % --- shape functions in 1D (Lobatto) --- 
 \begin{figure}
 \centering
@@ -279,7 +281,7 @@ where $\meshT$ denotes a tesselation of the domain called the mesh.
 In this document, we only consider the use of tensor product elements. That is, in two dimensions each $K$ is a quadrilateral and in three dimensions each $K$ is a hexahedron. The tesselation of the domain satisfies the following properties: 
 	\begin{enumerate}
 		\item each $K$ is a closed set with an interior, denoted $\mathring{K}$, that is non-empty, 
-		\item the elements do not overlap i.e.~for each distinct $K_1,K_2 \in \meshT$, $K_1 \cap K_2 = \emptyset$,
+		\item the elements do not overlap i.e.~for each distinct $K_1,K_2 \in \meshT$, $\mathring{K}_1 \cap \mathring{K}_2 = \emptyset$,
 		\item \label{fem:adjacent_elements}any face of $K_1 \in \meshT$ is either a subset of the boundary of the domain or a face of another $K_2 \in \meshT$.  
 	\end{enumerate}
 An example of an admissible mesh is shown in Fig.~\ref{fem:admissible}. The elements have non-empty interior, do not overlap, and all faces are either a subset of the boundary or a face of another element in the mesh. Figure \ref{fem:inadmissible} shows an inadmissible mesh that violates requirement \ref{fem:adjacent_elements} since there are faces in the mesh that correspond to only a subset of another element's boundary. 
@@ -343,18 +345,21 @@ By example, the transformation, Jacobian matrix, and determinant for the transfo
 
 The partial derivatives of the mesh transformation are computed by taking derivatives of the nodal basis functions. In other words, 
 	\begin{equation}
-		\F = \sum_i \x_{i} \otimes \hnabla \ell_i = \sum_{i} \begin{bmatrix} 
+		\F = \sum_i \x_{i} \otimes \hnabla \ell_i \,,
+	\end{equation}
+where $\x_{i} = \vector{x_{i} & y_{i}}$ and $\hnabla$ denotes the gradient with respect to $\vec{\xi}$. In two dimensions, this is equivalent to 
+	\begin{equation}
+		\mat{F} = \sum_{i} \begin{bmatrix} 
 			x_{i} \pderiv{\ell_i}{\xi} & x_{i} \pderiv{\ell_i}{\eta} \\
 			y_{i} \pderiv{\ell_i}{\xi} & y_{i} \pderiv{\ell_i}{\eta} 
-		\end{bmatrix} \,,
+		\end{bmatrix} \,. 
 	\end{equation}
-where $\x_{i} = \vector{x_{i} & y_{i}}$ and $\hnabla$ denotes the gradient with respect to $\vec{\xi}$. 
 
 A mesh transformation is called affine when it can be written as
 	\begin{equation}
 		\T = \mat{A}\vec{\xi} + \vec{b}
 	\end{equation}
-where $\mat{A}\in\R^{\dim\times\dim}$ and $\vec{b}\in\R^{\dim}$ are constant with respect to $\vec{\xi}$. In such case, the Jacobian matrix is $\mat{F} = \mat{A}$ and the Hessian of the transformation, defined as $\frac{\partial^2 \x}{\partial^2 \vec{\xi}}$, is identically zero. Quadrilateral elements obtained by scaling, stretching along the $\xi$ or $\eta$ axes, or rotating the reference element are all affine while general quadrilateral elements, such as trapezoidal elements, and curved elements are not affine. Note that for affine elements, the inverse transformation, denoted $\T^{-1}$, is given by  
+where $\mat{A}\in\R^{\dim\times\dim}$ and $\vec{b}\in\R^{\dim}$ are constant with respect to $\vec{\xi}$. In such case, the Jacobian matrix is $\mat{F} = \mat{A}$ and the Hessian of the transformation, defined as $\frac{\partial^2 \x}{\partial^2 \vec{\xi}}$, is identically zero. Quadrilateral elements obtained by scaling, stretching along the $\xi$ or $\eta$ axes, or rotating the reference element are all affine while general quadrilateral elements, such as trapezoidal elements, and curved elements are not affine. Note that for affine elements, the inverse transformation, denoted $\T^{-1} : K \rightarrow \hat{K}$, is given by  
 	\begin{equation}
 		\T^{-1}(\x) = \mat{A}^{-1}(\x - \vec{b})
 	\end{equation}
@@ -367,7 +372,7 @@ and is still polynomial. However, for non-affine elements, the inverse transform
 	\end{equation}
 which is not polynomial in the first coordinate. 
 
-We define $\Gamma$ as the set of unique faces in the mesh with $\Gamma_0 = \Gamma\setminus \partial\D$ the set of interior faces and $\Gamma_b = \Gamma \cap \partial\D$ the set of boundary faces so that $\Gamma = \Gamma_0 \cup \Gamma_b$. We denote the outward unit normal to element $K$ as $\n_K$. On an interior face $\mathcal{F} \in \Gamma_0$ between elements $K_1$ and $K_2$, we use the convention that $\n$ is the unit vector perpendicular to the shared face $K_1 \cap K_2$ pointing from $K_1$ to $K_2$ (see Fig.~\ref{fem:jump_avg}). On such an interior face, the jump, $\jump{\cdot}$, and average, $\avg{\cdot}$, are defined as 
+We define $\Gamma$ as the set of unique faces in the mesh with $\Gamma_0 = \Gamma\setminus \partial\D$ the set of interior faces and $\Gamma_b = \Gamma \cap \partial\D$ the set of boundary faces so that $\Gamma = \Gamma_0 \cup \Gamma_b$. We denote the outward unit normal to element $K$ as $\n_K$. On an interior face $\mathcal{F} \in \Gamma_0$ between elements $K_1$ and $K_2$, we use the convention that $\n$ is the unit vector perpendicular to the shared face $K_1 \cap K_2$ pointing from $K_1$ to $K_2$ (see Fig.~\ref{fem:jump_avg_diag}). On such an interior face, the jump, $\jump{\cdot}$, and average, $\avg{\cdot}$, are defined as 
 	\begin{equation} \label{fem:jump_avg}
 		\jump{u} = u_1 - u_2 \,, \quad \avg{u} = \frac{1}{2}(u_1 + u_2) \,, \quad \mathrm{on} \ \mathcal{F} \in \Gamma_0 \,, 
 	\end{equation}
@@ -376,10 +381,11 @@ On boundary faces, the jump and average are set to
 	\begin{equation} \label{fem:jump_avg_bdr}
 		\jump{u} = u \,, \quad \avg{u} = u \,, \quad \mathrm{on} \ \mathcal{F} \in \Gamma_b \,,
 	\end{equation}
-and likewise for vector-valued functions on the boundary. \todo{jumps and averages}
+and likewise for vector-valued functions on the boundary. A straightforward computation shows that 
 	\begin{equation} \label{fem:jumps_avg_id}
-		\jump{uv} = \jump{u}\avg{v} + \avg{u}\jump{v} \,. 
+		\sum_{K\in\meshT} \int_{\partial K} u\, \vec{v}\cdot\n_K \ud s = \int_\Gamma \jump{u} \avg{\vec{v}\cdot\n} \ud s + \int_{\Gamma_0} \avg{u}\jump{\vec{v}\cdot\n} \ud s \,. 
 	\end{equation}
+We refer to this as the ``jumps and averages identity.'' The restriction of the integration to the interior faces for the second term on the right side of Eq.~\ref{fem:jumps_avg_id} is used so that only one term contributes on the boundary of the mesh and is supported by the definition of the jump and average on the boundary of the domain. 
 
 We define the ``broken'' gradient, denoted by $\nablah$, obtained by applying the gradient locally on each element. That is, 
 	\begin{equation} \label{fem:broken_grad}
@@ -394,17 +400,17 @@ This distinction is important for the piecewise polynomial spaces discussed in S
 \centering
 \includegraphics[width=.65\textwidth]{figs/jump_avg.pdf}
 \caption{A depiction of a discontinuous, piecewise quadratic solution across two quadrilateral elements. The normal vector, $\n$, is defined as pointing from $K_1$ to $K_2$ along the face between $K_1$ and $K_2$.}
-\label{fem:jump_avg}
+\label{fem:jump_avg_diag}
 \end{figure}
+
+\section{Numerical Quadrature}
 
 \section{Integration Transformations}
 In this document, integration over the domain is implicitly computed as the following sum over reference elements: 
 	\begin{equation}
 		\int_\D \paren{\cdot} \ud \x = \sum_{K\in\meshT} \int_K \paren{\cdot} \ud \x = \sum_{K\in\meshT} \int_{\hat{K}} \paren{\cdot}\,J\!\ud \vec{\xi} \,. 
 	\end{equation}
-In addition, all integrals are implicitly computed using numerical quadrature on the reference element. 
-Integration over surfaces is performed over the one-dimensional reference element using the transformed element of surface area. 
-\todo{introduce}
+In this section, we present the machinery to transform integrands involving scalar and vector-valued functions and their derivatives between reference and physical space. These transformations allow integration over the arbitrary geometries defined by the map $\T$ using numerical quadrature rules defined on the reference element. These transformations and numerical quadrature are implicitly used to compute all of the bilinear and linear forms discussed in this document. 
 
 \subsection{The Scalar Case}
 For a scalar function $u : \D \rightarrow \R$, denote by $\hat{u} : \hat{K} \rightarrow \R$ its representation in reference space. The functions $u$ and $\hat{u}$ are related by 
@@ -450,6 +456,7 @@ The transformation of the gradient is derived using the chain rule. Observe that
 This derivation extends analogously to three dimensions. 
 
 \subsection{The Vector Case}
+Here, we present the transformations for vector-valued functions assuming $\dim = 2$ for the sake of brevity and note that the ideas presented here analogously extend to three dimensions. 
 For vector-valued functions, the basis the vector is defined on must also be considered. The simplest basis is the canonical basis, $\e_i$, corresponding to the $x$ and $y$ axes. In this case, a vector $\vec{v} : \D \rightarrow \R^2$ is 
 	\begin{equation} \label{fem:scalar_copies}
 		\vec{v} = v_1 \e_1 + v_2 \e_2 
@@ -504,13 +511,13 @@ For a contravariant vector, the usual method of selecting a component is now rep
 The cotangent space is associated with vectors normal to the faces. By representing the vector on the tangent space, the contravariant Piola transform allows selection of the component representing the normal component through $\n\cdot\vec{v}$. 
 Note that for non-affine meshes, $\mat{F}$ depends on $\vec{\xi}$ and thus the tangent and cotangent bases also depend on $\vec{\xi}$. 
 
-Figure \ref{fem:piola} depicts an example non-affine mesh transformation and the tangent and cotangent bases evaluated at the point $\vec{\xi} = (0,0)$. Observe that the pairs $(\bvec{t}_1, \bvec{n}_2)$ and $(\bvec{t}_2, \bvec{n}_1)$ are perpendicular. The pairs $(\bvec{t}_1, \bvec{n}_1)$ and $(\bvec{t}_2, \bvec{n}_2)$ do not point in the same direction but their magnitudes and directions balance so that $\bvec{t}_i\cdot \bvec{n}_i = 1$. Thus, the bi-orthogonality condition $\bvec{n}_i\cdot\bvec{t}_j = \delta_{ij}$ is satisfied. In addition, the tangent vectors and cotangent vectors are tangential and normal, respectively, to one of the faces connecting at the point $\vec{\xi} = (0,0)$. 
+Figure \ref{fem:piola_diag} depicts an example non-affine mesh transformation and the tangent and cotangent bases evaluated at the point $\vec{\xi} = (0,0)$. Observe that the pairs $(\bvec{t}_1, \bvec{n}_2)$ and $(\bvec{t}_2, \bvec{n}_1)$ are perpendicular. The pairs $(\bvec{t}_1, \bvec{n}_1)$ and $(\bvec{t}_2, \bvec{n}_2)$ do not point in the same direction but their magnitudes and directions balance so that $\bvec{t}_i\cdot \bvec{n}_i = 1$. Thus, the bi-orthogonality condition $\bvec{n}_i\cdot\bvec{t}_j = \delta_{ij}$ is satisfied. In addition, the tangent vectors and cotangent vectors are tangential and normal, respectively, to one of the faces connecting at the point $\vec{\xi} = (0,0)$. 
 % --- piola transform --- 
 \begin{figure}
 	\centering
 	\includegraphics[width=.85\textwidth]{figs/piola.pdf}
 	\caption{A depiction of the tangent and cotangent bases at the point $\vec{\xi} = (0,0)$ under a non-affine mesh transformation. }
-	\label{fem:piola}
+	\label{fem:piola_diag}
 \end{figure}
 
 For a contravariant vector, 
@@ -540,6 +547,8 @@ Combining the results from Eqs.~\ref{fem:piola_ibp1} and \ref{fem:piola_ibp2} yi
 where $\hat{\n}$ is the normal vector in reference space corresponding to the physical space normal $\n$. 
 In other words, the contravariant Piola transformation preserves the normal component. 
 
+\subsection{Transformation of Embedded Surfaces}
+
 \section{Finite Element Spaces} \label{fem_sec:fes}
 In this section, we define the finite element spaces used to approximate the VEF equations. Finite element spaces are defined on the mesh $\meshT$ or the interior skeleton of the mesh $\Gamma_0$ and consist of an element-local function space and a set of inter-element matching conditions. 
 The inter-element matching conditions enforce various types of continuity of the solution between elements. The combination of a locally smooth function space and suitable matching conditions allows finite element spaces to be discrete subspaces of Sobolev spaces such as $L^2(\D)$, $H^1(\D)$, and $H(\div;\D)$. The following subsections define the element-local function space and matching conditions used for the scalar flux, current, and the interface variable used later in hybridization of the mixed finite element method. 
@@ -549,15 +558,15 @@ The Discontinuous Galerkin (DG) space is a discrete subspace of $L^2(\D)$, the s
 	\begin{equation}
 		\int u^2 \ud \x < \infty \,. 
 	\end{equation}
-Since only square integrability is required, functions in $L^2(\D)$, and thus DG spaces, do not need to be continuous. DG functions are represented using piecewise-discontinuous polynomials that are defined on the reference element and mapped to the physical element using the inverse mesh transformation $\T_e^{-1}: K_e \rightarrow \hat{K}$. In other words, on each element, the solution belongs to: 
+Since only square integrability is required, functions in $L^2(\D)$, and thus DG spaces, do not need to be continuous. DG functions are represented using piecewise-discontinuous polynomials that are defined on the reference element and mapped to the physical element using the inverse mesh transformation $\T^{-1}: K \rightarrow \hat{K}$. In other words, on each element, the solution belongs to: 
 	\begin{equation}
-		\Qbb{p}(K_e) = \{ u = \hat{u} \circ \T_e^{-1} : \hat{u} \in \mathcal{Q}_p(\hat{K}) \}\,. 
+		\Qbb{p}(K) = \{ u = \hat{u} \circ \T^{-1} : \hat{u} \in \mathcal{Q}_p(\hat{K}) \}\,. 
 	\end{equation}
-The distinction between $\Qcal{p}$ and $\Qbb{p}(K_e)$ is important for non-affine mesh transformations. In such case, the inverse mesh transformation is generally non-polynomial so that the composition $u = \hat{u}\circ\T_e^{-1}$ is also non-polynomial. 
+The distinction between $\Qcal{p}$ and $\Qbb{p}(K)$ is important for non-affine mesh transformations. In such case, the inverse mesh transformation is generally non-polynomial so that the composition $u = \hat{u}\circ\T^{-1}$ is also non-polynomial. 
 
 The degree-$p$ DG space is 
 	\begin{equation}
-		Y_p = \{ u \in L^2(\D) : u|_{K_e} \in \Qbb{p}(K_e) \,, \quad \forall K_e \in \meshT \} \,. 
+		Y_p = \{ u \in L^2(\D) : u|_{K} \in \Qbb{p}(K) \,, \quad \forall K \in \meshT \} \,. 
 	\end{equation}
 An example of the distribution of the degrees of freedom in a linear DG space on a $3\times 3$ mesh is shown in Fig.~\ref{fem:dgfes}. Note that degrees of freedom are not shared between elements. Since there are no continuity requirements in the DG space, the basis for the local polynomials can use either open or closed points. That is, a nodal basis can be formed with Lagrange interpolating polynomials through the two-fold Cartesian product of either the closed Gauss-Lobatto points or the open Gauss-Legendre points. 
 % --- DG FES --- 
@@ -620,7 +629,7 @@ On the other hand, if $\vec{v} \in H(\div;\D)$ then $\nabla\cdot\vec{v} = \nabla
 hence, (b) holds.
 \end{proof}
 In other words, a discrete subspace of $H(\div;\D)$ must (a) have a smooth function space on each element and (b) have suitable matching conditions so that the normal component is continuous across interior mesh interfaces. 
-Figure \ref{fig:quiver} depicts an example vector in the space $H(\div;\D)$. 
+Figure \ref{fem:quiver} depicts an example vector in the space $H(\div;\D)$. 
 % --- RT quiver diagram --- 
 \begin{figure}
 	\centering
@@ -686,6 +695,7 @@ From Proposition \ref{prop:div}, $\vec{v} \in \RT_p$ satisfies $\nabla\cdot\vec{
 \end{figure}
 
 \subsection{Raviart Thomas Trace Space}
+\todo{make general for 2/3D?}
 The normal trace of the RT space is required for the hybridization procedure discussed in Section \ref{rtvef_sec:hyb}. This space is defined on the interior skeleton of the mesh $\Gamma_0$ and represents the normal component of the RT space along the interior mesh faces. Let $\mathcal{P}_p$ be the space of univariate polynomials with degree at most $p$ and 
 	\begin{equation}
 		\mathbb{P}_p(\mathcal{F}) = \{ u = \hat{u} \circ \T^{-1} : \hat{u} \in \mathcal{P}_p(\hat{\mathcal{F}}) \}
@@ -716,7 +726,7 @@ called the set of degrees of freedom for the space $X_h$. Defining functions $b_
 	\begin{equation}
 		b_i \in X_h \,, \quad b_i(\x_j) = \delta_{ij}\,, 1 \leq i,j \leq \dim(X_h) \,, 
 	\end{equation}
-it is seen that $\{b_i\}$ forms a basis for $X_h$. The $b_i$ are referred to as basis functions. A selection of basis functions for $V_1$, $V_2$, and $V_3$ in one dimension are depicted in Fig.~\ref{fem:fe_support_1d}. Observe that each $b_i$ is one at $x_i$ and zero for each $x_j$ where $i\neq j$ and that each basis function has a localized support. That is, the basis functions associated with the boundary of the domain are non-zero only on a single element. This is also true for the ``bubble'' basis functions corresponding to a node that is on the interior of an element (e.q.~$b_8$ in the middle diagram). Basis functions associated with a node shared by multiple elements are non-zero only those elements. This is demonstrated by $b_4$, $b_7$, and $b_{10}$ in the upper, middle, and lower diagrams, respectively. Figure \ref{fem:fe_support} shows a selection of basis functions for $V_1$ in two dimensions. Again, the basis functions are non-zero only in the elements that share a node. This property of local support was constructed by design to to keep the resulting algebraic system as computationally manageable and memory efficient as possible. 
+it is seen that $\{b_i\}$ forms a basis for $X_h$. The $b_i$ are referred to as basis functions. A selection of basis functions for $V_1$, $V_2$, and $V_3$ in one dimension are depicted in Fig.~\ref{fem:fe_support_1d}. Observe that each $b_i$ is one at $x_i$ and zero for each $x_j$ where $i\neq j$ and that each basis function has a localized support. That is, the basis functions associated with the boundary of the domain are non-zero only on a single element. This is also true for the ``bubble'' basis functions corresponding to a node that is on the interior of an element (e.g.~$b_8$ in the middle diagram). Basis functions associated with a node shared by multiple elements are non-zero only on those elements. This is demonstrated by $b_4$, $b_7$, and $b_{10}$ in the upper, middle, and lower diagrams, respectively. Figure \ref{fem:fe_support} shows a selection of basis functions for $V_1$ in two dimensions. Again, the basis functions are non-zero only in the elements that share a node. This property of local support was constructed by design to to keep the resulting algebraic system as computationally manageable and memory efficient as possible. 
 % --- 1D support diagram --- 
 \begin{figure}
 \centering
@@ -737,7 +747,7 @@ For DG spaces, degrees of freedom are not shared between elements. Thus, the glo
 
 Using this basis, a function $u \in X_h$ can be represented as 
 	\begin{equation}
-		u(\x) = \sum_i b_i(\T^{-1}(\x)) u_i 
+		u(\x) = \sum_i b_i(\x) u_i 
 	\end{equation}
 where $u_i \in \Sigma_h$ is the degree of freedom corresponding to $b_i$. 
 
