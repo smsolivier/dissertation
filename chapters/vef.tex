@@ -15,14 +15,14 @@ The linear Boltzmann equation that models this problem is:
 	\end{subequations}
 where $\psi(\x,\Omegahat)$ is the angular flux, $\D$ the domain of the problem with $\partial\D$ its boundary, $\sigma_t(\x)$ and $\sigma_s(\x)$ the total and scattering macroscopic cross sections, respectively, $q(\x,\Omegahat)$ the fixed-source, and $\bar{\psi}(\x,\Omegahat)$ the inflow boundary function. 
 
-In this chapter, we derive the \gls{vef} algorithm by taking angular moments of the transport equation given by Eq.~\ref{vef:transport}. Due to the streaming term, $\Omegahat\cdot\nabla\psi$, angular moments always produce more unknowns than equations. In VEF, an exact, trivial closure of the second moment is used so that the moment system is an \emph{equivalent reformulation} of the transport problem. Since the VEF closures are weak functions of the solution, iterative scheme can be designed to converge rapidly. We also discuss the mathematical properties of the VEF data and their impact on the structure of the VEF equations. The section concludes with a discussion of the two primary philosophies used to design discrete VEF methods. 
+In this chapter, we derive the \gls{vef} algorithm by taking angular moments of the transport equation given by Eq.~\ref{vef:transport}. Due to the streaming term, $\Omegahat\cdot\nabla\psi$, angular moments always produce more unknowns than equations. In VEF, an exact, trivial closure of the second moment is used so that the moment system is an \emph{equivalent reformulation} of the transport problem. Since the VEF closures are weak functions of the solution, iterative schemes can be designed to converge rapidly. We also discuss the mathematical properties of the VEF data and their impact on the structure of the VEF equations. The section concludes with a discussion of the two primary philosophies used to design discrete VEF methods. 
 
 \section{Derivation of the VEF Equations}
 Integrating the transport equation over angle yields 
 	\begin{equation}
 		\nabla\cdot\vec{J} + \sigma_a \varphi = Q_0 \,, 
 	\end{equation}
-where $\varphi$ and $\vec{J}$ are the zeroth and first angular moments of the angular flux, $Q_0$ the zeroth moment of the fixed source, $q$, and $\sigma_a(\x) = \sigma_t(\x) - \sigma_s(\x)$ the absorption cross section. Multiplying by $\Omegahat$ and integrating over angle yields the first moment equation: 
+where $\varphi = \int \psi \ud \Omega$ and $\vec{J} = \int \Omegahat\, \psi \ud \Omega$ are the zeroth and first angular moments of the angular flux, $Q_0$ the zeroth moment of the fixed source, $q$, and $\sigma_a(\x) = \sigma_t(\x) - \sigma_s(\x)$ the absorption cross section. Multiplying by $\Omegahat$ and integrating over angle yields the first moment equation: 
 	\begin{equation}
 		\nabla\cdot\P + \sigma_t \vec{J} = \vec{Q}_1 \,, 
 	\end{equation}
@@ -36,7 +36,7 @@ where
 	\begin{equation}
 		\E = \frac{\int \Omegahat\otimes\Omegahat\,\psi \ud \Omega}{\int \psi \ud \Omega} 
 	\end{equation}
-is the Eddington tensor. Note that this closure is an algebraic reformulation of the pressure derived by multiplying and dividing by the scalar flux. This is a trivial closure in that the solution to the transport equation, $\psi$, must be known to define the Eddington tensor. The VEF equations are then: 
+is the Eddington tensor. This closure is an algebraic reformulation of the pressure derived by multiplying and dividing by the scalar flux. The closure is trivial in that the solution to the transport equation, $\psi$, must be known to define the Eddington tensor. The VEF equations are then: 
 	\begin{subequations} \label{vef:vefeq}
 	\begin{equation}
 		\nabla\cdot\vec{J} + \sigma_a \varphi = Q_0 \,, 
@@ -95,7 +95,7 @@ VEF methods seek the solution of the coupled transport-VEF moment equations. For
 		-\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\paren{\E\varphi} + \sigma_a \varphi = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t} \,.
 	\end{equation}
 	\end{subequations}
-Boundary conditions are specified in Eqs.~\ref{vef:inflow} and \ref{vef:mlbc} for the transport and VEF drift-diffusion equations, respectively. Here, the transport equation's scattering source is coupled to the VEF drift-diffusion equation and the VEF drift-diffusion equation is nonlinearly coupled to the transport equation through the Eddington tensor and boundary factor. We have increased the complexity of the problem by adding the VEF scalar flux as an additional unknown and by casting the linear transport problem as nonlinear. However, properties of the VEF data and the transport equation allow this coupled, nonlinear system to be solved for efficiently than the transport equation in isolation. 
+Boundary conditions are specified in Eqs.~\ref{vef:inflow} and \ref{vef:mlbc} for the transport and VEF drift-diffusion equations, respectively. Here, the transport equation's scattering source is coupled to the VEF drift-diffusion equation and the VEF drift-diffusion equation is nonlinearly coupled to the transport equation through the Eddington tensor and boundary factor. We have increased the complexity of the problem by adding the VEF scalar flux as an additional unknown and by casting the linear transport problem as nonlinear. However, properties of the VEF data and the transport equation allow this coupled, nonlinear system to be solved more efficiently than the transport equation in isolation. 
 
 Let, 
 	\begin{equation}
@@ -126,7 +126,7 @@ where
 		G(\varphi) = \mat{R}\!\paren{\mat{L}^{-1}\!\paren{\frac{\sigma_s}{4\pi}\varphi + q}}^{-1}Q \,. 
 	\end{equation}
 The fixed-point operator $G$ is applied in two stages: 1) solve the transport equation using a scattering source formed from the VEF scalar flux and 2) solve the VEF drift-diffusion equation using the VEF data computed from the angular flux from stage 1). 
-Note that eliminating the angular means it appears only as an auxiliary variable used to computed the VEF data
+Note that eliminating the angular flux means it appears only as an auxiliary variable used to computed the VEF data.f
 This iteration is depicted in Fig.~\ref{vef:vef_alg}. 
 % --- depiction of coupling between VEF and transport --- 
 \begin{figure}
@@ -159,7 +159,7 @@ The Eddington tensor and boundary factor are defined as
 		E_b = \frac{\int|\Omegahat\cdot\n|\,\psi \ud \Omega}{\int \psi \ud \Omega} \,,
 	\end{equation}
 respectively. Observe that the Eddington tensor and boundary factor are $\psi$-weighted averages of $\Omegahat\otimes\Omegahat$ and $|\Omegahat\cdot\n|$, respectively. This means the VEF data are bounded functions of $\psi$. 
-Since the Eddington tensor is a $\psi$-weighted average of $\Omegahat\otimes\Omegahat$, its maximum and minimum occur at the maximum and minimum of $\Omegahat\otimes\Omegahat$. This can be seen by setting $\psi$ to be a Dirac delta function centered at an extreme value of $\Omegahat\otimes\Omegahat$. Due to to this, the Eddington tensor obeys the bounds 
+Using this property, the Eddington tensor's maximum and minimum occur at the maximum and minimum of $\Omegahat\otimes\Omegahat$. This can be seen by setting $\psi$ to be a Dirac delta function centered at an extreme value of $\Omegahat\otimes\Omegahat$. Due to to this, the Eddington tensor obeys the bounds 
 	\begin{equation}
 		\E_{ij} \in \begin{cases}
 			[0,1] \,, & i=j \\ 
@@ -207,7 +207,7 @@ Therefore, the VEF drift-diffusion equation with Miften-Larsen boundary conditio
 	
 \section{Functional Derivatives of the VEF Data} \label{vef_sec:gateaux}
 \subsection{The Gateaux Derivative}
-The Gateaux derivative is a generalization of the directional derivative that supports derivatives of functionals (i.e.~a function whose argument is a function) as well as complicated mathematical objects such as second-order tensors \cite{vainberg64}. Let $f : U\rightarrow V$ be a (possibly nonlinear) mapping from a space $U$ to a space $V$. For example, a simple scalar function $f(\x)$ would set $U = \R^{\dim}$ and $V = \R$. The Gateaux derivative of $f$ evaluated at $u\in U$ in the direction $v \in V$ is given by 
+The Gateaux derivative is a generalization of the directional derivative that supports derivatives of functionals (i.e.~a function whose argument is a function) as well as complicated mathematical objects such as second-order tensors \cite{vainberg64}. Let $f : X\rightarrow Y$ be a (possibly nonlinear) mapping from a space $X$ to a space $Y$. For example, a simple scalar function $f(\x)$ would set $X = \R^{\dim}$ and $Y = \R$. The Gateaux derivative of $f$ evaluated at $u\in X$ in the direction $v \in X$ is given by 
 	\begin{equation} \label{vef:gateaux_limit}
 		D[f](u,v) = \lim_{\omega\rightarrow 0} \frac{f(u+\omega v) - f(u)}{\omega} \,,
 	\end{equation}
@@ -223,7 +223,9 @@ where continuity of $f$ is used to move the limit outside of the brackets, the G
 	\begin{equation} \label{vef:gateaux}
 		D[f](u,v) = \bracket{\pderiv{}{\omega}f(u + \omega v)}_{\omega=0} \,. 
 	\end{equation}
-We favor Eq.~\ref{vef:gateaux} over Eq.~\ref{vef:gateaux_limit} as it leads to simpler calculations by leveraging the existing machinery of the partial derivative. As an example, if $u : \R^2 \rightarrow \R$ and $\vec{v} : \R^2 \rightarrow \R^2$, we can compute $\vec{v}\cdot\nabla u|_{\x}$ using the above definition as 
+We favor the definition in Eq.~\ref{vef:gateaux} over Eq.~\ref{vef:gateaux_limit} as it leads to simpler calculations by leveraging the existing machinery of the partial derivative. 
+
+As an example, if $u : \R^2 \rightarrow \R$ and $\vec{v} : \R^2 \rightarrow \R^2$, we can compute $\vec{v}\cdot\nabla u|_{\x}$ using the above definition as 
 	\begin{equation}
 		D[u](\x,\vec{v}) = \pderiv{}{\omega}\bracket{u(\x + \omega\vec{v})}_{\omega = 0} \,. 
 	\end{equation}
@@ -239,11 +241,12 @@ To particularize, let $u(\x) = xy$ and $\vec{v} = \vector{v_1 & v_2}$, then
 	\end{equation}
 This establishes the connection between the directional derivative and the Gateaux derivative. 
 
-In addition, in the context of a Newton method, the Gateaux derivative defines a systematic method for computing the action of the Jacobian. Consider the first-order Taylor series expansion of a function $f$ about $\x_0$: 
+In the context of a Newton method, the Gateaux derivative defines a systematic process for computing the action of the Jacobian. Consider the first-order Taylor series expansion of a function $f$ about $\x_0$: 
 	\begin{equation}
 		f(\x) \xrightarrow{\text{TSE}} f(\x_0) + \pderiv{f}{\x}\biggr\rvert_{\x_0}(\Delta \x) \,,
 	\end{equation}
-where $\Delta \x = \x - \x_0$. That is, the function $f$ is evaluated at $\x_0$ and the gradient of $f$ evaluated at $\x_0$ in the direction of $\Delta\x$ is added to form a linear approximation to $f$. Thus, we can alternatively write 
+where $\Delta \x = \x - \x_0$. That is, the function $f$ is approximated by its value at $\x_0$ and its gradient evaluated at $\x_0$ in the direction of $\Delta \x$. 
+Thus, we can alternatively write 
 	\begin{equation}
 		f(\x) \xrightarrow{\text{TSE}} f(\x_0) + D[f](\x_0, \Delta \x) \,. 
 	\end{equation}
@@ -348,9 +351,9 @@ However, since the transport equation allows discontinuous solutions in space an
 \section{Discrete VEF Schemes}
 The goal of this dissertation is to evaluate 
 	\begin{equation}
-		G(\varphi) = \mat{R}\!\paren{\mat{L}^{-1}\!\paren{\frac{\sigma_s}{4\pi}\varphi + q}}^{-1} Q \,. 
+		G(\varphi) = \mat{R}\!\paren{\mat{L}^{-1}\!\paren{\frac{\sigma_s}{4\pi}\varphi + q}}^{-1} Q 
 	\end{equation}
-numerically in a computationally efficient manner. Numerically approximating this operator requires defining 1) a discretization of the transport equation, 2) a representation for the Eddington tensor and boundary factor, and 3) a discretization for the VEF moment system. Discrete VEF methods are generally classified as consistent and independent based on their approach for defining the algorithmic choices corresponding to 2) and 3). Consistent methods are characterized by having discrete transport and VEF equations that are algebraically consistent. These methods produce solutions for the moment system that match the moments of the discrete transport equation to machine precision (or the minimum of the solver tolerances). In other words, the difference between the moments of the transport solution and the solution of the VEF moment system differ in a manner that is independent of the mesh size. Consistent methods are derived by forming moment equations from the \emph{discrete} transport equation and applying the VEF closures. This leads to a VEF discretization that is an equivalent reformulation of the discrete transport equation leading to the discrete equivalence that characterizes these methods. 
+numerically in a computationally efficient manner. Numerically approximating this operator requires defining 1) a discretization of the transport equation, 2) a representation for the Eddington tensor and boundary factor, and 3) a discretization for the VEF moment system. Discrete VEF methods are generally classified as consistent and independent based on their approach for defining the algorithmic choices corresponding to 2) and 3). Consistent methods are characterized by having discrete transport and VEF equations that are algebraically consistent. These methods produce solutions for the moment system that match the moments of the discrete transport equation to machine precision (or to the maximum value of the solver tolerances). In other words, the difference between the moments of the transport solution and the solution of the VEF moment system differ in a manner that is independent of the mesh size. Consistent methods are derived by forming moment equations from the \emph{discrete} transport equation and applying the VEF closures. This leads to a VEF discretization that is an equivalent reformulation of the discrete transport equation leading to the discrete equivalence that characterizes these methods. 
 
 On the other hand, independent VEF methods are characterized as having discrete transport and VEF equations that are not algebraically consistent. Due to this, the moments of the discrete transport solution and the VEF solution differ on the order of the spatial discretization error and are thus only equivalent in the limit as the spatial mesh is refined. Independent methods are derived by discretizing the continuous VEF equations without regard for the discretization used for the transport equation. Rapid convergence is maintained when the discrete VEF data are represented in a sufficiently consistent manner. 
 
@@ -363,7 +366,7 @@ Figure \ref{vef:commuting} depicts a commuting diagram for approximating the con
 \label{vef:commuting}
 \end{figure}
 
-Consistent methods are attractive in that they can be used in place of an existing transport method without changing the solution. This is particularly important in reactor physics applications where licensing restrictions may require that new methods exactly reproduce solutions produced by older methods. In addition, forming the discrete VEF system from the discrete transport equation provides a systematic process for steps 2) and 3) of the VEF method. While this provides a straightforward process for defining a consistent VEF method given a discrete transport equation, this often leads to VEF discretizations that are difficult to solve efficiently with existing linear solver technology. Furthermore, use of negative flux fixups to ensure positivity of the transport equation will render an otherwise consistent VEF method inconsistent. 
+Consistent methods are attractive in that they can be used in place of an existing transport method without changing the solution. This is particularly important in reactor physics applications where licensing restrictions may require that new methods exactly reproduce solutions produced by older methods. In addition, forming the discrete VEF system from the discrete transport equation provides a systematic process for steps 2) and 3) of the discrete VEF method. While this provides a straightforward process for defining a consistent VEF method given a discrete transport equation, this often leads to VEF discretizations that are difficult to solve efficiently with existing linear solver technology. Furthermore, use of negative flux fixups to ensure positivity of the transport equation will render an otherwise consistent VEF method inconsistent. 
 
 By contrast, the independent approach allows significant algorithmic flexibility. 
 \textcite{two-level-independent-warsa} compared the iterative efficiency of consistent and independent methods and saw equivalent convergence as long as the independent method properly represented the VEF data. In particular, using \gls{sn} angular quadrature and finite element interpolation produced independent methods that converged as rapidly as a consistent method. \todo{more benefits, might need to wait until intro is written}
