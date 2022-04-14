@@ -162,11 +162,10 @@ Such a general framework as Galerkin's method, however, does not provide a way t
 % \end{figure}
 
 \section{Local Polynomial Spaces}
-Both the mesh and the solution are represented with a polynomial space defined locally on each element. Let $\hat{K}$ denote the reference element which we set to the unit $\dim$-dimensional cube, $\hat{K} = [0,1]^{\dim}$. We define the space of univariate polynomials of degree less than or equal to $k$ as: 
+Both the mesh and the solution are represented with a polynomial space defined locally on each element. Let $\hat{K}^{\dim}$ denote the reference element which we set to the unit $\dim$-dimensional cube, $\hat{K} = [0,1]^{\dim}$. Where the dimension of the reference element is obvious, we omit the superscript. We define the space of univariate polynomials of degree less than or equal to $k$ as: 
 	\begin{equation}
-		\Pcal{k} = \{ p : \hat{K} \rightarrow \R : p = \sum_{i=0}^{k} \alpha_i x^i \,, \alpha_i \in \R\ \forall\,i \in [0,k]\} = \spn\{ 1, x, x^2, \ldots, x^k \} \,, 
+		\mathcal{P}_k(\hat{K}^1) = \{ p : \hat{K} \rightarrow \R : p = \sum_{i=0}^{k} \alpha_i x^i \,, \alpha_i \in \R\ \forall\,i \in [0,k]\} = \spn\{ 1, x, x^2, \ldots, x^k \} \,. 
 	\end{equation}
-where, in one dimension, $\hat{K} = [0,1]$. 
 Multi-dimensional polynomial spaces are built through tensor products of the one-dimensional space. The tensor product polynomial spaces are:  
 	\begin{equation}
 		\Qcal{m,n} = \{ p(x) q(y) : p \in \Pcal{m}\,, q \in \Pcal{n} \} 
@@ -255,6 +254,7 @@ The basis functions for $\Pcal{1}$, $\Pcal{2}$, and $\Pcal{3}$ through the Gauss
 Interpolation through the Gauss-Lobatto and Gauss-Legendre points both have the required properties to be accurate in the limit as $p\rightarrow \infty$. Thus, the choice of interpolating points is typically dictated by other aspects of the overall algorithm. Note that the Gauss-Lobatto points include the interval end points $0$ and $1$ while the Gauss-Legendre points do not. The bases resulting from Lagrange interpolation through the Gauss-Lobatto and Gauss-Legendre points are referred to as closed and open, respectively, due to this. The Gauss-Legendre basis has the beneficial property of diagonal mass matrices on affine meshes while the closed Gauss-Lobatto basis typically leads to sparser globally coupled systems since closed bases couple fewer degrees of freedom on interior faces. 
 
 \section{Description of the Mesh}
+\subsection{Admissible Tesselations}
 % --- admissible meshes --- 
 \begin{figure}
 \centering
@@ -284,8 +284,38 @@ In this document, we only consider the use of tensor product elements. That is, 
 		\item the elements do not overlap i.e.~for each distinct $K_1,K_2 \in \meshT$, $\mathring{K}_1 \cap \mathring{K}_2 = \emptyset$,
 		\item \label{fem:adjacent_elements}any face of $K_1 \in \meshT$ is either a subset of the boundary of the domain or a face of another $K_2 \in \meshT$.  
 	\end{enumerate}
-An example of an admissible mesh is shown in Fig.~\ref{fem:admissible}. The elements have non-empty interior, do not overlap, and all faces are either a subset of the boundary or a face of another element in the mesh. Figure \ref{fem:inadmissible} shows an inadmissible mesh that violates requirement \ref{fem:adjacent_elements} since there are faces in the mesh that correspond to only a subset of another element's boundary. 
+An example of an admissible mesh is shown in Fig.~\ref{fem:admissible}. The elements have non-empty interior, do not overlap, and all faces are either a subset of the boundary or a face of another element in the mesh. Figure \ref{fem:inadmissible} shows an inadmissible mesh that violates requirement \ref{fem:adjacent_elements} since there are faces in the mesh that correspond to only a subset of another element's boundary. Such a mesh is said to have ``hanging nodes'' which require a special treatment that we do not consider in this document. 
 
+\subsection{Mathematical Notation}
+We define $\Gamma$ as the set of unique faces in the mesh with $\Gamma_0 = \Gamma\setminus \partial\D$ the set of interior faces and $\Gamma_b = \Gamma \cap \partial\D$ the set of boundary faces so that $\Gamma = \Gamma_0 \cup \Gamma_b$. We denote the outward unit normal to element $K$ as $\n_K$. On an interior face $\mathcal{F} \in \Gamma_0$ between elements $K_1$ and $K_2$, we use the convention that $\n$ is the unit vector perpendicular to the shared face $K_1 \cap K_2$ pointing from $K_1$ to $K_2$ (see Fig.~\ref{fem:jump_avg_diag}). On such an interior face, the jump, $\jump{\cdot}$, and average, $\avg{\cdot}$, are defined as 
+	\begin{equation} \label{fem:jump_avg}
+		\jump{u} = u_1 - u_2 \,, \quad \avg{u} = \frac{1}{2}(u_1 + u_2) \,, \quad \mathrm{on} \ \mathcal{F} \in \Gamma_0 \,, 
+	\end{equation}
+where $u_i = u|_{K_i}$ with analogous definitions for vectors. Note that a continuous function $u$ satisfies $\jump{u} = 0$ on each interior face. 
+On boundary faces, the jump and average are set to 
+	\begin{equation} \label{fem:jump_avg_bdr}
+		\jump{u} = u \,, \quad \avg{u} = u \,, \quad \mathrm{on} \ \mathcal{F} \in \Gamma_b \,,
+	\end{equation}
+and likewise for vector-valued functions on the boundary. A straightforward computation shows that 
+	\begin{equation} \label{fem:jumps_avg_id}
+		\sum_{K\in\meshT} \int_{\partial K} u\, \vec{v}\cdot\n_K \ud s = \int_\Gamma \jump{u} \avg{\vec{v}\cdot\n} \ud s + \int_{\Gamma_0} \avg{u}\jump{\vec{v}\cdot\n} \ud s \,. 
+	\end{equation}
+We refer to this as the ``jumps and averages identity.'' The restriction of the integration to the interior faces for the second term on the right side of Eq.~\ref{fem:jumps_avg_id} is used so that only one term contributes on the boundary of the mesh and is supported by the definition of the jump and average on the boundary of the domain. 
+
+We define the ``broken'' gradient, denoted by $\nablah$, obtained by applying the gradient locally on each element. That is, 
+	\begin{equation} \label{fem:broken_grad}
+		(\nablah u)|_{K} = \nabla(u|_K) \,, \quad \forall K \in \meshT \,. 
+	\end{equation}
+This distinction is important for the piecewise polynomial spaces discussed in Section \ref{fem_sec:fes}. 
+% --- jumps and averages --- 
+\begin{figure}
+\centering
+\includegraphics[width=.65\textwidth]{figs/jump_avg.pdf}
+\caption{A depiction of a discontinuous, piecewise quadratic solution across two quadrilateral elements. The normal vector, $\n$, is defined as pointing from $K_1$ to $K_2$ along the face between $K_1$ and $K_2$.}
+\label{fem:jump_avg_diag}
+\end{figure}
+
+\subsection{Reference Transformations}
 Each element $K$ is obtained as the image of the reference element $\hat{K}$ under an invertible, polynomial mapping $\T : \hat{K} \rightarrow K$ with $\T \in [\Qcal{m}]^{\dim}$. 
 The mapping $\T$ is derived from a set of global control points and the element-local nodal basis for $\Qcal{m}$, denoted $\{\ell_i\}$. Figure \ref{fem:quadmesh} shows an example mesh where the control points labeled 2, 7, and 12 are shared so that the mesh coordinates are continuous across the interface between the two elements. 
 On each element, the mapping is 
@@ -323,6 +353,52 @@ In two dimensions, with $\x = \vector{x & y}$ and $\vec{\xi} = \vector{\xi & \et
 			\pderiv{y}{\xi} & \pderiv{y}{\eta} 
 		\end{bmatrix} \,.
 	\end{equation}
+The partial derivatives of the mesh transformation are computed by taking derivatives of the nodal basis functions. In other words, 
+	\begin{equation}
+		\F = \sum_i \x_{i} \otimes \hnabla \ell_i \,,
+	\end{equation}
+where $\hnabla$ denotes the gradient with respect to $\vec{\xi}$. In two dimensions, this is equivalent to 
+	\begin{equation}
+		\mat{F} = \sum_{i} \begin{bmatrix} 
+			x_{i} \pderiv{\ell_i}{\xi} & x_{i} \pderiv{\ell_i}{\eta} \\
+			y_{i} \pderiv{\ell_i}{\xi} & y_{i} \pderiv{\ell_i}{\eta} 
+		\end{bmatrix} \,, 
+	\end{equation}
+where $\x_{i} = \vector{x_{i} & y_{i}}$. 
+The characteristic mesh length, $h$, is computed using the Jacobian of the transformation as: 
+	\begin{equation}
+		h = \max_{K\in\meshT} \paren{\int_{\hat{K}} J \ud\vec{\xi}}^{1/\dim} \,.
+	\end{equation}
+
+A mesh transformation is called affine when it can be written as
+	\begin{equation}
+		\T = \mat{A}\vec{\xi} + \vec{b}
+	\end{equation}
+where $\mat{A}\in\R^{\dim\times\dim}$ and $\vec{b}\in\R^{\dim}$ are constant with respect to $\vec{\xi}$. In such case, the Jacobian matrix is $\mat{F} = \mat{A}$ and the Hessian of the transformation, defined as $\frac{\partial^2 \x}{\partial^2 \vec{\xi}}$, is identically zero. Quadrilateral elements obtained by scaling, stretching along the $\xi$ or $\eta$ axes, or rotating the reference element are all affine while general quadrilateral elements, such as trapezoidal elements, and curved elements are not affine. Note that for affine elements, the inverse transformation, denoted $\T^{-1} : K \rightarrow \hat{K}$, is given by  
+	\begin{equation}
+		\T^{-1}(\x) = \mat{A}^{-1}(\x - \vec{b})
+	\end{equation}
+and is still polynomial. However, for non-affine elements, the inverse transformation is generally not polynomial. 
+
+We conclude with a description of the reference transformation for the faces of the mesh. The faces $\mathcal{F} \in \Gamma$ are represented as $(\dim-1)$-dimensional surfaces embedded in the $\dim$-dimensional geometry. That is, a face in a two-dimensional problem is a one-dimensional line and a face in a three-dimensional problem is a two-dimensional plane. If $\mathcal{Q}_m(\hat{K}^{\dim})$ is used to define the volumetric reference transformation, the face is described by the polynomial $\mathcal{Q}_m(\hat{K}^{\dim-1})$ that interpolates through the nodal values corresponding to the face. 
+Let $\x_i$ denote the control points corresponding to a single face in the mesh. For the face between the two elements depicted in the mesh shown in Fig.~\ref{fem:quadmesh}, the $\x_i$ would consist of the position in two-dimensional space of the nodes labeled 2, 7, and 12. Letting $\{\ell_i\}$ denote the nodal basis for $\mathcal{Q}_m(\hat{K}^{\dim-1})$, the transformation for the face, denoted $\T_\mathcal{F} : \hat{K}^{\dim-1} \rightarrow \mathcal{F}$, is computed analogously to the volumetric transformation as: 
+	\begin{equation}
+		\T_\mathcal{F}(\vec{\xi}) = \sum_i \x_i \ell_i(\vec{\xi}) \,. 
+	\end{equation}
+However, for a face transformation, the referential coordinate, $\vec{\xi} \in \hat{K}^{\dim-1} \subset \R^{\dim-1}$, is of dimension one lower than that of the dimension of the mesh. In this way, the same machinery used for the volumetric transformation can be applied to the face. Analogously to the volumetric transformation, the Jacobian matrix is: 
+	\begin{equation}
+		\F_\mathcal{F} = \pderiv{\T_\mathcal{F}}{\vec{\xi}} \in \R^{\dim \times (\dim - 1)} \,. 
+	\end{equation}
+Since $\mathcal{F}$ is an embedded surface, the Jacobian matrix is no longer square and thus $|\F_\mathcal{F}|$ is no longer well defined. To that end, we define $J_\mathcal{F}$ as the Gram determinant: 
+	\begin{equation}
+		J_\mathcal{F} = \sqrt{\F^T \F} \,. 
+	\end{equation}
+We then have that the characteristic length of the face is 
+	\begin{equation}
+		h_\mathcal{F} = \paren{\int_{\hat{K}^{\dim-1}} J_\mathcal{F}\ud s}^{1/(\dim-1)} \,. 
+	\end{equation}
+
+\subsection{An Example Transformation: A Scaled Trapezoidal Element}
 By example, the transformation, Jacobian matrix, and determinant for the transformation depicted in Fig.~\ref{fem:trap_trans} are 
 	\begin{equation}
 		\T = \begin{bmatrix} 
@@ -335,35 +411,7 @@ By example, the transformation, Jacobian matrix, and determinant for the transfo
 		\end{bmatrix} \,, \quad 
 		J = 2 \alpha \eta h + h^2 \,. 
 	\end{equation}
-% --- trapezoidal transformation example --- 
-\begin{figure}
-\centering
-\includegraphics[width=.85\textwidth]{figs/trap_trans.pdf}
-\caption{An example of the mesh transformation associated with a linear quadrilateral element. }
-\label{fem:trap_trans}
-\end{figure}
-
-The partial derivatives of the mesh transformation are computed by taking derivatives of the nodal basis functions. In other words, 
-	\begin{equation}
-		\F = \sum_i \x_{i} \otimes \hnabla \ell_i \,,
-	\end{equation}
-where $\x_{i} = \vector{x_{i} & y_{i}}$ and $\hnabla$ denotes the gradient with respect to $\vec{\xi}$. In two dimensions, this is equivalent to 
-	\begin{equation}
-		\mat{F} = \sum_{i} \begin{bmatrix} 
-			x_{i} \pderiv{\ell_i}{\xi} & x_{i} \pderiv{\ell_i}{\eta} \\
-			y_{i} \pderiv{\ell_i}{\xi} & y_{i} \pderiv{\ell_i}{\eta} 
-		\end{bmatrix} \,. 
-	\end{equation}
-
-A mesh transformation is called affine when it can be written as
-	\begin{equation}
-		\T = \mat{A}\vec{\xi} + \vec{b}
-	\end{equation}
-where $\mat{A}\in\R^{\dim\times\dim}$ and $\vec{b}\in\R^{\dim}$ are constant with respect to $\vec{\xi}$. In such case, the Jacobian matrix is $\mat{F} = \mat{A}$ and the Hessian of the transformation, defined as $\frac{\partial^2 \x}{\partial^2 \vec{\xi}}$, is identically zero. Quadrilateral elements obtained by scaling, stretching along the $\xi$ or $\eta$ axes, or rotating the reference element are all affine while general quadrilateral elements, such as trapezoidal elements, and curved elements are not affine. Note that for affine elements, the inverse transformation, denoted $\T^{-1} : K \rightarrow \hat{K}$, is given by  
-	\begin{equation}
-		\T^{-1}(\x) = \mat{A}^{-1}(\x - \vec{b})
-	\end{equation}
-and is still polynomial. However, for non-affine elements, the inverse transformation is generally not polynomial. For example, the inverse of the transformation shown in Fig.~\ref{fem:trap_trans} is 
+For example, the inverse of the transformation shown in Fig.~\ref{fem:trap_trans} is 
 	\begin{equation}
 		\T^{-1}(\x) = \begin{bmatrix} 
 			\frac{h x + \alpha y}{h^2 + 2\alpha y} \\ 
@@ -371,36 +419,12 @@ and is still polynomial. However, for non-affine elements, the inverse transform
 		\end{bmatrix} \,,
 	\end{equation}
 which is not polynomial in the first coordinate. 
-
-We define $\Gamma$ as the set of unique faces in the mesh with $\Gamma_0 = \Gamma\setminus \partial\D$ the set of interior faces and $\Gamma_b = \Gamma \cap \partial\D$ the set of boundary faces so that $\Gamma = \Gamma_0 \cup \Gamma_b$. We denote the outward unit normal to element $K$ as $\n_K$. On an interior face $\mathcal{F} \in \Gamma_0$ between elements $K_1$ and $K_2$, we use the convention that $\n$ is the unit vector perpendicular to the shared face $K_1 \cap K_2$ pointing from $K_1$ to $K_2$ (see Fig.~\ref{fem:jump_avg_diag}). On such an interior face, the jump, $\jump{\cdot}$, and average, $\avg{\cdot}$, are defined as 
-	\begin{equation} \label{fem:jump_avg}
-		\jump{u} = u_1 - u_2 \,, \quad \avg{u} = \frac{1}{2}(u_1 + u_2) \,, \quad \mathrm{on} \ \mathcal{F} \in \Gamma_0 \,, 
-	\end{equation}
-where $u_i = u|_{K_i}$ with analogous definitions for vectors. Note that a continuous function $u$ satisfies $\jump{u} = 0$ on each interior face. 
-On boundary faces, the jump and average are set to 
-	\begin{equation} \label{fem:jump_avg_bdr}
-		\jump{u} = u \,, \quad \avg{u} = u \,, \quad \mathrm{on} \ \mathcal{F} \in \Gamma_b \,,
-	\end{equation}
-and likewise for vector-valued functions on the boundary. A straightforward computation shows that 
-	\begin{equation} \label{fem:jumps_avg_id}
-		\sum_{K\in\meshT} \int_{\partial K} u\, \vec{v}\cdot\n_K \ud s = \int_\Gamma \jump{u} \avg{\vec{v}\cdot\n} \ud s + \int_{\Gamma_0} \avg{u}\jump{\vec{v}\cdot\n} \ud s \,. 
-	\end{equation}
-We refer to this as the ``jumps and averages identity.'' The restriction of the integration to the interior faces for the second term on the right side of Eq.~\ref{fem:jumps_avg_id} is used so that only one term contributes on the boundary of the mesh and is supported by the definition of the jump and average on the boundary of the domain. 
-
-We define the ``broken'' gradient, denoted by $\nablah$, obtained by applying the gradient locally on each element. That is, 
-	\begin{equation} \label{fem:broken_grad}
-		(\nablah u)|_{K} = \nabla(u|_K) \,, \quad \forall K \in \meshT \,. 
-	\end{equation}
-This distinction is important for the piecewise polynomial spaces discussed in Section \ref{fem_sec:fes}. Finally, the characteristic mesh length, $h$, is computed with 
-	\begin{equation}
-		h = \max_{K\in\meshT} \paren{\int_{\hat{K}} J \ud\vec{\xi}}^{1/\dim} \,.
-	\end{equation}
-% --- jumps and averages --- 
+% --- trapezoidal transformation example --- 
 \begin{figure}
 \centering
-\includegraphics[width=.65\textwidth]{figs/jump_avg.pdf}
-\caption{A depiction of a discontinuous, piecewise quadratic solution across two quadrilateral elements. The normal vector, $\n$, is defined as pointing from $K_1$ to $K_2$ along the face between $K_1$ and $K_2$.}
-\label{fem:jump_avg_diag}
+\includegraphics[width=.85\textwidth]{figs/trap_trans.pdf}
+\caption{An example of the mesh transformation associated with a linear quadrilateral element. }
+\label{fem:trap_trans}
 \end{figure}
 
 \section{Numerical Quadrature}
@@ -702,8 +726,6 @@ Using the Piola identity and Eq.~\ref{fem:nablaE_trans}, we have that
 	\end{aligned}
 	\end{equation}
 Thus, in the thick diffusion limit when $\E \propto \I$, $\nabla\vec{v} : \E$ simplifies to the standard transformation for the divergence of a contravariant vector.
-
-\subsection{\todo{Transformations on Embedded Surfaces}}
 
 \section{Finite Element Spaces} \label{fem_sec:fes}
 In this section, we define the finite element spaces used to approximate the VEF equations. Finite element spaces are defined on the mesh $\meshT$ or the interior skeleton of the mesh $\Gamma_0$ and consist of an element-local function space and a set of inter-element matching conditions. 
