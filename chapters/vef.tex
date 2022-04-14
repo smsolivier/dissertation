@@ -150,7 +150,7 @@ In addition, defining the nonlinear residual as
 	\end{equation}
 root-finding methods such as \gls{jfnk} can be used. JFNK builds a new Krylov space to approximate the gradient of $F$ \emph{at each iteration} meaning information across iterations is not kept. JFNK typically required significantly more evaluations of $G$ than Anderson-accelerated fixed-point iteration. Since evaluating $G$ involves inverting the transport equation, this significantly increases the expense of the algorithm. Thus, we present results using fixed-point iteration and Anderson-accelerated fixed-point iteration only. 
 
-\section{Properties of the VEF Data}
+\section{Bounds and Asymptotic Limits of the VEF Data}
 The Eddington tensor and boundary factor are defined as 
 	\begin{equation}
 		\E = \frac{\int\Omegahat\otimes\Omegahat\,\psi \ud \Omega}{\int \psi \ud \Omega}\,,
@@ -159,9 +159,6 @@ The Eddington tensor and boundary factor are defined as
 		E_b = \frac{\int|\Omegahat\cdot\n|\,\psi \ud \Omega}{\int \psi \ud \Omega} \,,
 	\end{equation}
 respectively. Observe that the Eddington tensor and boundary factor are $\psi$-weighted averages of $\Omegahat\otimes\Omegahat$ and $|\Omegahat\cdot\n|$, respectively. This means the VEF data are bounded functions of $\psi$. 
-The following subsections use this fact to establish bounds and asymptotic limits for the Eddington tensor and boundary factor. We also derive the Gateaux derivative of the VEF data to show their weak dependence on the solution. 
-
-\subsection{Bounds and Asymptotic Limits}
 Since the Eddington tensor is a $\psi$-weighted average of $\Omegahat\otimes\Omegahat$, its maximum and minimum occur at the maximum and minimum of $\Omegahat\otimes\Omegahat$. This can be seen by setting $\psi$ to be a Dirac delta function centered at an extreme value of $\Omegahat\otimes\Omegahat$. Due to to this, the Eddington tensor obeys the bounds 
 	\begin{equation}
 		\E_{ij} \in \begin{cases}
@@ -198,7 +195,7 @@ and thus
 		E_b = \frac{f(\x)/2}{f(\x)} = \frac{1}{2} 
 	\end{equation}
 in the thick diffusion limit. 
-Therefore, in the thick diffusion limit, the VEF drift-diffusion equation with Miften-Larsen boundary conditions limits to radiation diffusion with Marshak boundary condition: 
+Therefore, the VEF drift-diffusion equation with Miften-Larsen boundary conditions limits to the radiation diffusion equation with Marshak boundary conditions: 
 	\begin{subequations}
 	\begin{equation}
 		-\nabla\cdot\frac{1}{3\sigma_t}\nabla\varphi + \sigma_a \varphi = Q \,, \quad \x \in \D \,, 
@@ -208,13 +205,56 @@ Therefore, in the thick diffusion limit, the VEF drift-diffusion equation with M
 	\end{equation}
 	\end{subequations}
 	
-\subsection{Functional Derivatives} \label{vef_sec:gateaux}
-\todo{relation to linearization/SMM}
-Here, we use the Gateaux derivative to investigate the dependence of the VEF data on the angular flux. The Gateaux derivative is a generalization of the directional derivative that supports derivatives of functionals. The Gateaux derivative of a functional $f$ at $u$ in the direction $v$ is defined as: 
-	\begin{equation}
-		D[f](u,v) = \pderiv{}{\omega}\bracket{f(u + \omega v)}_{\omega = 0} \,. 
+\section{Functional Derivatives of the VEF Data} \label{vef_sec:gateaux}
+\subsection{The Gateaux Derivative}
+The Gateaux derivative is a generalization of the directional derivative that supports derivatives of functionals (i.e.~a function whose argument is a function) as well as complicated mathematical objects such as second-order tensors \cite{vainberg64}. Let $f : U\rightarrow V$ be a (possibly nonlinear) mapping from a space $U$ to a space $V$. For example, a simple scalar function $f(\x)$ would set $U = \R^{\dim}$ and $V = \R$. The Gateaux derivative of $f$ evaluated at $u\in U$ in the direction $v \in V$ is given by 
+	\begin{equation} \label{vef:gateaux_limit}
+		D[f](u,v) = \lim_{\omega\rightarrow 0} \frac{f(u+\omega v) - f(u)}{\omega} \,,
 	\end{equation}
-Applying this to the Eddington tensor, the derivative of the Eddington tensor at $\psi_0$ in the direction $\psi'$ is 
+where $\omega\in \R$. Since 
+	\begin{equation}
+	\begin{aligned}
+		\bracket{\pderiv{}{\omega}f(u + \omega v)}_{\omega=0} &= \bracket{\lim_{\Delta\omega \rightarrow 0} \frac{f(u+(\omega+\Delta\omega)v) - f(u + \omega v)}{\Delta\omega}}_{\omega=0} \\
+		&= \lim_{\Delta\omega \rightarrow 0}\bracket{\frac{f(u + \omega v + \Delta\omega v) - f(u + \omega v)}{\Delta\omega}}_{\omega=0} \\
+		&= \lim_{\Delta\omega\rightarrow 0} \frac{f(u + \Delta\omega v) - f(u)}{\Delta\omega} \,,
+	\end{aligned}
+	\end{equation}
+where continuity of $f$ is used to move the limit outside of the brackets, the Gateaux derivative can also be equivalently be written 
+	\begin{equation} \label{vef:gateaux}
+		D[f](u,v) = \bracket{\pderiv{}{\omega}f(u + \omega v)}_{\omega=0} \,. 
+	\end{equation}
+We favor Eq.~\ref{vef:gateaux} over Eq.~\ref{vef:gateaux_limit} as it leads to simpler calculations by leveraging the existing machinery of the partial derivative. As an example, if $u : \R^2 \rightarrow \R$ and $\vec{v} : \R^2 \rightarrow \R^2$, we can compute $\vec{v}\cdot\nabla u|_{\x}$ using the above definition as 
+	\begin{equation}
+		D[u](\x,\vec{v}) = \pderiv{}{\omega}\bracket{u(\x + \omega\vec{v})}_{\omega = 0} \,. 
+	\end{equation}
+To particularize, let $u(\x) = xy$ and $\vec{v} = \vector{v_1 & v_2}$, then 
+	\begin{equation}
+	\begin{aligned}
+		D[u](\x,\vec{v}) &= \pderiv{}{\omega}\bracket{(x+\omega v_1)(y + \omega v_2)}_{\omega = 0} \\
+		&= \pderiv{}{\omega}\bracket{xy + \omega(xv_2 + yv_1) + \omega^2 v_1 v_2}_{\omega = 0} \\
+		&= \bracket{xv_2 + yv_1 + 2\omega v_1 v_2}_{\omega = 0} \\
+		&= x v_2 + y v_1 \\ 
+		&= \vec{v} \cdot \nabla (xy) \,. 
+	\end{aligned}
+	\end{equation}
+This establishes the connection between the directional derivative and the Gateaux derivative. 
+
+In addition, in the context of a Newton method, the Gateaux derivative defines a systematic method for computing the action of the Jacobian. Consider the first-order Taylor series expansion of a function $f$ about $\x_0$: 
+	\begin{equation}
+		f(\x) \xrightarrow{\text{TSE}} f(\x_0) + \pderiv{f}{\x}\biggr\rvert_{\x_0}(\Delta \x) \,,
+	\end{equation}
+where $\Delta \x = \x - \x_0$. That is, the function $f$ is evaluated at $\x_0$ and the gradient of $f$ evaluated at $\x_0$ in the direction of $\Delta\x$ is added to form a linear approximation to $f$. Thus, we can alternatively write 
+	\begin{equation}
+		f(\x) \xrightarrow{\text{TSE}} f(\x_0) + D[f](\x_0, \Delta \x) \,. 
+	\end{equation}
+In this way, the Gateaux derivative provides a process for linearizing any $f$ even when $f$ is a tensor-valued functional and the argument $\x$ is itself a function. For example, we can linearize the Eddington tensor about some angular flux $\psi_0$ using: 
+	\begin{equation}
+		\E(\psi) \xrightarrow{\text{TSE}} \E(\psi_0) + D[\E](\psi_0,\psi') \,. 
+	\end{equation}
+This linearization is used in this section to investigate the properties of the Eddington tensor and is also used in Chapter \ref{chap:smm} to derive discrete \glspl{smm}. 
+
+\subsection{Linearization of the VEF Data}
+Applying the definition in Eq.~\ref{vef:gateaux} to the Eddington tensor, the derivative of the Eddington tensor evaluated at $\psi_0$ in the direction $\psi'$ is 
 	\begin{equation}
 	\begin{aligned}
 		D[\E](\psi_0,\psi') &= \pderiv{}{\omega} \bracket{\E(\psi_0 + \omega\psi')}_{\omega=0} \\
@@ -232,11 +272,30 @@ where $\phi_0$ and $\P_0$ are the zeroth and second moments of $\psi_0$ and $\ph
 	\end{aligned}
 	\end{equation}
 where $\E_0 = \P_0/\phi_0$ is the Eddington tensor evaluated at $\psi = \psi_0$. 
-Thus, the derivative of the Eddington tensor evaluated at $\psi_0$ is 
+Thus, the derivative of the Eddington tensor evaluated at $\psi_0$ in the direction $\psi'$ is: 
 	\begin{equation} \label{vef:Edd_deriv}
-		D[\E](\psi_0,\cdot) = \frac{1}{\phi_0} \paren{\int \Omegahat\otimes\Omegahat\paren{\cdot}\ud\Omega - \E_0\int \paren{\cdot}\ud \Omega} \,. 
+		D[\E](\psi_0,\psi') = \frac{1}{\phi_0} \paren{\int \Omegahat\otimes\Omegahat\,\psi'\ud\Omega - \E_0\int \psi' \ud \Omega} \,. 
 	\end{equation}
-Observe that when $\psi' = \alpha \psi_0$, for some $\alpha \in \R$, 
+Note that $D[\E](\psi_0,\psi')$ is also a second-order tensor. The above process applies analogously to the boundary factor. 
+The Gateaux derivative of the boundary factor at $\psi_0$ in the direction $\psi'$ is 
+	\begin{equation} \label{vef:Eb_deriv}
+	\begin{aligned}
+		D[E_b](\psi_0,\psi') &= \pderiv{}{\omega}\bracket{E_b(\psi + \omega\psi')}_{\omega=0} \\ 
+		&= \pderiv{}{\omega}\bracket{\frac{\int |\Omegahat\cdot\n|\paren{\psi_0 + \omega\psi'} \ud \Omega}{\int \psi_0 + \omega\psi' \ud \Omega}}_{\omega=0} \\
+		&= \frac{\paren{\int \psi_0 + \omega\psi' \ud \Omega}\paren{\int |\Omegahat\cdot\n|\,\psi'\ud\Omega} - \paren{\int |\Omegahat\cdot\n|\paren{\psi_0 + \omega\psi'}\ud\Omega}\paren{\int\psi'\ud\Omega}}{\paren{\int \psi_0 + \omega\psi' \ud \Omega}^2} \biggr\rvert_{\omega=0} \\
+		&= \frac{1}{\phi_0}\bracket{\int |\Omegahat\cdot\n|\,\psi' \ud \Omega - E_{b0} \int \psi' \ud \Omega} \,,
+	\end{aligned}
+	\end{equation}
+
+\subsection{Intuition for the Rapid Convergence of the VEF Algorithm}
+The rapid convergence of VEF algorithms is due to the VEF data having weak dependence on the angular flux as characterized by having small Gateaux derivatives \cite{goldin}. Linearizing the Eddington tensor about the previous iteration yields: 
+	\begin{equation} \label{vef:edd_lin}
+		\E(\psi) \approx \E(\psi^\ell) + D[\E](\psi^\ell,\psi') \,. 
+	\end{equation}
+If we set $\psi'$ to be the error at iteration $\ell$ such that $\psi' = \psi - \psi^\ell$ with $\psi$ the solution of the transport problem, the above linearization provides an approximation for how the Eddington tensor will change as the algorithm proceeds to the next iteration. Note that the VEF algorithm converges when the VEF data converge. Thus, if the size of $D[E](\psi^\ell,\psi - \psi^\ell)$ is small enough relative to the iteration's stopping tolerance, the Eddington tensor will change by an amount small enough to allow the iteration to terminate. 
+
+We now show three examples of pairs of evaluation points, $\psi_0$, and directions, $\psi'$, where the Gateaux derivative is zero. In these cases, the Eddington tensor evaluated at $\psi_0$ is an approximation to the true Eddington tensor to the accuracy of the linearization process (e.g.~$\mathcal{O}(\psi')^2$). 
+First, consider the direction being a scalar multiple of $\psi_0$ such that $\psi' = \alpha \psi_0$ for some $\alpha \in \R$. The Gateaux derivative for this case is: 
 	\begin{equation}
 		D[\E](\psi_0,\alpha\psi_0) = \frac{1}{\phi_0}\paren{\int \Omegahat\otimes\Omegahat\,\alpha\psi_0 \ud\Omega - \E_0 \int \alpha \psi_0 \ud \Omega} = \frac{\alpha}{\phi_0}\paren{\P_0 - \P_0} = 0 \,,
 	\end{equation}
