@@ -380,16 +380,17 @@ where $\mat{A}\in\R^{\dim\times\dim}$ and $\vec{b}\in\R^{\dim}$ are constant wit
 	\end{equation}
 and is still polynomial. However, for non-affine elements, the inverse transformation is generally not polynomial. 
 
-We conclude with a description of the reference transformation for the faces of the mesh. The faces $\mathcal{F} \in \Gamma$ are represented as $(\dim-1)$-dimensional surfaces embedded in the $\dim$-dimensional geometry. That is, a face in a two-dimensional problem is a one-dimensional line and a face in a three-dimensional problem is a two-dimensional plane. If $\mathcal{Q}_m(\hat{K}^{\dim})$ is used to define the volumetric reference transformation, the face is described by the polynomial $\mathcal{Q}_m(\hat{K}^{\dim-1})$ that interpolates through the nodal values corresponding to the face. 
+\subsection{Reference Transformations for Embedded Surfaces}
+The faces $\mathcal{F} \in \Gamma$ are represented as $(\dim-1)$-dimensional surfaces embedded in the $\dim$-dimensional geometry. That is, a face in a two-dimensional problem is a one-dimensional line and a face in a three-dimensional problem is a two-dimensional plane. If $\mathcal{Q}_m(\hat{K}^{\dim})$ is used to define the volumetric reference transformation, the face is described by the polynomial $\mathcal{Q}_m(\hat{K}^{\dim-1})$ that interpolates through the nodal values corresponding to the face. 
 Let $\x_i$ denote the control points corresponding to a single face in the mesh. For the face between the two elements depicted in the mesh shown in Fig.~\ref{fem:quadmesh}, the $\x_i$ would consist of the position in two-dimensional space of the nodes labeled 2, 7, and 12. Letting $\{\ell_i\}$ denote the nodal basis for $\mathcal{Q}_m(\hat{K}^{\dim-1})$, the transformation for the face, denoted $\T_\mathcal{F} : \hat{K}^{\dim-1} \rightarrow \mathcal{F}$, is computed analogously to the volumetric transformation as: 
 	\begin{equation}
 		\T_\mathcal{F}(\vec{\xi}) = \sum_i \x_i \ell_i(\vec{\xi}) \,. 
 	\end{equation}
-However, for a face transformation, the referential coordinate, $\vec{\xi} \in \hat{K}^{\dim-1} \subset \R^{\dim-1}$, is of dimension one lower than that of the dimension of the mesh. In this way, the same machinery used for the volumetric transformation can be applied to the face. Analogously to the volumetric transformation, the Jacobian matrix is: 
+However, for a face transformation, the referential coordinate, $\vec{\xi} \in \hat{K}^{\dim-1} \subset \R^{\dim-1}$, is of dimension one lower than that of the dimension of the mesh. Analogously to the volumetric transformation, the Jacobian matrix is: 
 	\begin{equation}
 		\F_\mathcal{F} = \pderiv{\T_\mathcal{F}}{\vec{\xi}} \in \R^{\dim \times (\dim - 1)} \,. 
 	\end{equation}
-Since $\mathcal{F}$ is an embedded surface, the Jacobian matrix is no longer square and thus $|\F_\mathcal{F}|$ is no longer well defined. To that end, we define $J_\mathcal{F}$ as the Gram determinant: 
+Since $\mathcal{F}$ is an embedded surface, the Jacobian matrix is no longer square and thus $|\F_\mathcal{F}|$ is no longer well defined. To that end, we define $J_\mathcal{F}$ using the Gram determinant: 
 	\begin{equation}
 		J_\mathcal{F} = \sqrt{\F^T \F} \,. 
 	\end{equation}
@@ -397,6 +398,11 @@ We then have that the characteristic length of the face is
 	\begin{equation}
 		h_\mathcal{F} = \paren{\int_{\hat{K}^{\dim-1}} J_\mathcal{F}\ud s}^{1/(\dim-1)} \,. 
 	\end{equation}
+The normal vector to the face $\mathcal{F}$ can be computed with Nanson's formula \cite{oden1971finite,ciarlet_elasticity}: 
+	\begin{equation}
+		\n \ud s = J \mat{F}^{-T} \hat{\n} \ud \hat{s} \,,
+	\end{equation}
+where $\mat{F}$ and $J$ are the volumetric Jacobian matrix and determinant evaluated on the face $\mathcal{F}$ and $\hat{\n}$ is the normal vector in reference space. Such a formula is advantageous when only the volumetric transformations are accessible. The normal direction can be also be computed by leveraging the fact that the gradient of the embedded transformation points \emph{tangent} to the face. The normal is then computed by rotating the tangent vector. Since $\F_\mathcal{F}$ is the gradient of $\T_\mathcal{F}$, its columns represent vectors that are tangent to $\mathcal{F}$. \todo{how to rotate to get normal}
 
 \subsection{An Example Transformation: A Scaled Trapezoidal Element}
 By example, the transformation, Jacobian matrix, and determinant for the transformation depicted in Fig.~\ref{fem:trap_trans} are 
