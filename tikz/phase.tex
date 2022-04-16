@@ -15,8 +15,7 @@
 			\subnode{psi_nu}{$\nu$}, 
 			\subnode{psi_t}{$t$})
 	}; 
-	\tiny
-	\node[anchor=north, label=south:3D hydro grid] (space) at ($(psi) + (-3cm,-1.25cm)$) {
+	\node[anchor=north] (space) at ($(psi) + (-3cm,-1.25cm)$) {
 		\begin{tikzpicture}[scale=.175]
 			\foreach \x in{0,...,4}
 			{   
@@ -29,19 +28,25 @@
 			}
 		\end{tikzpicture}
 	}; 
+	\node[below, scale=.5] at (space.south) {3D spatial grid}; 
 	\draw[arrow] (psi_x) to (space); 
-	\node[anchor=north, label=south:2D angular grid] (angular) at ($(psi) + (-1cm,-1.5cm)$) {
+	\node[anchor=north] (angular) at ($(psi) + (-1cm,-1.5cm)$) {
 		\includegraphics[width=2.8cm, trim=0 75 0 75, clip]{../data/img/sphere.pdf}
 	};
+	\node[below, scale=.5] at (angular.south) {2D angular grid}; 
 	\draw[arrow] (psi_omega) to (angular); 
-	\node[anchor=north, label=south:1D frequency grid] at ($(psi)+(1.25cm,-1.75cm)$) (energy) {
+	\node[anchor=north] at ($(psi)+(1.25cm,-1.75cm)$) (energy) {
 		\begin{tikzpicture}[scale=.15]
 			\draw[step=1] (0,-.2) grid (10,.2); 
 		\end{tikzpicture}
 	};
-	\draw[arrow] (psi_nu) to ([yshift=1.5em]energy); 
-	\node[single arrow, draw, minimum height=6em, single arrow head extend=1ex,inner sep=1ex, fill=black, shape border rotate=90, label=south:1D time dependence] at ($(psi)+(3.25cm,-.75cm)$) (time) {}; 
+	\node[below, scale=.5] at (energy.south) {1D frequency grid}; 
+	\draw[arrow] (psi_nu) to ([yshift=1em]energy); 
+	\tiny
+	\node[single arrow, draw, minimum height=6em, single arrow head extend=1ex,inner sep=1ex, fill=black, shape border rotate=90] at ($(psi)+(3.25cm,-.75cm)$) (time) {}; 
 	\draw[arrow] (psi_t) to ([xshift=-1em,yshift=-1.5em]time); 
+	\Large
+	\node[below, scale=.5] at (time.south) {1D time dependence}; 
 \end{tikzpicture}
 
 \end{document}
