@@ -423,7 +423,7 @@ Alternatively, Nanson's formula \cite{ciarlet_elasticity,oden1971finite}:
 	\end{equation}
 can be used to compute the normal vector. Here, $\hat{n}$ and $\ud \hat{s}$ are the normal and magnitude of the face in reference space, respectively. Note that the \emph{volumetric} Jacobian matrix and determinant are used. The normal vector is then 
 	\begin{equation}
-		\n = \frac{J \F^{-T} \hat{\n}}{\| J \F^{-T} \hat{\n}\|} \,. 
+		\n = \frac{\F^{-T} \hat{\n}}{\| \F^{-T} \hat{\n}\|} \,. 
 	\end{equation}
 This formulation is advantageous when only the volumetric transformations are accessible. However, it requires knowledge of the location of the desired face in reference space (in order to find the reference coordinate to evaluate $J$ and $\F$ at) as well as the corresponding referential normal vector. 
 
@@ -469,7 +469,7 @@ represent the matrix of gradients of each of the nodal basis functions, the Jaco
 	\end{equation}
 so that 
 	\begin{equation}
-		\F = \begin{bmatrix} 
+		\F = \begin{bmatrix} \label{fem:Jacobian_example}
 			2 \alpha \eta + h & \alpha(2\xi - 1) \\ 
 			& h 
 		\end{bmatrix} \,. 
@@ -498,7 +498,7 @@ We conclude with a computation of the embedded transformation associated with th
 	\begin{equation}
 		b_1(\chi) = 1 - \chi \,, \quad b_2(\chi) = \chi \,,
 	\end{equation}
-be the nodal basis for $\mathcal{Q}([0,1])$ where $\chi \in [0,1]$ denotes the reference coordinate for $\mathcal{F}$. The embedded transformation is then
+be the nodal basis for $\mathcal{Q}_1([0,1])$ where $\chi \in [0,1]$ denotes the reference coordinate for $\mathcal{F}$. The embedded transformation is then
 	\begin{equation}
 		\T_\mathcal{F} = \begin{bmatrix} 
 			h \\ 0 
@@ -529,6 +529,18 @@ which exactly matches the computation of the length using the distance formula a
 		\n = \frac{\vector{h & -\alpha}}{\| \vector{h & -\alpha}\|} \,. 
 	\end{equation}
 On this linear face, the normal vector is constant. 
+
+Alternatively, Nanson's formula can be used to compute the normal. The inverse transpose of the Jacobian for $\T$ from Eq.~\ref{fem:Jacobian_example} is 
+	\begin{equation}
+		\F^{-T} = \frac{1}{(2\alpha \eta + h)h} \begin{bmatrix} 
+			h & 0 \\ 
+			-\alpha(2\xi-1) & 2\alpha\eta+h
+		\end{bmatrix} \,. 
+	\end{equation}
+The normal is computed by applying $\F^{-T}$ to the referential normal, $\hat{\n} = \vector{1&0}$, at a point $\vec{\xi}_\mathcal{F} = \vector{1 & \eta}$along the face and normalizing: 
+	\begin{equation}
+		\n = \frac{\F^{-T}|_{\vec{\xi}_\mathcal{F}}\hat{\n}}{\|\F^{-T}|_{\vec{\xi}_\mathcal{F}}\hat{\n}\|} = \frac{\vector{h & -\alpha}}{\|\vector{h & -\alpha}\|} \,. 
+	\end{equation}
 
 \section{Numerical Quadrature}
 
