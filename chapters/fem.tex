@@ -382,7 +382,7 @@ and is still polynomial. However, for non-affine elements, the inverse transform
 
 \subsection{Reference Transformations for Embedded Surfaces}
 The faces $\mathcal{F} \in \Gamma$ are represented as $(\dim-1)$-dimensional surfaces embedded in the $\dim$-dimensional geometry. That is, a face in a two-dimensional problem is a one-dimensional line and a face in a three-dimensional problem is a two-dimensional plane. If $\mathcal{Q}_m(\hat{K}^{\dim})$ is used to define the volumetric reference transformation, the face is described by the polynomial $\mathcal{Q}_m(\hat{K}^{\dim-1})$ that interpolates through the nodal values corresponding to the face. 
-Let $\x_i$ denote the control points corresponding to a single face in the mesh. For the face between the two elements depicted in the mesh shown in Fig.~\ref{fem:quadmesh}, the $\x_i$ would consist of the position in two-dimensional space of the nodes labeled 2, 7, and 12. Letting $\{\ell_i\}$ denote the nodal basis for $\mathcal{Q}_m(\hat{K}^{\dim-1})$, the transformation for the face, denoted $\T_\mathcal{F} : \hat{K}^{\dim-1} \rightarrow \mathcal{F}$, is computed analogously to the volumetric transformation as: 
+Let $\x_i$ denote the control points corresponding to a single face in the mesh. For the face between the two elements depicted in the mesh shown in Fig.~\ref{fem:quadmesh}, the $\x_i$ would consist of the positions in two-dimensional space of the nodes labeled 2, 7, and 12. Letting $\{\ell_i\}$ denote the nodal basis for $\mathcal{Q}_m(\hat{K}^{\dim-1})$, the transformation for the face, denoted $\T_\mathcal{F} : \hat{K}^{\dim-1} \rightarrow \mathcal{F}$, is computed analogously to the volumetric transformation as: 
 	\begin{equation}
 		\T_\mathcal{F}(\vec{\xi}) = \sum_i \x_i \ell_i(\vec{\xi}) \,. 
 	\end{equation}
@@ -392,39 +392,42 @@ However, for a face transformation, the referential coordinate, $\vec{\xi} \in \
 	\end{equation}
 Since $\mathcal{F}$ is an embedded surface, the Jacobian matrix is no longer square and thus $|\F_\mathcal{F}|$ is no longer well defined. To that end, we define $J_\mathcal{F}$ using the Gram determinant: 
 	\begin{equation}
-		J_\mathcal{F} = \sqrt{\F^T \F} \,. 
+		J_\mathcal{F} = \sqrt{|\F^T \F|} \,. 
 	\end{equation}
 We then have that the characteristic length of the face is 
 	\begin{equation}
 		h_\mathcal{F} = \paren{\int_{\hat{K}^{\dim-1}} J_\mathcal{F}\ud s}^{1/(\dim-1)} \,. 
 	\end{equation}
-The normal vector to the face $\mathcal{F}$ can be computed with Nanson's formula \cite{oden1971finite,ciarlet_elasticity}: 
+The normal vector to $\mathcal{F}$ can be be computed by leveraging the fact that the gradient of the embedded transformation points \emph{tangent} to the face. The normal is then computed by rotating the tangent vector. Since $\F_\mathcal{F}$ is the gradient of $\T_\mathcal{F}$, its columns represent vectors that are tangent to $\mathcal{F}$. The normal direction is then found by applying a suitable rotation to one of the columns of $\F_\mathcal{F}$. In two dimensions, $\F_\mathcal{F}$ must be rotated by $-90^\circ$. Thus, the normal vector is 
 	\begin{equation}
-		\n \ud s = J \mat{F}^{-T} \hat{\n} \ud \hat{s} \,,
+		\n = \frac{\mat{R}\F_\mathcal{F}}{\|\mat{R}\F_\mathcal{F}\|}
 	\end{equation}
-where $\mat{F}$ and $J$ are the volumetric Jacobian matrix and determinant evaluated on the face $\mathcal{F}$ and $\hat{\n}$ is the normal vector in reference space. Such a formula is advantageous when only the volumetric transformations are accessible. The normal direction can be also be computed by leveraging the fact that the gradient of the embedded transformation points \emph{tangent} to the face. The normal is then computed by rotating the tangent vector. Since $\F_\mathcal{F}$ is the gradient of $\T_\mathcal{F}$, its columns represent vectors that are tangent to $\mathcal{F}$. \todo{how to rotate to get normal}
+where $\mat{R}$ is the rotation matrix 
+	\begin{equation}
+		\mat{R} = \begin{bmatrix} 
+			\cos(\theta) & -\sin(\theta) \\ \sin(\theta) & \cos(\theta) 
+		\end{bmatrix}
+	\end{equation}
+with $\theta = -\pi/2$. The direction of the tangent vector is dependent on the orientation of the embedded surface. Thus, it is important to use a consistent orientation of the surfaces so that the rotation process always produces the outward normal. Due to its close relation to the gradient of the embedded transformation, the normal vector will vary as the gradient of the space used for the volumetric transformation. In other words, a mesh with linear faces will have constant normal vectors, quadratic faces will have linear normal vectors, etc. 
+% --- quadratic line normal diagram --- 
+\begin{figure}
+\centering
+\includegraphics[width=.5\textwidth]{figs/normal.pdf}
+\caption{The tangent and normal vectors for the face between the two elements of the mesh depicted in Fig.~\ref{fem:quadmesh}. The transformation for the embedded surface between the two elements is defined by the quadratic polynomial in the space $\mathcal{Q}_2(\hat{K}^1)$ that interpolates between the nodes labeled 2, 7, and 12. The tangent vectors are computed from the Jacobian matrix of the embedded transformation. The normals are computed by rotating the tangent vectors by $-90^\circ$.}
+\label{fem:normal_diag}
+\end{figure}
+
+Alternatively, Nanson's formula \cite{ciarlet_elasticity,oden1971finite}: 
+	\begin{equation}
+		\n \ud s = J \F^{-T} \hat{\n} \ud \hat{s} 
+	\end{equation}
+can be used to compute the normal vector. Here, $\hat{n}$ and $\ud \hat{s}$ are the normal and magnitude of the face in reference space, respectively. Note that the \emph{volumetric} Jacobian matrix and determinant are used. The normal vector is then 
+	\begin{equation}
+		\n = \frac{J \F^{-T} \hat{\n}}{\| J \F^{-T} \hat{\n}\|} \,. 
+	\end{equation}
+This formulation is advantageous when only the volumetric transformations are accessible. However, it requires knowledge of the location of the desired face in reference space (in order to find the reference coordinate to evaluate $J$ and $\F$ at) as well as the corresponding referential normal vector. 
 
 \subsection{An Example Transformation: A Scaled Trapezoidal Element}
-By example, the transformation, Jacobian matrix, and determinant for the transformation depicted in Fig.~\ref{fem:trap_trans} are 
-	\begin{equation}
-		\T = \begin{bmatrix} 
-			h \xi + \alpha \eta(2\xi - 1) \\ 
-			h \eta 
-		\end{bmatrix} \,, \quad 
-		\F = \begin{bmatrix} 
-			2 \alpha \eta + h & \alpha(2\xi - 1) \\ 
-			& h 
-		\end{bmatrix} \,, \quad 
-		J = 2 \alpha \eta h + h^2 \,. 
-	\end{equation}
-For example, the inverse of the transformation shown in Fig.~\ref{fem:trap_trans} is 
-	\begin{equation}
-		\T^{-1}(\x) = \begin{bmatrix} 
-			\frac{h x + \alpha y}{h^2 + 2\alpha y} \\ 
-			y/h 
-		\end{bmatrix} \,,
-	\end{equation}
-which is not polynomial in the first coordinate. 
 % --- trapezoidal transformation example --- 
 \begin{figure}
 \centering
@@ -432,6 +435,100 @@ which is not polynomial in the first coordinate.
 \caption{An example of the mesh transformation associated with a linear quadrilateral element. }
 \label{fem:trap_trans}
 \end{figure}
+Consider the linear, quadrilateral element depicted in Fig.~\ref{fem:trap_trans} where $\alpha,h\in \R$ with $h>0$. The case $\alpha = 0$ corresponds to a scaling of the reference element by $h$. Starting from the point $(0,0)$ in reference space and traversing the nodes counter-clockwise, the nodal basis for $\Qcal{1}$ is: 
+	\begin{equation}
+		\begin{array}{cc}
+			\ell_1(\xi,\eta) = (1-\xi)(1-\eta)\,, & \ell_2(\xi,\eta) = \xi(1-\eta)\,,\\[2pt] \ell_3(\xi,\eta) = \xi\eta\,, & \ell_4(\xi,\eta) = (1-\xi)\eta\,. 
+		\end{array} 
+	\end{equation}
+Let $\mat{N} = \vector{\ell_1 & \ldots & \ell_4}$ and $\mat{X}$ the matrix of nodal positions corresponding to the nodal basis such that 
+	\begin{equation}
+		\mat{X} = \begin{bmatrix} 
+			0 & h & h + \alpha & -\alpha \\ 
+			0 & 0 & h & h 
+		\end{bmatrix} \,. 
+	\end{equation}
+The transformation $\T = \sum_i \x_i \ell_i$ can be written as 
+	\begin{equation}
+		\T = \mat{X} \mat{N} \,. 
+	\end{equation}
+Simplifying terms yields: 
+	\begin{equation}
+		\T = \begin{bmatrix} 
+			h \xi + \alpha \eta(2\xi - 1) \\ 
+			h \eta 
+		\end{bmatrix} \,, 
+	\end{equation}
+where $\vec{\xi} = \vector{\xi & \eta}$. Letting 
+	\begin{equation}
+		\mat{G} = \hnabla \mat{N} \in \R^{4\times 2} 
+	\end{equation}
+represent the matrix of gradients of each of the nodal basis functions, the Jacobian matrix can be computed with 
+	\begin{equation}
+		\F = \mat{X} \mat{G} \,, 
+	\end{equation}
+so that 
+	\begin{equation}
+		\F = \begin{bmatrix} 
+			2 \alpha \eta + h & \alpha(2\xi - 1) \\ 
+			& h 
+		\end{bmatrix} \,. 
+	\end{equation}
+Note that since $\F$ is not constant with respect to $\vec{\xi}$, this transformation is not affine. 
+Taking the determinant of $\F$, we have that 
+	\begin{equation}
+		J = 2 \alpha \eta h + h^2 \,. 		
+	\end{equation}
+The area of the element can be computed in reference space with: 
+	\begin{equation}
+		\int_0^1 \int_0^1 J \ud \xi \ud \eta = h^2 + \alpha h \,. 
+	\end{equation}
+Observe that this formula matches geometrically computing the area of the scaled trapezoid as the sum of an $h\times h$ square and two triangles with base $\alpha$ and height $h$.  
+
+The inverse transformation is found by solving $y = h\eta$ for $\eta$ and substituting this into the first coordinate of $\T$. The inverse transformation is then: 
+	\begin{equation}
+		\T^{-1}(\x) = \begin{bmatrix} 
+			\frac{h x + \alpha y}{h^2 + 2\alpha y} \\ 
+			y/h 
+		\end{bmatrix} \,. 
+	\end{equation}
+Note that the inverse transformation is not polynomial in the first coordinate. 
+
+We conclude with a computation of the embedded transformation associated with the right face of the transformation described by $\T$. This face corresponds to fixing $\xi = 1$ and letting $\eta \in [0,1]$ vary. Let 
+	\begin{equation}
+		b_1(\chi) = 1 - \chi \,, \quad b_2(\chi) = \chi \,,
+	\end{equation}
+be the nodal basis for $\mathcal{Q}([0,1])$ where $\chi \in [0,1]$ denotes the reference coordinate for $\mathcal{F}$. The embedded transformation is then
+	\begin{equation}
+		\T_\mathcal{F} = \begin{bmatrix} 
+			h \\ 0 
+		\end{bmatrix}(1-\chi) + 
+		\begin{bmatrix} 
+			h+\alpha \\ h
+		\end{bmatrix} \chi = \begin{bmatrix} 
+			h + \alpha \chi \\ 
+			h\chi 
+		\end{bmatrix} \,. 
+	\end{equation}
+The Jacobian is: 
+	\begin{equation}
+		\F = \dderiv{\T_\mathcal{F}}{\chi} = \begin{bmatrix} 
+			\alpha \\ h 
+		\end{bmatrix} \,. 
+	\end{equation}
+The Gram determinant is given by 
+	\begin{equation}
+		J_\mathcal{F} = \sqrt{|\F^T \F|} = \sqrt{\alpha^2 + h^2} \,. 
+	\end{equation}
+The length of the face is computed in reference space with 
+	\begin{equation}
+		\int_0^1 J_\mathcal{F}\ud \chi = \sqrt{\alpha^2 + h^2} 
+	\end{equation}
+which exactly matches the computation of the length using the distance formula applied to the points $(h,0)$ and $(h+\alpha,h)$. Finally, the normal vector to the face is computed by rotating the sole column of $\F$ by $-90^\circ$ and normalizing it: 
+	\begin{equation}
+		\n = \frac{\vector{h & -\alpha}}{\| \vector{h & -\alpha}\|} \,. 
+	\end{equation}
+On this linear face, the normal vector is constant. 
 
 \section{Numerical Quadrature}
 
@@ -732,6 +829,17 @@ Using the Piola identity and Eq.~\ref{fem:nablaE_trans}, we have that
 	\end{aligned}
 	\end{equation}
 Thus, in the thick diffusion limit when $\E \propto \I$, $\nabla\vec{v} : \E$ simplifies to the standard transformation for the divergence of a contravariant vector.
+
+\subsection{Integration on Embedded Surfaces}
+We now discuss the data structures needed to evaluate a function on either side of a face $\mathcal{F} \in \Gamma_0$ (e.g.~$\mathcal{F} =K_1 \cap K_2$ from Fig.~\ref{fem:normal_diag}). Such a data structure is crucial to implementing the integrations over $\Gamma_0$ that arise in Chapters \ref{chap:dgvef}, \ref{chap:rtvef}, and \ref{chap:smm}. We assume that we wish to evaluate a function $u$ on an interior face where $u$ is defined piecewise on each element. That is, 
+	\begin{equation}
+		u|_{K_e} = u_e \,, \quad \forall K_e \in \meshT \,, 
+	\end{equation}
+where $u_e : K_e \rightarrow \R$ is defined on each element $K_e$. The face $\mathcal{F}$ is represented as an embedded surface that is parameterized by $\vec{\xi}_\mathcal{F} \in \hat{K}^{\dim-1} \subset \R^{\dim-1}$. We thus need a way to convert the lower-dimensional coordinate $\vec{\xi}_\mathcal{F}$ to a coordinate $\vec{\xi}_e\in \hat{K}^{\dim} \subset \R^{\dim}$ corresponding to each of the adjacent elements $K_e$. This is achieved through \emph{integration point transformations}, $\hat{\T}_e : \hat{K}^{\dim-1} \rightarrow \hat{K}^{\dim}$, which map the embedded point $\vec{\xi}_\mathcal{F}$ to a $\vec{\xi}_e$ in an adjacent element, $K_e$. Let $\vec{\xi}_e = \hat{\T}_e(\vec{\xi}_\mathcal{F})$ be the reference coordinate in $\hat{K}^{\dim}$ corresponding to element $K_e$. If $\mathcal{F} = K_1 \cap K_2$, the $\vec{\xi}_e$ satisfy: 
+	\begin{equation}
+		\T_\mathcal{F}(\vec{\xi}_\mathcal{F}) = \T_1(\vec{\xi}_1) = \T_2(\vec{\xi}_2) \,,
+	\end{equation}
+where $\T_e$ is the mesh transformation associated with $K_e$. In other words, under their associated transformations, $\vec{\xi}_\mathcal{F}$, $\vec{\xi}_1$, and $\vec{\xi}_2$ all evaluate to the same point $\x \in \D$. 
 
 \section{Finite Element Spaces} \label{fem_sec:fes}
 In this section, we define the finite element spaces used to approximate the VEF equations. Finite element spaces are defined on the mesh $\meshT$ or the interior skeleton of the mesh $\Gamma_0$ and consist of an element-local function space and a set of inter-element matching conditions. 
