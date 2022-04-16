@@ -15,7 +15,7 @@ The linear Boltzmann equation that models this problem is:
 	\end{subequations}
 where $\psi(\x,\Omegahat)$ is the angular flux, $\D$ the domain of the problem with $\partial\D$ its boundary, $\sigma_t(\x)$ and $\sigma_s(\x)$ the total and scattering macroscopic cross sections, respectively, $q(\x,\Omegahat)$ the fixed-source, and $\bar{\psi}(\x,\Omegahat)$ the inflow boundary function. 
 
-In this chapter, we derive the \gls{vef} algorithm by taking angular moments of the transport equation given by Eq.~\ref{vef:transport}. Due to the streaming term, $\Omegahat\cdot\nabla\psi$, angular moments always produce more unknowns than equations. In VEF, an exact, trivial closure of the second moment is used so that the moment system is an \emph{equivalent reformulation} of the transport problem. Since the VEF closures are weak functions of the solution, iterative schemes can be designed to converge rapidly. We also discuss the mathematical properties of the VEF data and their impact on the structure of the VEF equations. The section concludes with a discussion of the two primary philosophies used to design discrete VEF methods. 
+In this chapter, we derive the \gls{vef} algorithm by taking angular moments of the transport equation given by Eq.~\ref{vef:transport}. Due to the streaming term, $\Omegahat\cdot\nabla\psi$, angular moments always produce more unknowns than equations. In VEF, an exact, trivial closure of the second moment is used so that the moment system is an \emph{equivalent reformulation} of the transport problem. Since the VEF closures are weak functions of the solution, iterative schemes can be designed to converge rapidly. We also discuss the mathematical properties of the VEF data and their impact on the structure of the VEF equations. The chapter concludes with a discussion of the two primary philosophies used to design discrete VEF methods. 
 
 \section{Derivation of the VEF Equations}
 Integrating the transport equation over angle yields 
@@ -36,7 +36,7 @@ where
 	\begin{equation}
 		\E = \frac{\int \Omegahat\otimes\Omegahat\,\psi \ud \Omega}{\int \psi \ud \Omega} 
 	\end{equation}
-is the Eddington tensor. This closure is an algebraic reformulation of the pressure derived by multiplying and dividing by the scalar flux. The closure is trivial in that the solution to the transport equation, $\psi$, must be known to define the Eddington tensor. The VEF equations are then: 
+is the Eddington tensor. This closure is an algebraic reformulation of the pressure derived by multiplying and dividing by the scalar flux. The closure is trivial in that the solution to the transport equation, $\psi$, must be known to define the Eddington tensor. With this closure, the VEF equations are: 
 	\begin{subequations} \label{vef:vefeq}
 	\begin{equation}
 		\nabla\cdot\vec{J} + \sigma_a \varphi = Q_0 \,, 
@@ -117,7 +117,7 @@ By linearly eliminating the angular flux, the coupled system is equivalent to
 	\begin{equation} \label{vef:lin_elim}
 		\mat{R}\!\paren{\mat{L}^{-1}\!\paren{\frac{\sigma_s}{4\pi}\varphi + q}}\varphi = Q \,. 
 	\end{equation}
-Applying the inverse of the drift-diffusion operator, the solution of the coupled transport-VEF system is the fixed-point 
+Applying the inverse of the drift-diffusion operator, the solution of the coupled transport-VEF system is the fixed-point: 
 	\begin{equation} \label{vef:fixedpoint}
 		\varphi = G(\varphi) \,,
 	\end{equation}
@@ -126,7 +126,7 @@ where
 		G(\varphi) = \mat{R}\!\paren{\mat{L}^{-1}\!\paren{\frac{\sigma_s}{4\pi}\varphi + q}}^{-1}Q \,. 
 	\end{equation}
 The fixed-point operator $G$ is applied in two stages: 1) solve the transport equation using a scattering source formed from the VEF scalar flux and 2) solve the VEF drift-diffusion equation using the VEF data computed from the angular flux from stage 1). 
-Note that eliminating the angular flux means it appears only as an auxiliary variable used to computed the VEF data.f
+Note that eliminating the angular flux means it appears only as an auxiliary variable used to computed the VEF data.
 This iteration is depicted in Fig.~\ref{vef:vef_alg}. 
 % --- depiction of coupling between VEF and transport --- 
 \begin{figure}
@@ -254,7 +254,7 @@ In this way, the Gateaux derivative provides a process for linearizing any $f$ e
 	\begin{equation}
 		\E(\psi) \xrightarrow{\text{TSE}} \E(\psi_0) + D[\E](\psi_0,\psi') \,. 
 	\end{equation}
-This linearization is used in this section to investigate the properties of the Eddington tensor and is also used in Chapter \ref{chap:smm} to derive discrete \glspl{smm}. 
+This linearization is used in this section to investigate the properties of the VEF data and is also used in Chapter \ref{chap:smm} to derive discrete \glspl{smm}. 
 
 \subsection{Derivation of Functional Derivatives}
 Applying the definition in Eq.~\ref{vef:gateaux} to the Eddington tensor, the derivative of the Eddington tensor evaluated at $\psi_0$ in the direction $\psi'$ is 
@@ -298,7 +298,7 @@ The rapid convergence of VEF algorithms is due to the VEF data having weak depen
 	\end{equation}
 If we set $\psi'$ to be the error at iteration $\ell$ such that $\psi' = \psi - \psi^\ell$ with $\psi$ the solution of the transport problem, the above linearization provides an approximation for how the Eddington tensor will change as the algorithm proceeds to the next iteration. Note that the VEF algorithm converges when the VEF data converge. Thus, if the size of $D[E](\psi^\ell,\psi - \psi^\ell)$ is small enough relative to the iteration's stopping tolerance, the Eddington tensor will change by an amount small enough to allow the iteration to terminate. 
 
-We now show three examples of pairs of evaluation points, $\psi_0$, and directions, $\psi'$, where the Gateaux derivative is zero. In these cases, the Eddington tensor evaluated at $\psi_0$ is an approximation to the true Eddington tensor to the accuracy of the linearization process (e.g.~$\mathcal{O}(\psi')^2$). 
+We now show three examples of pairs of evaluation points, $\psi_0$, and directions, $\psi'$, where the Gateaux derivative is zero. In these cases, the Eddington tensor evaluated at $\psi_0$ is an approximation to the true Eddington tensor to at least the accuracy of the linearization process (e.g.~$\mathcal{O}(\psi')^2$). 
 First, consider the direction being a scalar multiple of $\psi_0$ such that $\psi' = \alpha \psi_0$ for some $\alpha \in \R$. The Gateaux derivative for this case is: 
 	\begin{equation}
 		D[\E](\psi_0,\alpha\psi_0) = \frac{1}{\phi_0}\paren{\int \Omegahat\otimes\Omegahat\,\alpha\psi_0 \ud\Omega - \E_0 \int \alpha \psi_0 \ud \Omega} = \frac{\alpha}{\phi_0}\paren{\P_0 - \P_0} = 0 \,,
