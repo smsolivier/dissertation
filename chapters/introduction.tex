@@ -9,7 +9,7 @@ The goal of this dissertation is to develop efficient, high-order Variable Eddin
 \begin{figure}
 \centering
 \includegraphics[width=.85\textwidth]{figs/phase.pdf}
-\caption{}
+\caption{A depiction of radiation transport's seven-dimensional phase space. }
 \label{intro:phase}
 \end{figure}
 
@@ -20,9 +20,10 @@ The goal of this dissertation is to develop efficient, high-order Variable Eddin
 	\begin{subfigure}{.49\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figs/\f}
+		\caption{}
 	\end{subfigure}	
 }
-\caption{}
+\caption{Depictions of the low-order refined process. (a) shows a quadratic quadrilateral element that has four unkowns. (b)--(d) show linear approximations to the geometry of the element in (a) that use one, two, and three refinements, respectively. In order for the curved surfaces to be accurately captured refinements are required. However, this necessarily increases the number of unknowns which can be impractical in the context of the already memory intensive radiation transport solve. }
 \label{intro:lor}
 \end{figure}
 
@@ -33,9 +34,10 @@ The goal of this dissertation is to develop efficient, high-order Variable Eddin
 	\begin{subfigure}{.49\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figs/\f}
+		\caption{}
 	\end{subfigure}	
 }
-\caption{}
+\caption{Depictions of the low-order refined process on a very distorted, cubic element. In this case, refining the high-order geometry shown in (a) leads to elements with poor aspect ratios, inverted elements, and elements that overlap. This is an example where naively refining the element would lead to simulation failure and is a motivating example for the need to solve on the high-order mesh.}
 \label{intro:lor_dist}
 \end{figure}
 
