@@ -3,7 +3,10 @@
 
 \begin{document}
 \chapter{Additional Results and Discussion}
-\section{\todo{Using Outer Iteration as Initial Guess for Inner Solver}}
+\section{Previous Outer Iteration as Initial Guess for Inner Solver}
+Here, we discuss the use of the previous fixed-point iteration's solution as the initial guess for the inner linear solve. As the outer iteration converges, it will provide a better and better initial guess for the initial guess. We compare this initial guess to a simple initial of zero for each inner solve. This comparison is performed using the interior penalty VEF method applied to the crooked pipe problem discussed in Section \ref{dgvef_sec:cp}. The inner solver was \gls{bicg} with a tolerance of $10^{-8}$. The outer solver used fixed-point iteration with two Anderson vectors. The outer tolerance was $10^{-6}$. 
+
+Figure \ref{disc:iguess} shows the number of inner iterations required for convergence at each outer iteration for each of the initial guess strategies. These results were generated for each polynomial order using the crooked pipe mesh with 7168 elements. Aside from two cases, the non-zero initial guess required the same or fewer iterations to converge as the solve that used an initial guess of zero. In addition, as the outer solve progresses the number of inner iterations to convergence decreases. The cumulative number of inner iterations as the outer iteration progresses is shown in Fig.~\ref{disc:ciguess}. Using the previous outer iteration as an initial guess led to a reduction in the total number of inner iterations required to solve the problem of 25\%, 30\%, and 32\%  for $p=1$, $p=2$, and $p=3$, respectively, when compared to using a zero initial guess for each inner solve. 
 % --- comparison of convergence --- 
 \begin{figure}
 \centering 
@@ -48,6 +51,8 @@
 \label{disc:ciguess}
 \end{figure}
 
+The crooked pipe $hp$ scaling is repeated in Table \ref{disc:outin_cp}. Here, it is seen that the initial guess scheme for the inner iteration does not affect the convergence of the outer iteration. The maximum number of inner iterations across all the outer iterations were within two iterations of each other for both initial guess schemes. However, the minimum number of iterations was typically 30\%-50\% lower when the previous outer iteration's solution was used as an initial guess. This behavior led to fewer total number of inner iterations required to solve the problem.   
+
 % --- outer and inner on crooked pipe hp --- 
 \begin{table}
 \centering
@@ -56,8 +61,14 @@
 \input{figs/cp_iguess}
 \end{table}
 
-\section{\todo{Acceleration of Inexact Sweeps on the Triple Point Mesh}}
+\section{Acceleration of Inexact Sweeps on the Triple Point Mesh}
+On a high-order mesh with reentrant faces, the transport equation is only approximately inverted at each outer iteration (see the discussion in Section \ref{sn_sec:hosweep}). This means the VEF data are computed from an angular flux possessing errors due to lagging the inflow data on reentrant faces. While VEF converged robustly in the thick diffusion limit on a mesh with reentrant faces, degraded performance for optically thin problems was observed as compared to an equivalent mesh with reentrant faces. Here, we demonstrate two schemes to produce more robust behavior for optically thin problems on curved meshes. The thick diffusion limit problem scales the material data according to 
+	\begin{equation}
+		\sigma_t = \frac{1}{\epsilon} \,, \quad \sigma_s = \frac{1}{\epsilon} - \epsilon \,, \quad q = \epsilon \,. 
+	\end{equation}
+The interior penalty VEF method with $p=2$ is used. 
 
+First, we show the effect of using multiple partial transport inversions per outer iteration. That is, at each outer iteration, the approximate inversion of the streaming and collision operator is iterated in order to produce an angular flux that is closer to the angular flux computed with a direct method. Table \ref{disc:mult_sweeps} shows the number of outer iterations required to solve the problem to a tolerance of $10^{-6}$ when one, two, and three partial inversions of the transport problem are performed as $\epsilon \rightarrow 0$. For each value of $\epsilon$, performing more partial sweeps per iteration reduces the total number of iterations to convergence. In fact, for three sweeps, the iterative performance is within two iterations of an equivalent problem on an orthogonal mesh (e.g.~Table \ref{dgvef:tdl}). However, the iterative performance is not improved to the point that fewer total sweeps are performed. While the three sweep option requires the fewest outer iterations, it requires the most sweeps. This suggests that improving robustness to reentrant faces through increasing the number of sweeps per outer iteration comes at a significant cost. A compromise between these two ideas would be to solve the streaming and collision operators to a certain tolerance. This would provide more robustness while potentially reducing the total number of sweeps. 
 % --- multiple sweeps on triple point mesh --- 
 \begin{table}
 \centering
@@ -65,6 +76,8 @@
 \label{disc:mult_sweeps}
 \input{figs/disc/eps3}
 \end{table}
+
+Next, we discuss application of Anderson acceleration to accelerate the outer iteration on a high-order mesh. We compare building the Anderson space from previous iterates of the scalar flux only and from the scalar and angular flux. These are referred to as the ``low memory'' and ''augmented'' options. Note that we store the entire angular flux in the augmented space for implementational ease only. It is possible to store only the degrees of freedom corresponding to reentrant faces. This would be a nonlinear analog of the ideas used for Krylov-accelerated source iteration \cite{doi:10.13182/NSE02-14}. Fixed-point iteration is compared to the two Anderson acceleration schemes in the thick diffusion limit on the triple point mesh in Table \ref{disc:anderson}. The low memory option takes the same or more iterations as fixed-point iteration. This suggests that Anderson applied to the scalar flux only cannot accelerate inexact sweeps due to reentrant faces. The augmented Anderson space resulted in identical convergence for $\epsilon = 10^{-2}$, $10^{-3}$, and $10^{-4}$. For $\epsilon=10^{-1}$, the augmented Anderson scheme converged three iterations faster than fixed-point iteration. This suggests that Anderson acceleration can increase iterative efficiency on thin problems but only when angular flux information is included in the Anderson space. 
 
 % --- anderson acceleration on triple point mesh --- 
 \begin{table}
