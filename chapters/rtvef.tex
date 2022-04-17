@@ -132,6 +132,13 @@ In the thick diffusion limit, $\E = \frac{1}{3}\I$ and
 		\jump{\vec{v}\cdot\avg{\E\n}} = \frac{1}{3}\jump{\vec{v}\cdot\n} = 0 \,, 
 	\end{equation}
 since $\vec{v} \in \RT_p$ has a continuous normal component. Furthermore, $\nablah:\E = \frac{1}{3}\nabla\cdot\vec{v}$ so meaning this discretization with this choice of numerical flux is equivalent to the standard RT discretization of diffusion in the thick diffusion limit. 
+% --- En projection diagram --- 
+\begin{figure}
+\centering
+\includegraphics[width=.5\textwidth]{figs/Eproj.pdf}
+\caption{}
+\label{rtvef:Eproj}
+\end{figure}
 
 The RT space satisfies $\nabla\cdot\RT_p = Y_p$ avoiding the spurious modes seen for the $\Hone \times L^2(\D)$ discretization. This allows superior solution quality and excellent solver performance. However, the RT method is more complex due to the need for interior face bilinear forms, the contravariant Piola transform, and the comparatively less simple RT space. 
 

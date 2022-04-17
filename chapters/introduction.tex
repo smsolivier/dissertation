@@ -5,4 +5,38 @@
 \chapter{Introduction}
 The goal of this dissertation is to develop efficient, high-order Variable Eddington Factor (VEF) methods suitable for thermal radiative transfer calculations arising in the numerical modeling of high energy density physics experiments. 
 
+% --- phase diagram --- 
+\begin{figure}
+\centering
+\includegraphics[width=.85\textwidth]{figs/phase.pdf}
+\caption{}
+\label{intro:phase}
+\end{figure}
+
+% --- low order refined simple --- 
+\begin{figure}
+\centering
+\foreach \f in {lor.pdf,lor_1.pdf,lor4_1.pdf,lor8_1.pdf}{
+	\begin{subfigure}{.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figs/\f}
+	\end{subfigure}	
+}
+\caption{}
+\label{intro:lor}
+\end{figure}
+
+% --- low order refined impractical --- 
+\begin{figure}
+\centering
+\foreach \f in {lor_dist.pdf,lor_dist_1.pdf,lor_dist4_1.pdf,lor_dist8_1.pdf}{
+	\begin{subfigure}{.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figs/\f}
+	\end{subfigure}	
+}
+\caption{}
+\label{intro:lor_dist}
+\end{figure}
+
 \end{document}
