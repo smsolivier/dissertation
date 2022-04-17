@@ -151,6 +151,8 @@ Since $V_h \subset V$, we can directly apply the Lax-Milgram theorem to show tha
 	\end{equation}
 where $a_h$ is $a$ restricted to the space $V_h$ \cite[Corollary 2.4]{la2fa}. Thus, by defining the approximation space as a subset of the infinite-dimensional space, the discrete operator inherits the analytic structure of the underlying weak problem. 
 
+\todo{non-conforming, minimization of potential, alternative variational forms}
+
 Such a general framework as Galerkin's method, however, does not provide a way to define the approximation space $V_h$. \todo{lead into description of FES}
 
 % --- best approximation diagram --- 
@@ -162,17 +164,17 @@ Such a general framework as Galerkin's method, however, does not provide a way t
 % \end{figure}
 
 \section{Local Polynomial Spaces}
-Both the mesh and the solution are represented with a polynomial space defined locally on each element. Let $\hat{K}^{\dim}$ denote the reference element which we set to the unit $\dim$-dimensional cube, $\hat{K} = [0,1]^{\dim}$. Where the dimension of the reference element is obvious, we omit the superscript. We define the space of univariate polynomials of degree less than or equal to $k$ as: 
+Both the mesh and the solution are represented with a polynomial space defined locally on each element. Let $\hat{K}^{\dim}$ denote the $\dim$-dimensional reference element which we set to the unit $\dim$-dimensional cube, $\hat{K} = [0,1]^{\dim}$. We omit the superscript denoting the dimensionality when the dimensionality of the reference element can be inferred from context. We define the space of univariate polynomials of degree less than or equal to $k$ as: 
 	\begin{equation}
-		\mathcal{P}_k(\hat{K}^1) = \{ p : \hat{K} \rightarrow \R : p = \sum_{i=0}^{k} \alpha_i x^i \,, \alpha_i \in \R\ \forall\,i \in [0,k]\} = \spn\{ 1, x, x^2, \ldots, x^k \} \,. 
+		\mathcal{P}_k(\hat{K}^1) = \{ p : \hat{K}^1 \rightarrow \R : p = \sum_{i=0}^{k} \alpha_i x^i \,, \alpha_i \in \R\ \forall\,i \in [0,k]\} = \spn\{ 1, x, x^2, \ldots, x^k \} \,. 
 	\end{equation}
 Multi-dimensional polynomial spaces are built through tensor products of the one-dimensional space. The tensor product polynomial spaces are:  
 	\begin{equation}
-		\Qcal{m,n} = \{ p(x) q(y) : p \in \Pcal{m}\,, q \in \Pcal{n} \} 
+		\mathcal{Q}_{m,n}(\hat{K}^2) = \{ p(x) q(y) : p \in \mathcal{P}_{m}(\hat{K}^1)\,, q \in \mathcal{P}_{n}(\hat{K}^1) \} 
 	\end{equation}
 in two dimensions and 
 	\begin{equation}
-		\Qcal{\ell,m,n} = \{ p(x) q(y) r(z) : p \in \Pcal{\ell}\,, q \in \Pcal{m}\,, r \in \Pcal{n}\} 
+		\mathcal{Q}_{\ell,m,n}(\hat{K}^3) = \{ p(x) q(y) r(z) : p \in \mathcal{P}_{\ell}(\hat{K}^1)\,, q \in \mathcal{P}_{m}(\hat{K}^1)\,, r \in \mathcal{P}_{n}(\hat{K}^1)\} 
 	\end{equation}
 in three dimensions. 
 The tensor product polynomial space of equal degree in each variable is denoted by 
@@ -254,6 +256,7 @@ The basis functions for $\Pcal{1}$, $\Pcal{2}$, and $\Pcal{3}$ through the Gauss
 Interpolation through the Gauss-Lobatto and Gauss-Legendre points both have the required properties to be accurate in the limit as $p\rightarrow \infty$. Thus, the choice of interpolating points is typically dictated by other aspects of the overall algorithm. Note that the Gauss-Lobatto points include the interval end points $0$ and $1$ while the Gauss-Legendre points do not. The bases resulting from Lagrange interpolation through the Gauss-Lobatto and Gauss-Legendre points are referred to as closed and open, respectively, due to this. The Gauss-Legendre basis has the beneficial property of diagonal mass matrices on affine meshes while the closed Gauss-Lobatto basis typically leads to sparser globally coupled systems since closed bases couple fewer degrees of freedom on interior faces. 
 
 \section{Description of the Mesh}
+\todo{introduce}
 \subsection{Admissible Tesselations}
 % --- admissible meshes --- 
 \begin{figure}
@@ -396,13 +399,15 @@ Since $\mathcal{F}$ is an embedded surface, the Jacobian matrix is no longer squ
 	\end{equation}
 We then have that the characteristic length of the face is 
 	\begin{equation}
-		h_\mathcal{F} = \paren{\int_{\hat{K}^{\dim-1}} J_\mathcal{F}\ud s}^{1/(\dim-1)} \,. 
+		h_\mathcal{F} = \paren{\int_{\hat{K}^{\dim-1}} J_\mathcal{F}\ud \hat{s}}^{1/(\dim-1)} \,. 
 	\end{equation}
-The normal vector to $\mathcal{F}$ can be be computed by leveraging the fact that the gradient of the embedded transformation points \emph{tangent} to the face. The normal is then computed by rotating the tangent vector. Since $\F_\mathcal{F}$ is the gradient of $\T_\mathcal{F}$, its columns represent vectors that are tangent to $\mathcal{F}$. The normal direction is then found by applying a suitable rotation to one of the columns of $\F_\mathcal{F}$. In two dimensions, $\F_\mathcal{F}$ must be rotated by $-90^\circ$. Thus, the normal vector is 
+The normal vector to $\mathcal{F}$ can be be computed by leveraging the fact that the gradient of the embedded transformation points \emph{tangent} to the face. The normal is then computed by rotating the tangent vector, $\tang$, such that $\tang\cdot\n = 0$. Since $\F_\mathcal{F}$ is the gradient of $\T_\mathcal{F}$, its columns represent vectors that are tangent to $\mathcal{F}$. The normal direction is then found by applying a suitable rotation to one of the columns of $\F_\mathcal{F}$. In two dimensions, $\F_\mathcal{F}$ is a $2\times 1$ matrix and thus only has one column which corresponds to the direction tangential to $\mathcal{F}$. The normal direction is found by rotating the tangent direction by $-90^\circ$. This process is depicted for the face between the two elements of Fig.~\ref{fem:quadmesh} in Fig.~\ref{fem:normal_diag}. 
+
+In other words, the normal vector is computed with:
 	\begin{equation}
 		\n = \frac{\mat{R}\F_\mathcal{F}}{\|\mat{R}\F_\mathcal{F}\|}
 	\end{equation}
-where $\mat{R}$ is the rotation matrix 
+where $\mat{R}$ is a rotation matrix \todo{look at MFEM code}. In two dimensions, we use 
 	\begin{equation}
 		\mat{R} = \begin{bmatrix} 
 			\cos(\theta) & -\sin(\theta) \\ \sin(\theta) & \cos(\theta) 
@@ -448,7 +453,7 @@ Let $\mat{N} = \vector{\ell_1 & \ldots & \ell_4}$ and $\mat{X}$ the matrix of no
 			0 & 0 & h & h 
 		\end{bmatrix} \,. 
 	\end{equation}
-The transformation $\T = \sum_i \x_i \ell_i$ can be written as 
+With this notation, the transformation $\T = \sum_i \x_i \ell_i$ can be written as the matrix vector product: 
 	\begin{equation}
 		\T = \mat{X} \mat{N} \,. 
 	\end{equation}
