@@ -1,0 +1,21 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+\usepackage{bm}
+
+\renewcommand{\vec}[1]{\boldsymbol{\mathrm{#1}}}
+
+\begin{document}
+\tdplotsetmaincoords{70}{30}
+\begin{tikzpicture}[tdplot_main_coords, >=stealth, scale=4]
+	\draw (0,0,0) -- (1,0,0) -- (1,1,1) -- (0,1,1) -- (0,0,0); 
+	\draw[->] (.5,.5,.5) -- (.75,.5,.5) node at +(.075,0,0) {$\vec{t}_1$}; 
+	\draw[->] (.5,.5,.5) -- (.5,.676,.676) node at +(0,{.075/sqrt(2)},{.075/sqrt(2)}) {$\vec{t}_2$}; 
+	\draw[->] (.5,.5,.5) -- (.5, .3232233, .6767767) node at +(0, -0.70710678*.075, 0.70710678*.075) {$\vec{n}$}; 
+
+	\draw[->] (-.6,0,0) -- +(.25,0,0) node at +(.35,0,0) {$\vec{e}_1$}; 
+	\draw[->] (-.6,0,0) -- +(0,.25,0) node at +(0,.35,0) {$\vec{e}_2$}; 
+	\draw[->] (-.6,0,0) -- +(0,0,.25) node at +(0,0,.3) {$\vec{e}_3$}; 
+\end{tikzpicture}
+\end{document}

@@ -401,25 +401,30 @@ We then have that the characteristic length of the face is
 	\begin{equation}
 		h_\mathcal{F} = \paren{\int_{\hat{K}^{\dim-1}} J_\mathcal{F}\ud \hat{s}}^{1/(\dim-1)} \,. 
 	\end{equation}
-The normal vector to $\mathcal{F}$ can be be computed by leveraging the fact that the gradient of the embedded transformation points \emph{tangent} to the face. The normal is then computed by rotating the tangent vector, $\tang$, such that $\tang\cdot\n = 0$. Since $\F_\mathcal{F}$ is the gradient of $\T_\mathcal{F}$, its columns represent vectors that are tangent to $\mathcal{F}$. The normal direction is then found by applying a suitable rotation to one of the columns of $\F_\mathcal{F}$. In two dimensions, $\F_\mathcal{F}$ is a $2\times 1$ matrix and thus only has one column which corresponds to the direction tangential to $\mathcal{F}$. The normal direction is found by rotating the tangent direction by $-90^\circ$. This process is depicted for the face between the two elements of Fig.~\ref{fem:quadmesh} in Fig.~\ref{fem:normal_diag}. 
 
-In other words, the normal vector is computed with:
+The normal vector to $\mathcal{F}$ can be be computed by leveraging the fact that the gradient of the components of the embedded transformation points \emph{tangent} to the face. The normal is then the vector that is perpendicular to the tangent vectors. Note that since the Jacobian matrix of the transformation, $\F_\mathcal{F}$, represents the gradient of the transformation with respect to the reference coordinates, its columns represent tangent vectors. Since $\F_\mathcal{F} \in \R^{\dim \times (\dim-1)}$, the Jacobian matrix will have one tangent vector when $\dim = 2$ and two tangent vectors when $\dim = 3$. Let $\bvec{t}_i$ be the columns of $\F_\mathcal{F}$. We seek the vector $\n$ such that $\n \cdot \bvec{t}_i = 0$ for $1\leq i \leq \dim-1$. This can be achieved with a suitable cross product. In two dimensions, we use 
 	\begin{equation}
-		\n = \frac{\mat{R}\F_\mathcal{F}}{\|\mat{R}\F_\mathcal{F}\|}
+		\n = \frac{\bvec{t}_1 \times \e_3}{\| \bvec{t}_1 \times \e_3 \|} 
 	\end{equation}
-where $\mat{R}$ is a rotation matrix \todo{look at MFEM code}. In two dimensions, we use 
+so that the normal vector is a $90^\circ$ clockwise rotation of the tangent vector. In three dimensions, the normal is computed as the cross product of the two tangent vectors: 
 	\begin{equation}
-		\mat{R} = \begin{bmatrix} 
-			\cos(\theta) & -\sin(\theta) \\ \sin(\theta) & \cos(\theta) 
-		\end{bmatrix}
+		\n = \frac{\bvec{t}_1 \times \bvec{t}_2}{\|\bvec{t}_1 \times \bvec{t}_2\|} \,. 
 	\end{equation}
-with $\theta = -\pi/2$. The direction of the tangent vector is dependent on the orientation of the embedded surface. Thus, it is important to use a consistent orientation of the surfaces so that the rotation process always produces the outward normal. Due to its close relation to the gradient of the embedded transformation, the normal vector will vary as the gradient of the space used for the volumetric transformation. In other words, a mesh with linear faces will have constant normal vectors, quadratic faces will have linear normal vectors, etc. 
+This ensures the normal will be perpendicular to both $\bvec{t}_1$ and $\bvec{t}_2$. This process is depicted in Fig.~\ref{fem:normal_diag} for the face between the two quadratic elements shown in Fig.~\ref{fem:quadmesh}. A three-dimensional example is shown in Fig.~\ref{fem:normal_diag3d}. Note that it is important to choose a consistent orientation of the embedded surface so that the normal always points outward. 
+Due to its close relation to the gradient of the embedded transformation, the normal vector will vary as the gradient of the space used for the volumetric transformation. In other words, a mesh with linear faces will have constant normal vectors, quadratic faces will have linear normal vectors, etc. 
 % --- quadratic line normal diagram --- 
 \begin{figure}
 \centering
 \includegraphics[width=.5\textwidth]{figs/normal.pdf}
-\caption{The tangent and normal vectors for the face between the two elements of the mesh depicted in Fig.~\ref{fem:quadmesh}. The transformation for the embedded surface between the two elements is defined by the quadratic polynomial in the space $\mathcal{Q}_2(\hat{K}^1)$ that interpolates between the nodes labeled 2, 7, and 12. The tangent vectors are computed from the Jacobian matrix of the embedded transformation. The normals are computed by rotating the tangent vectors by $-90^\circ$.}
+\caption{The tangent and normal vectors for the face between the two elements of the mesh depicted in Fig.~\ref{fem:quadmesh}. The transformation for the embedded surface between the two elements is defined by the quadratic polynomial in the space $\mathcal{Q}_2(\hat{K}^1)$ that interpolates between the nodes labeled 2, 7, and 12. The tangent vectors are computed from the Jacobian matrix of the embedded transformation. The normals are computed by rotating the tangent vector by $90^\circ$ in the clockwise direction.}
 \label{fem:normal_diag}
+\end{figure}
+% --- 3D normal diagram --- 
+\begin{figure}
+\centering
+\includegraphics[width=.5\textwidth]{figs/normal3d.pdf}
+\caption{A depiction of a two-dimensional, linear quadrilateral element embedded in three dimensions. Here, the Jacobian matrix of the embedded transformation has two columns corresponding to the directions labeled $\bvec{t}_1$ and $\bvec{t}_2$. The normal vector points in the direction $\bvec{t}_1 \times \bvec{t}_2$, ensuring it is perpendicular to both $\bvec{t}_1$ and $\bvec{t}_2$. }
+\label{fem:normal_diag3d}
 \end{figure}
 
 Alternatively, Nanson's formula \cite{ciarlet_elasticity,oden1971finite}: 
