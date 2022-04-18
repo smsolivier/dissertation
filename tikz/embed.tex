@@ -1,0 +1,45 @@
+\documentclass{standalone}
+
+\usepackage{bm}
+\usepackage{tikz}
+\usetikzlibrary{3d}
+\makeatletter
+\tikzoption{canvas is plane}[]{\@setOxy#1}
+\def\@setOxy O(#1,#2,#3)x(#4,#5,#6)y(#7,#8,#9)%
+  {\def\tikz@plane@origin{\pgfpointxyz{#1}{#2}{#3}}%
+   \def\tikz@plane@x{\pgfpointxyz{#4}{#5}{#6}}%
+   \def\tikz@plane@y{\pgfpointxyz{#7}{#8}{#9}}%
+   \tikz@canvas@is@plane
+  }
+\makeatother  
+\newcommand{\mat}[1]{\boldsymbol{\mathrm{#1}}}
+\newcommand{\T}{\mat{T}}
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+\newcommand{\x}{\boldsymbol{\mathrm{x}}}
+\begin{document}
+\begin{tikzpicture}[>=stealth, scale=3]
+	\draw[fill=black!20] (1,0,0) -- (1,1,0) -- (1,1,1) -- (1,0,1) -- cycle; 
+	\draw (0,0,0) -- (0,1,0) -- (0,1,1) -- (0,0,1) -- cycle; 
+	\draw (0,0,0) -- (1,0,0); 
+	\draw (0,0,1) -- (1,0,1); 
+	\draw (0,1,0) -- (1,1,0); 
+	\draw (0,1,1) -- (1,1,1); 
+	\begin{scope}[canvas is plane={O(1,0,0)x(1,1,0)y(1,0,1)}]
+		\filldraw (.75,.25) circle[radius=1pt]; 
+	\end{scope}
+	\begin{scope}[canvas is plane={O(0,0,1)x(1,0,1)y(0,0,0)}]
+		\draw[->, thick] (0,0) -- (.25,0) node[below] {$\xi$}; 
+		\draw[->, thick] (0,0) -- (0,.25) node[right] {$\eta$};
+	\end{scope}
+	\draw[->, thick] (0,0,1) -- (0,.25,1) node [left] {$\zeta$}; 
+
+	\begin{scope}[xshift=-3cm]
+		\draw (0,0,.5) rectangle (1,1,.5); 
+		\draw[->, thick] (0,0,.5) -- (.25,0,.5) node[below] {$\xi_\mathcal{F}$}; 
+		\draw[->, thick] (0,0,.5) -- (0,.25,.5) node[left] {$\eta_\mathcal{F}$}; 
+		\filldraw (.75,.75,.5) circle[radius=1pt]; 
+	\end{scope}
+
+	\draw[->, shorten >=.5cm, shorten <= .5cm] (-1.75,.5,.5) to node[below] {$\hat{\T}(\vec{\xi}_\mathcal{F})$} (-.5,.5,.5); 
+\end{tikzpicture}
+\end{document}

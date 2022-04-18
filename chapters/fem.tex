@@ -555,10 +555,6 @@ The normal is computed by applying $\F^{-T}$ to the referential normal, $\hat{\n
 \section{Numerical Quadrature}
 
 \section{Integration Transformations} \label{fem_sec:int_trans}
-In this document, integration over the domain is implicitly computed as the following sum over reference elements: 
-	\begin{equation}
-		\int_\D \paren{\cdot} \ud \x = \sum_{K\in\meshT} \int_K \paren{\cdot} \ud \x = \sum_{K\in\meshT} \int_{\hat{K}} \paren{\cdot}\,J\!\ud \vec{\xi} \,. 
-	\end{equation}
 In this section, we present the machinery to transform integrands involving scalar and vector-valued functions and their derivatives between reference and physical space. These transformations allow integration over the arbitrary geometries defined by the map $\T$ using numerical quadrature rules defined on the reference element. These transformations and numerical quadrature are implicitly used to compute all of the bilinear and linear forms discussed in this document. 
 
 \subsection{The Scalar Case}
@@ -853,15 +849,28 @@ Using the Piola identity and Eq.~\ref{fem:nablaE_trans}, we have that
 Thus, in the thick diffusion limit when $\E \propto \I$, $\nabla\vec{v} : \E$ simplifies to the standard transformation for the divergence of a contravariant vector.
 
 \subsection{Integration on Embedded Surfaces}
-We now discuss the data structures needed to evaluate a function on either side of a face $\mathcal{F} \in \Gamma_0$ (e.g.~$\mathcal{F} =K_1 \cap K_2$ from Fig.~\ref{fem:normal_diag}). Such a data structure is crucial to implementing the integrations over $\Gamma_0$ that arise in Chapters \ref{chap:dgvef}, \ref{chap:rtvef}, and \ref{chap:smm}. We assume that we wish to evaluate a function $u$ on an interior face where $u$ is defined piecewise on each element. That is, 
+We now discuss the machinery needed to integrate a function defined on the mesh over an embedded surface in the mesh. The primary difficulty is that the domain of integration is described by a $\dim-1$-dimensional embedded surface while the integrand is defined as a grid function on the $\dim$-dimensional mesh. We thus need a way to convert from a reference point $\vec{\xi}_\mathcal{F} \in \hat{K}^{\dim-1}$ to a reference point $\vec{\xi}_e \in \hat{K}^{\dim}$ that corresponds to an adjacent element $K_e$. This is achieved through \emph{integration point transformations}, $\hat{\T}_e : \hat{K}^{\dim-1} \rightarrow \hat{K}^{\dim}$, which map the reference point for the embedded surface to a reference coordinate in an adjacent element such that 
 	\begin{equation}
-		u|_{K_e} = u_e \,, \quad \forall K_e \in \meshT \,, 
+		\T_\mathcal{F}(\vec{\xi}_\mathcal{F}) = \T_e(\hat{\T}_e(\vec{\xi}_\mathcal{F})) \,. 
 	\end{equation}
-where $u_e : K_e \rightarrow \R$ is defined on each element $K_e$. The face $\mathcal{F}$ is represented as an embedded surface that is parameterized by $\vec{\xi}_\mathcal{F} \in \hat{K}^{\dim-1} \subset \R^{\dim-1}$. We thus need a way to convert the lower-dimensional coordinate $\vec{\xi}_\mathcal{F}$ to a coordinate $\vec{\xi}_e\in \hat{K}^{\dim} \subset \R^{\dim}$ corresponding to each of the adjacent elements $K_e$. This is achieved through \emph{integration point transformations}, $\hat{\T}_e : \hat{K}^{\dim-1} \rightarrow \hat{K}^{\dim}$, which map the embedded point $\vec{\xi}_\mathcal{F}$ to a $\vec{\xi}_e$ in an adjacent element, $K_e$. Let $\vec{\xi}_e = \hat{\T}_e(\vec{\xi}_\mathcal{F})$ be the reference coordinate in $\hat{K}^{\dim}$ corresponding to element $K_e$. If $\mathcal{F} = K_1 \cap K_2$, the $\vec{\xi}_e$ satisfy: 
+In other words, the points $\vec{\xi}_\mathcal{F} \in \hat{K}^{\dim-1}$ and $\vec{\xi}_e = \hat{\T}_e(\vec{\xi}_\mathcal{F}) \in \hat{K}^{\dim}$ correspond to the same point in physical space under the action of their associated transformations. An example of an integration point transformation that converts a point on $\hat{K}^{2}$ to a point on the right face of $\hat{K}^3$ is shown in Fig.~\ref{fem:embed_diag}. In this case, points $\vec{\xi}_\mathcal{F} = \vector{\xi_\mathcal{F} & \eta_\mathcal{F}}$ are mapped to the plane $\xi=1$ such that $\vec{\xi} = \vector{1 & \xi_\mathcal{F} & \eta_\mathcal{F}}$. 
+% --- 3D embedded transformation --- 
+\begin{figure}
+\centering
+\includegraphics[width=.85\textwidth]{figs/embed.pdf}
+\caption{An example of an integration point transformation that maps $\hat{K}^2$ to the right face of $\hat{K}^3$. A point $\vec{\xi}_\mathcal{F} = \vector{\xi_\mathcal{F} & \eta_\mathcal{F}}$ is mapped to the plane $\xi=1$ of the three-dimensional reference element such that $\vec{\xi} = \vector{1 & \xi_\mathcal{F} & \eta_\mathcal{F}}$. The points $\vec{\xi}_\mathcal{F}$ and $\vec{\xi} = \hat{\T}(\vec{\xi}_\mathcal{F})$ satisfy $\T_\mathcal{F}(\vec{\xi}_\mathcal{F}) = \T(\vec{\xi})$ where $\T_\mathcal{F}$ and $\T$ are the reference to physical space transformations for the embedded face $\mathcal{F}$ and the volumetric element $K$, respectively. }
+\label{fem:embed_diag}
+\end{figure}
+
+If $\mathcal{F} = K_1 \cap K_2$ and $f(u_1, u_2)$ is a function that depends on the functions $u_e : K_e \rightarrow \R$ defined on the elements that share the face $\mathcal{F}$, the integral  
 	\begin{equation}
-		\T_\mathcal{F}(\vec{\xi}_\mathcal{F}) = \T_1(\vec{\xi}_1) = \T_2(\vec{\xi}_2) \,,
+		\int_\mathcal{F} f(u_1, u_2) \ud s 
 	\end{equation}
-where $\T_e$ is the mesh transformation associated with $K_e$. In other words, under their associated transformations, $\vec{\xi}_\mathcal{F}$, $\vec{\xi}_1$, and $\vec{\xi}_2$ all evaluate to the same point $\x \in \D$. 
+can be computed in reference space using 
+	\begin{equation}
+		\int_{\hat{K}^{\dim-1}} f(\bar{u}_1, \bar{u}_2)\, J_\mathcal{F}\!\ud \vec{\xi}_\mathcal{F} \,, 
+	\end{equation}
+where $\bar{u}_e(\vec{\xi}_\mathcal{F}) = u_e(\T_e(\hat{\T}_e(\vec{\xi}_\mathcal{F})))$ is a function of the reference coordinate of the $\dim-1$-dimensional face through the composition with the integration point transformation, $\hat{\T}_e$, and the volumetric transformation, $\T_e$, associated with element $K_e$. In this way, any function can be evaluated using the $\dim$-dimensional grid function by first transforming the $\dim-1$-dimensional location $\vec{\xi}_\mathcal{F}$ to the $\dim$-dimensional point associated with an adjacent element $K_e$ through $\vec{\xi}_e = \hat{\T}_e(\vec{\xi}_\mathcal{F})$. Note that if $f = f(u_1, u_2, \nabla u_1, \nabla u_2)$ the volumetric transformations discussed in this section can be applied to compute $\nabla u_1$ and $\nabla u_2$ by first converting the reference point on the face to a reference point on the volume. 
 
 \section{Finite Element Spaces} \label{fem_sec:fes}
 In this section, we define the finite element spaces used to approximate the VEF equations. Finite element spaces are defined on the mesh $\meshT$ or the interior skeleton of the mesh $\Gamma_0$ and consist of an element-local function space and a set of inter-element matching conditions. 
