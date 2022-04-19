@@ -109,6 +109,10 @@
 * idea of weak forms
 * quadrature 
 * iterative solution of linear systems + preconditioning
+	* motivate by expense of direct 
+	* classical iterative methods 
+		* richardson, Jacobi, GS 
+	* brief note on AMG 
 
 # Transport Discretizations 
 * discrete ordinates 

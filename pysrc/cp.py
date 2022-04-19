@@ -19,9 +19,10 @@ files = [
 	{'base': 'data/disc/iguess/', 'types': ['outer_true', 'outer_false'], 'ext': 'iguess', 
 		'labels': ['Previous', 'Zero'], 'ikeys': ['max', 'min', 'inner']}
 ]
+alldata = {}
 for file in files:
 	d = {}
-	for t in file['types']:
+	for i,t in enumerate(file['types']):
 		f = open(file['base'] + t + '.txt', 'r')
 		for line in f: 
 			if ('elements' in line):
@@ -40,16 +41,20 @@ for file in files:
 
 			if ('solve time = ' in line):
 				solve_time = float(re.findall(r'solve time = (.*) s', line)[0])
-				if not(t in d):
-					d[t] = {}
-				if not(p in d[t]):
-					d[t][p] = {}
+				typ = file['ext'] + ':' + t
+				if not(typ in d):
+					d[typ] = {}
+				if not(p in d[typ]):
+					d[typ][p] = {}
 
-				data = {'outer': outer, 'inner': inner, 'min': mn, 'max': mx, 'avg': avg, 'solve time': solve_time, 'converged': converged}
-				d[t][p][Ne] = data 
+				data = {'outer': outer, 'inner': inner, 'min': mn, 'max': mx, 
+					'avg': avg, 'solve time': solve_time, 'converged': converged}
+				d[typ][p][Ne] = data 
+				d[typ]['label'] = file['labels'][i]
 
 		f.close()	
 
+	alldata.update(d)
 	types = list(d.keys())
 	l = len(types)
 	ele = list(d[types[0]][1].keys())
@@ -80,3 +85,40 @@ for file in files:
 		table.Write(oc.Get(0, file['ext']))
 	else:
 		print(table)
+
+keys = ['dgvef:ip', 'dgvef:br2', 'dgvef:mdldg', 'dgvef:cg', 
+	'rtvef:rtgs', 'rtvef:hrt', 'smm:ip', 'smm:cg', 'smm:rt_bicg', 'smm:hrt']
+labels = [alldata[key]['label'] for key in keys]
+outer = tex.Tabular('$N_e$', *labels)
+inner = tex.Tabular('$N_e$', *labels)
+total = tex.Tabular('$N_e$', *labels)
+for p in [1,2,3]:
+	for n in ele:
+		so = [str(n)]
+		si = [str(n)]
+		st = [str(n)]
+		for key in keys:
+			label = alldata[key]['label']
+			df = alldata[key][p][n]
+			so.append(str(df['outer']))
+			si.append((df['avg'], '{:.2f}'))
+			st.append(str(df['outer']*df['inner']))
+		outer.AddRow(*so) 
+		inner.AddRow(*si)
+		total.AddRow(*st) 
+		for table in [outer, inner, total]:
+			table.AddRowGroup('$p='+str(p)+'$', (p-1)*len(ele), len(ele))
+
+for table in [outer, inner, total]:
+	table.AddColumnGroup('VEF', 1, 6)
+	table.AddColumnGroup('SMM', 7, 4)
+	table.AddColumnBreak(0)
+
+if (oc.Good()):
+	outer.Write(oc.Get(0, 'outerall'))
+	inner.Write(oc.Get(0, 'innerall'))
+	total.Write(oc.Get(0, 'totalall'))
+else:
+	print(outer)
+	print(inner)
+	print(total)
