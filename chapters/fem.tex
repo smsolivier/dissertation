@@ -384,7 +384,7 @@ where $\mat{A}\in\R^{\dim\times\dim}$ and $\vec{b}\in\R^{\dim}$ are constant wit
 and is still polynomial. However, for non-affine elements, the inverse transformation is generally not polynomial. 
 
 \subsection{Reference Transformations for Embedded Surfaces}
-The faces $\mathcal{F} \in \Gamma$ are represented as $(\dim-1)$-dimensional surfaces embedded in the $\dim$-dimensional geometry. That is, a face in a two-dimensional problem is a one-dimensional line and a face in a three-dimensional problem is a two-dimensional plane. If $\mathcal{Q}_m(\hat{K}^{\dim})$ is used to define the volumetric reference transformation, the face is described by the polynomial $\mathcal{Q}_m(\hat{K}^{\dim-1})$ that interpolates through the nodal values corresponding to the face. 
+The faces $\mathcal{F} \in \Gamma$ are represented as $(\dim-1)$-dimensional surfaces embedded in the $\dim$-dimensional geometry. That is, a face in a two-dimensional problem is a one-dimensional line and a face in a three-dimensional problem is a two-dimensional plane. If $[\mathcal{Q}_m(\hat{K}^{\dim})]^{\dim}$ is used to define the volumetric reference transformation, the face is described by the polynomial $[\mathcal{Q}_m(\hat{K}^{\dim-1})]^{\dim-1}$ that interpolates through the nodal values corresponding to the face. 
 Let $\x_i$ denote the control points corresponding to a single face in the mesh. For the face between the two elements depicted in the mesh shown in Fig.~\ref{fem:quadmesh}, the $\x_i$ would consist of the positions in two-dimensional space of the nodes labeled 2, 7, and 12. Letting $\{\ell_i\}$ denote the nodal basis for $\mathcal{Q}_m(\hat{K}^{\dim-1})$, the transformation for the face, denoted $\T_\mathcal{F} : \hat{K}^{\dim-1} \rightarrow \mathcal{F}$, is computed analogously to the volumetric transformation as: 
 	\begin{equation}
 		\T_\mathcal{F}(\vec{\xi}) = \sum_i \x_i \ell_i(\vec{\xi}) \,. 
@@ -431,7 +431,7 @@ Alternatively, Nanson's formula \cite{ciarlet_elasticity,oden1971finite}:
 	\begin{equation}
 		\n \ud s = J \F^{-T} \hat{\n} \ud \hat{s} 
 	\end{equation}
-can be used to compute the normal vector. Here, $\hat{n}$ and $\ud \hat{s}$ are the normal and magnitude of the face in reference space, respectively. Note that the \emph{volumetric} Jacobian matrix and determinant are used. The normal vector is then 
+can be used to compute the normal vector. Here, $\hat{\n}$ and $\ud \hat{s}$ are the normal and magnitude of the face in reference space, respectively. Note that the \emph{volumetric} Jacobian matrix and determinant are used. The normal vector is then 
 	\begin{equation}
 		\n = \frac{\F^{-T} \hat{\n}}{\| \F^{-T} \hat{\n}\|} \,. 
 	\end{equation}
@@ -849,7 +849,7 @@ Using the Piola identity and Eq.~\ref{fem:nablaE_trans}, we have that
 Thus, in the thick diffusion limit when $\E \propto \I$, $\nabla\vec{v} : \E$ simplifies to the standard transformation for the divergence of a contravariant vector.
 
 \subsection{Integration on Embedded Surfaces}
-We now discuss the machinery needed to integrate a function defined on the mesh over an embedded surface in the mesh. The primary difficulty is that the domain of integration is described by a $\dim-1$-dimensional embedded surface while the integrand is defined as a grid function on the $\dim$-dimensional mesh. We thus need a way to convert from a reference point $\vec{\xi}_\mathcal{F} \in \hat{K}^{\dim-1}$ to a reference point $\vec{\xi}_e \in \hat{K}^{\dim}$ that corresponds to an adjacent element $K_e$. This is achieved through \emph{integration point transformations}, $\hat{\T}_e : \hat{K}^{\dim-1} \rightarrow \hat{K}^{\dim}$, which map the reference point for the embedded surface to a reference coordinate in an adjacent element such that 
+We now discuss the machinery needed to integrate a function defined on the mesh over an embedded surface in the mesh. The primary difficulty is that the domain of integration is described by a $\dim-1$-dimensional embedded surface while the integrand is defined as a grid function on the $\dim$-dimensional mesh. We thus need a way to convert from a reference point $\vec{\xi}_\mathcal{F} \in \hat{K}^{\dim-1}$ to a reference point $\vec{\xi}_e \in \hat{K}^{\dim}$ that corresponds to an adjacent element $K_e$. This is achieved through \emph{integration point transformations}, $\hat{\T}_e : \hat{K}^{\dim-1} \rightarrow \hat{K}^{\dim}$, which map the reference point for the embedded surface to a reference coordinate in an adjacent element $K_e$ such that 
 	\begin{equation}
 		\T_\mathcal{F}(\vec{\xi}_\mathcal{F}) = \T_e(\hat{\T}_e(\vec{\xi}_\mathcal{F})) \,. 
 	\end{equation}
