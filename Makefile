@@ -34,7 +34,7 @@ TABS = cp eps_table\
 dgvef/weak dgvef/mock dgvef/mms_table\
 rtvef/weak rtvef/solvers rtvef/mms rtvef/mms_elev rtvef/mms_diff \
 smm/weak smm/vmms smm/mms_diff smm/mms_elev \
-disc/anderson disc/eps3 disc/eps_all
+disc/anderson disc/eps3 disc/eps_all allweak
 TABS := $(addsuffix .tex, $(TABS))
 TABS := $(addprefix $(figdir)/, $(TABS))
 

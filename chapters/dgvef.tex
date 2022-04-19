@@ -543,7 +543,7 @@ Table \ref{dgvef:cphp} shows the number of outer Anderson-accelerated fixed-poin
 \end{adjustbox}
 \end{table}
 
-\subsection{Weak Scaling}
+\subsection{Weak Scaling} \label{dgvef_sec:weak}
 Finally, we show that the IP VEF system with $p=2$ can be solved efficiently in parallel on larger problems. The parallel partitioning is such that there are $\sim\!9000$ VEF scalar flux unknowns per processor. The results were generated on 32 nodes of the \texttt{rztopaz} machine at LLNL which has two 18-core Intel Xeon E5-2695 CPUs per node. 
 
 First, we investigate weak scaling on a mock problem where the VEF data are provided as inputs to the problem (as opposed to being solved for through fixed-point iteration). This allows the VEF system to be solved in isolation from the transport equation. We use the materials, geometry, and boundary conditions from the crooked pipe problem shown in Fig.~\ref{dgvef:cp_diag} but set the Eddington tensor and boundary factor to 

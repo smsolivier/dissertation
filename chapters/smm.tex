@@ -604,7 +604,7 @@ Table \ref{smm:cp} shows the number of Anderson-accelerated fixed-point iteratio
 \end{adjustbox}
 \end{table}
 
-\subsection{Weak Scaling}
+\subsection{Weak Scaling} \label{smm_sec:weak}
 Finally, we show that the methods scale in parallel. The parallel partitioning is such that there are $\approx\!\num{9000}$ VEF scalar flux unknowns per processor. The results were generated on 32 nodes of the \texttt{rztopaz} machine at LLNL which has two 18-core Intel Xeon E5-2695 CPUs per node. The materials and geometry from the crooked pipe in Section \ref{smm_sec:cp} are used. In Table \ref{smm:weak}, the number of linear iterations until convergence to a tolerance of $10^{-8}$ is shown when 1) a transport solve is used to compute the SMM correction sources and 2) the SMM correction sources are set to zero. The solvers are the same as those in Section \ref{smm_sec:cp}. We have used $p=2$. 
 All the methods are scalable out to over a million elements and 1152 processors. Interestingly, the number of iterations for solving the SMM equations is increased compared to solving the corresponding diffusion problem. This suggests that the SMM correction sources make the inner solve more difficult. 
 % --- weak scaling --- 

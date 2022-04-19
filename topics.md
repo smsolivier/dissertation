@@ -163,8 +163,9 @@
 * anderson on triple point 
 * comparison of methods 
 	* solution quality on triple point mesh 
-	* implementation aspects 
-	* comparison of SMM and VEF 
+	* big summmary tables 
+		* thick diffusion limit 
+		* crooked pipe 
 * recommendations for use in production code 
 
 # Conclusions 

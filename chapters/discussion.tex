@@ -154,10 +154,20 @@ Table \ref{disc:all_cp_inner} shows the average number of inner preconditioned l
 \input{figs/cp_innerall}
 \end{table}
 
-\subsection{Implementation Details}
+\subsection{Weak Scaling}
+Table \ref{disc:allweak} summarizes the weak scaling performance of all the methods presented here. The data is taken from Sections \ref{dgvef_sec:weak}, \ref{rtvef_sec:weak}, and \ref{smm_sec:weak}. The first iteration of the crooked pipe problem is used to demonstrate the convergence of the inner solve. The tolerance for the preconditioned linear solvers was $10^{-8}$. The VEF methods used \gls{bicg} while the IP, CG, and HRT SMMs used conjugate gradient. The RT SMM used \gls{bicg}. Both IP methods used the uniform subspace correction preconditioner with one Jacobi iteration and one AMG V-cycle per iteration. The CG and HRT VEF methods and SMMs used one AMG V-cycle as a preconditioner. Both RT methods used a lower block triangular preconditioner that used one iteration of Gauss-Seidel to approximate the inverse of the total interaction mass matrix and one AMG V-cycle to approximate the inverse of the lumped Schur complement. 
+% --- weak scaling on crooked pipe for all methods --- 
+\begin{table}
+\centering
+\caption{A weak scaling study of the inner solve on the first iteration of the crooked pipe for all the VEF methods and SMMs presented in this dissertation. The inner solver tolerance was $10^{-8}$.}
+\label{disc:allweak}
+\input{figs/allweak}
+\end{table}
 
-\subsection{VEF vs. SMM}
+Observe that all methods can be solved efficiently in parallel on a mesh of over a million elements. For both VEF and SMM, the CG and HRT solvers converged similarly. The RT and IP methods generally required the most iterations. Comparing VEF and to SMM, it is seen that the SMM solvers require more iterations. This is due to the use of conjugate gradient instead of \gls{bicg} for the IP, CG, and HRT methods. For the case of RT VEF and SMM where \gls{bicg} was used for both types, the iteration counts are very close with both methods converging within $\pm 2$ iterations of each other. 
 
-\section{Recommendations for Implementation in Production}
+\subsection{A Qualitative Discussion of Cost}
+The primary costs in each iteration of a VEF or SMM algorithm are: the transport sweep, computing the VEF/SMM data, forming the VEF/SMM system, and solving the VEF/SMM system. All methods share the costs of the transport sweep and computing the VEF/SMM data. Furthermore, computation of the VEF and SMM data have a similar cost. For example, computing the Eddington tensor requires using angular quadrature to compute the second and zeroth moment of the discrete angular flux and forming their ratio. The SMM correction tensor also computes the second and zeroth moment of the discrete angular flux but instead subtracts them. Thus, the methods are differentiated by the cost of forming and inverting the system. 
 
+\todo{finish}
 \end{document}
