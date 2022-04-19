@@ -142,8 +142,6 @@ since $\vec{v} \in \RT_p$ has a continuous normal component. Furthermore, $\nabl
 
 The RT space satisfies $\nabla\cdot\RT_p = Y_p$ avoiding the spurious modes seen for the $\Hone \times L^2(\D)$ discretization. This allows superior solution quality and excellent solver performance. However, the RT method is more complex due to the need for interior face bilinear forms, the contravariant Piola transform, and the comparatively less simple RT space. 
 
-\section{\todo{Discrete Inf-Sup Condition}}
-
 \section{Block Solvers}
 The above discretizations admit the following block system
 	\begin{equation}
@@ -241,6 +239,97 @@ by approximately solving the block problems:
 	\end{equation}
 	\end{subequations}
 The approximate inverse of $\mat{A}$ and $\tmat{S}$ are applied with one iteration of Jacobi smoothing and AMG, respectively. 
+
+\section{Discrete Inf-Sup Condition}
+Here, we discuss the the inf-sup condition that governs the solvability of the $2\times 2$ block systems arising in mixed finite element discretizations. Two excellent references for this topic are \textcite{Brezzi2003StabilityOS} and \textcite{benzi_golub_liesen_2005}. We present an analysis for Poisson's equation. Methods not effective for this simpler problem have no hope of being effective for the VEF equations. Consider the linear system: 
+	\begin{equation} \label{rtvef:block_sys}
+		\begin{bmatrix} 
+			\mat{M} & -\mat{D}^T \\ \mat{D} 			
+		\end{bmatrix}
+		\begin{bmatrix} 
+			\underline{q} \\ \underline{u} 
+		\end{bmatrix}
+		= \begin{bmatrix} 
+			0 \\ f 
+		\end{bmatrix} \,, 
+	\end{equation}
+which corresponds to the mixed finite element discretization of 
+	\begin{subequations}
+	\begin{equation}
+		 \vec{q} + \nabla u = 0 \,,
+	\end{equation}
+	\begin{equation}
+		\nabla\cdot\vec{q} = f \,. 
+	\end{equation}
+	\end{subequations}
+Note that the above is Poisson's equation, $-\nabla^2 u = f$, in mixed form. The matrices are of the form:
+	\begin{equation}
+		\underline{v}^T\mat{M} \underline{q} = \int \vec{v}\cdot\vec{q} \ud \x \,, \quad \underline{w}^T\mat{D}\underline{q} = \int w\,\nabla\cdot\vec{q} \ud \x \,. 
+	\end{equation}
+
+We wish to demonstrate the conditions for when the block system in Eq.~\ref{rtvef:block_sys} is non-singular. To show the solution is unique, it must be verified that $f = 0$ implies that $u = 0$ and $\vec{q} = 0$. When $f=0$, we have that 
+	\begin{equation}
+		\mat{D} \underline{q} = 0 \iff \underline{q} \in N(\mat{D}) \,,
+	\end{equation}
+where $N(\mat{D})$ denotes the nullspace of $\mat{D}$ such that 
+	\begin{equation}
+		N(\mat{D}) = \{ \underline{v} : \mat{D}\underline{v} = 0 \} \,. 
+	\end{equation}
+For some $\underline{v} \in N(\mat{D})$, the first equation reads 
+	\begin{equation}
+		\underline{v}^T \mat{M} \underline{q} - \underline{v}^T \mat{D}^T \underline{u} = 0 \,. 
+	\end{equation}
+Since $\underline{v} \in N(\mat{D})$, $\underline{v}^T \mat{D}^T = 0$. Thus, we have that 
+	\begin{equation}
+		\underline{v}^T \mat{M} \underline{q} = 0 \,. 
+	\end{equation}
+Since $\mat{M}$ is a mass matrix, it is symmetric positive definite and thus, $\underline{v}^T \mat{M}\underline{q} =0 \iff \underline{q} = 0$. In other words, we have shown that $f = 0 \Rightarrow \underline{q} = 0$. Setting $\underline{q} = 0$ in the first row of Eq.~\ref{rtvef:block_sys} yields: 
+	\begin{equation}
+		\mat{D}^T \underline{u} = 0 \,. 
+	\end{equation}
+For the block system to be non-singular, we must have that $\mat{D}^T \underline{u} = 0 \iff \underline{u} = 0$. In other words, $N(\mat{D}^T) = 0$. The discrete inf-sup condition is precisely this condition on the matrix $\mat{D}$ that $N(\mat{D}^T) = 0$. 
+
+We now particularize the matrix $\mat{D}$ for a single element of the lowest-order $\Hone \times L^2(\D)$ and $H(\div;\D)\times L^2(\D)$ discretizations of the Poisson problem. Let 
+	\begin{subequations}
+	\begin{equation}
+		\RT_0 = \spn\{\twovec{1}{0}\,, \twovec{x}{0}\,, \twovec{0}{1}\,, \twovec{0}{y} \} \,,
+	\end{equation}
+	\begin{equation}
+		V_1 = \spn\{\twovec{1}{0}\,,\twovec{x}{0} \,, \twovec{y}{0}\,,\twovec{xy}{0}\,,\twovec{0}{1}\,,\twovec{0}{x}\,,\twovec{0}{y}\,,\twovec{0}{xy}\}\,,
+	\end{equation}
+	\end{subequations}
+be the lowest-order polynomial spaces for a single element of the Raviart Thomas and $\Hone$ finite element spaces, respectively. Observe that the divergence of $\RT_0$ is exactly the constant polynomial space, $\mathcal{Q}_0(K)$: 
+	\begin{equation}
+		\nabla\cdot \RT_0 = \spn\{0,1,0,1\} = \spn\{1\} = \mathcal{Q}_0(K) \,, 
+	\end{equation}
+while the divergence of the $\Hone$ space is: 
+	\begin{equation}
+		\nabla\cdot V_1 = \spn\{0, 1, 0, y, 0, 0, 1, x\} = \spn\{1,x,y\} \,,
+	\end{equation}
+which is a space larger than $\mathcal{Q}_0(K)$. The nullspaces of the divergence of the RT and $\Hone$ local polynomial spaces are spanned by 
+	\begin{subequations}
+	\begin{equation}
+		N(\nabla\cdot\RT_0) = \spn\{ \twovec{-x}{y}\,, \twovec{0}{1}\,, \twovec{1}{0}\}\,,
+	\end{equation}
+	\begin{equation}
+		N(\nabla\cdot V_1) = \spn\{\twovec{-x}{y}\,, \twovec{0}{1}\,, \twovec{1}{0}\,, \twovec{0}{x} \,, \twovec{y}{0} \} \,. 
+	\end{equation}
+	\end{subequations}
+Here, we can already see an issue forming: the nullspace for $V_1$ is larger than the nullspace for $\RT_0$. 
+
+We are interested in the bilinear form 
+	\begin{equation}
+		\int_K u\, \nabla\cdot\vec{v} \ud \x \,, \quad u \in \mathcal{Q}_0(K)\,, \vec{v} \in X \,, 
+	\end{equation}
+where $X$ is either $V_1$ or $\RT_0$. 
+The above bilinear form has the same properties as the $L^2(K)$ inner product of $u \in \mathcal{Q}_0(K)$ and $w \in \nabla\cdot X$:
+	\begin{equation}
+		\int_K uw \ud \x \,, \quad u \in \mathcal{Q}_0(K) \,, w \in \nabla\cdot X \,. 
+	\end{equation}
+For $w\in \nabla\cdot\RT_0 = \mathcal{Q}_0(K)$, $\int_K uw \ud \x = 0$ only when $u = 0$ or $w=0$. This means that for $\RT_0$, the matrix $\mat{D}$ has the same nullspace as $N(\nabla\cdot\RT_0)$ and $\mat{D}^T$ has only the trivial nullspace corresponding to $u=0$. 
+
+On the other hand, for $X=V_1$, there exists $w \in \nabla\cdot V_1 = \spn\{1,x,y\}$ such that $w \neq 0$ but $\int_K uw \ud \x = 0$. This nullspace consists of all non-zero $w \in \spn\{x-1/2,y-1/2\}$. Thus, when $V_1$ is used $\mat{D}$ will have a nullspace that is larger than the nullspace for $\nabla\cdot V_1$. Note that the nullspace for $\mat{D}^T$ will still be the trivial case corresponding to $u=0$ only. This allows the $\Hone\times L^2(\D)$ discretization to be non-singular but since $N(\mat{D}) \supset N(\nabla\cdot V_1)$, $\mat{D}$ will allow non-physical spurious modes. 
+The takeaway is that for the pairing $V_1$ and $\mathcal{Q}_0(K)$, $V_1$ is rich enough to ensure non-singularity but is \emph{too} rich for $Q_0(K)$ such that spurious modes are allowed. 
 
 \section{Hybridization} \label{rtvef_sec:hyb}
 A hybridized version of the RT mixed method is obtained by relaxing the continuity requirements of the space $\RT_p$ and reimposing them weakly. Removing the continuity requirement from $\RT_p$ yields the broken space 
