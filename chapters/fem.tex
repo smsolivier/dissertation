@@ -1122,5 +1122,66 @@ We now show that the algebraic system $\mat{A}\underline{u} = \underline{f}$ is 
 
 \subsection{\todo{Examples}}
 
-\section{\todo{Iterative Solution Methods for Linear Systems}}
+\section{Iterative Solution Methods for Linear Systems}
+We consider the algebraic system 
+	\begin{equation}
+		\mat{A} \underline{x} = \underline{b} \,, 
+	\end{equation}
+where $\mat{A}$ is a non-singular matrix of dimension $n$. Most iterative methods are based on a suitable splitting of $\mat{A}$ such that 
+	\begin{equation}
+		\mat{A} = \mat{P} - \mat{N} \,, 
+	\end{equation}
+where $\mat{P}$ is non-singular and ideally computationally efficient to invert. The iteration proceeds as 
+	\begin{equation}
+		\mat{P} \underline{x}^{k+1} = \mat{N}\underline{x}^k + \underline{b} \,,
+	\end{equation}
+where the superscript denotes iteration index with $\underline{x}^0$ an initial guess. 
+Such an iteration converges if the spectral radius of the iteration matrix $\mat{P}^{-1}\mat{N}$ is less than unity. By adding and subtracting $\mat{A}\underline{x}^k$ on the right hand side, this iteration is equivalent to 
+	\begin{equation}
+		\mat{P}\underline{x}^{k+1} = (\mat{N} + \mat{A})\underline{x}^k + \underline{b} - \mat{A}\underline{x}^k = \mat{P}\underline{x}^k + \underline{r}^k \,, 
+	\end{equation}
+where the residual vector is $\underline{r}^k = \underline{b} - \mat{A}\underline{x}^k$. Operating by $\mat{P}^{-1}$ yields the iteration: 
+	\begin{equation}
+		\underline{x}^{k+1} = \underline{x}^k + \mat{P}^{-1} \underline{r}^k \,. 
+	\end{equation}
+
+\subsection{Classical Iterative Schemes}
+Let $\mat{A} = \mat{D} + \mat{L} + \mat{U}$ where $\mat{D}$, $\mat{L}$, and $\mat{U}$ are the diagonal, strictly lower triangular, and strictly upper triangular parts of the matrix $\mat{A}$. That is, 
+	\begin{equation}
+		\mat{D}_{ij} = \begin{cases}
+			\mat{A}_{ij} \,, & i=j \\ 
+			0 \,, & \text{otherwise}
+		\end{cases} \,, \quad 
+		\mat{L}_{ij} = \begin{cases}
+			\mat{A}_{ij} \,, & i>j \\ 
+			0\,, & \text{otherwise}
+		\end{cases} \,, \quad 
+		\mat{U} = \begin{cases}
+			\mat{A}_{ij} \,, & i<j\\
+			0\,, & \text{otherwise}
+		\end{cases} \,. 
+	\end{equation}
+The Jacobi method sets $\mat{P} = \mat{D}$ and $\mat{N} = \mat{L} + \mat{U}$ so that 
+	\begin{equation}
+		\underline{x}^{k+1} = \underline{x}_k + \mat{D}^{-1}\underline{r}^k \,. 
+	\end{equation}
+Since $\mat{D}$ is a diagonal matrix, the action $\mat{D}^{-1}\underline{r}^k$ can be applied cheaply by dividing the entries of $\underline{r}$ by the diagonal entries of $\mat{A}$. 
+
+The Gauss-Seidel method uses the splitting $\mat{P} = \mat{D} + \mat{L}$ and $\mat{N} = \mat{U}$. The iteration is then 
+	\begin{equation}
+		\underline{x}^{k+1} = \underline{x}^k + \paren{\mat{D} + \mat{L}}^{-1} \underline{r}^k \,. 
+	\end{equation}
+Note that since the matrix $\mat{D} + \mat{L}$ is lower triangular, the action of its inverse can be applied using forward substitution. Forward substitution requires more floating point operations than inverting a diagonal matrix. However, this added work allows Gauss-Seidel to typically converge faster than Jacobi. 
+
+\subsection{\todo{The Conjugate Gradient Method}}
+
+% --- conjugate gradient on 2-dimensional diffusion problem --- 
+\begin{figure}
+\centering
+\includegraphics[width=.85\textwidth]{figs/conj_grad.pdf}
+\caption{A depiction of the conjugate gradient solution process for solving a two-dimension symmetric positive definite system. The solution iterates are shown as dots and the search directions as arrows. The potential is minimized in two iterations.}
+\label{fem:conj_grad_diag}
+\end{figure}
+
+\subsection{\todo{The Stabilized Bi-Conjugate Gradient Method}}
 \end{document}

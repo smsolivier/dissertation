@@ -23,7 +23,7 @@ GLOSS = glossary.tex
 MAIN = doc
 
 # list of figures to be built for the document 
-FIGS = lor lor4 lor8 lor_dist lor_dist4 lor_dist8 \
+FIGS = lor lor4 lor8 lor_dist lor_dist4 lor_dist8 conj_grad \
 sweep eps_lineout quad_mesh sparse1d reentrant normal \
 dgvef/mms dgvef/unified rtvef/hyb_sparsity smm/mms \
 disc/iguess disc/ciguess

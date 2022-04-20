@@ -142,6 +142,7 @@ The simplest algorithm to solve Eq.~\ref{vef:fixedpoint} is fixed-point iteratio
 	\end{equation}
 where $\varphi^0$ is an initial guess. This process is repeated until the difference between successive iterates is small enough. 
 
+\section{\todo{Anderson Acceleration}}
 Iterative efficiency can be improved with the use of Anderson acceleration. Anderson acceleration defines the next iterate as the linear combination of the previous $m$ iterates that minimizes the residual $\varphi - G(\varphi)$. For the storage cost of $m$ previous iterates, Anderson acceleration increases the convergence rate and improves robustness. While it is not practical to store multiple copies of the \emph{angular} flux, it is reasonable to expect that a small set of \emph{scalar} flux-sized vectors can be stored. The process of linearly eliminating the transport equation, codified in Eq.~\ref{vef:lin_elim}, allows the Anderson space to be built from the much smaller scalar flux-sized vectors only. In the case where a subset of the angular flux unknowns are not eliminated, such as when a parallel block Jacobi sweep is used to avoid communication costs or when mesh cycles or reentrant faces are present, the solution vector can be augmented with these un-eliminated unknowns so that they are included in the Anderson space. This is the nonlinear analog to the ideas used for Krylov-accelerated source iteration \cite{doi:10.13182/NSE02-14}. 
 
 In addition, defining the nonlinear residual as 
