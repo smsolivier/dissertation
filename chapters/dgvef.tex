@@ -335,7 +335,30 @@ Note that, for $u\in V_p$, $\nabla u \in W_p$. In other words, while $u\in V_p$ 
 	\end{multline}
 Observe that in the thick diffusion limit, where $\E = \frac{1}{3}\I$ and $E_b = 1/2$, a CG discretization of radiation diffusion with Marshak boundary conditions arises since $\jump{\E\n} = 0$ and $\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} = \frac{1}{3\sigma_t}\nabla \varphi$. 
 
-\section{\todo{Uniform Subspace Correction Preconditioner}} \label{dgvef_sec:subspace}
+\section{Uniform Subspace Correction Preconditioner} \label{dgvef_sec:subspace}
+\textcite{Pazner2021} presents a preconditioning strategy for DG discretizations of elliptic problems based on a decomposition of the DG space. The decomposition is chosen so that the resulting preconditioner can leverage the efficiency and scalability of \gls{amg} applied to a continuous finite element discretization of an elliptic problem. The resulting scheme is closely related to preconditioning a DG operator with a CG operator. However, this method includes an additional step where a classical smoother is applied on the skeleton of the mesh in order to provide a preconditioner that scales optimally with respect to the mesh size, polynomial order, and penalty parameter. Here, we present the implementation details in applying this preconditioner to the DG discretizations developed in this Chapter. 
+
+\subsection{Decomposition of the DG Space}
+The DG space is split into a continuous finite element part and a discontinuous finite element part. In order to allow definition of a continuous finite element space, we restrict to the case where the DG space uses the closed Gauss-Lobatto basis on each element. Let $V_C$ denote the continuous subspace of $Y_p$. In other words, $V_C = Y_p \cap H^1(\D)$. Due to the use of Gauss-Lobatto nodes, $V_C = V_p$, the degree-$p$ continuous finite element space. 
+
+We now seek to construct a space, $V_B$, such that $Y_p = V_C + V_B$. Here, the ``B'' subscript stands for ``boundary.'' Let $\mathcal{B}(K)$ denote the set of nodes located on the boundary of the element, $\partial K$, and $\mathcal{I}(K)$ the set of nodes located on the interior of the element. The space $V_B$ consists of functions $v_b$ such that $v_b(\vec{\x}_{K,i}) = 0$ for each $\vec{\x}_{K,i} \in \mathcal{I}(K)$ for all elements $K \in \meshT$. In other words, $v_b \in V_B$ attains a value of zero at each interior node of every element in the mesh. 
+
+This decomposition is depicted in Fig.~\ref{dgvef:usc_fes} for the space $Y_3$. The nodes $\vec{\xi}_i \in \mathcal{B}(K)$ of $Y_3$ and $V_B$ are offset toward the interior of the element in order to show the presence of multiple nodes on each interior face in the mesh. Here, the continuous space $V_C$ is equivalent to $V_3$ the cubic continuous finite element space. The right diagram depicts the boundary space $V_B$ which has only the nodes of $Y_3$ corresponding to $\mathcal{I}(K)$ for each $K \in \meshT$. Note that $V_B$ has nodes on both sides of each interior interface. 
+% --- example of decomposed FES --- 
+\begin{figure}
+\centering
+\includegraphics[width=.85\textwidth]{figs/usc_proj.pdf}
+\caption{A depiction of the degrees of freedom associated with the decomposition of the DG space. The left diagram shows the discontinuous space $Y_3$ where the nodal basis for each element interpolates through the Gauss-Lobatto points. The nodes on the boundary of each element are offset inwards in order to show the placement of nodes on both sides of the interface between interior elements. The middle diagram shows the node placement for the corresponding continuous finite element space. Here, the nodes are shared between neighboring elements. The right diagram depicts the boundary space consisting of only the nodes on the boundary of each element. }
+\label{dgvef:usc_fes}
+\end{figure}
+
+We now present operators $\mat{Q} : Y_p \rightarrow V_C$ and $\mat{B} : Y_p \rightarrow V_B$ that take functions in $Y_p$ and convert them to $V_C$ and $V_B$, respectively. Let $u \in Y_p$ be given. The interpolation operator $\mat{Q}u$ copies the degrees of freedom corresponding to nodes interior to each element or on the boundary of the domain (e.g.~$\x_i \in \mathcal{I}(K)$ for each $K$ or $\x_i \in \partial\D$) so that $\mat{Q}u(\x_i) = u(\x_i)$ at each $\x_i \in \mathcal{I}(K)$ for each $K$. For nodes located on interior faces of the mesh, $\mat{Q}u$ averages the values of $u$ in the elements that share the face. For each $\mathcal{F} \in \Gamma_0$ we define the set $\mathcal{S}_\mathcal{F} = \{ K \in \meshT : K \cap \mathcal{F} \neq \emptyset\}$ as the collection of elements that share the face $\mathcal{F}$. At a node $\x_i \in \mathcal{F}$, where $\mathcal{F} \in \Gamma_0$, we set 
+	\begin{equation}
+		\mat{Q}u(\x_i) = \frac{1}{\mathrm{card}(\mathcal{S}_\mathcal{F})} \sum_{K \in \mathcal{S}_\mathcal{F}} u|_K(\x_i) \,, 
+	\end{equation}
+where $\mathrm{card}(\mathcal{S}_\mathcal{F})$ denotes the size of the set $\mathcal{S}_\mathcal{F}$ (i.e.~the number of elements that share the face $\mathcal{F}$). 
+
+\subsection{Additive Schwarz Preconditioner}
 
 % --- assembly diagram --- 
 \begin{figure}
