@@ -342,6 +342,7 @@ Observe that in the thick diffusion limit, where $\E = \frac{1}{3}\I$ and $E_b =
 The DG space is split into a continuous finite element part and a discontinuous finite element part. In order to allow definition of a continuous finite element space, we restrict to the case where the DG space uses the closed Gauss-Lobatto basis on each element. Let $V_C$ denote the continuous subspace of $Y_p$. In other words, $V_C = Y_p \cap H^1(\D)$. Due to the use of Gauss-Lobatto nodes, $V_C = V_p$, the degree-$p$ continuous finite element space. 
 
 We now seek to construct a space, $V_B$, such that $Y_p = V_C + V_B$. Here, the ``B'' subscript stands for ``boundary.'' Let $\mathcal{B}(K)$ denote the set of nodes located on the boundary of the element, $\partial K$, and $\mathcal{I}(K)$ the set of nodes located on the interior of the element. The space $V_B$ consists of functions $v_b$ such that $v_b(\vec{\x}_{K,i}) = 0$ for each $\vec{\x}_{K,i} \in \mathcal{I}(K)$ for all elements $K \in \meshT$. In other words, $v_b \in V_B$ attains a value of zero at each interior node of every element in the mesh. 
+Alternatively, a function $u \in Y_p$ could be represented as $u = u_c + u_b$ where $u_c \in V_C$ and $u_b \in Y_p$. However, $V_B$ is preferred due to its smaller dimension. 
 
 This decomposition is depicted in Fig.~\ref{dgvef:usc_fes} for the space $Y_3$. The nodes $\vec{\xi}_i \in \mathcal{B}(K)$ of $Y_3$ and $V_B$ are offset toward the interior of the element in order to show the presence of multiple nodes on each interior face in the mesh. Here, the continuous space $V_C$ is equivalent to $V_3$ the cubic continuous finite element space. The right diagram depicts the boundary space $V_B$ which has only the nodes of $Y_3$ corresponding to $\mathcal{I}(K)$ for each $K \in \meshT$. Note that $V_B$ has nodes on both sides of each interior interface. 
 % --- example of decomposed FES --- 
@@ -352,19 +353,56 @@ This decomposition is depicted in Fig.~\ref{dgvef:usc_fes} for the space $Y_3$. 
 \label{dgvef:usc_fes}
 \end{figure}
 
-We now present operators $\mat{Q} : Y_p \rightarrow V_C$ and $\mat{B} : Y_p \rightarrow V_B$ that take functions in $Y_p$ and convert them to $V_C$ and $V_B$, respectively. Let $u \in Y_p$ be given. The interpolation operator $\mat{Q}u$ copies the degrees of freedom corresponding to nodes interior to each element or on the boundary of the domain (e.g.~$\x_i \in \mathcal{I}(K)$ for each $K$ or $\x_i \in \partial\D$) so that $\mat{Q}u(\x_i) = u(\x_i)$ at each $\x_i \in \mathcal{I}(K)$ for each $K$. For nodes located on interior faces of the mesh, $\mat{Q}u$ averages the values of $u$ in the elements that share the face. For each $\mathcal{F} \in \Gamma_0$ we define the set $\mathcal{S}_\mathcal{F} = \{ K \in \meshT : K \cap \mathcal{F} \neq \emptyset\}$ as the collection of elements that share the face $\mathcal{F}$. At a node $\x_i \in \mathcal{F}$, where $\mathcal{F} \in \Gamma_0$, we set 
+We now present operators $\mat{Q} : Y_p \rightarrow V_C$ and $\mat{B} : Y_p \rightarrow V_B$ that take functions in $Y_p$ and convert them to $V_C$ and $V_B$, respectively. Let $u \in Y_p$ be given. The interpolation operator $\mat{Q}u$ copies the degrees of freedom corresponding to nodes interior to each element or on the boundary of the domain (e.g.~$\x_i \in \mathcal{I}(K)$ for each $K$ or $\x_i \in \partial\D$) so that $\mat{Q}u(\x_i) = u(\x_i)$ at each $\x_i \in \mathcal{I}(K)$ for each $K$ or $\x_i \in \partial\D$. For nodes located on interior faces of the mesh, $\mat{Q}u$ averages the values of $u$ in the elements that share the face. That is for a face $\Gamma_0 \ni \mathcal{F} = K_1 \cap K_2$, we set 
 	\begin{equation}
-		\mat{Q}u(\x_i) = \frac{1}{\mathrm{card}(\mathcal{S}_\mathcal{F})} \sum_{K \in \mathcal{S}_\mathcal{F}} u|_K(\x_i) \,, 
+		\mat{Q}u(\x_i) = \frac{1}{2}\paren{u|_{K_1} + u|_{K_2}} \,,
 	\end{equation}
-where $\mathrm{card}(\mathcal{S}_\mathcal{F})$ denotes the size of the set $\mathcal{S}_\mathcal{F}$ (i.e.~the number of elements that share the face $\mathcal{F}$). 
+for each node $\x_i \in \mathcal{F}$. 
+The action of the operator $\mat{B}$ on $u\in Y_p$ restricts $u$ to the space $V_B$. That is, degrees of freedom associated with $\mathcal{I}(K)$ for each $K$ are removed leaving only the nodes corresponding to $\mathcal{B}(K)$ for each $K$. The handling of the complications arising in $hp$ refinement (e.g.~non-conforming hanging nodes) is presented in \cite{Pazner2021}. 
 
 \subsection{Additive Schwarz Preconditioner}
+We now define a preconditioner built on the decomposition $Y_p = V_C + V_B$. Let $\mathcal{A} : Y_p \times Y_p \rightarrow \R$ denote one of the DG VEF bilinear forms derived in this chapter. We also define the linear operator $\mat{A} : Y_p \rightarrow Y_p$ such that 
+	\begin{equation}
+		\underline{v}^T \mat{A} \underline{u} = \mathcal{A}(v,u) \,, \quad u,v \in Y_p \,. 
+	\end{equation}
+In other words, $\mathcal{A}$ is a DG VEF bilinear form (e.g.~Eq.\ref{dgvef:ip}) while $\mat{A}$ is the corresponding matrix. Further, we define the restrictions of $\mat{A}$ to $V_C$ and $V_B$ as 
+	\begin{subequations}
+	\begin{equation}
+		\underline{v}_c^T \mat{A}_c \underline{u}_c = \mathcal{A}(v_c,u_c) \,, \quad u_c,v_c \in V_c \,,
+	\end{equation}
+	\begin{equation}
+		\underline{v}_b^T \mat{A}_b \underline{u}_b = \mathcal{A}(v_b, u_b) \,, \quad u_b,v_b \in V_B \,. 
+	\end{equation}
+	\end{subequations}
+Note that $\mat{A}_c$ is the matrix corresponding to the CG VEF operator in Eq.~\ref{dgvef:cg}. We define the so-called \emph{elliptic projections} onto the spaces $V_C$ and $V_B$ as $\mat{P}_c$ and $\mat{P}_b$, respectively, which satisfy 
+	\begin{subequations}
+	\begin{equation}
+		\mat{A}_c \mat{P}_c = \mat{Q} \mat{A} \,,  
+	\end{equation}
+	\begin{equation}
+		\mat{A}_b \mat{P}_b = \mat{B} \mat{A} \,. 
+	\end{equation}
+	\end{subequations}
+Applying the inverse, the projections are given by 
+	\begin{equation}
+		\mat{P}_c = \mat{A}_c^{-1} \mat{Q} \mat{A} \,,
+	\end{equation}
+	\begin{equation}
+		\mat{P}_b = \mat{A}_b^{-1} \mat{B} \mat{A} \,. 
+	\end{equation}
+The space $V_C$ and $V_B$ are sufficiently large that $\mat{A}_c$ and $\mat{A}_b$ are impractical to invert. We thus approximate the inverses using $\mat{R}_c \approx \mat{A}_c^{-1}$ and $\mat{R}_b \approx \mat{A}_b^{-1}$. We use one \gls{amg} V-cycle for $\mat{R}_c$ and one iteration of point Jacobi for $\mat{R}_b$. The full preconditioner is given by the sum of the approximate elliptic projections: 
+	\begin{equation}
+		\mat{P} = \mat{P}_c + \mat{P}_b = \mat{R}_c \mat{Q} + \mat{R}_b \mat{B} \,. 
+	\end{equation}
+In \textcite{Pazner2021}, it is shown that the preconditioned system $\mat{P}\mat{A}$ has condition number independent of the mesh size, polynomial order, and penalty parameter (if applicable). 
+
+In the implementation, the operator $\mat{A}_c$ is computed by \emph{assembling} $\mat{A}$ onto the space $V_C$. This is an algebraic process that allows the CG operator to be formed without re-discretizing and re-evaluating the bilinear forms that comprise $\mat{A}$. This process is depicted in Fig.~\ref{dgvef:usc_assembly}. The operators $\mat{Q}$ and $\mat{B}$ are implemented in a matrix-free fashion. That is, we define only their action onto the residual vector. Finally, the operator $\mat{R}_b$ is computed by assembling the diagonal of the DG system in $\mat{A}$ and applying $\mat{B}$ so that only the degrees of freedom corresponding to $V_B$ remain. The action of $\mat{R}_b$ onto a vector $\underline{r}$ is then equivalent to dividing each entry of $\underline{r}$ by the corresponding diagonal entry of $\mat{A}$.
 
 % --- assembly diagram --- 
 \begin{figure}
 \centering
 \includegraphics[width=.65\textwidth]{figs/usc_assembly.pdf}
-\caption{}
+\caption{A depiction of the assembly operator applied to the space $Y_1$ to yield an operator defined on the continuous finite element space $V_1$. By assembling a DG discretization of the VEF equations onto a suitable CG space, the CG operator can be computed without re-discretizing.}
 \label{dgvef:usc_assembly}
 \end{figure}
 
