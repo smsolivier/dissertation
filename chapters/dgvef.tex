@@ -26,6 +26,28 @@ Additionally, the presence of a right-hand side in the first moment equation as 
 We will then derive analogues of the \gls{ip}, \gls{br2}, and \gls{mdldg} variants.
 Finally, we will show how to extract a continuous finite element method from this framework. 
 
+% --- depiction of unified process --- 
+\begin{figure}
+\centering
+\begin{subfigure}{.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/dgvef/unified.pdf}
+	\caption{}
+\end{subfigure}
+\begin{subfigure}{.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/dgvef/unified_1.pdf}
+	\caption{}
+\end{subfigure}
+\begin{subfigure}{.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/dgvef/unified_2.pdf}
+	\caption{}
+\end{subfigure}
+\caption{}
+\label{dgvef:unified_spy}
+\end{figure}
+
 \section{Adaption of the Unified Framework to VEF}
 We seek the VEF scalar flux in the degree-$p$ DG finite element space $Y_p$ and the current in the degree-$p$ vector-valued DG finite element space $W_p$. The weak form is then: find $(\varphi,\vec{J}) \in Y_p \times W_p$ such that for all $K \in \meshT$: 
 	\begin{subequations}
