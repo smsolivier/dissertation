@@ -4,17 +4,21 @@
 * need for high order and curved meshes  
 	* triple point mesh 
 	* LOR diagrams 
+	* ECP
 * why VEF 
 	* mention beneficial ideas enabled by VEF 
 	* mention Ben Yee results + nonlinear elimination 
+	* lit dump 
 * limit scope
 	* linear steady state transport 
 	* 2D quadrilateral elements 
 * gap analysis 
 	* previous work 
 * thesis statement 
+* research objectives 
 * summary of results
 * outline of document 
+* quickly get to what the document is about 
 
 # Radiation Transport Theory
 * derivation of intensity 

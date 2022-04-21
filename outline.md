@@ -1,5 +1,7 @@
 # Introduction
+* very brief goals and approach 
 * motivation 
+	* introduce predictive modeling 
 	* TRT 
 	* high order 
 	* why VEF (NABC)
