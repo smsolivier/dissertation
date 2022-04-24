@@ -11,6 +11,18 @@
 * summary of results
 * outline of document 
 
+# Radiation Transport Background
+* the intensity and its moments 
+* the transport equation for thermal photons 
+	* isotropic scattering 
+	* grey
+	* blackbody 
+	* MEB
+	* conversion to neutron notation 
+		* f vs psi vs I
+* useful angular identities 
+* derivation of radiation diffusion 
+
 # VEF Algorithm
 * linear transport equation 
 * derivation of VEF 
