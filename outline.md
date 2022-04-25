@@ -12,14 +12,15 @@
 * outline of document 
 
 # Radiation Transport Background
-* the intensity and its moments 
-* the transport equation for thermal photons 
-	* isotropic scattering 
-	* grey
-	* blackbody 
-	* MEB
-	* conversion to neutron notation 
-		* f vs psi vs I
+* Boltzmann Transport Equation 
+	* the distribution function and its moments 
+		* describe phase space
+		* f vs psi vs I 
+			* motivate use in each scenario 
+			* "natural" definition for reaction rates, energy deposition
+			* intensity allows avoiding viewing photons as particles 
+* TRT equations 
+* linear transport as proxy for TRT 
 * useful angular identities 
 * derivation of radiation diffusion 
 

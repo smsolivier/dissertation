@@ -3,32 +3,25 @@
 
 \begin{document}
 \chapter{Introduction}
-The goal of this dissertation is to develop efficient, high-order Variable Eddington Factor (VEF) methods suitable for thermal radiative transfer calculations arising in the numerical modeling of high energy density physics experiments. 
+\Gls{trt} is a dominant mechanism of energy transfer in the high energy density regimes found in astrophysical phenomena and \gls{icf} experiments. In these regimes, the thermal radiation emitted by all matter at a temperature greater than zero is emitted in the ``soft X-ray'' range corresponding to a wavelength of $\sim\!\SI{1}{\nano\meter}$. By contrast, the human body emits radiation in the infrared regime corresponding to $\sim\!\SI{10}{\micro\meter}$. 
+Furthermore, these high energy density regimes are often extreme enough that matter emits and absorbs radiation enough that its motion is altered. 
+That is, the radiation field is strong enough to impact the pressure and momentum matter experiences. This tightly coupled interplay between the motion of matter and thermal radiative heat transfer is characterized by the field of radiation-hydrodynamics. Here, we focus on the ``radiation'' part of radiation-hydrodynamics. 
 
-\section{Motivation}
-\subsection{Applications}
-\subsection{High-Order Finite Element Methods}
+Kinetic models of photon transport phenomena are regarded as first-principles models for \gls{trt}. These models are believed to be a key component in reducing the gap between simulation and experiment observed in \gls{hedp} experiments. 
+Kinetic models are capable of capturing the physics that cheaper models (e.g.~radiation diffusion) miss but at the cost of orders of magnitude more computational work and memory usage. 
+In fact, the kinetic TRT package used in radiation-hydrodynamics simulations of the \gls{nif} often occupies 90\% of the runtime and memory usage of the entire simulation. Algorithms that reduce the cost of modeling TRT can thus have a significant impact on the cost of the entire simulation, allowing scientists to perform faster design iterations and realize higher-accuracy models for the same electricity bill. 
+Existing codes are extremely optimized so reductions in time-to-solution must come from the development of novel algorithms. 
 
-\section{Thermal Radiative Transfer}
+In this dissertation, numerical algorithms for efficiently solving the kinetic description of radiation's interaction with matter are developed, the aim being to design methods that can be readily extended and incorporated into the radiation-hydrodynamics codes used to model \gls{nif}. The algorithms are centered around the use of the radiation moment equations to accelerate the iterative solution of the kinetic equation. The kinetic equation is used to define closures for the moment system so that, upon convergence, the moment system can reproduce the physics of the kinetic equation. 
+Iterative acceleration is achieved through a bidirectional coupling: the kinetic equation informs the moment system through closures while the moment system drives the kinetic equation by computing the slow-to-converge physics. Such algorithms are attractive in the context of radiation-hydrodynamics since the moment system can be directly coupled to the hydrodynamics equations providing separation between the expensive kinetic equation and the evolution of stiff multiphysics. 
 
-\section{Research Approach and Objectives}
+The primary challenge in the development of these algorithms is the efficient numerical approximation of the moment system. The closures used to define the moment system can make the application of existing discretization techniques and efficient preconditioned iterative solvers difficult. The development of discretizations for the moment system that can be efficiently solved is the primary contribution presented in this dissertation. 
 
-\section{Outline}
+In this chapter, we \todo{introduce}
 
-% --- triple point problem --- 
-\begin{figure}
-\centering
-\foreach \f in {0,40,120,156}{
-	\begin{subfigure}{.49\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{data/img/3p_anim/triple-\f.png}
-		\caption{}
-	\end{subfigure}
-}
-\caption{}
-\label{intro:3p_anim}
-\end{figure}
+\section{The Equations of Thermal Radiative Transfer}
 
+\section{Curved Meshes and High-Order Finite Elements}
 % --- low order refined simple --- 
 \begin{figure}
 \centering
@@ -56,5 +49,25 @@ The goal of this dissertation is to develop efficient, high-order Variable Eddin
 \caption{Depictions of the low-order refined process on a very distorted, cubic element. In this case, refining the high-order geometry shown in (a) leads to elements with poor aspect ratios, inverted elements, and elements that overlap. This is an example where naively refining the element would lead to simulation failure and is a motivating example for the need to solve on the high-order mesh.}
 \label{intro:lor_dist}
 \end{figure}
+
+\section{The Variable Eddington Factor Method}
+
+\section{Research Scope and Objectives}
+
+% --- triple point problem --- 
+\begin{figure}
+\centering
+\foreach \f in {0,40,120,156}{
+	\begin{subfigure}{.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{data/img/3p_anim/triple-\f.png}
+		\caption{}
+	\end{subfigure}
+}
+\caption{}
+\label{intro:3p_anim}
+\end{figure}
+
+\section{Outline}
 
 \end{document}
