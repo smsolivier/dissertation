@@ -926,7 +926,7 @@ The Raviart Thomas (RT) space is a discrete subspace of $H(\div;\D)$, the space 
 		H(\div;\D) = \{ \vec{v} \in [L^2(\D)]^2 : \nabla\cdot\vec{v} \in L^2(\D) \} \,. 
 	\end{equation}
 The requirements of a discrete subspace are codified in the following proposition. 
-\begin{prop}[Cf.~\textcite{quateroni}, Proposition 3.2.2] \label{prop:div}
+\begin{prop}[Cf.~\textcite{quateroni}, Proposition 3.2.2] \label{fem:div_prop}
 Let $\vec{v} : \D \rightarrow \R^2$ be such that 
 \begin{enumerate}
 	\item $\vec{v}|_K \in \H^1(K)$ for each $K \in \meshT$  
@@ -1008,7 +1008,7 @@ We now define the degree-$p$ RT space as:
 	\end{equation}
 Note that since the contravariant Piola transform is used, functions in RT transform according to Eqs.~\ref{fem:piola}, \ref{fem:piola_grad}, and \ref{fem:piola_div}. 
 The location of the degrees of freedom for $\RT_1$ are shown on a $3\times 3$ mesh in Fig.~\ref{fem:rtfes}. Continuity in the normal component is enforced by sharing the degrees of freedom corresponding to the normal component on interior faces. 
-From Proposition \ref{prop:div}, $\vec{v} \in \RT_p$ satisfies $\nabla\cdot\vec{v} = \nablah\cdot\vec{v} \in L^2(\D)$. However, the RT space does not have the continuity to allow a square-integrable gradient. In other words, $\nabla\vec{v} \notin [L^2(\D)]^{2\times 2}$ and $\nabla\vec{v} \neq \nablah\vec{v}$. 
+From Proposition \ref{fem:div_prop}, $\vec{v} \in \RT_p$ satisfies $\nabla\cdot\vec{v} = \nablah\cdot\vec{v} \in L^2(\D)$. However, the RT space does not have the continuity to allow a square-integrable gradient. In other words, $\nabla\vec{v} \notin [L^2(\D)]^{2\times 2}$ and $\nabla\vec{v} \neq \nablah\vec{v}$. 
 % --- RT FES --- 
 \begin{figure}
 \centering 

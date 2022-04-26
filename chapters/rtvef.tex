@@ -3,9 +3,22 @@
 
 \begin{document}
 \chapter{Mixed Finite Element VEF Discretizations} \label{chap:rtvef}
-Here, we derive mixed finite element discretizations for the VEF equations with Miften-Larsen boundary conditions. We seek approximations to the scalar flux and current in the finite-dimensional spaces $\mathcal{E}$ and $\mathcal{V}$, respectively, and test the zeroth and first moments with functions in the spaces $\mathcal{E}'$ and $\mathcal{V}'$, respectively. We consider Galerkin discretizations so that the test and trial spaces for the scalar flux and current are the same. In other words, we restrict ourselves to the case that $\mathcal{E}' = \mathcal{E}$ and $\mathcal{V}' = \mathcal{V}$. We proceed by first informally deriving the weak form assuming the spaces $\mathcal{E}$ and $\mathcal{V}$ have the requisite regularity to allow the resulting weak form to be well defined. We will see that there is no ambiguity in the choice $\mathcal{E} = Y_p \subset L^2(\D)$. However, due to the presence of the Eddington tensor, the standard Raviart Thomas methods are inappropriate and so two choices for $\mathcal{V}$ are presented: a method with $\mathcal{V} = W_{p+1} \subset \Hone$ and a non-conforming method where $\mathcal{V} = \RT_p\subset H(\div;\D)$. 
+Mixed finite element methods are a class of discretization techniques for solving the mixed variational form of a partial differential equation. This variational form is characterized by the inclusion of multiple (typically two) physically disparate quantities resulting in a saddle point problem. By contrast, primal formulations operate on a single quantity and produce minimization problems. Mixed methods were invented to 1) allow incorporation of a constraint (e.g.~divergence free velocity in fluid flow), 2) provide direct access to an intermediate variable (e.g.~the stress in elasticity), and 3) allow a weaker formulation than the corresponding primal formulation. In the context of neutron diffusion, mixed methods are applied to the first-order, or $P_1$, form of radiation diffusion and 1) explicitly include the constraint of particle balance, 2) solve for the current in addition to the scalar flux, and 3) allow scalar flux solutions with no continuity requirements at interior element interfaces. 
+
+In this chapter, we investigate the use of mixed finite elements to solve the VEF equations in two spatial dimensions. 
+We are interested in designing a discretization of the VEF equations that matches as closely as possible to that of \textcite{pete}, the mixed finite element method used for radiation diffusion at \gls{llnl} in the BLAST hydrodynamics code \cite{blast}. Such a method would 1) have element-local particle balance, 2) solve for the current directly potentially leading to high accuracy coupling to the hydrodynamics' momentum equation, and 3) allow the scalar flux to be approximated in the same finite element space as the hydrodynamics' thermodynamic variables. In addition, a mixed finite element VEF discretization could serve as a drop-in replacement for radiation diffusion at LLNL providing a transport algorithm that allows reuse of the linear and nonlinear solvers already in place for diffusion. Note that mixed finite element discretizations of radiation diffusion have also been used in reactor analysis \cite{mfem_diffusion,doi:10.13182/NSE97-A28593,doi:10.13182/NSE07-A2660}. 
+
+A lowest-order mixed finite element discretization of the VEF equations in one spatial dimension was developed in \cite{me} for the linear transport problem. \textcite{LOU2019258} used this algorithm to form an efficient, VEF-based thermal radiative transfer algorithm. The 1D linear transport algorithm was extended to multiple dimensions and high-order in \cite{olivier_mandc} but scalable preconditioned iterative solvers were not developed. 
+The DG methods presented in Chapter \ref{chap:dgvef} do not have element-local particle conservation and do not directly solve for the current. Furthermore, a mixed finite element VEF discretization has immediate compatibility with the mixed methods used in the hydrodynamics framework of \cite{blast}. 
+
+The chapter begins by deriving the weak form of the VEF equations in first-order form. We show that, due to the presence of the Eddington tensor in the VEF first moment equation, the standard \gls{rt} mixed finite element methods are not appropriate for the VEF equations. We present two alternatives: a method where each component of the current is approximated with continuous finite elements and a non-conforming approach where the RT space is used along with DG-like numerical fluxes. 
+We provide background on the discrete inf-sup condition, a key mathematical aspect in the design of mixed finite element methods, and show how the inf-sup condition indicates both methods will be non-singular but the first method will suffer from the presence of non-physical spurrious modes that plague solution quality and the performance of iterative solvers. 
+We then derive a hybridized version of the RT method that increases the computational efficiency of the RT method by reducing the number of globally coupled unknowns. 
+The chapter concludes with numerical results. We investigate the accuracy of the methods using the method of manufactured solutions, the convergence rate of fixed-point iteration in the thick diffusion limit and on the linearized crooked pipe, a challenging proxy problem from thermal radiative transfer, and the performance of the preconditioned iterative solvers in both serial and parallel. 
 
 \section{Weak Form}
+We seek approximations to the scalar flux and current in the finite-dimensional spaces $\mathcal{E}$ and $\mathcal{V}$, respectively, and test the zeroth and first moments with functions in the spaces $\mathcal{E}'$ and $\mathcal{V}'$, respectively. We consider Galerkin discretizations so that the test and trial spaces for the scalar flux and current are the same. In other words, we restrict ourselves to the case that $\mathcal{E}' = \mathcal{E}$ and $\mathcal{V}' = \mathcal{V}$. We proceed by first informally deriving the weak form assuming the spaces $\mathcal{E}$ and $\mathcal{V}$ have the requisite regularity to allow the resulting weak form to be well defined. We will see that there is no ambiguity in the choice $\mathcal{E} = Y_p \subset L^2(\D)$. However, due to the presence of the Eddington tensor, the standard Raviart Thomas methods are inappropriate and so two choices for $\mathcal{V}$ are presented: a method with $\mathcal{V} = W_{p+1} \subset \Hone$ and a non-conforming method where $\mathcal{V} = \RT_p\subset H(\div;\D)$. 
+
 Multiplying the zeroth and first moments with sufficiently smooth functions $u$ and $\vec{v}$, respectively, and integrating over the domain yields: 
 	\begin{subequations}
 	\begin{equation}
@@ -36,7 +49,7 @@ Integrating by parts moves derivatives from the Eddington tensor and VEF scalar 
 In the thick diffusion limit, $\E = \frac{1}{3}\I$ and this requirement reduces to $\nabla\vec{v}:\E = \frac{1}{3}\nabla\cdot\vec{v} \in L^2(\D)$. 
 In this case, RT methods apply directly for both $\vec{v}$ and $\vec{J}$. However, for a general Eddington tensor, the RT space does not have the continuity requirements to allow the term $\int \nabla\vec{v} : \E\varphi \ud \x < \infty$. 
 
-\begin{prop} \label{prop:edd}
+\begin{prop} \label{rtvef:edd_prop}
 For a symmetric tensor $\mat{S}$, let $\vec{v} : \D\rightarrow \R^2$ be such that 
 \begin{enumerate}
 	\item $\vec{v}|_K \in \H^1(K)$ for each $K \in \meshT$
@@ -61,7 +74,7 @@ On the other hand, if $\int \nabla\vec{v} : \mat{S} \ud \x < \infty$, then $\nab
 	\end{equation}
 hence, (b) holds. 
 \end{proof}
-Proposition \ref{prop:edd} generalizes Proposition \ref{prop:div} in that Proposition \ref{prop:edd} reduces to Proposition \ref{prop:div} when $\mat{S} = \mat{I}$. Applying this result to the VEF equations, we have that 
+Proposition \ref{rtvef:edd_prop} generalizes Proposition \ref{fem:div_prop} in that Proposition \ref{rtvef:edd_prop} reduces to Proposition \ref{fem:div_prop} when $\mat{S} = \mat{I}$. Applying this result to the VEF equations, we have that 
 	\begin{equation} \label{rtvef:edd_cts_req}
 		\int \nabla\vec{v} : \E\varphi \ud \x < \infty \iff \jump{\vec{v}\cdot\E\n} = 0 \,, \quad \forall \mathcal{F} \in \Gamma_0 \,. 
 	\end{equation}
@@ -131,12 +144,13 @@ In the thick diffusion limit, $\E = \frac{1}{3}\I$ and
 	\begin{equation}
 		\jump{\vec{v}\cdot\avg{\E\n}} = \frac{1}{3}\jump{\vec{v}\cdot\n} = 0 \,, 
 	\end{equation}
-since $\vec{v} \in \RT_p$ has a continuous normal component. Furthermore, $\nablah:\E = \frac{1}{3}\nabla\cdot\vec{v}$ so meaning this discretization with this choice of numerical flux is equivalent to the standard RT discretization of diffusion in the thick diffusion limit. 
+since $\vec{v} \in \RT_p$ has a continuous normal component. This can be seen with the aid of Fig.~\ref{rtvef:Eproj}. The vector $\avg{\E\n}$ has a projection $\alpha = \avg{\E\n}\cdot\n$ onto the normal component and a projection $\beta = \avg{\E\n}\cdot\tang$ such that $\avg{\E\n} = \alpha \n + \beta \tang$. In the thick diffusion limit, $\E = 1/3\I$ meaning $\beta = 0$. 
+Furthermore, $\nablah:\E = \frac{1}{3}\nabla\cdot\vec{v}$ so meaning this discretization with this choice of numerical flux is equivalent to the standard RT discretization of diffusion in the thick diffusion limit. 
 % --- En projection diagram --- 
 \begin{figure}
 \centering
-\includegraphics[width=.5\textwidth]{figs/Eproj.pdf}
-\caption{}
+\includegraphics[width=.35\textwidth]{figs/Eproj.pdf}
+\caption{A depiction of the angle of the average of the Eddington tensor applied to the normal vector. In the thick diffusion limit, the Eddington tensor does not rotate the normal making $\beta =0$. }
 \label{rtvef:Eproj}
 \end{figure}
 
@@ -493,25 +507,25 @@ where $\mu \in \Lambda_p$ and $\vec{v} \in \hRT_p$.
 Only the constraint matrices $\mat{C}_1$ and $\mat{C}_2$ are globally coupled. The matrices $\hmat{A}$, $\hmat{G}$, $\hmat{D}$, and $\mat{M}_a$ are all block diagonal by element and can thus be eliminated on each element without fill-in. Figure \ref{fig:hyb_sparsity_a} shows the sparsity pattern of the block system in Eq.~\ref{rtvef:hyb_form}. Note that this matrix can be permuted to be block diagonal by element by grouping the current and scalar flux degrees of freedom associated with each element together. This matrix is shown in Fig.~\ref{fig:hyb_sparsity_b} where it is clear that the block system has a structure amenable to efficient solution via block Gaussian elimination. 
 \begin{figure}
 	\centering
-	\begin{subfigure}{.49\textwidth}
+	\begin{subfigure}{.32\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figs/rtvef/hyb_sparsity.pdf}
 		\caption{}
 		\label{fig:hyb_sparsity_a}
 	\end{subfigure}
-	\begin{subfigure}{.49\textwidth}
+	\begin{subfigure}{.32\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figs/rtvef/hyb_sparsity_1.pdf}
 		\caption{}
 		\label{fig:hyb_sparsity_b}
 	\end{subfigure}
-	\begin{subfigure}{.49\textwidth}
+	\begin{subfigure}{.32\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figs/rtvef/hyb_sparsity_2.pdf}
 		\caption{}
 		\label{fig:hyb_sparsity_c}
 	\end{subfigure}	
-	\caption{\todo{add}Sparsity plots for the block system corresponding to the hybridized Raviart Thomas discretization for the VEF equations. In (a), the degrees of freedom are organized as $J_1$, $J_2$, $\varphi$, $\lambda$. In (b), the rows and columns of the matrix in (a) are permuted to group the currents and scalar fluxes associated with each element together. With this ordering, it is clear that the scalar flux and current can be eliminated on each element without fill-in, leaving a system for $\lambda$ only. Note that in practice, the elimination of the element-local problems is performed locally with dense operations and global sparse matrices are used to form the reduced system for the Lagrange multiplier. }
+	\caption{Sparsity plots for the block system corresponding to the hybridized Raviart Thomas discretization for the VEF equations. In (a), the degrees of freedom are organized as $J_1$, $J_2$, $\varphi$, $\lambda$. In (b), the rows and columns of the matrix in (a) are permuted to group the currents and scalar fluxes associated with each element together. With this ordering, it is clear that the scalar flux and current can be eliminated on each element without fill-in, leaving a system for $\lambda$ only. Note that in practice, the elimination of the element-local problems is performed locally with dense operations and global sparse matrices are used to form the reduced system for the Lagrange multiplier. (c) shows the resulting system after performing block Gaussian elimination. This produces a globally coupled system for $\lambda$ that is sparse. Once $\lambda$ is known, the scalar flux and current can be solved with element-local back substitution.}
 	\label{fig:hyb_sparsity}
 \end{figure}
 
