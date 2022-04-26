@@ -2,7 +2,7 @@
 \documentclass[../doc.tex]{subfiles}
 
 \begin{document}
-\chapter{Additional Results and Discussion}
+\chapter{Additional Results and Discussion} \label{chap:disc}
 \section{Previous Outer Iteration as Initial Guess for Inner Solver}
 Here, we discuss the use of the previous fixed-point iteration's solution as the initial guess for the inner linear solve. As the outer iteration converges, it will provide a better and better initial guess for the initial guess. We compare this initial guess to a simple initial of zero for each inner solve. This comparison is performed using the interior penalty VEF method applied to the crooked pipe problem discussed in Section \ref{dgvef_sec:cp}. The inner solver was \gls{bicg} with a tolerance of $10^{-8}$. The outer solver used fixed-point iteration with two Anderson vectors. The outer tolerance was $10^{-6}$. 
 
