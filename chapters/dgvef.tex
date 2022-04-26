@@ -3,50 +3,86 @@
 
 \begin{document}
 \chapter{Discontinuous Galerkin VEF Discretizations} \label{chap:dgvef}
-In this chapter, we adapt the derivation of a unified framework for \gls{dg} methods designed for the Poisson equation from \cite{Arnold2002} to the VEF equations. This enables the use of any of the DG methods described there. \textcite{Arnold2002} derive a family of DG methods for:
+In this chapter, we design a family of independent VEF discretizations for the linear, steady-state transport problem that can be efficiently and scalably solved with high-order accuracy, in multiple dimensions, and on curved meshes. Our approach is to begin with discretization techniques known to have effective preconditioners on the simpler case of radiation diffusion (i.e.~the model Poisson problem) and adapt them to the VEF equations. 
+By using the Eddington tensor and boundary factor interpolation procedure established in \cite{two-level-independent-warsa}, these methods achieve both rapid convergence in outer fixed-point iterations and in inner linear solver iterations when paired with a high-order \gls{dg} discretization of \gls{sn} transport. 
+
+In particular, we extend the unified analysis of DG methods developed for elliptic problems presented by \textcite{Arnold2002} to the VEF equations to derive analogues of the \gls{ip}, \gls{br2}, \gls{mdldg}, and \gls{cg} techniques.
+We show that the IP and BR2 VEF methods are effectively preconditioned by the subspace correction method from \textcite{Pazner2021} and that \gls{amg} is effective for the CG and MDLDG discretizations.
+\textcite{dima_dfem} also applied DG techniques to the VEF equations but they discretize the first-order form of the VEF equations and only consider lowest-order elements in one dimension.
+We note that our CG operator is equivalent to extending the continuous finite element VEF discretization in \cite{two-level-independent-warsa} to multiple dimensions, arbitrary-order, and curved meshes.
+
+The chapter proceeds as follows. We first introduce the high-level concepts used to derive DG discretizations of the second-order form of elliptic partial differential equations. 
+We then extend Arnold's unified framework to the VEF moment system. The IP, BR2, and MDLDG methods are derived from this framework through the specification of the numerical fluxes. We provide a discussion of the implementation of the so-called lifting operators that are used to stabilize the BR2 and MDLDG discretizations. 
+We also show how to extract a continuous finite element discretization from the DG framework.  
+Section \ref{dgvef_sec:subspace} discusses the \gls{usc} preconditioner and its implementation. 
+We conclude with computational results.
+We show that all the methods presented achieve high-order accuracy on curved meshes through the method of manufactured solutions, preserve the thick diffusion limit both on orthogonal and a severely distorted curved mesh, and are effective on the linearized, steady-state crooked pipe problem, a challenging proxy problem from TRT, in both outer fixed-point iterations and inner linear solver iterations.
+We also present a parallel weak scaling study for the IP and CG discretizations which demonstrates the scalability of these algorithms out to 1152 processors and 10 million VEF scalar flux unknowns.
+
+\section{Arnold's Unified Framework}
+\textcite{Arnold2002} derive a family of DG methods for the model elliptic problem: 
 	\begin{subequations}
-	\begin{equation}
+	\begin{equation} \label{dgvef:poisson_vec}
 		\vec{q} = \nabla u \,, 
 	\end{equation}
-	\begin{equation}
+	\begin{equation} \label{dgvef:poisson_sca}
 		-\nabla\cdot\vec{q} = f\,,
 	\end{equation}
 	\end{subequations}
-with Dirichlet boundary conditions. The present goal is to adapt their derivation to the VEF equations: 
-	\begin{subequations}
-	\begin{equation}
-		\nabla\cdot\paren{\E\varphi} + \sigma_t \vec{J} = \vec{Q}_1 \,,
-	\end{equation}
-	\begin{equation}
-		\nabla\cdot\vec{J} + \sigma_a \varphi = Q_0 \,, 
-	\end{equation}
-	\end{subequations}
-with the Robin style boundary conditions given in Eq.~\todo{ref}. We will see significant differences in the final equation since the Eddington tensor is inside the divergence.
-Additionally, the presence of a right-hand side in the first moment equation as well as non-unit coefficients introduce further complications.
-We will then derive analogues of the \gls{ip}, \gls{br2}, and \gls{mdldg} variants.
-Finally, we will show how to extract a continuous finite element method from this framework. 
+with Dirichlet boundary conditions. Recall that the DG finite element space $Y_p$ is defined as the space of piecewise polynomials with no continuity enforced between elements. An example of a one-dimensional member of the space $Y_1$ is shown in Fig.~\ref{dgvef:dg1d}. 
+Global derivatives of functions in the DG space are not well defined due to their discontinuity along interior mesh interfaces.
+We must then use integration by parts formulae applied on each element to ``offload'' derivatives away from functions in the DG space. For each element, this generates a volumetric term and a surface term. For the surface term, we must provide an additional piece of information known as the numerical flux.  
+Note that, for some function $u\in Y_p$, $u|_K$ is a smooth polynomial function meaning that $u$ is \emph{locally} differentiable on each element so that $\nablah u$ is well defined. 
+% --- example 1D DG element --- 
+\begin{figure}
+\centering
+\includegraphics[width=.5\textwidth]{figs/dg1d.pdf}
+\caption{An example of a one-dimensional piecewise discontinuous function that is a member of the linear DG space, $Y_1$.}
+\label{dgvef:dg1d}
+\end{figure}
 
+The procedure laid forth in \textcite{Arnold2002} is to derive the weak form of the vector-valued equation and manipulate it so that the vector variable can be eliminated. This discrete elimination is then inserted into the scalar equation. 
+In other words, we discretize Eq.~\ref{dgvef:poisson_vec} in such a way that the variable $\vec{q}$ can be eliminated on each element and insert this discrete elimination into a discretization for Eq.~\ref{dgvef:poisson_sca}. 
+The discretization is complete by defining suitable numerical fluxes that ensure the resulting algebraic system will be non-singular. 
+
+These steps are demonstrated using sparsity plots in Fig.~\ref{dgvef:unified_spy}. The left diagram shows a naive discretization of the first-order form of Poisson's equation where the vector variable is approximated in such a way that it is coupled to its neighbors. This leads to the coupling shown in the $(1,1)$ block. This coupling causes the $(1,1)$ block to have a dense inverse which makes elimination of the vector variable impractical. The center diagram shows the approach of \textcite{Arnold2002}. The vector variable is approximated such that it is not coupled to its neighbors. This allows the $(1,1)$ block to be block diagonal by element. We can then eliminate the vector variable by inverting the block of degrees of freedom corresponding to each element individually. The right diagram shows the resulting system after performing block Gaussian elimination. The $(2,2)$ block is now dependent only on the scalar variable's degrees of freedom. By solving the global system for the scalar variable in the $(2,2)$ block, the vector variable can be computed using back substitution on each element. 
 % --- depiction of unified process --- 
 \begin{figure}
 \centering
-\begin{subfigure}{.49\textwidth}
+\begin{subfigure}{.32\textwidth}
 	\centering
 	\includegraphics[width=\textwidth]{figs/dgvef/unified.pdf}
 	\caption{}
 \end{subfigure}
-\begin{subfigure}{.49\textwidth}
+\begin{subfigure}{.32\textwidth}
 	\centering
 	\includegraphics[width=\textwidth]{figs/dgvef/unified_1.pdf}
 	\caption{}
 \end{subfigure}
-\begin{subfigure}{.49\textwidth}
+\begin{subfigure}{.32\textwidth}
 	\centering
 	\includegraphics[width=\textwidth]{figs/dgvef/unified_2.pdf}
 	\caption{}
 \end{subfigure}
-\caption{}
+\caption{Sparsity plots depicting DG discretizations of the Poisson equation in first-order form. The degrees of freedom are ordered so that the first block row corresponds to the vector variable and the second to the scalar variable. (a) shows a ``naive'' approach where the vector variable is coupled to its neighbor. This causes the $(1,1)$ block to be globally connected, preventing practical elimination of the vector variable. (b) shows the unified approach where the vector variable is discretized so that it can be eliminated locally on each element. (c) shows the resulting block system after performing this elimination. }
 \label{dgvef:unified_spy}
 \end{figure}
+
+The present goal is to adapt this framework to the VEF equations: 
+	\begin{subequations}
+	\begin{equation}
+		\nabla\cdot\paren{\E\varphi} + \sigma_t \vec{J} = \vec{Q}_1 \,, \quad \x \in \D\,,
+	\end{equation}
+	\begin{equation}
+		\nabla\cdot\vec{J} + \sigma_a \varphi = Q_0 \,, \quad \x \in \D\,,
+	\end{equation}
+	\begin{equation}
+		\vec{J}\cdot\n = E_b \varphi + 2\Jin \,, \quad \x \in \partial \D\,. 
+	\end{equation}
+	\end{subequations}
+By extending the unified framework of \textcite{Arnold2002} to the VEF equations, we can easily derive analogs of any of the DG methods presented there. 
+We will see significant differences in the final equation since the Eddington tensor is inside the divergence.
+Additionally, the presence of a right-hand side in the first moment equation as well as non-unit coefficients and Robin-style boundary conditions introduce further complications not discussed in \textcite{Arnold2002}.
 
 \section{Adaption of the Unified Framework to VEF}
 We seek the VEF scalar flux in the degree-$p$ DG finite element space $Y_p$ and the current in the degree-$p$ vector-valued DG finite element space $W_p$. The weak form is then: find $(\varphi,\vec{J}) \in Y_p \times W_p$ such that for all $K \in \meshT$: 
