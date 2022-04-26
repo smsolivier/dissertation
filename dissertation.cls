@@ -13,6 +13,15 @@
 \ProcessOptions\relax
 \LoadClass{ucbthesis}
 
+% --- interdependence table environment --- 
+\newenvironment{preamble}[1]{%
+	\addcontentsline{toc}{chapter}{#1}%
+	\begin{center}%
+	{\large \bfseries #1}%
+	\end{center}%
+}{
+}
+
 % --- packages to use --- 
 \RequirePackage{amsmath}
 \RequirePackage{amsthm}
