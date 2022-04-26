@@ -13,6 +13,7 @@ The DG methods presented in Chapter \ref{chap:dgvef} do not have element-local p
 
 The chapter begins by deriving the weak form of the VEF equations in first-order form. We show that, due to the presence of the Eddington tensor in the VEF first moment equation, the standard \gls{rt} mixed finite element methods are not appropriate for the VEF equations. We present two alternatives: a method where each component of the current is approximated with continuous finite elements and a non-conforming approach where the RT space is used along with DG-like numerical fluxes. 
 We provide background on the discrete inf-sup condition, a key mathematical aspect in the design of mixed finite element methods, and show how the inf-sup condition indicates both methods will be non-singular but the first method will suffer from the presence of non-physical spurrious modes that plague solution quality and the performance of iterative solvers. 
+Block preconditioners for the mixed finite element system are presented. 
 We then derive a hybridized version of the RT method that increases the computational efficiency of the RT method by reducing the number of globally coupled unknowns. 
 The chapter concludes with numerical results. We investigate the accuracy of the methods using the method of manufactured solutions, the convergence rate of fixed-point iteration in the thick diffusion limit and on the linearized crooked pipe, a challenging proxy problem from thermal radiative transfer, and the performance of the preconditioned iterative solvers in both serial and parallel. 
 
