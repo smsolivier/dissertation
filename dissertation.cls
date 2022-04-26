@@ -15,6 +15,7 @@
 
 % --- interdependence table environment --- 
 \newenvironment{preamble}[1]{%
+	\phantomsection
 	\addcontentsline{toc}{chapter}{#1}%
 	\begin{center}%
 	{\large \bfseries #1}%
