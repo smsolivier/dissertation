@@ -3,6 +3,7 @@
 \usepackage{tikz}
 
 \tikzstyle{node} = [rectangle, align=center, draw=black, minimum height=1cm, thick]
+\tikzstyle{separator} = [dashed, opacity=.25]
 
 \begin{document}
 \begin{tikzpicture}[>=stealth]
@@ -21,5 +22,13 @@
 		vef/sn, fem/sn, sn/dg, sn/mfem, dg/smm, mfem/smm, smm/disc, disc/conc}{
 		\draw[->] (\a.south) -- (\b.north); 
 	}
+
+	\def\width{5.25cm}
+	\foreach \y in {-1,-7,-13}{
+		\draw[separator] (-\width,\y) -- (\width,\y); 
+	}
+	\large
+	\node[rotate=90] at (-\width,-4cm) {Background}; 
+	\node[rotate=90] at (-\width,-10cm) {Novel Contributions}; 
 \end{tikzpicture}
 \end{document}
