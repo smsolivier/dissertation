@@ -373,7 +373,7 @@ to arrive at
 		&= \int_{\Gamma_b} \vec{v}\cdot\paren{\T\n - \frac{\beta\n}{3E_{b0}}} \ud s \,, 
 	\end{aligned}
 	\end{equation}
-where we have used the definition of the Miften-Larsen boundary condition (Eq.~\todo{ref}), $\pderiv{\E}{\psi}\rvert_{\psi_0}\varphi_0 = \T$, $\pderiv{E_b}{\psi}\rvert_{\psi_0}\varphi_0 = \beta$, and $\E_0 = \frac{1}{3}\I$. 
+where we have used the definition of the Miften-Larsen boundary condition (Eq.~\ref{vef:mlbc}), $\pderiv{\E}{\psi}\rvert_{\psi_0}\varphi_0 = \T$, $\pderiv{E_b}{\psi}\rvert_{\psi_0}\varphi_0 = \beta$, and $\E_0 = \frac{1}{3}\I$. 
 
 The Raviart Thomas SMM discretization is then: find $(\varphi,\vec{J}) \in Y_p \times \RT_p$ such that 
 	\begin{subequations}
@@ -385,7 +385,7 @@ The Raviart Thomas SMM discretization is then: find $(\varphi,\vec{J}) \in Y_p \
 		+\int_{\Gamma_b} \frac{1}{3E_{b0}}\vec{v}\cdot\n\paren{2\Jin + \beta} \ud s - \int_{\Gamma_0} \jump{\vec{v}}\cdot\avg{\T\n} \ud s + \int \nablah \vec{v} : \T \ud \x \,, \quad \forall \vec{v} \in \RT_p \,. 
 	\end{multline}
 	\end{subequations}
-Note that MINRES requires the system to be symmetric indefinite. The RT SMM discretization can be written in symmetric indefinite form by by multiplying the zeroth moment by negative one and the first moment by positive three. 
+Note that the \gls{minres} solver requires the system to be symmetric indefinite. The RT SMM discretization can be written in symmetric indefinite form by by multiplying the zeroth moment by negative one and the first moment by positive three. 
 
 \subsection{Hybridized Raviart Thomas}
 The left hand side of the RT SMM discretization is equivalent to an RT discretization of radiation diffusion. Thus, the standard RT hybridization process outlined in Section \ref{rtvef_sec:hyb_diff} can be applied directly to the RT SMM method. That is, the current is approximated in the discontinuous space $\hRT_p$ and continuity of the current in the normal component is enforced with a Lagrange multiplier defined on the interior skeleton of the mesh, $\Gamma_0$. The use of a discontinuous approximation for the scalar flux and current allows eliminating these variables in favor of the Lagrange multiplier. This reduced system is both significantly smaller than the block system and can be effectively preconditioned with AMG. 
@@ -410,10 +410,10 @@ where
 is the source term for the RT SMM discretization. This system can be efficiently solved by eliminating the scalar flux and current to form a reduced system for the Lagrange multiplier only. Once $\lambda$ is known, the scalar flux and current can be solved in a post-processing step through element-local back-substitution. Details of an efficient implementation are provided in Section \ref{rtvef_sec:hyb_imp} for the VEF system. 
 
 \section{Results}
-The methods presented in this chapter were implemented in the MFEM finite element framework \cite{mfem-paper}. We use the conjugate gradient, stabilized bi-conjugate gradient, and MINRES solvers from MFEM along with \emph{hypre}'s \cite{hypre} BoomerAMG solver. KINSOL, from the Sundials \cite{hindmarsh2005sundials} package, is used to solve the fixed-point problems with fixed-point iteration and Anderson-accelerated fixed-point iteration. The high-order DG \gls{sn} solver from \cite{graph_sweeps} was used. Unless otherwise noted, the angular flux and scalar flux are approximated with equal degree finite element spaces. We refer to the four methods derived in this section as the interior penalty (IP), continuous finite element (CG), Raviart Thomas (RT), and hybridized Raviart Thomas (HRT) methods. 
+The methods presented in this chapter were implemented in the MFEM finite element framework \cite{mfem-paper}. We use the conjugate gradient, stabilized bi-conjugate gradient, and MINRES solvers from MFEM along with \emph{hypre}'s \cite{hypre} BoomerAMG solver. KINSOL, from the Sundials \cite{hindmarsh2005sundials} package, is used to solve the fixed-point problems with fixed-point iteration and Anderson-accelerated fixed-point iteration. The high-order DG \gls{sn} solver from \cite{graph_sweeps} was used. Unless otherwise noted, the angular flux and scalar flux are approximated with equal degree finite element spaces. We refer to the four methods derived in this section as the \gls{ip}, \gls{cg}, \gls{rt}, and \gls{hrt} methods. 
 
 \subsection{Method of Manufactured Solutions}
-The accuracy of the methods are determined with the Method of Manufactured Solutions (MMS). The solution is set to 
+The accuracy of the methods are determined with \gls{mms}. The solution is set to 
 	\begin{equation} \label{smm:mms_psi}
 		\psi = \frac{1}{4\pi}\bracket{\alpha(\x) + \Omegahat\cdot\vec{\beta}(\x) + \Omegahat\otimes\Omegahat : \mat{\Theta}(\x)} \,,
 	\end{equation}
