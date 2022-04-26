@@ -18,6 +18,8 @@ MPL = matplotlibrc
 REF = references.bib
 # location of glossary file 
 GLOSS = glossary.tex
+# location of dissertation class file 
+CLS = dissertation.cls
 
 # name of main document 
 MAIN = doc
@@ -71,13 +73,13 @@ $(figdir)/%.tex : %.py $(datadir)/*
 	@latexmk -pdf -output-directory=$(figdir) $< > /dev/null 
 
 # compile latex with latexmk
-$(MAIN).pdf: $(MAIN).tex $(figdir) $(FIGS) $(TABS) $(TIKZ) $(REF) $(GLOSS) $(subfiles_dir)/*.tex Makefile
+$(MAIN).pdf: $(MAIN).tex $(figdir) $(FIGS) $(TABS) $(TIKZ) $(REF) $(GLOSS) $(CLS) $(subfiles_dir)/*.tex Makefile
 	@latexmk -pdf \
 		-pdflatex="pdflatex --interaction=nonstopmode --shell-escape %O %S" \
 		$(MAIN) > /dev/null
 
 # compile chapters individually 
-% : $(subfiles_dir)/%.tex $(figdir) $(FIGS) $(TABS) $(TIKZ) $(REF) $(GLOSS) Makefile 
+% : $(subfiles_dir)/%.tex $(figdir) $(FIGS) $(TABS) $(TIKZ) $(REF) $(GLOSS) $(CLS) Makefile 
 	cd $(subfiles_dir); latexmk -pdf $@ > /dev/null
 
 # list figure names 
