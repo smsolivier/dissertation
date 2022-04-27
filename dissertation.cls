@@ -46,7 +46,7 @@
 \RequirePackage[backend=bibtex,sorting=none,style=ieee,citestyle=numeric-comp]{biblatex}
 \RequirePackage{subfiles}
 \RequirePackage{adjustbox}
-\RequirePackage[section]{placeins}
+% \RequirePackage[section]{placeins}
 \usepackage[acronym,nomain,nonumberlist,nogroupskip,nopostdot]{glossaries}
 \newglossarystyle{april_gloss_style}{%
   \glossarystyle{long}%
