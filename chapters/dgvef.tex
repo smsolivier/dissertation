@@ -6,7 +6,7 @@
 In this chapter, we design a family of independent VEF discretizations for the linear, steady-state transport problem that can be efficiently and scalably solved with high-order accuracy, in multiple dimensions, and on curved meshes. Our approach is to begin with discretization techniques known to have effective preconditioners on the simpler case of radiation diffusion (i.e.~the model Poisson problem) and adapt them to the VEF equations. 
 By using the Eddington tensor and boundary factor interpolation procedure established in \cite{two-level-independent-warsa}, these methods achieve both rapid convergence in outer fixed-point iterations and in inner linear solver iterations when paired with a high-order \gls{dg} discretization of \gls{sn} transport. 
 
-In particular, we extend the unified analysis of DG methods developed for elliptic problems presented by \textcite{Arnold2002} to the VEF equations to derive analogues of the \gls{ip}, \gls{br2}, \gls{mdldg}, and \gls{cg} techniques.
+In particular, we extend the unified analysis of DG methods developed for elliptic problems presented by \textcite{Arnold2002} to the VEF equations to derive analogs of the \gls{ip}, \gls{br2}, \gls{mdldg}, and \gls{cg} techniques.
 We show that the IP and BR2 VEF methods are effectively preconditioned by the subspace correction method from \textcite{Pazner2021} and that \gls{amg} is effective for the CG and MDLDG discretizations.
 \textcite{dima_dfem} also applied DG techniques to the VEF equations but they discretize the first-order form of the VEF equations and only consider lowest-order elements in one dimension.
 We note that our CG operator is equivalent to extending the continuous finite element VEF discretization in \cite{two-level-independent-warsa} to multiple dimensions, arbitrary-order, and curved meshes.
@@ -45,7 +45,7 @@ The procedure laid forth in \textcite{Arnold2002} is to derive the weak form of 
 In other words, we discretize Eq.~\ref{dgvef:poisson_vec} in such a way that the variable $\vec{q}$ can be eliminated on each element and insert this discrete elimination into a discretization for Eq.~\ref{dgvef:poisson_sca}. 
 The discretization is complete by defining suitable numerical fluxes that ensure the resulting algebraic system will be non-singular. 
 
-These steps are demonstrated using sparsity plots in Fig.~\ref{dgvef:unified_spy}. The left diagram shows a naive discretization of the first-order form of Poisson's equation where the vector variable is approximated in such a way that it is coupled to its neighbors. This leads to the coupling shown in the $(1,1)$ block. This coupling causes the $(1,1)$ block to have a dense inverse which makes elimination of the vector variable impractical. The center diagram shows the approach of \textcite{Arnold2002}. The vector variable is approximated such that it is not coupled to its neighbors. This allows the $(1,1)$ block to be block diagonal by element. We can then eliminate the vector variable by inverting the block of degrees of freedom corresponding to each element individually. The right diagram shows the resulting system after performing block Gaussian elimination. The $(2,2)$ block is now dependent only on the scalar variable's degrees of freedom. By solving the global system for the scalar variable in the $(2,2)$ block, the vector variable can be computed using back substitution on each element. 
+These steps are demonstrated using sparsity plots in Fig.~\ref{dgvef:unified_spy}. The left diagram shows a naive discretization of the first-order form of Poisson's equation where the vector variable is approximated in such a way that it is coupled to its neighbors. This leads to the coupling shown in the $(1,1)$ block. This coupling causes the $(1,1)$ block to have a dense inverse which makes elimination of the vector variable impractical. The center diagram shows the approach of \textcite{Arnold2002}: the vector variable is approximated such that it is not coupled to its neighbors. This allows the $(1,1)$ block to be block diagonal by element. We can then eliminate the vector variable by inverting the block of degrees of freedom corresponding to each element individually. The right diagram shows the resulting system after performing this element-by-element block Gaussian elimination. The $(2,2)$ block is now dependent only on the scalar variable's degrees of freedom. By solving the global system for the scalar variable in the $(2,2)$ block, the vector variable can be computed using back substitution on each element. 
 % --- depiction of unified process --- 
 \begin{figure}
 \centering
@@ -82,7 +82,7 @@ The present goal is to adapt this framework to the VEF equations:
 	\end{subequations}
 By extending the unified framework of \textcite{Arnold2002} to the VEF equations, we can easily derive analogs of any of the DG methods presented there. 
 We will see significant differences in the final equation since the Eddington tensor is inside the divergence.
-Additionally, the presence of a right-hand side in the first moment equation as well as non-unit coefficients and Robin-style boundary conditions introduce further complications not discussed in \textcite{Arnold2002}.
+Additionally, the presence of a right-hand side in the first moment equation as well as non-unit coefficients and Robin-style boundary conditions introduce further complications not discussed in \cite{Arnold2002}.
 
 \section{Adaption of the Unified Framework to VEF}
 We seek the VEF scalar flux in the degree-$p$ DG finite element space $Y_p$ and the current in the degree-$p$ vector-valued DG finite element space $W_p$. The weak form is then: find $(\varphi,\vec{J}) \in Y_p \times W_p$ such that for all $K \in \meshT$: 
@@ -112,7 +112,7 @@ Summing the zeroth moment over all elements:
 	\begin{equation}
 		\int_\Gamma \jump{u} \avg{\widehat{\vec{J}}\cdot\n} \ud s + \int_{\Gamma_0} \avg{u}\jump{\widehat{\vec{J}}\cdot\n} \ud s - \int \nablah u \cdot \vec{J} \ud \x + \int \sigma_a \, u\varphi \ud \x = \int u\, Q_0 \ud \x \,,
 	\end{equation}
-where the jumps and averages identity (Eq.~\todo{ref}) was used. We will now use the discrete first moment to determine a functional form for $\vec{J}$. Integrating by parts locally over element $K$, we have that 
+where the jumps and averages identity (Eq.~\ref{fem:jumps_avg_id}) was used. We will now use the discrete first moment to determine a functional form for $\vec{J}$. Integrating by parts locally over element $K$, we have that 
 	\begin{equation} \label{dgvef:identity}
 		\int_K \nabla\vec{v} : \E \varphi \ud \x = \int_{\partial K} \vec{v}\cdot\E\varphi\n_K \ud s - \int_K \vec{v}\cdot\nabla\cdot\paren{\E\varphi} \ud \x \,. 
 	\end{equation}
@@ -124,7 +124,7 @@ Summing over all elements and using the jumps and averages identity, the weak fo
 	\begin{multline} \label{dgvef:weak_strong}
 		\int_\Gamma \avg{\vec{v}}\cdot\jump{\widehat{\E\varphi}\n - \E\varphi\n} \ud s + \int_{\Gamma_0} \jump{\vec{v}} \cdot \avg{\widehat{\E\varphi}\n - \E\varphi\n} \ud s \\+ \int \vec{v}\cdot\nablah \cdot\paren{\E\varphi} \ud \x + \int \sigma_t \, \vec{v}\cdot\vec{J} \ud \x = \int \vec{v}\cdot\vec{Q}_1 \ud \x \,, \quad \forall \vec{v} \in W_p \,, 
 	\end{multline}
-where $\nablah\cdot\paren{\E\varphi}$ is evaluated as $\nablah\cdot\paren{\E\varphi} = \E\nablah \varphi + \paren{\nablah\cdot\E}\!\varphi$, and the term $\nablah\cdot\E$ is computed using Eq.~\todo{ref}. 
+where $\nablah\cdot\paren{\E\varphi}$ is evaluated as $\nablah\cdot\paren{\E\varphi} = \E\nablah \varphi + \paren{\nablah\cdot\E}\!\varphi$, and the term $\nablah\cdot\E$ is computed using Eq.~\ref{sn:Edd_div}. 
 
 We now wish to write all terms as volumetric integrals so that a functional form for the current can be found. To that end, define \emph{lifting operators} $\vec{r}(\vec{\tau}) \in W_p$ and $\vec{\ell}(\vec{\chi}) \in W_p$ such that 
 	\begin{subequations}
@@ -189,7 +189,7 @@ Using the boundary conditions and the assumption of conservative numerical fluxe
 		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int_{\Gamma_0} \jump{u} \widehat{\vec{J}}\cdot\n \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\n} \ud s \\+ \int_{\Gamma_0} \jump{\frac{\nablah u}{\sigma_t}} \cdot \avg{\widehat{\E\varphi}\n - \E\varphi\n} \ud s + \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x \\ 
 		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - 2\int_{\Gamma_b} u\, g \ud s \,, \quad \forall u \in Y_p \,. 
 	\end{multline}
-Equation \ref{dgvef:family} defines a \emph{family} of DG methods. That is, through the specification of the numerical flux for the current on interior faces, analogues of all the methods listed in \cite{Arnold2002} can be derived.
+Equation \ref{dgvef:family} defines a \emph{family} of DG methods. That is, through the specification of the numerical flux for the current on interior faces, analogs of all the methods listed in \cite{Arnold2002} can be derived.
 
 \section{Specification of Numerical Fluxes}
 All the methods we consider use numerical fluxes of the form 
@@ -312,7 +312,7 @@ where $\vec{\rho}_0(\omega), \vec{\lambda}(\upsilon) \in W_p$ such that
 	\begin{equation}
 		\int \vec{v} \cdot \vec{\lambda}(\upsilon) \ud \x = -\int_{\Gamma_0} \jump{\vec{v}\cdot\n} \upsilon \ud s \,, \quad \forall \vec{v} \in W_p \,, 
 	\end{equation}
-are analogues of $\vec{r}_0(\vec{\tau})$ and $\vec{\ell}(\vec{\chi})$, respectively, that do not include the total interaction cross section in the left hand side mass matrices and have scalar arguments. The LDG VEF discretization is then: find $\varphi \in Y_p$ such that 
+are analogs of $\vec{r}_0(\vec{\tau})$ and $\vec{\ell}(\vec{\chi})$, respectively, that do not include the total interaction cross section in the left hand side mass matrices and have scalar arguments. The LDG VEF discretization is then: find $\varphi \in Y_p$ such that 
 	\begin{multline} \label{dgvef:ldg}
 		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int_{\Gamma_0} \kappa\, \jump{u}\jump{\varphi} \ud s - \int_{\Gamma_0} \jump{u} \avg{\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi}\cdot\n} \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\n} \ud s \\
 		+ \int \paren{\vec{\rho}_0\!\paren{\jump{u}} + \vec{\lambda}\!\paren{\beta\jump{u}}}\cdot\paren{\vec{r}_0\!\paren{\jump{\E\varphi\n}} + \vec{\ell}\!\paren{\beta\jump{\E\varphi\n}}} \ud \x \\+ \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x 
@@ -703,7 +703,7 @@ Note that AMG is effective on the standard continuous finite element discretizat
 	\begin{equation}
 		-\int_{\Gamma_0} \avg{\frac{\nabla u}{\sigma_t}}\cdot \jump{\E\varphi\n} \ud s + \int \nabla u \cdot \frac{1}{\sigma_t} \paren{\nablah\cdot\E}\!\varphi \ud \x
 	\end{equation}
-in the CG VEF discretization (\todo{ref for CG}), a symmetric operator more amenable to accurate inversion via AMG is found. The symmetrized operator is then:
+in the CG VEF discretization (Eq.~\ref{dgvef:cg}), a symmetric operator more amenable to accurate inversion via AMG is found. The symmetrized operator is then:
 	\begin{equation}
 		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int \nablah u \cdot \frac{1}{\sigma_t}\E \nablah \varphi \ud \x + \int \sigma_a\, u \varphi \ud \x \,, 
 	\end{equation}
