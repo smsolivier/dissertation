@@ -142,7 +142,7 @@ The simplest algorithm to solve Eq.~\ref{vef:fixedpoint} is fixed-point iteratio
 	\end{equation}
 where $\varphi^0$ is an initial guess. This process is repeated until the difference between successive iterates is small enough. 
 
-\section{\todo{Anderson Acceleration}}
+\section{Anderson Acceleration}
 Iterative efficiency can be improved with the use of Anderson acceleration. Anderson acceleration defines the next iterate as the linear combination of the previous $m$ iterates that minimizes the residual $\varphi - G(\varphi)$. For the storage cost of $m$ previous iterates, Anderson acceleration increases the convergence rate and improves robustness. While it is not practical to store multiple copies of the \emph{angular} flux, it is reasonable to expect that a small set of \emph{scalar} flux-sized vectors can be stored. The process of linearly eliminating the transport equation, codified in Eq.~\ref{vef:lin_elim}, allows the Anderson space to be built from the much smaller scalar flux-sized vectors only. In the case where a subset of the angular flux unknowns are not eliminated, such as when a parallel block Jacobi sweep is used to avoid communication costs or when mesh cycles or reentrant faces are present, the solution vector can be augmented with these un-eliminated unknowns so that they are included in the Anderson space. This is the nonlinear analog to the ideas used for Krylov-accelerated source iteration \cite{doi:10.13182/NSE02-14}. 
 
 In addition, defining the nonlinear residual as 
@@ -370,12 +370,6 @@ Figure \ref{vef:commuting} depicts a commuting diagram for approximating the con
 Consistent methods are attractive in that they can be used in place of an existing transport method without changing the solution. This is particularly important in reactor physics applications where licensing restrictions may require that new methods exactly reproduce solutions produced by older methods. In addition, forming the discrete VEF system from the discrete transport equation provides a systematic process for steps 2) and 3) of the discrete VEF method. While this provides a straightforward process for defining a consistent VEF method given a discrete transport equation, this often leads to VEF discretizations that are difficult to solve efficiently with existing linear solver technology. Furthermore, use of negative flux fixups to ensure positivity of the transport equation will render an otherwise consistent VEF method inconsistent. 
 
 By contrast, the independent approach allows significant algorithmic flexibility. 
-\textcite{two-level-independent-warsa} compared the iterative efficiency of consistent and independent methods and saw equivalent convergence as long as the independent method properly represented the VEF data. In particular, using \gls{sn} angular quadrature and finite element interpolation produced independent methods that converged as rapidly as a consistent method. \todo{more benefits, might need to wait until intro is written}
-
-% --- benefits --- 
-% automatic TDL and conservation even if transport doesn't 
-% direct coupling to multiphysics 
-% solvers 
-% optimal design for each separately 
+\textcite{two-level-independent-warsa} compared the iterative efficiency of consistent and independent methods and saw equivalent convergence as long as the independent method properly represented the VEF data. In particular, using \gls{sn} angular quadrature and finite element interpolation produced independent methods that converged as rapidly as a consistent method. This flexibility allows the design of efficient and robust VEF methods that can leverage existing discretization and linear solver technology and have multiphysics compatibility. 
 
 \end{document}
