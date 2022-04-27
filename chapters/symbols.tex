@@ -2,8 +2,42 @@
 \documentclass[../doc.tex]{subfiles}
 
 \begin{document}
-\begin{longtable}{p{2cm}p{9cm}}
+\begin{longtable}{p{2cm}p{12cm}}
+$\in$ & indicates set membership. $x \in A$ means that $x$ is an element of the set $A$\\
+$\subset$ & indicates subset. $A \subset B$ if all elements of $A$ are also members of $B$ \\
+$\emptyset$ & the emtpy set defined as the unique set that has no elements \\
+$\R$ & the set of real numbers \\
+$\dim$ & denotes spatial dimensionality ($1\leq \dim \leq 3$) \\
+$\D$ & denotes the computational domain, $\D \subset \R^{\dim}$\\ 
+$\partial\D$ & the boundary of the domain, $\D$ \\
+$\mathbb{S}^2$ & the unit sphere \\
+$\x$ & the spatial variable such that $\x \in \D$ \\
+$\Omegahat$ & the direction-of-flight variable. $\Omegahat\in \mathbb{S}^2$\\
+
+$\hat{K}^{\dim}$ & the $\dim$-dimensional reference element \\
+$\nablah$ & the local gradient defined by applying the gradient locally on each element \\ 
 $\Gamma$ & Set of unique faces in the mesh \\
-$\Gamma_0$ & Set of unique interior faces in the mesh 
+$\Gamma_0$ & Set of unique interior faces in the mesh \\
+$L^2(\D)$ & the space of square-integrable functions \\ 
+$H^1(\D)$ & the space of square-integrable functions with square-integrabl gradient \\ 
+$H(\div;\D)$ & the space of square-integrable vector-valued functions with square-integrable divergence \\ 
+$Y_p$ & the degree-$p$ Discontinuous Galerkin space \\
+$V_p$ & the degree-$p$ continuous finite element space \\ 
+$W_p$ & the degree-$p$ vector-valued finite element space where each component of the vector belongs to $V_p$ \\ 
+$\RT_p$ & the order $p$ Raviart Thomas finite element space \\ 
+
+$\psi$ & the angular flux \\
+$\bar{\psi}$ & the inflow boundary function \\
+$\Jin$ & the inflow current computed from the inflow boundary function, $\bar{\psi}$ \\
+$\phi$ & the zeroth angular moment of the angular flux \\
+$\vec{J}$ & the first angular moment of the angular flux \\
+$\P$ & the second angular moment of the angular flux \\
+$\E$ & the Eddington tensor defined as the ratio of the second and zeroth angular moments of the angular flux \\
+$E_b$ & the Eddington boundary factor used to form boundary conditions for the VEF method \\
+$Q_0$ & the zeroth moment of the fixed-source, $q$ \\
+$\Qone$ & the first moment of the fixed-source, $q$ \\
+$\sigma_s$ & the scattering macroscopic cross section \\
+$\sigma_a$ & the absorption macroscopic cross section \\
+$\sigma_t$ & the total interaction macroscopic cross section such that $\sigma_t = \sigma_s + \sigma_a$ \\ 
 \end{longtable}
 \end{document}
