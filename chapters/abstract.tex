@@ -1,0 +1,21 @@
+%!TEX root = ../doc.tex
+\documentclass[../doc.tex]{subfiles}
+
+\begin{document}
+\begin{abstract}
+% Simulations of astrophysical phenomena and inertial confinement fusion require the simultaneous numerical modeling of hydrodynamics and \gls{trt}. 
+Numerically modeling the high energy density regimes characteristic of astrophysical phenomena and \gls{icf} requires simultaneously modeling hydrodynamics and \gls{trt}. 
+Recently, high-order finite element discretizations of the hydrodynamics equations using high-order (curved) meshes have been shown to have improved robustness and computational performance over low-order methods. Due to the tightly coupled nature of these radiation-hydrodynamics simulations, high-order methods compatible with curved meshes are also desired for \gls{trt}. 
+
+This dissertation develops high-order, moment-based methods for solving the radiation transport equation, a crucial component of modeling \gls{trt}.  
+Moment methods are a class of scale and model-bridging algorithms for solving kinetic equations, such as the radiation transport equation, in the context of multiphysics simulations. An efficient and robust iterative scheme is found by coupling the transport equation to a reduced-dimensional model derived from its statistical moments. The moment equations are closed such that, upon iterative convergence, the reduced-dimensional model is capable of reproducing the physics of the high-dimensional transport equation. 
+Moment methods are attractive in the context of \gls{hedp} simulations as they provide significant algorithmic flexibility, efficient and robust iterative convergence, and a means to isolate the expensive, high-dimensional transport equation from the evolution of the stiff hydrodynamic multiphysics. 
+
+The \gls{vef} method is a moment-based transport algorithm where the choice of closure causes the moment system to have an unusual, non-symmetric structure. This makes the development of discretizations for the VEF moment system and their corresponding scalable preconditioned iterative solvers difficult. The flexibility provided by moment methods is leveraged to design discretizations for the VEF moment system that are capable of employing existing linear solver technology. We present \gls{dg}, \gls{cg}, and mixed finite element discretizations that all have high-order accuracy, compatibility with curved meshes, and efficient preconditioned iterative solvers. When paired with a high-order \gls{dg} discretization of the \gls{sn} transport equations, the resulting methods form efficient and robust algorithms for solving the radiation transport equation. 
+
+We also investigate the use of \glspl{smm}, a class of moment methods closely related to the VEF method. SMMs avoid the difficult-to-solve VEF moment system through a clever choice of closure, leading to an iterative scheme where only radiation diffusion must be inverted at each iteration. 
+By leveraging a mathematical connection between SMM and VEF, the VEF methods presented in this dissertation are converted to SMMs to derive novel DG, CG, and mixed finite element-based algorithms. The resulting methods also form robust and efficient transport algorithms while avoiding the non-symmetric solvers that VEF methods require. 
+
+This work demonstrates that the algorithmic flexiblity allowed by moment methods can be used to design efficient algorithms for radiation transport. In addition, this dissertation serves as the foundation for the design of efficient, high-order, moment-based radiation-hydrodynamics algorithms. 
+\end{abstract}
+\end{document}
