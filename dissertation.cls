@@ -21,6 +21,7 @@
 	{\large \bfseries #1}%
 	\end{center}%
 }{
+	\clearpage
 }
 
 % --- packages to use --- 
