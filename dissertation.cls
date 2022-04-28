@@ -117,6 +117,7 @@
 \newcommand{\Qbb}[1]{\mathbb{Q}_{#1}}
 \newcommand{\RT}{\mathit{RT}}
 \newcommand{\hRT}{\hat{\RT}}
+\newcommand{\vDG}{X_p}
 \newcommand{\e}{\boldsymbol{\mathrm{e}}}
 \newcommand{\n}{\boldsymbol{\mathrm{n}}}
 \newcommand{\tang}{\boldsymbol{\mathrm{\tau}}}
