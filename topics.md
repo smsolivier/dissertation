@@ -182,3 +182,7 @@
 	* fix for loss of current accuracy? 
 	* extend RTVEF to 3D 
 	* consistent SMM by lagging 
+
+# References
+* GMRES, BiCGStab, AMG
+* hybridization 
