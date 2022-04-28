@@ -3,7 +3,7 @@
 
 \begin{document}
 \chapter{Second Moment Methods} \label{chap:smm}
-Lewis and Miller's \gls{smm} \cite{lewis_miller} couples the transport equation to the moment equations with additive closures that depend linearly on the transport solution. This scheme is characterized by a two-stage process where 1) the transport equation is inverted with a scattering source defined from the previous iteration's SMM scalar flux and 2) a \emph{diffusion approximation} is solved with transport-dependent correction sources. By contrast, VEF uses nonlinear closures and the generally non-symmetric VEF moment system must be solved at each iteration. Since SMM solves the symetric diffusion equation instead of the non-symmetric VEF equations, less expensive solvers, such as conjugate gradient, can be used instead of the general purpose methods such as \gls{bicg} or the \gls{gmres} which generally require more computation and storage. In addition, where the VEF closures are well-defined only when $\psi>0$, the additive closures used in SMM are well-defined for any $\psi$. Finally, the SMM moment system can be discretized to exactly match the discretization for the radiation diffusion package in a multiphysics code. Such a method could be used in-place in a hydrodynamics code with an existing radiation diffusion solver where a transport solver would only need to compute the correction sources for the SMM diffusion equation. 
+Lewis and Miller's \gls{smm} \cite{lewis_miller} couples the transport equation to the moment equations with additive closures that depend linearly on the transport solution. This scheme is characterized by a two-stage process where 1) the transport equation is inverted with a scattering source defined from the previous iteration's SMM scalar flux and 2) a \emph{diffusion approximation} is solved with transport-dependent correction sources. By contrast, VEF uses nonlinear closures and the generally non-symmetric VEF moment system must be solved at each iteration. Since SMM solves the symetric diffusion equation instead of the non-symmetric VEF equations, less expensive solvers, such as conjugate gradient, can be used instead of the general purpose methods such as \gls{bicg} or \gls{gmres} which generally require more computation and storage. In addition, where the VEF closures are well defined only when $\psi>0$, the additive closures used in SMM are well-defined for any $\psi$. Finally, the SMM moment system can be discretized to exactly match the discretization for the radiation diffusion package in a multiphysics code. Such a method could be used in-place in a hydrodynamics code with an existing radiation diffusion solver where a transport solver would only need to compute the correction sources for the SMM diffusion equation. 
 This would allow reuse of existing linear and nonlinear solvers and ease code coupling while providing a high-fidelity transport solution. 
 
 In this chapter, we derive the continuous SMM algorithm in two ways: 1) using additive closures that limit to radiation diffusion when the transport solution is a linear function in angle and 2) as a linearization of the VEF algorithm. The connection to linearized VEF methods provides a systematic path to deriving discrete SMMs from existing VEF methods. This connection is used to derive analogs of the interior penalty, continuous finite element, and mixed finite element methods presented in Chapters \ref{chap:dgvef} and \ref{chap:rtvef}. The chapter concludes with numerical results demonstrating the accuracy and performance of the methods. 
@@ -141,7 +141,7 @@ The Jacobian is given by:
 			\pderiv{F_1}{\psi} & \pderiv{F_1}{\varphi} \\ 
 			\pderiv{F_2}{\psi} & \pderiv{F_2}{\varphi} \\ 
 			\pderiv{F_3}{\psi} & \pderiv{F_3}{\varphi} 
-		\end{bmatrix} 
+		\end{bmatrix} \,,
 	\end{equation}
 where $F_i$ are the rows of $F$. The transport equation is linear in both $\psi$ and $\varphi$ so the first row of the Jacobian is simply: 
 	\begin{equation}
@@ -223,7 +223,7 @@ where the last equivalence is due to the fact that $\T(\psi_0) = 0$ and $\beta(\
 	\begin{equation}
 		\pderiv{\E}{\psi}\biggr\rvert_{\psi_0}(\psi_0) = 0 \,, \quad \pderiv{E_b}{\psi}\biggr\rvert_{\psi_0}(\psi_0) = 0 \,, 
 	\end{equation}
-as discussed in Section \ref{vef_sec:gateaux}. 
+as discussed in Section \ref{vef_sec:rap_conv}. 
 Converting the operator notation back to equations, this is equivalent to: 
 	\begin{subequations} \label{smm:trans_rewrite}
 	\begin{equation}
@@ -407,7 +407,7 @@ where
 		\mathcal{S} = \int \vec{v}\cdot\Qone \ud \x - \int_{\Gamma_b} \vec{v}\cdot\T\n \ud s 
 		+\int_{\Gamma_b} \frac{1}{3E_{b0}}\vec{v}\cdot\n\paren{2\Jin + \beta} \ud s - \int_{\Gamma_0} \jump{\vec{v}}\cdot\avg{\T\n} \ud s + \int \nablah \vec{v} : \T \ud \x
 	\end{equation}
-is the source term for the RT SMM discretization. This system can be efficiently solved by eliminating the scalar flux and current to form a reduced system for the Lagrange multiplier only. Once $\lambda$ is known, the scalar flux and current can be solved in a post-processing step through element-local back-substitution. Details of an efficient implementation are provided in Section \ref{rtvef_sec:hyb_imp} for the VEF system. 
+is the source term for the RT SMM discretization. This system can be efficiently solved by eliminating the scalar flux and current to form a reduced system for the Lagrange multiplier only. Once $\lambda$ is known, the scalar flux and current can be solved in a post-processing step through element-local back substitution. Details of an efficient implementation are provided in Section \ref{rtvef_sec:hyb_imp} for the VEF system. 
 
 \section{Results}
 The methods presented in this chapter were implemented in the MFEM finite element framework \cite{mfem-paper}. We use the conjugate gradient, stabilized bi-conjugate gradient, and MINRES solvers from MFEM along with \emph{hypre}'s \cite{hypre} BoomerAMG solver. KINSOL, from the Sundials \cite{hindmarsh2005sundials} package, is used to solve the fixed-point problems with fixed-point iteration and Anderson-accelerated fixed-point iteration. The high-order DG \gls{sn} solver from \cite{graph_sweeps} was used. Unless otherwise noted, the angular flux and scalar flux are approximated with equal degree finite element spaces. We refer to the four methods derived in this section as the \gls{ip}, \gls{cg}, \gls{rt}, and \gls{hrt} methods. 
@@ -525,7 +525,7 @@ Next, we repeat the MMS problems from Section \ref{rtvef_sec:mms} used to probe 
 \input{figs/smm/mms_diff}
 \end{table}
 
-Table \ref{smm:mms_table} repeats this test on the quadratically anisotropic MMS solution given in Eq.~\ref{smm:mms_psi} (i.e.~with $\mat{\Theta}$ as defined in Eq.~\ref{smm:mmsH}). Since the MMS solution is projected on $Y_p$, it is expected that this problem can converge with a maximum of order $p+1$. This can be seen in the loss of superconvergence property. Here, both measures of the scalar flux error converge with $\mathcal{O}(h^{p+1})$. On this transport problem, the current convergence is also degraded. Both RT and HRT converge the current with $\mathcal{O}(h^p)$ for $p$ odd and $\mathcal{O}(h^{p+1/2})$ for $p$ even. Compared to Table \ref{rtvef:mms_same}, the SMM methods are no longer equivalent to their VEF counterparts. 
+Table \ref{smm:mms_table} repeats this test on the quadratically anisotropic MMS solution given in Eq.~\ref{smm:mms_psi} (i.e.~with $\mat{\Theta}$ as defined in Eq.~\ref{smm:mmsH}). Since the MMS solution is projected onto $Y_p$, it is expected that this problem can converge with a maximum of order $p+1$. This can be seen in the loss of superconvergence property. Here, both measures of the scalar flux error converge with $\mathcal{O}(h^{p+1})$. On this transport problem, the current convergence is also degraded. Both RT and HRT converge the current with $\mathcal{O}(h^p)$ for $p$ odd and $\mathcal{O}(h^{p+1/2})$ for $p$ even. Compared to Table \ref{rtvef:mms_same}, the SMM methods are no longer equivalent to their VEF counterparts. 
 \begin{table}
 \centering
 \caption{Estimates of the order of accuracy and constant from a quadratically anisotropic MMS test problem. The error in the scalar flux, the error in the scalar flux when the exact solution is first projected onto $Y_p$, and the error in the current are presented for each method over a range of values of $p$. Here, the angular flux used to calculate the VEF data is represented with $Y_p$. Due to this, the maximum accuracy expected is order $p+1$. }
@@ -533,7 +533,7 @@ Table \ref{smm:mms_table} repeats this test on the quadratically anisotropic MMS
 \input{figs/smm/vmms}
 \end{table}
 
-Finally, the MMS problem is repeated with the MMS angular flux projected onto the space $Y_{p+1}$ allowing a maximum accuracy of $\mathcal{O}(h^{p+2})$. The errors measures are provided in Table \ref{smm:mms_elev}. Mixed finite element superconvergence is recovered as seen by $\|\varphi - \Pi \varphi_\text{ex}\|$ converging with order $p+2$ as in the diffusion case. In addition, the same behavior where the HRT method converges the current with order $p+1$ is observed with the RT method achieving $p+1$ only for $p$ even. 
+Finally, the MMS problem is repeated with the MMS angular flux projected onto the space $Y_{p+1}$ allowing a maximum accuracy of $\mathcal{O}(h^{p+2})$. The error measures are provided in Table \ref{smm:mms_elev}. Mixed finite element superconvergence is recovered as seen by $\|\varphi - \Pi \varphi_\text{ex}\|$ converging with order $p+2$ as in the diffusion case. In addition, the same behavior where the HRT method converges the current with order $p+1$ is observed with the RT method achieving $p+1$ only for $p$ even. 
 \begin{table}
 \centering
 \caption{Estimates of the order of accuracy and constant from a quadratically anisotropic MMS test problem. The error in the scalar flux, the error in the scalar flux when the exact solution is first projected onto $Y_p$, and the error in the current are presented for each method over a range of values of $p$. Here, the angular flux used to calculate the VEF data is represented with $Y_{p+1}$. Due to this, the maximum accuracy expected is order $p+2$.}
@@ -591,7 +591,7 @@ We now show convergence in outer fixed-point iterations and inner preconditioned
 \label{smm:cp_diag}
 \end{figure}
 
-The outer fixed-point and inner linear iterative efficiency are shown by refining in $h$ and $p$ on an orthogonal mesh. Anderson acceleration with two Anderson vectors is used. The previous outer iteration's solution is used as an initial guess for the inner solver so that the initial guess becomes progressively more accurate as the outer iteration converges. The outer tolerance is $10^{-6}$ and the inner tolerance is $10^{-8}$. The IP, CG, and HRT methods used the conjugate gradient solver. CG and HRT are preconditioned with one AMG V-cycle. IP is preconditioned by the uniform subspace correction which uses on AMG V-cycle and one iteration of Jacobi smoothing. Finally, the RT method uses BiCGStab with a lower block triangular preconditioner that performs one iteration of Gauss-Seidel smoothing and one AMG V-cycle per iteration. 
+The outer fixed-point and inner linear iterative efficiency are shown by refining in $h$ and $p$ on an orthogonal mesh. Anderson acceleration with two Anderson vectors is used. The previous outer iteration's solution is used as an initial guess for the inner solver so that the initial guess becomes progressively more accurate as the outer iteration converges. The outer tolerance is $10^{-6}$ and the inner tolerance is $10^{-8}$. The IP, CG, and HRT methods used the conjugate gradient solver. CG and HRT are preconditioned with one AMG V-cycle. The IP method is preconditioned by the \gls{usc} preconditioner which uses one AMG V-cycle and one iteration of Jacobi smoothing. Finally, the RT method uses \gls{bicg} with a lower block triangular preconditioner that performs one iteration of Gauss-Seidel smoothing and one AMG V-cycle per iteration. 
 
 Table \ref{smm:cp} shows the number of Anderson-accelerated fixed-point iterations to convergence and the maximum, minimum, and average number of inner iterations performed across all the outer iterations for each of the methods. The IP and CG methods and RT and HRT methods converged within one iteration of each other. The inner solvers were all scalable in both the mesh size and the polynomial order.  
 % --- crooked pipe hp scaling --- 
