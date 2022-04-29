@@ -3,7 +3,56 @@
 
 \begin{document}
 \chapter{Radiation Transport Background} \label{chap:transport}
-\section{\todo{The Angular Flux and Its Moments}}
+\section{The Boltzmann Transport Equation}
+A discussion of the Boltzmann transport equation must begin with the definition of the particle distribution function, $f$. 
+The set of all possible positions $\x$ and velocities $\v$ is called the system's phase space. The particle distribution function represents the expected number of particles at each point in the phase space. In other words, $f(\x,\v,t) \ud \x \ud \v = $ the expected number of particles in the differential phase space volume at a time $t$. 
+
+The Boltzmann transport equation describes the evolution of the particle distribution function over time. In general, the Boltzmann equation is written as 
+	\begin{equation}
+		\dderiv{f}{t} = \paren{\pderiv{f}{t}}_\text{force} + \paren{\pderiv{f}{t}}_\text{collision} \,,
+	\end{equation}
+where the force and collision terms are application-dependent sources or sinks for the particle distribution function. The force term represents the effect of an external influence (i.e.~not caused by the particles themselves) and the collision term represents the effect of particles colliding with each other or a background material. If a force $\F$ acts on the particles over a time period of $\ud t$, the particles' position and velocity will change by an amount $\ud \x = \v\ud t$ and $\ud \v = \frac{\F}{m} \ud t$ where $m$ is the mass of the particle. Taking the total derivative of $f$ in the phase space: 
+	\begin{equation}
+	\begin{aligned}
+		\dderiv{f}{t} &= \pderiv{f}{t} \ud t + \nabla f \cdot\ud \x + \nabla_{\v} f \cdot\ud \v \\
+		&= \pderiv{f}{t} \ud t + \nabla f \cdot\v \ud t + \nabla_{\v}\cdot\frac{\F}{m} \ud t \,, 
+	\end{aligned}
+	\end{equation}
+where $\nabla_{\v} = \pderiv{}{x} \e_x + \pderiv{}{y}\e_y + \pderiv{}{z} \e_z$ denotes the gradient in velocity space. 
+Dividing by $\ud t$ yields: 
+	\begin{equation}
+		\pderiv{f}{t} + \v \cdot \nabla f + \frac{\F}{m} \cdot \nabla_{\v} f \,. 
+	\end{equation}
+Thus, the force term $\paren{\pderiv{f}{t}}_\text{force} = \frac{\F}{m}\cdot\nabla_{\v} f$ so that the general form of the Boltzmann equation can be equivalently be written: 
+	\begin{equation}
+		\pderiv{f}{t} + \v \cdot \nabla f + \frac{\F}{m} \cdot \nabla_{\v} f = \paren{\pderiv{f}{t}}_\text{collision} \,. 
+	\end{equation}
+For charged particle transport, the particles experience external electromagnetic forces and frequently interact with each other through Coloumb collisions. In this case, particles with charge $q$ experience the force $\F = q(\E + \v\times \mat{B})$ due to the electric field, $\E$, and magnetic field, $\mat{B}$. The Coloumbic collision term is described by the (quite complicated) Fokker-Planck operator. 
+
+Here, we focus on neutral particle transport (i.e.~photons or neutrons). Since these particles do not have charge, there are no external electromagnetic forces. Furthermore, particle-particle collisions are exceedingly rare and it is thus commonplace to ignore them. The collision term then only includes the interaction of the neutral particle with the background medium. These interactions are broadly classified into absorption and scattering events. The probabilities of these events occuring per unit distance traveled are called cross sections for neutrons and opacities for photons and are govenered by nuclear physics. The most general form of the Boltzmann transport equation for a neutral particle is then: 
+	\begin{equation}
+		\pderiv{f}{t} + \v \cdot \nabla f = \paren{\pderiv{f}{t}}_\text{absorption} + \paren{\pderiv{f}{t}}_\text{scattering} + \paren{\pderiv{f}{t}}_\text{source} \,,
+	\end{equation}
+where we have split the collision term into absorption and scattering terms and included an additional term representing an external source of particles. For neutrons, the external source could be a fixed-source of particles such as radioactive material that emits neutrons. For photons, we consider the source to be the thermal emission of photons. Thus, photon external source is dependent on the material's temperature.  
+
+\section{Navigating Notation: $f$, $\psi$, and $I$}
+Application of the Boltzmann transport equation to modeling radiation is home to three sets of notation: nuclear engineering, astrophysics, and \gls{hedp}. The hope of this section is to provide the means for newcomers of this subject to navigate these three fields. In all cases, the velocity variable is represented using a direction-of-flight variable, $\Omegahat$, and an energy variable. 
+The angular variable, $\Omegahat$, is represented using the spherical coordinate system depicted in Fig.~\ref{trans:omega_diagram} which uses a polar and azimuthal angle to describe the direction $\Omegahat$ in three-dimensional space. 
+% --- spherical coordinates for Omega --- 
+\begin{figure}
+\centering
+\includegraphics[width=.65\textwidth]{figs/omega.pdf}
+\caption{A depiction of the spherical coordinate system used for the direction of particle travel variable, $\Omegahat$. Here, $\theta \in [0,2\pi]$ is the azimuthal angle and $\varphi \in [0,\pi]$ the polar angle. }
+\label{trans:omega_diagram}
+\end{figure}
+In the case of neutrons, the energy variable is $E = \frac{1}{2}mv^2$ where $v = |\v|$ is the speed of the particle. For photons, $E = h\nu$ with $h$ Planck's constant and $\nu$ the photon frequency. Since $h$ is a constant, the photon distribution is usually presented as a function of frequency. Thus, we say that $f(\x,\v,t) = f(\x,\Omegahat,E,t) = f(\x,\Omegahat,\nu,t)$. 
+
+For nuclear reactors, neutrons are the primary particle of interest and the goal is to understand the fission power produced by the system. To that end, the transport equation is cast in terms of the \emph{angular flux}, $\psi$. The angular flux represents the particle path length density in the phase space. In other words, $\psi \ud \x \ud \Omega \ud E \ud t$ represents the expected distance traveled by particles located in the phase space element $\ud \x \ud \Omega\ud E$ in the time interval $\ud t$. In relation to the distribution function, $f$, the angular flux is defined as the product of the particle speed and the distribution function: 
+	\begin{equation}
+		\psi(\x,\Omegahat,E,t) = v f(\x,\Omegahat,E,t) \,. 
+	\end{equation}
+This definition is the natural choice for computing reaction rates. If $\sigma$ represents the probability of a neutron inducing a reaction per unit length traveled, $\sigma \psi \ud \x \ud \Omega\ud E \ud t$ represents the expected number of reactions induced by neutrons traveling in the phase space element $\ud\x\ud\Omega\ud E$ in the time $\ud t$. In this way, the reactor power can be computed by integrating the product of the fission cross section and the angular flux over the entire phase space and multiplying by the average energy released per fission. 
+
 \section{\todo{The Equations of Thermal Radiative Transfer}}
 \section{\todo{Steady-State, Linear Transport: A Proxy for TRT}}
 \section{\todo{Useful Angular Identities}}
@@ -17,12 +66,6 @@
 \label{trans:omega_space_diag}
 \end{figure}
 
-% --- spherical coordinates for Omega --- 
-\begin{figure}
-\centering
-\includegraphics[width=.65\textwidth]{figs/omega.pdf}
-\caption{A depiction of the spherical coordinate system used for the direction of particle travel variable, $\Omegahat$. Here, $\theta \in [0,2\pi]$ is the azimuthal angle and $\varphi \in [0,\pi]$ the polar angle. }
-\label{trans:omega_diagram}
-\end{figure}
+
 
 \end{document}

@@ -38,6 +38,7 @@
 \RequirePackage[noend]{algpseudocode}
 \RequirePackage{siunitx}
 \DeclareSIUnit\str{str}
+\DeclareSIUnit\eV{eV}
 \sisetup{per-mode=fraction, inter-unit-product={}\cdot{}}
 \RequirePackage{enumerate}
 \RequirePackage{tikz}
@@ -102,6 +103,7 @@
 \newcommand{\M}{\mat{M}}
 \newcommand{\x}{\boldsymbol{\mathrm{x}}}
 \newcommand{\y}{\boldsymbol{\mathrm{y}}}
+\renewcommand{\v}{\boldsymbol{\mathrm{v}}}
 \newcommand{\avg}[1]{\left\{\!\!\left\{#1\right\}\!\!\right\}}
 \newcommand{\jump}[1]{\left\llbracket#1 \right\rrbracket}
 \renewcommand{\vector}[1]{\begin{bmatrix} #1 \end{bmatrix}^T}
