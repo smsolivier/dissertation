@@ -238,13 +238,13 @@ Numerical quadrature is expected to converge with first-order accuracy when the 
 \begin{figure}
 \centering
 \foreach \f in {2,...,4}{
-	\begin{subfigure}{.49\textwidth}
+	\begin{subfigure}{.32\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figs/reentrant_\f.pdf}
 		\caption{}
 	\end{subfigure}
 }
-\caption{(a) a plot of $K_3$ from Fig.~\ref{sn:reentrant_diag} showing the normal vectors along the concave face along the bottom of $K_3$. For the depicted direction $\Omegahat$, $\Omegahat\cdot\n$ changes sign along the face as shown by the changing colors of the normal vectors. (b) plots $\Omegahat\cdot\n$ as a function of the reference coordinate, $\xi \in [0,1]$, corresponding to the bottom face of $K_3$. (c) and (d) plot the upwind and downwind parts of $\Omegahat\cdot\n$, respectively. Observe that the upwind and downwind parts have discontinuous derivatives.}
+\caption{Plots of $\Omegahat\cdot\n$ and its upwind and downwind components, respectively, along the face $\mathcal{F} = K_1 \cap K_3$ and direction $\Omegahat$ from Fig.~\ref{sn:reentrant_mesh}. The plots are provided as a function of the reference coordinate, $\xi \in [0,1]$, corresponding to $\mathcal{F}$. Observe that the upwind and downwind components shown in (b) and (c) have discontinuous derivatives.}
 \label{sn:reentrant_plots}
 \end{figure}
 
