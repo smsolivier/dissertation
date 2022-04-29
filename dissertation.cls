@@ -158,6 +158,7 @@
 % --- math environments --- 
 \newtheorem{cor}{Corollary}
 \newtheorem{prop}{Proposition}
+\counterwithin{prop}{chapter}
 \newtheorem{thm}{Theorem}
 \newtheorem{lem}{Lemma}
 \newtheorem{rem}{Remark}

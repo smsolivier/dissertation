@@ -186,3 +186,4 @@
 # References
 * GMRES, BiCGStab, AMG
 * hybridization 
+* canonical RT 

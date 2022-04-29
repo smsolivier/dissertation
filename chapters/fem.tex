@@ -8,9 +8,11 @@ The basic finite element method embellishes and extends Galerkin's method by def
 
 Finite element methods are characterized by three basis aspects. First, the domain is divided into a finite set of smaller domains called elements. The union of these elements forms a computational approximation of the domain, known as a mesh, that enables the simulation of problems defined on complex and irregular geometries. Second, the approximation spaces are formed in terms of a finite number of parameters, known as degrees of freedom, corresponding to piecewise polynomial functions. 
 Suitable matching conditions are enforced so that these piecewise polynomial spaces are subsets of the desired infinite-dimensional function spaces. 
-Finally, the approximation spaces are designed to be easily described using a canonical basis that has small support. Use of this canonical basis in Galerkin's method yields algebraic systems of equations that can be formed through computations associated with a single element and are sparse in that their entries are primarily zero. This means that, through a process known as finite element assembly, the entries of the linear system can be computed efficiently. In addition, the sparsity of the matrices allows use of specialized data structures that reduce the memory and computational costs of storing and solving the linear system.
+Finally, the approximation spaces are designed to be easily described using a canonical basis that has small support. Use of this canonical basis in Galerkin's method yields algebraic systems of equations that can be formed through computations associated with a single element and are sparse in that their entries are primarily zero. This means that, through a process known as finite element assembly, the entries of the algebraic system can be computed efficiently. In addition, the sparsity of the matrices allows use of specialized data structures that reduce the memory and computational costs of storing and solving the linear system.
 
-This chapter introduces the \gls{fem} and the required notation and machinery needed to understand and implement the finite element discretizations of the transport and VEF equations discussed in subsequent chapters. 
+This chapter introduces the finite element method and the required notation and machinery needed to understand and implement the finite element discretizations of the transport and moment systems discussed in subsequent chapters. The content of this chapter stems from a variety of sources. For mathematical analyses, \textcite{ciarlet1978finite} and \textcite{brenner_scott} are excellent for the standard conforming finite element method, \textcite{quateroni} and \textcite{mfem_boffi} for mixed finite elements, and \textcite{ern_guermond} for discontinuous finite elements. In addition, \textcite{zhodi} provides an introduction of the finite element method geared toward engineers. 
+
+We begin with a high-level overview of weak forms and Galerkin's method. We present the element-local polynomial spaces used in this document to describe the mesh and solution spaces. The mesh is then defined paying particular attention to the construction of the reference to physical space transformations that allow integration over high-order elements along with the numerical integration of functions defined through these transformations. The finite element spaces used heavily in subsequent chapters are defined. The chapter concludes with implementation details associated with finite element assembly and an introduction to preconditioned iterative solvers. 
 
 \section{The Weak Form and Galerkin's Method}
 Finite element methods discretize and solve the weak, or variational, form of a partial differential equation. Consider the abstract problem: find $u \in X$ such that 
@@ -66,7 +68,7 @@ This restricted solution space is supported by correspondingly restricting the t
 		a(v,u) = b(v) \,, \quad \forall v \in V_0 \,. 
 	\end{equation}
 
-\subsection{Radiation Diffusion Example}
+\subsection{Radiation Diffusion Example} \label{fem_sec:rad_diff}
 Returning to the radiation diffusion example in Eq.~\ref{fem:rad_strong} with the additional requirement of a Dirichlet boundary condition $\varphi = 0$ on $\x\in\partial\D$, the weak form is: find $\varphi \in V$ such that 
 	\begin{equation} \label{fem:rad_weak}
 		\int \nabla u \cdot D \nabla\varphi \ud \x + \int \sigma_a\, u \varphi \ud \x = \int u\, Q \ud \x \,,\quad \forall u \in V \,. 
@@ -150,18 +152,9 @@ Since $V_h \subset V$, we can directly apply the Lax-Milgram theorem to show tha
 		\kappa(a_h) \leq \alpha/\beta \,, 
 	\end{equation}
 where $a_h$ is $a$ restricted to the space $V_h$ \cite[Corollary 2.4]{la2fa}. Thus, by defining the approximation space as a subset of the infinite-dimensional space, the discrete operator inherits the analytic structure of the underlying weak problem. 
+Note that in this document, we also consider non-conforming methods where the approximation space is not a subspace of $V$. In the case $V_h \not\subset V$, additional requirements are placed on the discrete problem in order to guarantee solvability and stability. This is an important aspect of the \gls{dg} methods presented in Chapter \ref{chap:dgvef}. 
 
-\todo{non-conforming, minimization of potential, alternative variational forms}
-
-Such a general framework as Galerkin's method, however, does not provide a way to define the approximation space $V_h$. \todo{lead into description of FES}
-
-% --- best approximation diagram --- 
-% \begin{figure}
-% \centering
-% \includegraphics{figs/galerkin.pdf}
-% \caption{}
-% \label{fem:best_app}
-% \end{figure}
+Such a general framework as Galerkin's method, however, does not provide a way to define the approximation space $V_h$. The finite element method fill this gap by providing a systematic process for constructing the finite-dimensional spaces $V_h$ in ways that are amenable to efficient computer implementation. 
 
 \section{Local Polynomial Spaces}
 Both the mesh and the solution are represented with a polynomial space defined locally on each element. Let $\hat{K}^{\dim}$ denote the $\dim$-dimensional reference element which we set to the unit $\dim$-dimensional cube, $\hat{K} = [0,1]^{\dim}$. We omit the superscript denoting the dimensionality when the dimensionality of the reference element can be inferred from context. We define the space of univariate polynomials of degree less than or equal to $k$ as: 
@@ -256,7 +249,6 @@ The basis functions for $\Pcal{1}$, $\Pcal{2}$, and $\Pcal{3}$ through the Gauss
 Interpolation through the Gauss-Lobatto and Gauss-Legendre points both have the required properties to be accurate in the limit as $p\rightarrow \infty$. Thus, the choice of interpolating points is typically dictated by other aspects of the overall algorithm. Note that the Gauss-Lobatto points include the interval end points $0$ and $1$ while the Gauss-Legendre points do not. The bases resulting from Lagrange interpolation through the Gauss-Lobatto and Gauss-Legendre points are referred to as closed and open, respectively, due to this. The Gauss-Legendre basis has the beneficial property of diagonal mass matrices on affine meshes while the closed Gauss-Lobatto basis typically leads to sparser globally coupled systems since closed bases couple fewer degrees of freedom on interior faces. 
 
 \section{Description of the Mesh}
-\todo{introduce}
 \subsection{Admissible Tesselations}
 % --- admissible meshes --- 
 \begin{figure}
@@ -551,8 +543,6 @@ The normal is computed by applying $\F^{-T}$ to the referential normal, $\hat{\n
 	\begin{equation}
 		\n = \frac{\F^{-T}|_{\vec{\xi}_\mathcal{F}}\hat{\n}}{\|\F^{-T}|_{\vec{\xi}_\mathcal{F}}\hat{\n}\|} = \frac{\vector{h & -\alpha}}{\|\vector{h & -\alpha}\|} \,. 
 	\end{equation}
-
-\section{Numerical Quadrature}
 
 \section{Integration Transformations} \label{fem_sec:int_trans}
 In this section, we present the machinery to transform integrands involving scalar and vector-valued functions and their derivatives between reference and physical space. These transformations allow integration over the arbitrary geometries defined by the map $\T$ using numerical quadrature rules defined on the reference element. These transformations and numerical quadrature are implicitly used to compute all of the bilinear and linear forms discussed in this document. 
@@ -873,11 +863,11 @@ can be computed in reference space using
 where $\bar{u}_e(\vec{\xi}_\mathcal{F}) = u_e(\T_e(\hat{\T}_e(\vec{\xi}_\mathcal{F})))$ is a function of the reference coordinate of the $\dim-1$-dimensional face through the composition with the integration point transformation, $\hat{\T}_e$, and the volumetric transformation, $\T_e$, associated with element $K_e$. In this way, any function can be evaluated using the $\dim$-dimensional grid function by first transforming the $\dim-1$-dimensional location $\vec{\xi}_\mathcal{F}$ to the $\dim$-dimensional point associated with an adjacent element $K_e$ through $\vec{\xi}_e = \hat{\T}_e(\vec{\xi}_\mathcal{F})$. Note that if $f = f(u_1, u_2, \nabla u_1, \nabla u_2)$ the volumetric transformations discussed in this section can be applied to compute $\nabla u_1$ and $\nabla u_2$ by first converting the reference point on the face to a reference point on the volume. 
 
 \section{Finite Element Spaces} \label{fem_sec:fes}
-In this section, we define the finite element spaces used to approximate the VEF equations. Finite element spaces are defined on the mesh $\meshT$ or the interior skeleton of the mesh $\Gamma_0$ and consist of an element-local function space and a set of inter-element matching conditions. 
-The inter-element matching conditions enforce various types of continuity of the solution between elements. The combination of a locally smooth function space and suitable matching conditions allows finite element spaces to be discrete subspaces of Sobolev spaces such as $L^2(\D)$, $H^1(\D)$, and $H(\div;\D)$. The following subsections define the element-local function space and matching conditions used for the scalar flux, current, and the interface variable used later in hybridization of the mixed finite element method. 
+Finite element spaces are defined on the mesh $\meshT$ or the interior skeleton of the mesh $\Gamma_0$ and consist of an element-local function space and a set of inter-element matching conditions. 
+The inter-element matching conditions enforce various types of continuity of the solution between elements. The combination of a locally smooth function space and suitable matching conditions allows finite element spaces to be discrete subspaces of Sobolev spaces such as $L^2(\D)$, $H^1(\D)$, and $H(\div;\D)$. The following subsections define the element-local function spaces and matching conditions used to discretize the transport and moment equations in subsequent chapters. 
 
 \subsection{Discontinuous Galerkin} \label{fem_sec:dg}
-The Discontinuous Galerkin (DG) space is a discrete subspace of $L^2(\D)$, the space of square-integrable functions. In other words, if $u$ is an element of the DG space, 
+The \gls{dg} space is a discrete subspace of $L^2(\D)$, the space of square-integrable functions. In other words, if $u$ is an element of the DG space, 
 	\begin{equation}
 		\int u^2 \ud \x < \infty \,. 
 	\end{equation}
@@ -891,7 +881,7 @@ The degree-$p$ DG space is
 	\begin{equation}
 		Y_p = \{ u \in L^2(\D) : u|_{K} \in \Qbb{p}(K) \,, \quad \forall K \in \meshT \} \,. 
 	\end{equation}
-An example of the distribution of the degrees of freedom in a linear DG space on a $3\times 3$ mesh is shown in Fig.~\ref{fem:dgfes}. Note that degrees of freedom are not shared between elements. Since there are no continuity requirements in the DG space, the basis for the local polynomials can use either open or closed points. That is, a nodal basis can be formed with Lagrange interpolating polynomials through the two-fold Cartesian product of either the closed Gauss-Lobatto points or the open Gauss-Legendre points. 
+An example of the distribution of the degrees of freedom in a linear DG space on a $3\times 3$ mesh is shown in Fig.~\ref{fem:dgfes}. Note that degrees of freedom are not shared between elements. Since there are no continuity requirements in the DG space, the basis for the local polynomials can use either open or closed points. That is, a nodal basis can be formed with Lagrange interpolating polynomials through the $\dim$-fold Cartesian product of either the closed Gauss-Lobatto points or the open Gauss-Legendre points. 
 % --- DG FES --- 
 \begin{figure}
 \centering
@@ -900,12 +890,18 @@ An example of the distribution of the degrees of freedom in a linear DG space on
 \label{fem:dgfes}
 \end{figure}
 
+We additionally define the vector-valued DG space 
+	\begin{equation}
+		\vDG = \{ \vec{v} \in [L^2(\D)]^{\dim} : \vec{v}_i \in Y_p \,, \quad 1 \leq i \leq \dim \} \,. 
+	\end{equation}
+This space uses the scalar DG space for each component. 
+
 \subsection{Continuous Finite Element}
 Let the degree-$p$, scalar continuous finite element space be
 	\begin{equation}
 		V_p = \{ u \in C_0(\D) : u|_{K_e} \in \Qbb{p}(K_e) \,, \quad \forall K_e \in\meshT \} 
 	\end{equation}
-so that each function $u\in V_p$ is a piecewise-continuous polynomial mapped from the reference element. Since $u \in V_p$ is locally smooth and $V_p \subset C_0(\D)$, it can be shown that for $u\in V_p$, $\nabla u = \nablah u \in [L^2(\D)]^2$. The distribution of degrees of freedom for the space $V_2$ is shown in Fig.~\ref{fem:h1fes}. Here, continuity is enforced by sharing degrees of freedom between elements. Due to this, a nodal basis using closed points, such as the Gauss-Lobatto points, must be used. 
+so that each function $u\in V_p$ is a piecewise-continuous polynomial mapped from the reference element. Since $u \in V_p$ is locally smooth and $V_p \subset C_0(\D)$, it can be shown that given $u\in V_p$, $\nabla u = \nablah u \in [L^2(\D)]^2$. Thus, $V_p \subset H^1(\D)$. The distribution of degrees of freedom for the space $V_2$ is shown in Fig.~\ref{fem:h1fes}. Here, continuity is enforced by sharing degrees of freedom between elements. Due to this, a nodal basis using closed points, such as the Gauss-Lobatto points, must be used. 
 % --- CFEM FES ---
 \begin{figure}
 \centering
@@ -916,17 +912,17 @@ so that each function $u\in V_p$ is a piecewise-continuous polynomial mapped fro
 
 The vector-valued analog 
 	\begin{equation}
-		W_p = \{ \vec{v} : v_1 \in V_p \ \mathrm{and} \ v_2 \in V_p \} 
+		W_p = \{ \vec{v} \in [H^1(\D)]^{\dim}: v_i \in V_p \,, \quad 1 \leq i \leq \dim \} 
 	\end{equation}
-uses the scalar continuous finite element space for each component. In this way, $\vec{v} \in W_p \subset \Hone$ and thus $\nabla\vec{v} = \nablah\vec{v} \in [L^2(\D)]^{2\times 2}$. Since each component is defined independently using the scalar space, vectors $\vec{v} \in W_p$ transform according to Eq.~\ref{fem:scalar_copies}. 
+uses the scalar continuous finite element space for each component. In this way, $\vec{v} \in W_p \subset [H^1(\D)]^{\dim}$ and thus $\nabla\vec{v} = \nablah\vec{v} \in [L^2(\D)]^{\dim\times\dim}$. Since each component is defined independently using the scalar space, vectors $\vec{v} \in W_p$ transform according to Eq.~\ref{fem:scalar_copies}. 
 
 \subsection{Raviart Thomas} \label{fem_sec:fes_rt}
-The Raviart Thomas (RT) space is a discrete subspace of $H(\div;\D)$, the space of vector-valued functions with square-integrable divergence. That is, 
+The \gls{rt} space is a discrete subspace of $H(\div;\D)$, the space of vector-valued functions with square-integrable divergence. That is, 
 	\begin{equation}
 		H(\div;\D) = \{ \vec{v} \in [L^2(\D)]^2 : \nabla\cdot\vec{v} \in L^2(\D) \} \,. 
 	\end{equation}
 The requirements of a discrete subspace are codified in the following proposition. 
-\begin{prop}[Cf.~\textcite{quateroni}, Proposition 3.2.2] \label{fem:div_prop}
+\begin{prop}[see \textcite{quateroni} Prop. 3.2.2] \label{fem:div_prop}
 Let $\vec{v} : \D \rightarrow \R^2$ be such that 
 \begin{enumerate}
 	\item $\vec{v}|_K \in \H^1(K)$ for each $K \in \meshT$  
@@ -952,7 +948,7 @@ On the other hand, if $\vec{v} \in H(\div;\D)$ then $\nabla\cdot\vec{v} = \nabla
 hence, (b) holds.
 \end{proof}
 In other words, a discrete subspace of $H(\div;\D)$ must (a) have a smooth function space on each element and (b) have suitable matching conditions so that the normal component is continuous across interior mesh interfaces. 
-Figure \ref{fem:quiver} depicts an example vector in the space $H(\div;\D)$. 
+Figure \ref{fem:quiver} depicts an example vector in the space $H(\div;\D)$. The vector field is piecewise discontinuous on each element but since the normal component is the same in $K_1$ and $K_2$, this vector field is a member of $H(\div;\D)$. 
 % --- RT quiver diagram --- 
 \begin{figure}
 	\centering
@@ -961,7 +957,7 @@ Figure \ref{fem:quiver} depicts an example vector in the space $H(\div;\D)$.
 	\label{fem:quiver}
 \end{figure}
 
-The RT space uses the local polynomial space $\Qcal{p+1,p} \times \Qcal{p,p+1}$. This choice can be motivated by the discrete de Rham complex \cite{mfem_brezzi} in that 
+In two spatial dimensions, the RT space uses the local polynomial space $\Qcal{p+1,p} \times \Qcal{p,p+1}$. This choice can be motivated by the discrete de Rham complex \cite{mfem_brezzi} in that 
 	\begin{equation}
 		\Qcal{p+1} \xrightarrow{\nabla\times} \Qcal{p+1,p}\times \Qcal{p,p+1} \xrightarrow{\nabla\cdot} \Qcal{p} \,. 
 	\end{equation}
@@ -973,7 +969,7 @@ and thus we have that:
 	\begin{equation}
 		\hat{\nabla}\cdot \Qcal{1,0} \times \Qcal{0,1} = \spn\bracet{1} = \Qcal{0} \,. 
 	\end{equation}
-The nodal basis for $\Qcal{p+1,p} \times \Qcal{p,p+1}$ uses the closed Gauss-Lobatto points in the normal direction and the open Gauss-Legendre points in the tangential direction. The interpolating points for the first three orders are shown in Fig.~\ref{fem:rt_local_poly}. The circles denote degrees of freedom corresponding to the $\xi$ component while squares denote the $\eta$ component. 
+The nodal basis for $\Qcal{p+1,p} \times \Qcal{p,p+1}$ uses the closed Gauss-Lobatto points in the normal direction and the open Gauss-Legendre points in the tangential direction. The interpolating points for the first three orders are shown in Fig.~\ref{fem:rt_local_poly}. The circles denote degrees of freedom corresponding to the $\xi$ component while squares denote the $\eta$ component. In three dimensions, the local polynomial space is spanned by $\Qcal{p+1,p,p} \times \Qcal{p,p+1,p} \times \Qcal{p,p,p+1}$.%
 % --- RT local polynomial space --- 
 \begin{figure}
 \centering
@@ -1018,7 +1014,6 @@ From Proposition \ref{fem:div_prop}, $\vec{v} \in \RT_p$ satisfies $\nabla\cdot\
 \end{figure}
 
 \subsection{Raviart Thomas Trace Space}
-\todo{make general for 2/3D?}
 The normal trace of the RT space is required for the hybridization procedure discussed in Section \ref{rtvef_sec:hyb}. This space is defined on the interior skeleton of the mesh $\Gamma_0$ and represents the normal component of the RT space along the interior mesh faces. Let $\mathcal{P}_p$ be the space of univariate polynomials with degree at most $p$ and 
 	\begin{equation}
 		\mathbb{P}_p(\mathcal{F}) = \{ u = \hat{u} \circ \T^{-1} : \hat{u} \in \mathcal{P}_p(\hat{\mathcal{F}}) \}
@@ -1038,7 +1033,7 @@ The degrees of freedom in $\Lambda_1$ are depicted in Fig.~\ref{fem:ifes}. Note 
 \end{figure}
 
 \section{Computational Aspects}
-In the previous section, we defined piecewise polynomial spaces that, through a clever choice of degrees of freedom, are finite-dimensional subspaces of the Sobolev spaces introduced in Section \ref{fem_sec:sobolev}. \todo{in this section, we define computational bases for these spaces...}
+In the previous section, we defined piecewise polynomial spaces that, through a clever choice of degrees of freedom, are finite-dimensional subspaces of the Sobolev spaces introduced in Section \ref{fem_sec:sobolev}. In this section, we discuss their computer implementation. A canonical basis with small support such that each basis function is non-zero on only a few elements in the mesh is built. We then discuss finite element assembly which leverages the small support of the basis functions to achieve an efficient algorithm for forming the matrices associated with a finite element space and bilinear or linear form. 
 
 \subsection{The Canonical Basis}
 Let $X_h$ denote one of the finite element spaces described in the previous section and $\mathcal{N}_h$ denote the set of nodes associated with $X_h$. For example, if $X_h = V_1$, the linear continuous finite element space, then $\mathcal{N}_h$ is the set of locations, $\x_i$, in the domain corresponding to a vertex in the mesh. A function $u_h \in X_h$ is determined by the values it takes at the nodes in $\mathcal{N}_h$. That is, $u_h \in X_h$ is determined by the set 
@@ -1075,23 +1070,25 @@ Using this basis, a function $u \in X_h$ can be represented as
 where $u_i \in \Sigma_h$ is the degree of freedom corresponding to $b_i$. 
 
 \subsection{Finite Element Assembly}
-Consider the abstract problem: find $u \in V$ such that 
+Consider the abstract, finite-dimensional problem: find $u \in X_h$ such that 
 	\begin{equation}
-		a(v,u) = f(v) \,, \quad \forall v \in V \,. 
+		a(v,u) = f(v) \,, \quad \forall v \in X_h \,. 
 	\end{equation}
-Both the test function $v$ and the solution $u$ are represented as linear combination of the global basis functions $\{b_i\}$. That is, we write 
+Both the test function $v$ and the solution $u$ are represented as a linear combination of the canonical basis functions $\{b_i\}$ that span $X_h$. That is, we write 
 	\begin{equation}
 		u = \sum_i b_i u_i \,, \quad v = \sum_i b_i v_i \,,
 	\end{equation}
-where $u_i$ and $v_i$ are the degrees of freedom that determine $u,v \in V$. Inserting this representation into the abstract problem yields 
+where $\{u_i\}$ and $\{v_i\}$ are the degrees of freedom that determine $u,v \in V$. Inserting this representation into the abstract problem yields 
 	\begin{equation}
-		a(\sum_i b_i v_i, \sum_j b_j u_j) = f(\sum_i b_i v_i) \iff \sum_i \sum_j v_i a(b_i,b_j) u_j = \sum_i v_i f(b_i) \,. 
+		a(\sum_i b_i v_i, \sum_j b_j u_j) = f(\sum_i b_i v_i) \iff \sum_i \sum_j v_i a(b_i,b_j) u_j = \sum_i v_i f(b_i) \,, 
 	\end{equation} 
+where we have used the bilinearity and linearity of $a$ and $f$, respectively. 
 Letting $\mat{A}$ be the matrix with entries $a(b_i, b_j)$ and $\underline{f}$ the vector with entries $f(b_i)$, the above is equivalent to 
 	\begin{equation}
-		\underline{v}^T \mat{A} \underline{u} = \underline{v}^T \underline{f} \,. 
+		\underline{v}^T \mat{A} \underline{u} = \underline{v}^T \underline{f} \,, 
 	\end{equation}
-We wish to have this hold $\forall v \in V \Rightarrow \forall v_i$. Therefore, solving the abstract problem is equivalent to solving 
+where $\underline{w}$ represents the vector of degrees of freedom corresponding to some $w \in X_h$. 
+We wish to have this hold $\forall v \in X_h \Rightarrow \forall v_i$. Therefore, solving the abstract problem is equivalent to solving 
 	\begin{equation}
 		\mat{A} \underline{u} = \underline{f} \,, 
 	\end{equation}
@@ -1120,7 +1117,15 @@ We now show that the algebraic system $\mat{A}\underline{u} = \underline{f}$ is 
 \label{fem:sparse1d}
 \end{figure}
 
-\subsection{\todo{Examples}}
+In this document, we will frequently build the matrix, $\mat{A}$, corresponding to a bilinear form, $a(\cdot,\cdot)$, on the space $X_h$ using the following notation: 
+	\begin{equation}
+		\underline{v}^T \mat{A} \underline{u} = a(v,u) \,, \quad u,v \in X_h \,. 
+	\end{equation}
+In the above, we implicitly write $u = \sum u_i b_i$ and $v = \sum v_i b_i$ to form the matrix $\mat{A}_{ij} = a(b_i,b_j)$. Analogously, we build the vector $\underline{f}$ corresponding to the linear form $f(\cdot)$ using  
+	\begin{equation}
+		\underline{v}^T \underline{f} = f(v) \,, 
+	\end{equation}
+where $v = \sum v_i b_i$ is implicitly used to form $\underline{f}_i = f(b_i)$. 
 
 \section{Iterative Solution Methods for Linear Systems}
 We consider the algebraic system 
