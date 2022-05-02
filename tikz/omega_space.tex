@@ -20,6 +20,7 @@
 \begin{document}
 \tdplotsetmaincoords{70}{160}
 \begin{tikzpicture}[>=stealth, dsh/.style={dashed, opacity=.5, text opacity=1}, tdplot_main_coords, scale=2.5, thick]
+	\LARGE
 	\draw[->] (0,0,0) -- (4,0,0) node at +(.15,0,0) {$x$}; 
 	\draw[->] (0,0,0) -- (0,4,0) node at +(0,.25,0) {$y$}; 
 	\draw[->] (0,0,0) -- (0,0,4) node at +(0,0,.15) {$z$};  
@@ -34,8 +35,8 @@
 	\draw[thin,shade,fill=gray!40] (1.924, 2.761, 3.940) -- (1.5,2,3) -- (2.335, 2.746, 3.622); 
 	\begin{scope}[canvas is plane={O(2.162, 2.662, 3.828)x(-0.298, -0.820, 0.895)y(-1.017, 0.672, 0.276)}]
 		\draw[fill=gray!30] (0,0) circle[radius=.225cm]; 
-		\node[above] (0,0) {$\Omegahat$}; 
-		\draw[<-] (-.085,-.085) -- +(30:-.225cm) node at +(30:-.3cm) {$\ud\Omega$}; 
+		\node[above=-.075cm] (0,0) {$\Omegahat$}; 
+		\draw[<-] (-.085,-.085) -- +(30:-.225cm) node at +(30:-.35cm) {$\ud\Omega$}; 
 	\end{scope}	
 	\draw[->, dashed] (1.5,2,3) -- +(0.66226618, 0.66226618, 0.82783272); 
 \end{tikzpicture}

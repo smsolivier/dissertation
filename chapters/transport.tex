@@ -15,7 +15,7 @@ where the force and collision terms are application-dependent sources or sinks f
 	\begin{equation}
 	\begin{aligned}
 		\ud f &= \pderiv{f}{t} \ud t + \nabla f \cdot\ud \x + \nabla_{\v} f \cdot\ud \v \\
-		&= \pderiv{f}{t} \ud t + \nabla f \cdot\v \ud t + \nabla_{\v}\cdot\frac{\F}{m} \ud t \,, 
+		&= \pderiv{f}{t} \ud t + \nabla f \cdot\v \ud t + \nabla_{\v}f \cdot\frac{\F}{m} \ud t \,, 
 	\end{aligned}
 	\end{equation}
 where $\nabla_{\v} = \pderiv{}{v_x} \e_x + \pderiv{}{v_y}\e_y + \pderiv{}{v_z} \e_z$ denotes the gradient in velocity space. 
@@ -30,63 +30,151 @@ Thus, the force term $\paren{\pderiv{f}{t}}_\text{force} = \frac{\F}{m}\cdot\nab
 For charged particle transport, the particles experience external electromagnetic forces and frequently interact with each other through Coloumb collisions. In this case, particles with charge $q$ experience the force $\F = q(\E + \v\times \mat{B})$ due to the electric field, $\E$, and magnetic field, $\mat{B}$. The Coloumbic collision term is described by the (quite complicated) Fokker-Planck operator. 
 
 Here, we focus on neutral particle transport (i.e.~photons or neutrons). Since these particles do not have charge, there are no external electromagnetic forces. Furthermore, particle-particle collisions are exceedingly rare and it is thus commonplace to ignore them. The collision term then only includes the interaction of the neutral particle with the background medium. These interactions are broadly classified into absorption and scattering events. The probabilities of these events occuring per unit distance traveled are called cross sections for neutrons and opacities for photons and are govenered by nuclear physics. The most general form of the Boltzmann transport equation for a neutral particle is then: 
-	\begin{equation}
+	\begin{equation} \label{trans:linboltz}
 		\pderiv{f}{t} + \v \cdot \nabla f = \paren{\pderiv{f}{t}}_\text{absorption} + \paren{\pderiv{f}{t}}_\text{scattering} + \paren{\pderiv{f}{t}}_\text{source} \,,
 	\end{equation}
 where we have split the collision term into absorption and scattering terms and included an additional term representing an external source of particles. For neutrons, the external source could be a fixed-source of particles such as radioactive material that emits neutrons. For photons, we consider the source to be the thermal emission of photons. Thus, the photon external source is dependent on the material's temperature. We note that the case of the general Boltzmann equation under the assumption that particles do not interact with each other is called the linear Boltzmann equation. 
 
-\section{Navigating Notation: $f$, $\psi$, and $I$}
-Application of the Boltzmann transport equation to modeling radiation is home to three sets of notation: nuclear engineering, astrophysics, and \gls{hedp}. The hope of this section is to provide the means for newcomers of this subject to navigate these three fields. In all cases, the velocity variable is represented using a direction-of-flight variable, $\Omegahat$, and an energy variable. 
-The angular variable, $\Omegahat$, is represented using the spherical coordinate system depicted in Fig.~\ref{trans:omega_diagram} which uses a polar and azimuthal angle to describe the direction $\Omegahat$ in three-dimensional space. 
-% --- spherical coordinates for Omega --- 
+\section{Navigating Notation}
+Application of the Boltzmann transport equation to modeling radiation is home to three sets of notation: nuclear engineering, astrophysics, and \gls{hedp}. The hope of this section is to provide the means for newcomers to this subject to navigate these three fields. 
+
+\subsection{$f$, $\psi$, and $I$}
+In all cases, the velocity variable is represented using a direction-of-flight variable, $\Omegahat$, and an energy variable. 
+The angular variable, $\Omegahat$, is represented using the spherical coordinate system depicted in Fig.~\ref{trans:spherical_coords} which uses a polar and azimuthal angle to describe the direction $\Omegahat$ in three-dimensional space. Figure \ref{trans:omega_phase} depicts the direction-of-flight portion of the phase space. Photons at any point in time, space, and frequency can travel in any direction on the unit sphere. 
 \begin{figure}
 \centering
-\includegraphics[width=.65\textwidth]{figs/omega.pdf}
-\caption{A depiction of the spherical coordinate system used for the direction of particle travel variable, $\Omegahat$. Here, $\theta \in [0,2\pi]$ is the azimuthal angle and $\varphi \in [0,\pi]$ the polar angle. }
-\label{trans:omega_diagram}
+\begin{subfigure}{.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/omega.pdf}
+	\caption{}
+	\label{trans:spherical_coords}
+\end{subfigure}
+\begin{subfigure}{.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{figs/omega_space.pdf}
+	\caption{}
+	\label{trans:omega_phase}
+\end{subfigure}
+\caption{(a) a depiction of the spherical coordinate system used for the direction of particle travel variable, $\Omegahat$. Here, $\theta \in [0,2\pi]$ is the azimuthal angle and $\varphi \in [0,\pi]$ the polar angle. (b) A depiction of the direction-of-flight portion of the phase space at a fixed location $\x$, frequency $\nu$, and time $t$. At each position $\x$, particles can travel in any direction on the unit sphere.}
 \end{figure}
-In the case of neutrons, the energy variable is $E = \frac{1}{2}mv^2$ where $v = |\v|$ is the speed of the particle. For photons, $E = h\nu$ with $h$ Planck's constant and $\nu$ the photon frequency. Since $h$ is a constant, the photon distribution is usually presented as a function of frequency. Thus, we say that $f(\x,\v,t) = f(\x,\Omegahat,E,t) = f(\x,\Omegahat,\nu,t)$. Note that even though $\Omegahat$ is a three-dimensional vector, it is represented only using two parameters. In other words, $f(\x,\Omegahat,E,t)$ and $f(\x,\Omegahat,\nu,t)$ are both still functions of seven independent variables. 
+
+In the case of neutrons, the energy variable is $E = \frac{1}{2}mv^2$ where $v = |\v|$ is the speed of the particle. For photons, $E = h\nu$ with $h$ Planck's constant and $\nu$ the photon frequency. Since $h$ is a constant, the photon distribution is usually presented as a function of frequency. These distribution functions are related through: 
+	\begin{equation}
+		\iiint f(\x,\v,t) \ud \x \ud \v \ud t = \iiiint f(\x,\Omegahat,E,t) \ud \x \ud \Omega \ud E \ud t = \iiiint f(\x,\Omegahat,\nu,t) \ud \x \ud \Omega \ud \nu \ud t \,. 
+	\end{equation}
+That is, each representation of the velocity variable represents the same expected number of particles in the phase space. 
+Note that even though $\Omegahat$ is a three-dimensional vector, it is represented only using two parameters. In other words, $f(\x,\Omegahat,E,t)$ and $f(\x,\Omegahat,\nu,t)$ are both still functions of seven independent variables. 
 
 For nuclear reactors, neutrons are the primary particle of interest and the goal is to understand the fission power produced by the system. To that end, the transport equation is cast in terms of the \emph{angular flux}, $\psi$. The angular flux represents the particle path length density in the phase space. In other words, $\psi \ud \x \ud \Omega \ud E \ud t$ represents the expected distance traveled by particles located in the phase space element $\ud \x \ud \Omega\ud E$ in the time interval $\ud t$. In relation to the distribution function, $f$, the angular flux is defined as the product of the particle speed and the distribution function: 
 	\begin{equation}
-		\psi(\x,\Omegahat,E,t) = v f(\x,\Omegahat,E,t) \,. 
+		\psi(\x,\Omegahat,E,t) \equiv v f(\x,\Omegahat,E,t) \,. 
 	\end{equation}
 This definition is the natural choice for computing reaction rates. If $\sigma$ represents the probability of a neutron inducing a reaction per unit length traveled, $\sigma \psi \ud \x \ud \Omega\ud E \ud t$ represents the expected number of reactions induced by neutrons traveling in the phase space element $\ud\x\ud\Omega\ud E$ in the time $\ud t$. The reaction rate is computed by integrating $\sigma \psi$ over the domain of the reaction, $\D$, all angles on the unit sphere, $\mathbb{S}^2$, and all energies $E \in [0,\infty)$. Thus, the number of reactions per unit time is computed as 
 	\begin{equation}
 		\int_\D \int_{\mathbb{S}^2} \int_0^\infty \sigma \psi \ud E \ud \Omega \ud \x \,. 
 	\end{equation}
 
-Radiation transport in astrophysics and \gls{hedp} is often concerned with the energy transfer and deposition associated with thermal photons. The Boltzmann equation is then typically cast in terms of the \emph{intensity}, $I$, which represents the expected amount of energy associated with photons traveling within a differential phase space volume. The intensity is defined as 
+Radiation transport in astrophysics and \gls{hedp} is often concerned with the energy transfer and deposition associated with thermal photons. The Boltzmann equation is then typically cast in terms of the \emph{intensity}, $I$. The intensity is defined with power units, energy per unit time, but is also expressed per unit area, per unit sold angle, and per unit frequency bandwidth. The intensity is defined as 
 	\begin{equation}
 		I(\x,\Omegahat,\nu,t) = c h \nu f(\x,\Omegahat,\nu,t) \,,
 	\end{equation}
-where $c$ is the speed of light. Since photons travel at the speed of light, the particle speed $v = c$. Thus, the intensity and angular flux are related through 
+where $c$ is the speed of light. 
+Since photons travel at the speed of light, the particle speed is $v = c$. 
+Thus, the intensity and angular flux are related through 
 	\begin{equation}
-		I(\x,\Omegahat,\nu,t) = h\nu \psi(\x,\Omegahat,E,t) \,. 
+		\psi = \frac{I}{h\nu} \,. 
 	\end{equation}
-If $\sigma_a$ represents the probability per unit length of a material absorbing a photon, the total energy deposited in the material is computed with 
+Since a photon's energy is given by $E = h\nu$, the intensity can be throught of as the energy-track length rate density in the phase space. 
+Thus, if $\sigma_a$ represents the probability per unit length of a material absorbing a photon, the product $\sigma_a I$ represents the amount of energy deposited by photons at any position, direction, frequency, and time. 
+The total energy deposited in the material is computed with 
 	\begin{equation}
 		\int_\D \int_{\mathbb{S}^2} \int_0^\infty \sigma_a I \ud \nu \ud\Omega \ud \x \,. 
 	\end{equation}
-Since a photon's energy is related to its momentum, $p$, through $E = p c$, a photon traveling in direction $\Omegahat$ has momentum $\vec{p} = \Omegahat \frac{E}{c}$. Thus, the momentum associated with photons traveling in a phase volume is $\frac{1}{c}\Omegahat I \ud \x \ud\Omega \ud \nu$. 
-The momentum deposition from photons being absorbed by a material is then: 
+A photon's energy is related to the magnitude of its momentum, $p$, through $E = p c$. A photon traveling in direction $\Omegahat$ then has momentum 
+	\begin{equation}
+		\vec{p} = \Omegahat \frac{E}{c} = \Omegahat \frac{h \nu}{c} \,. 
+	\end{equation}
+We then have that $\frac{\sigma_a}{c}\Omegahat I$ represents the momentum deposited in the material due to photon absorption at any point in the phase space. 
+The amount of momentum deposited into the material by radiation traveling in all directions and all frequencies is computed with:  
 	\begin{equation}
 		\frac{1}{c}\int_\D \int_{\mathbb{S}^2} \int_0^\infty \sigma_a\,\Omegahat I \ud \nu \ud \Omega\ud \x \,. 
 	\end{equation}
+These examples show that the choice of $\psi = vf$ and $I = h\nu f$ are purely notational conveniences designed to aid in the computation of each field's quantities of interest. 
 
-\section{\todo{The Equations of Thermal Radiative Transfer}}
+\subsection{Moments of the Distribution Function}
+Integration over the velocity variable plays an important role in both neutron and photon transport. In the above, we integrated over position-velocity space to determine the reaction rate and the energy and momentum deposition rates. These integrated quantities are called the moments of the distribution function. 
+For most purposes, the direction particles are traveling is immaterial for computing reaction and deposition rates. Integrating the angular flux over the direction of travel simplifies the above calculation for reaction rate. Let 
+	\begin{equation}
+		\phi(\x,E,t) = \int_{\mathbb{S}^2} \psi(\x,\Omegahat,E,t) \ud \Omega \,,  
+	\end{equation}
+be the \emph{scalar flux}. The reaction rate is then $\int_\D \int_0^\infty \sigma \phi(\x,E,t) \ud E \ud \x$. We will also use the \emph{current} defined as: 
+	\begin{equation}
+		\vec{J}(\x,E,t) = \int_{\mathbb{S}^2} \Omegahat\,\psi(\x,\Omegahat,E,t) \ud \Omega \,. 
+	\end{equation}
+The scalar flux represents the track length rate density of neutrons at energy $E$ traveling in any direction. Letting $\n$ denote a unit vector normal to a differential area $\ud A$, $\Omegahat\cdot\n \psi(\x,\Omegahat,E,t) \ud A$ represents the rate at which particles cross $\ud A$ going in the direction $\Omegahat$ at energy $E$. Thus, the current represents the net number of particles crossing $\ud A$ regardless of the $\Omegahat$. We call these terms the zeroth and first moments of the angular flux due to their definition as $\int_{\mathbb{S}^2} \Omegahat^i \psi \ud \Omega$ where $i=0$ for the scalar flux and $i=1$ for the current. 
+
+For photons, the astrophysics and \gls{hedp} notations differ in their definitions of the moments. In astrophysics, the zeroth, first, and second moments are defined as averages over solid angle: 
+	\begin{subequations}
+	\begin{equation}
+		J(\x,\nu,t) = \frac{1}{4\pi}\int_{\mathbb{S}^2} I(\x,\Omegahat,\nu,t) \ud \Omega \,, 
+	\end{equation}
+	\begin{equation}
+		\vec{H}(\x,\nu,t) = \frac{1}{4\pi} \int_{\mathbb{S}^2} \Omegahat\, I(\x,\Omegahat,\nu,t) \ud \Omega \,,
+	\end{equation}
+	\begin{equation}
+		\mat{K}(\x,\nu,t) = \frac{1}{4\pi} \int \Omegahat\otimes \Omegahat\, I(\x,\Omegahat,\nu,t) \ud \Omega \,. 
+	\end{equation}
+	\end{subequations}
+Alternatively, the \gls{hedp} community often uses 
+	\begin{subequations}
+	\begin{equation}
+		E(\x,\nu,t) = \frac{1}{c} \int_{\mathbb{S}^2} I(\x,\Omegahat,\nu,t) \ud \Omega \,, 
+	\end{equation}
+	\begin{equation}
+		\vec{F}(\x,\nu,t) = \int_{\mathbb{S}^2} \Omegahat\, I(\x,\Omegahat,\nu,t) \ud \Omega \,,
+	\end{equation}
+	\begin{equation}
+		\P(\x,\nu,t) = \frac{1}{c} \int_{\mathbb{S}^2} \Omegahat\otimes\Omegahat\, I(\x,\Omegahat,\nu,t) \ud \Omega \,. 
+	\end{equation}
+	\end{subequations}
+These moments are referred to as the energy density, flux, and pressure, respectively. Note that the flux does not have the $1/c$ factor that the energy density and pressure have. The astrophysical notation of $J$, $\vec{H}$, and $\mat{K}$ simplifies the radiation transport equation by removing factors of $4\pi$ and $c$ at the expense of introducing those factors into the radiation-hydrodynamics equations \cite{castor2004radiation}. 
+
+\section{The Equations of Thermal Radiative Transfer}
+\subsection{The Transport Equation for Thermal Photons}
+For thermal photons we consider the linear Boltzmann transport equation given by Eq.~\ref{trans:linboltz} cast in terms of the intensity. Multiplying by $h\nu c$, Eq.~\ref{trans:linboltz} becomes 
+	\begin{equation}
+		\pderiv{I}{t} + (\Omegahat c) \cdot \nabla I = \paren{\pderiv{I}{t}}_\text{collision} + \paren{\pderiv{I}{t}}_\text{source} \,, 
+	\end{equation}
+where we have used the photon velocity $\v = \Omegahat c$. Dividing by $c$ gives the standard form of the transport equation 
+	\begin{equation}
+		\frac{1}{c}\pderiv{I}{t} + \Omegahat\cdot \nabla I = \frac{1}{c} \paren{\pderiv{I}{t}}_\text{collision} + \frac{1}{c}\paren{\pderiv{I}{t}}_\text{source} \,. 
+	\end{equation}
+We model scattering and absorption events with the background media by setting: 
+	\begin{equation}
+		\frac{1}{c}\paren{\pderiv{I}{t}}_\text{collision} = \int_{\mathbb{S}^2} \int_0^\infty \sigma_s(\Omegahat'\rightarrow \Omegahat, \nu' \rightarrow \nu) I(\x,\Omegahat',\nu',t) \ud \nu' \ud \Omega' - \sigma_t I(\x,\Omegahat,\nu,t) \,,
+	\end{equation}
+where $\sigma_s(\Omegahat'\rightarrow\Omegahat,\nu'\rightarrow \nu)$ is the differential scattering opacity. We define $\sigma_s = \int_{\mathbb{S}^2} \int_0^\infty \sigma_s(\Omegahat'\cdot\Omegahat,\nu'\rightarrow\nu)$ as the scattering opacity and set the total opacity $\sigma_t = \sigma_a + \sigma_s$ where $\sigma_a$ is the absorption opacity. The source term is used to model the emission of thermal photons by the material. This is modeled by Planck's black body source: 
+	\begin{equation}
+		\frac{1}{c}\paren{\pderiv{I}{t}}_\text{source} = \frac{1}{4\pi} B(\nu,T) \,,
+	\end{equation}
+where
+	\begin{equation}
+		B(\nu,T) = \frac{2h\nu^3}{c^2}\frac{1}{e^{h\nu/kT}-1}
+	\end{equation}
+is the Planck emission function with $k$ Boltzmann's constant and $T$ the temperature of the material. 
+
+Thus, the Boltzmann transport equation for thermal photons is given by 
+	\begin{equation}
+		\frac{1}{c}\pderiv{I}{t} + \Omegahat\cdot\nabla I + \sigma_t I = \int_{\mathbb{S}^2}\int_0^\infty \sigma_s(\Omegahat'\rightarrow\Omegahat,\nu'\rightarrow \nu) I(\cdot,\Omegahat',\nu',\cdot) \ud \nu'\ud\Omega' + \frac{1}{4\pi}B(\nu,T) \,. 
+	\end{equation}
+
 \section{\todo{Steady-State, Linear Transport: A Proxy for TRT}}
+\subsection{Isotropic Scattering}
+\subsection{Gray Transport}
+\subsection{Steady State}
+
 \section{\todo{Useful Angular Identities}}
 \section{\todo{The Radiation Diffusion Approximation}}
-
-% --- (x,Omega) diagram --- 
-\begin{figure}
-\centering
-\includegraphics[width=.85\textwidth]{figs/omega_space.pdf}
-\caption{A depiction of the direction-of-flight portion of the phase space at a fixed location $\x$, frequency $\nu$, and time $t$. }
-\label{trans:omega_space_diag}
-\end{figure}
-
 
 
 \end{document}
