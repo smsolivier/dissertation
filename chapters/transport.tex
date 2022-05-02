@@ -3,6 +3,8 @@
 
 \begin{document}
 \chapter{Radiation Transport Background} \label{chap:transport}
+The purpose of this chapter is to motivate and define the simplified transport problem that serves as the model for the development of the moment methods derived in later chapters. To that end, the general kinetic Boltzmann equation is introduced and then particularized to the equations of thermal radiative transfer that describes thermal photons in the absence of material motion and heat conduction. We pay particular attention to the notational differences present in the fields of nuclear engineering, astrophysics, and \gls{hedp}. The simplifications of isotropic scattering and frequency and time-independence are applied to derive the functional form of the core kernel of a single nonlinear Newton iteration of a full TRT algorithm. The chapter concludes with a derivation of the radiation diffusion approximation. 
+
 \section{The Boltzmann Transport Equation}
 A discussion of the Boltzmann transport equation must begin with the definition of the particle distribution function, $f$. 
 The set of all possible positions $\x$ and velocities $\v$ is called the system's phase space. The particle distribution function represents the expected number of particles at each point in the phase space at a given time. In other words, $f(\x,\v,t) \ud \x \ud \v = $ the expected number of particles in the differential phase space volume at a time $t$. 
@@ -27,7 +29,7 @@ Thus, the force term $\paren{\pderiv{f}{t}}_\text{force} = \frac{\F}{m}\cdot\nab
 	\begin{equation}
 		\pderiv{f}{t} + \v \cdot \nabla f + \frac{\F}{m} \cdot \nabla_{\v} f = \paren{\pderiv{f}{t}}_\text{collision} \,. 
 	\end{equation}
-For charged particle transport, the particles experience external electromagnetic forces and frequently interact with each other through Coloumb collisions. In this case, particles with charge $q$ experience the force $\F = q(\E + \v\times \mat{B})$ due to the electric field, $\E$, and magnetic field, $\mat{B}$. The Coloumbic collision term is described by the (quite complicated) Fokker-Planck operator. 
+For charged particle transport, the particles experience external electromagnetic forces and frequently interact with each other through Coloumb collisions. In this case, particles with charge $q$ experience the force $\F = q(\E + \v\times \mat{B})$ due to the electric field, $\E$, and magnetic field, $\mat{B}$. The Coloumbic collision term is described by the (quite complicated) Fokker-Planck operator \cite[Eq.~7.25]{chen2012introduction}. 
 
 Here, we focus on neutral particle transport (i.e.~photons or neutrons). Since these particles do not have charge, there are no external electromagnetic forces. Furthermore, particle-particle collisions are exceedingly rare and it is thus commonplace to ignore them. The collision term then only includes the interaction of the neutral particle with the background medium. These interactions are broadly classified into absorption and scattering events. The probabilities of these events occuring per unit distance traveled are called cross sections for neutrons and opacities for photons and are govenered by nuclear physics. The most general form of the Boltzmann transport equation for a neutral particle is then: 
 	\begin{equation} \label{trans:linboltz}
