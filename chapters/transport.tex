@@ -42,7 +42,7 @@ Application of the Boltzmann transport equation to modeling radiation is home to
 
 \subsection{$f$, $\psi$, and $I$}
 In all cases, the velocity variable is represented using a direction-of-flight variable, $\Omegahat$, and an energy variable. 
-The angular variable, $\Omegahat$, is represented using the spherical coordinate system depicted in Fig.~\ref{trans:spherical_coords} which uses a polar and azimuthal angle to describe the direction $\Omegahat$ in three-dimensional space. Figure \ref{trans:omega_phase} depicts the direction-of-flight portion of the phase space. Photons at any point in time, space, and frequency can travel in any direction on the unit sphere. 
+The angular variable, $\Omegahat$, is represented using the spherical coordinate system depicted in Fig.~\ref{trans:spherical_coords} which uses a polar and azimuthal angle to describe the direction $\Omegahat$ in three-dimensional space. Figure \ref{trans:omega_phase} depicts the direction-of-flight portion of the phase space. Particles at any point in time, space, and frequency can travel in any direction on the unit sphere. 
 \begin{figure}
 \centering
 \begin{subfigure}{.49\textwidth}
@@ -157,16 +157,16 @@ We model scattering and absorption events with the background media by setting:
 	\end{equation}
 where $\sigma_s(\Omegahat'\rightarrow\Omegahat,\nu'\rightarrow \nu)$ is the differential scattering opacity. We define $\sigma_s = \int_{\mathbb{S}^2} \int_0^\infty \sigma_s(\Omegahat'\cdot\Omegahat,\nu'\rightarrow\nu) \ud \nu'\ud\Omega'$ as the scattering opacity and set the total opacity $\sigma_t = \sigma_a + \sigma_s$ where $\sigma_a$ is the absorption opacity. The source term is used to model the emission of thermal photons by the material. This is modeled by Planck's black body source: 
 	\begin{equation}
-		\frac{1}{c}\paren{\pderiv{I}{t}}_\text{source} = \frac{B(\nu,T)}{4\pi} \,,
+		\frac{1}{c}\paren{\pderiv{I}{t}}_\text{source} = \sigma_a\frac{B(\nu,T)}{4\pi} \,,
 	\end{equation}
 where
 	\begin{equation}
 		B(\nu,T) = \frac{2h\nu^3}{c^2}\frac{1}{e^{h\nu/kT}-1}
 	\end{equation}
-is the Planck emission function with $k$ Boltzmann's constant and $T$ the temperature of the material. 
+is the Planck emission function with $k$ Boltzmann's constant and $T$ the temperature of the material. Note that the above source is only valid under the assumption of local thermodynamic equilibrium. 
 Thus, the Boltzmann transport equation for thermal photons is given by 
 	\begin{equation} \label{trans:trans_photon}
-		\frac{1}{c}\pderiv{I}{t} + \Omegahat\cdot\nabla I + \sigma_t I = \int_{\mathbb{S}^2}\int_0^\infty \sigma_s(\Omegahat'\rightarrow\Omegahat,\nu'\rightarrow \nu) I(\cdot,\Omegahat',\nu',\cdot) \ud \nu'\ud\Omega' + \frac{B(\nu,T)}{4\pi} \,. 
+		\frac{1}{c}\pderiv{I}{t} + \Omegahat\cdot\nabla I + \sigma_t I = \int_{\mathbb{S}^2}\int_0^\infty \sigma_s(\Omegahat'\rightarrow\Omegahat,\nu'\rightarrow \nu) I(\cdot,\Omegahat',\nu',\cdot) \ud \nu'\ud\Omega' + \frac{\sigma_a B(\nu,T)}{4\pi} \,. 
 	\end{equation}
 
 We now wish to derive an equation for the evolution of the material temperature. We model the material gaining energy by absorbing radiation and losing energy by emitting thermal radiation. Here, we are interested in the energy exchanged between matter and radiation traveling in all directions and at any frequency. 
@@ -182,7 +182,7 @@ The balance of energy between radiation and matter is then written
 where $C_v$ is the material's heat capacity. The coupled equations given by Eqs.~\ref{trans:trans_photon} and \ref{trans:meb} are called the equations of thermal radiative transfer. This system is nonlinear due to the Planck emission term. 
 
 \section{Steady-State, Linear Transport: A Proxy for TRT}
-In this section, the model problem of steady-state, frequency-independent, linear Boltzmann equation with isotropic scattering is derived from the TRT equations. 
+In this section, the model problem of the steady-state, frequency-independent, linear Boltzmann equation with isotropic scattering is derived from the TRT equations. 
 
 \subsection{Isotropic Scattering}
 First, we assume that scattering is isotropic. In other words, any outgoing direction of flight is equally likely for a photon leaving a scattering event. The differential scattering opacity then simplifies to 
@@ -193,7 +193,7 @@ The scattering source can then be simplified to:
 	\begin{equation}
 		\int_{\mathbb{S}^2} \int_0^\infty \sigma_s(\Omegahat'\rightarrow\Omegahat,\nu'\rightarrow \nu) I(\cdot,\Omegahat',\nu',\cdot) \ud \nu'\ud\Omega' \rightarrow \frac{c}{4\pi} \int_0^\infty \sigma_s(\nu'\rightarrow\nu) E(\x,\nu',t) \ud \nu' \,, 
 	\end{equation}
-where the definition of the frequency-dependent energy density given in Eq.~\ref{tran:energy_density} was used. Isotropic scattering is rarely the correct model for scattering. However, isotropic scattering shares many of the same implementational aspects of more complicated scattering models that have been expanded in spherical harmonics. 
+where the definition of the frequency-dependent energy density given in Eq.~\ref{tran:energy_density} was used. Isotropic scattering is rarely the correct model for scattering. However, it shares many of the same implementational aspects of more complicated scattering models that have been expanded in spherical harmonics. 
 
 \subsection{Gray Transport}
 The gray TRT system is derived by defining suitable frequency-averaged opacities and integrating the transport equation over all angles. The averaged opacities are defined as 
@@ -209,10 +209,10 @@ where $a = 8\pi^5 k^4/15h^3 c^3$.
 Letting $\bar{I}(\x,\Omegahat,t) = \int_0^\infty I(\x,\Omegahat,\nu,t)$ be the frequency-averaged intensity, the gray TRT system is: 
 	\begin{subequations}
 	\begin{equation}
-		\frac{1}{c}\pderiv{\bar{I}}{t} + \Omegahat\cdot\nabla\bar{I} + \bar{\sigma}_t \bar{I} = \frac{c \bar{\sigma}_s}{4\pi} E(\x,t) + \frac{a c T^4}{4\pi} \,,
+		\frac{1}{c}\pderiv{\bar{I}}{t} + \Omegahat\cdot\nabla\bar{I} + \bar{\sigma}_t \bar{I} = \frac{c \bar{\sigma}_s}{4\pi} E(\x,t) + \frac{\bar{\sigma}_a c T^4}{4\pi} \,,
 	\end{equation}
 	\begin{equation}
-		C_v \pderiv{T}{t} = c\bar{\sigma}_a (E(\x,t) - a c T^4) \,. 
+		C_v \pderiv{T}{t} = c\bar{\sigma}_a (E(\x,t) - a T^4) \,. 
 	\end{equation}
 	\end{subequations}
 This frequency-independent system of equations emulates a TRT algorithm that uses only one discrete frequency group. Algorithms for the frequency-dependent TRT system must also be effective for the gray TRT system. The gray TRT system serves as an important first step in the development of methods for the frequency-dependent TRT system. 
@@ -221,19 +221,19 @@ This frequency-independent system of equations emulates a TRT algorithm that use
 Under the assumption of steady state, the time derivatives are neglected. The gray TRT system with isotropic scattering simplifies to 
 	\begin{subequations}
 	\begin{equation}
-		\Omegahat\cdot\nabla\bar{I} + \bar{\sigma}_t \bar{I} = \frac{c \bar{\sigma}_s}{4\pi} E(\x,t) + \frac{a c T^4}{4\pi} \,,
+		\Omegahat\cdot\nabla\bar{I} + \bar{\sigma}_t \bar{I} = \frac{c \bar{\sigma}_s}{4\pi} E(\x,t) + \frac{\bar{\sigma}_a a c T^4}{4\pi} \,,
 	\end{equation}
 	\begin{equation}
-		0 = c\bar{\sigma}_a (E(\x,t) - a c T^4) \,. 
+		0 = c\bar{\sigma}_a (E(\x,t) - a T^4) \,. 
 	\end{equation}
 	\end{subequations}
 In this case, the material temperature is determined by the radiation field such that: 
 	\begin{equation}
-		T^4 = \frac{\bar{\sigma}_a}{a} E(\x,t) \,. 
+		T^4 = \frac{E}{a}  \,. 
 	\end{equation}
 We are then left with: 
 	\begin{equation} \label{trans:trt_simp}
-		\Omegahat\cdot\nabla\bar{I} + \bar{\sigma}_t \bar{I} = \frac{c \bar{\sigma}_s + \bar{\sigma}_a/a}{4\pi} E(\x,t) \,. 
+		\Omegahat\cdot\nabla\bar{I} + \bar{\sigma}_t \bar{I} = \frac{c \bar{\sigma}_s + c\bar{\sigma}_a}{4\pi} E(\x,t) \,. 
 	\end{equation}
 This equation models the radiation field at long time scales where the radiation and material have achieved equilibrium. When implicit time integration schemes are applied to the time-dependent TRT system, a steady-state system analogous to Eq.~\ref{trans:trt_simp} must be solved. In this way, the steady-state, frequency-independent TRT system with isotropic scattering represents the core kernel of the full TRT system. 
 

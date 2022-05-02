@@ -1178,16 +1178,56 @@ The Gauss-Seidel method uses the splitting $\mat{P} = \mat{D} + \mat{L}$ and $\m
 	\end{equation}
 Note that since the matrix $\mat{D} + \mat{L}$ is lower triangular, the action of its inverse can be applied using forward substitution. Forward substitution requires more floating point operations than inverting a diagonal matrix. However, this added work allows Gauss-Seidel to typically converge faster than Jacobi. 
 
-\subsection{\todo{The Conjugate Gradient Method}}
+\subsection{The Conjugate Gradient Method}
+For symmetric positive definite matrices, the solution $\mat{A}\underline{x} = \underline{b}$ is the unique minimizer of the potential 
+	\begin{equation}
+		\Pi = \frac{1}{2} \underline{x}^T \mat{A} \underline{x} - \underline{x}^T \underline{b} \,. 
+	\end{equation}
+This can be seen by setting the gradient of $\Pi$ to zero: 
+	\begin{equation}
+		0 = \nabla \Pi = \mat{A} \underline{x} - \underline{b} \iff \mat{A} \underline{x} = \underline{b} \,. 
+	\end{equation}
+The conjugate gradient method is built around the idea of minimizing $\Pi$ in such a way that the system is guaranteed to be solved in at most $N$ steps, where $N$ is the number of rows or columns in the square matrix $\mat{A}$. 
 
+Note that the residual $\underline{r}^k = \underline{b} - \mat{A}\underline{x}^k = -\nabla\Pi$. Moving in the direction of the residual then moves opposite the gradient of the potential. The method of steepest descent is the method that updates the solution in the direction of the residual in such a way that the potential is minimized. That is, we seek to use the update $\underline{x}^{k+1} = \underline{x}^k + \lambda_k \underline{r}^k$ where $\lambda_i \in \R$ is chosen so that $\underline{x}^{k+1}$ minimizes the potential. Introducing this update into the potential: 
+	\begin{equation}
+		\Pi = \frac{1}{2}\paren{\underline{x}^k + \lambda_k \underline{r}^k}^T \mat{A}\paren{\underline{x}^k + \lambda_k \underline{r}^k} - \paren{\underline{x}^k + \lambda_k \underline{r}^k}^T \underline{r}^k \,. 
+	\end{equation}
+Setting $\pderiv{\Pi}{\lambda_k} = 0$ and solving for $\lambda_k$ yields: 
+	\begin{equation}
+		\lambda_k = \frac{\underline{r}^k \cdot \underline{r}^k}{\underline{r}^k \cdot \mat{A} \underline{r}^k} \,. 
+	\end{equation}
+
+The conjugate gradient is a type of steepest descent method where the search directions are chosen to be $\mat{A}$-orthogonal. In this way, the algorithm only searches in new directions and avoids stalls associated with exploring parts of the solution space that have already been explored. In other words, both the parameter $\lambda_k$ in the update for $\underline{x}^{k+1}$ and the search direction are chosen optimally. The update used by conjugate gradient is 
+	\begin{equation}
+		\underline{x}^{k+1} = \underline{x}^k + \lambda_k \underline{z}^k \,, 
+	\end{equation}
+where the search direction, $\underline{z}^k$, is chosen such that 
+	\begin{equation}
+		\underline{z}^k = \underline{r}^k + \theta_k \underline{z}^{k-1} \,. 
+	\end{equation}
+Here, $\theta_k$ is the parameter that forces $\underline{z}^{k}$ and $\underline{z}^{k-1}$ to be $\mat{A}$-conjugate such that $\underline{z}^k \cdot \mat{A} \underline{z}^{k-1} = 0$: 
+	\begin{equation}
+		0 = \underline{z}^k \cdot \mat{A} \underline{z}^{k-1} \Rightarrow \theta_k = -\frac{\underline{r}^k\cdot \mat{A} \underline{z}^{k-1}}{\underline{z}^{k-1} \cdot \mat{A} \underline{z}^{k-1}} \,. 
+	\end{equation}
+With this update, the $\lambda_k$ that minimizes the potential is 
+	\begin{equation}
+		\lambda_k = \frac{\underline{z}^k \cdot \underline{r}^k}{\underline{z}^k \cdot \mat{A} \underline{z}^k} \,. 
+	\end{equation}
+The solution procedure for a 2-dimensional system is shown in Fig.~\ref{fem:conj_grad_diag}. The search directions are chosen such that they are $\mat{A}$-orthogonal allowing the algorithm to find the solution in two steps. 
 % --- conjugate gradient on 2-dimensional diffusion problem --- 
 \begin{figure}
 \centering
-\includegraphics[width=.85\textwidth]{figs/conj_grad.pdf}
+\includegraphics[width=.65\textwidth]{figs/conj_grad.pdf}
 \caption{A depiction of the conjugate gradient solution process for solving a two-dimension symmetric positive definite system. The solution iterates are shown as dots and the search directions as arrows. The potential is minimized in two iterations.}
 \label{fem:conj_grad_diag}
 \end{figure}
 
-\subsection{\todo{The Stabilized Bi-Conjugate Gradient Method}}
-\subsection{\todo{Multigrid}}
+Note that the solution satisfying $\min \Pi$ is only true when $\mat{A}$ is symmetric positive definite. Furthermore, when $\mat{A}$ is not symmetric positive definite, $\underline{x}\cdot\mat{A}\underline{x}$ is not an inner product. This means $\mat{A}$-orthogonality cannot be built using the three-term recursion process outlined above and that the previous search directions would need to be stored in order to enforce $\mat{A}$-orthogonality. 
+
+\subsection{The Stabilized Bi-Conjugate Gradient Method}
+In this document, \gls{bicg} \cite{doi:10.1137/0913035} is used to solve non-symmetric systems where the conjugate gradient method would not converge. \gls{bicg} is also a steepest descent method that seeks to find the search directions in an optimal manner. For \gls{bicg}, bi-conjugate search directions are built through repeated applications of the matrix and its transpose, respectively. 
+
+\subsection{Multigrid}
+\cite{multigrid_tutorial}
 \end{document}
