@@ -261,7 +261,7 @@ Here, we discuss the the inf-sup condition that governs the solvability of the $
 			\mat{M} & -\mat{D}^T \\ \mat{D} 			
 		\end{bmatrix}
 		\begin{bmatrix} 
-			\underline{q} \\ \underline{u} 
+			\ubar{q} \\ \ubar{u} 
 		\end{bmatrix}
 		= \begin{bmatrix} 
 			0 \\ f 
@@ -278,30 +278,30 @@ which corresponds to the mixed finite element discretization of
 	\end{subequations}
 Note that the above is Poisson's equation, $-\nabla^2 u = f$, in mixed form. The matrices are of the form:
 	\begin{equation}
-		\underline{v}^T\mat{M} \underline{q} = \int \vec{v}\cdot\vec{q} \ud \x \,, \quad \underline{w}^T\mat{D}\underline{q} = \int w\,\nabla\cdot\vec{q} \ud \x \,. 
+		\ubar{v}^T\mat{M} \ubar{q} = \int \vec{v}\cdot\vec{q} \ud \x \,, \quad \ubar{w}^T\mat{D}\ubar{q} = \int w\,\nabla\cdot\vec{q} \ud \x \,. 
 	\end{equation}
 
 We wish to demonstrate the conditions for when the block system in Eq.~\ref{rtvef:block_sys} is non-singular. To show the solution is unique, it must be verified that $f = 0$ implies that $u = 0$ and $\vec{q} = 0$. When $f=0$, we have that 
 	\begin{equation}
-		\mat{D} \underline{q} = 0 \iff \underline{q} \in N(\mat{D}) \,,
+		\mat{D} \ubar{q} = 0 \iff \ubar{q} \in N(\mat{D}) \,,
 	\end{equation}
 where $N(\mat{D})$ denotes the nullspace of $\mat{D}$ such that 
 	\begin{equation}
-		N(\mat{D}) = \{ \underline{v} : \mat{D}\underline{v} = 0 \} \,. 
+		N(\mat{D}) = \{ \ubar{v} : \mat{D}\ubar{v} = 0 \} \,. 
 	\end{equation}
-For some $\underline{v} \in N(\mat{D})$, the first equation reads 
+For some $\ubar{v} \in N(\mat{D})$, the first equation reads 
 	\begin{equation}
-		\underline{v}^T \mat{M} \underline{q} - \underline{v}^T \mat{D}^T \underline{u} = 0 \,. 
+		\ubar{v}^T \mat{M} \ubar{q} - \ubar{v}^T \mat{D}^T \ubar{u} = 0 \,. 
 	\end{equation}
-Since $\underline{v} \in N(\mat{D})$, $\underline{v}^T \mat{D}^T = 0$. Thus, we have that 
+Since $\ubar{v} \in N(\mat{D})$, $\ubar{v}^T \mat{D}^T = 0$. Thus, we have that 
 	\begin{equation}
-		\underline{v}^T \mat{M} \underline{q} = 0 \,. 
+		\ubar{v}^T \mat{M} \ubar{q} = 0 \,. 
 	\end{equation}
-Since $\mat{M}$ is a mass matrix, it is symmetric positive definite and thus, $\underline{v}^T \mat{M}\underline{q} =0 \iff \underline{q} = 0$. In other words, we have shown that $f = 0 \Rightarrow \underline{q} = 0$. Setting $\underline{q} = 0$ in the first row of Eq.~\ref{rtvef:block_sys} yields: 
+Since $\mat{M}$ is a mass matrix, it is symmetric positive definite and thus, $\ubar{v}^T \mat{M}\ubar{q} =0 \iff \ubar{q} = 0$. In other words, we have shown that $f = 0 \Rightarrow \ubar{q} = 0$. Setting $\ubar{q} = 0$ in the first row of Eq.~\ref{rtvef:block_sys} yields: 
 	\begin{equation}
-		\mat{D}^T \underline{u} = 0 \,. 
+		\mat{D}^T \ubar{u} = 0 \,. 
 	\end{equation}
-For the block system to be non-singular, we must have that $\mat{D}^T \underline{u} = 0 \iff \underline{u} = 0$. In other words, $N(\mat{D}^T) = 0$. The discrete inf-sup condition is precisely this condition on the matrix $\mat{D}$ that $N(\mat{D}^T) = 0$. 
+For the block system to be non-singular, we must have that $\mat{D}^T \ubar{u} = 0 \iff \ubar{u} = 0$. In other words, $N(\mat{D}^T) = 0$. The discrete inf-sup condition is precisely this condition on the matrix $\mat{D}$ that $N(\mat{D}^T) = 0$. 
 
 We now particularize the matrix $\mat{D}$ for a single element of the lowest-order $\Hone \times L^2(\D)$ and $H(\div;\D)\times L^2(\D)$ discretizations of the Poisson problem. Let 
 	\begin{subequations}

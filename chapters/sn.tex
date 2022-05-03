@@ -85,22 +85,22 @@ Using the upwind numerical flux and summing over all elements yields the global 
 where $\nablah$ denotes the broken gradient defined in Eq.~\ref{fem:broken_grad}. Defining the bilinear forms 
 	\begin{subequations}
 	\begin{equation}
-		\underline{u}^T\mat{M}_t \underline{\psi}_d = \int \sigma_t\, u\psi_d \ud \x \,,
+		\ubar{u}^T\mat{M}_t \ubar{\psi}_d = \int \sigma_t\, u\psi_d \ud \x \,,
 	\end{equation}
 	\begin{equation}
-		\underline{u}^T \mat{G}_d \underline{\psi}_d = -\int \Omegahat_d\cdot\nabla u \, \psi_d \ud \x \,,
+		\ubar{u}^T \mat{G}_d \ubar{\psi}_d = -\int \Omegahat_d\cdot\nabla u \, \psi_d \ud \x \,,
 	\end{equation}
 	\begin{equation} \label{sn:Fd}
-		\underline{u}^T \mat{F}_d \underline{\psi}_d = \frac{1}{2}\int_{\Gamma_b} u\!\paren{\Omegahat_d\cdot\n + |\Omegahat_d\cdot\n|}\psi_d \ud s + \int_{\Gamma_0} \jump{u}\!\paren{\Omegahat_d\cdot\n\avg{\psi_d} + \frac{1}{2}|\Omegahat_d\cdot\n|\jump{\psi_d}} \ud s \,,
+		\ubar{u}^T \mat{F}_d \ubar{\psi}_d = \frac{1}{2}\int_{\Gamma_b} u\!\paren{\Omegahat_d\cdot\n + |\Omegahat_d\cdot\n|}\psi_d \ud s + \int_{\Gamma_0} \jump{u}\!\paren{\Omegahat_d\cdot\n\avg{\psi_d} + \frac{1}{2}|\Omegahat_d\cdot\n|\jump{\psi_d}} \ud s \,,
 	\end{equation}
 	\end{subequations}
 and the linear form 
 	\begin{equation}
-		\underline{u}^T \underline{b}_d = \int u\,q_d \ud \x - \frac{1}{2}\int_{\Gamma_b} u\!\paren{\Omegahat_d\cdot\n - |\Omegahat_d\cdot\n|}\bar{\psi}(\x,\Omegahat_d) \ud s \,, 
+		\ubar{u}^T \ubar{b}_d = \int u\,q_d \ud \x - \frac{1}{2}\int_{\Gamma_b} u\!\paren{\Omegahat_d\cdot\n - |\Omegahat_d\cdot\n|}\bar{\psi}(\x,\Omegahat_d) \ud s \,, 
 	\end{equation}
 the discrete transport system is: 
 	\begin{equation}
-		\paren{\mat{F}_d + \mat{G}_d + \mat{M}_t}\underline{\psi}_d = \underline{b}_d \,, \quad 1 \leq d \leq N_{\Omega} \,. 
+		\paren{\mat{F}_d + \mat{G}_d + \mat{M}_t}\ubar{\psi}_d = \ubar{b}_d \,, \quad 1 \leq d \leq N_{\Omega} \,. 
 	\end{equation}
 Since the space $Y_p$ does not share degrees of freedom across interior element interfaces, the matrices $\mat{G}_d$ and $\mat{M}_t$ are block diagonal by element. However, the numerical flux couples neighboring elements meaning $\mat{F}_d$ has coupling between neighboring elements. On meshes without mesh cycles or reentrant faces, the elements in the mesh can be reordered so that the transport system $\mat{F}_d + \mat{G}_d + \mat{M}_t$ is block lower triangular by element. This means each direction of the angular flux can be solved with an element-by-element forward solve. This procedure is described in the next section and extended to high-order meshes in Section \ref{sn_sec:hosweep}. 
 
@@ -109,9 +109,9 @@ Here, we present the efficient procedure for solving the discrete transport equa
 
 We first discuss properties of the discrete transport system corresponding to the entire phase space. We define 
 	\begin{equation}
-		\underline{\psi} = \vector{\underline{\psi}_1^T & \ldots & \underline{\psi}_{N_\Omega}^T} \in \R^N 
+		\ubar{\psi} = \vector{\ubar{\psi}_1^T & \ldots & \ubar{\psi}_{N_\Omega}^T} \in \R^N 
 	\end{equation}
-such that the solution vector groups the all the spatial unknowns corresponding to each angle together. In other words, $\underline{\psi}$ strides in space first then angle. 
+such that the solution vector groups the all the spatial unknowns corresponding to each angle together. In other words, $\ubar{\psi}$ strides in space first then angle. 
 Let $\mat{L}_d = \mat{F}_d + \mat{G}_d + \mat{M}_t$ be the streaming and collision operator in each direction $\Omegahat_d$ and $\mat{L} = \diag(\mat{L}_d) \in \R^{N\times N}$ be the streaming and collision operator for all directions such that 
 	\begin{equation}
 		\mat{L} = \begin{bmatrix} 
@@ -122,20 +122,20 @@ Let $\mat{L}_d = \mat{F}_d + \mat{G}_d + \mat{M}_t$ be the streaming and collisi
 	\end{equation}
 For the scattering source, let $\mat{D} \in \R^{N_{\x} \times N}$ be the operator that represents computing the zeroth angular moment of each spatial degree of freedom. That is, 
 	\begin{equation}
-		\bracket{\mat{D}\underline{\psi}}_i = \sum_d w_d \psi_{d,i} \,, \quad 1 \leq i\leq N_{\x} \,,
+		\bracket{\mat{D}\ubar{\psi}}_i = \sum_d w_d \psi_{d,i} \,, \quad 1 \leq i\leq N_{\x} \,,
 	\end{equation}
 where $\psi_{d,i}$ is the $i^{th}$ spatial degree of freedom in direction $\Omegahat_d$. The scattering mass matrix is defined as 
 	\begin{equation}
-		\underline{u}^T \mat{S} \underline{\phi} = \int \sigma_s\, u\phi \ud \x \,, 
+		\ubar{u}^T \mat{S} \ubar{\phi} = \int \sigma_s\, u\phi \ud \x \,, 
 	\end{equation}
-where $u,\phi \in Y_p$. In addition, we define $\mat{M} = \diag(\I_{N_{\x}})\in \R^{N \times N_{\x}}$ as the operator that copies the isotropic scattering source into each discrete angle. The scattering source can then be written as $\mat{M}\mat{S}\mat{D} \underline{\psi}$. Finally, the fixed-source for the entire phase space is $\underline{b} = \vector{\underline{b}_1^T & \ldots & \underline{b}_{N_\Omega}^T}$. 
+where $u,\phi \in Y_p$. In addition, we define $\mat{M} = \diag(\I_{N_{\x}})\in \R^{N \times N_{\x}}$ as the operator that copies the isotropic scattering source into each discrete angle. The scattering source can then be written as $\mat{M}\mat{S}\mat{D} \ubar{\psi}$. Finally, the fixed-source for the entire phase space is $\ubar{b} = \vector{\ubar{b}_1^T & \ldots & \ubar{b}_{N_\Omega}^T}$. 
 
 With these definitions the transport equation can be written 
 	\begin{equation}
-		(\mat{L} - \mat{M}\mat{S}\mat{D})\underline{\psi} = \underline{b} \,. 
+		(\mat{L} - \mat{M}\mat{S}\mat{D})\ubar{\psi} = \ubar{b} \,. 
 	\end{equation}
 Figure \ref{sn:discrete_full} depicts the sparsity pattern for a one-dimensional transport problem using $S_4$ angular quadrature and five spatial elements. This matrix corresponds to the mesh and discrete directions depicted in Fig.~\ref{sn:sweep1d}. The sparsity pattern of the streaming and collision operator, $\mat{L}$, is shown in Fig.~\ref{sn:discrete_lag}. The vertical and horizontal lines split the system by angle so that each block corresponds to the spatial degrees of freedom associated with a single direction. 
-In one dimension, the trivial ordering of elements from left to right leads to $\mat{L}$ having an upper block triangular by element structure for negative angles and a lower block triangular by element structure for positive angles. These structures for negative and positive angles are seen in the upper two and lower two diagonal blocks of Fig.~\ref{sn:discrete_lag}. Including the scattering contribution, $\mat{M}\mat{S}\mat{D}\underline{\psi}$, couples all the angles corresponding to each spatial degree of freedom. This is seen in Fig.~\ref{sn:discrete_full} which has off-diagonal blocks corresponding to the quadrature sum performed by $\mat{D}$. These off-diagonal blocks couple the entire phase space and thus forming the $N\times N$ system corresponding to Fig.~\ref{sn:discrete_full} is impractical to store and invert. 
+In one dimension, the trivial ordering of elements from left to right leads to $\mat{L}$ having an upper block triangular by element structure for negative angles and a lower block triangular by element structure for positive angles. These structures for negative and positive angles are seen in the upper two and lower two diagonal blocks of Fig.~\ref{sn:discrete_lag}. Including the scattering contribution, $\mat{M}\mat{S}\mat{D}\ubar{\psi}$, couples all the angles corresponding to each spatial degree of freedom. This is seen in Fig.~\ref{sn:discrete_full} which has off-diagonal blocks corresponding to the quadrature sum performed by $\mat{D}$. These off-diagonal blocks couple the entire phase space and thus forming the $N\times N$ system corresponding to Fig.~\ref{sn:discrete_full} is impractical to store and invert. 
 % --- 1d sweep mesh --- 
 \begin{figure}
 \centering
@@ -168,7 +168,7 @@ In multiple dimensions, it is typically possible to reorder the elements such th
 
 The most classical algorithm for solving the transport problem using only inversions of the streaming and collision operator is \gls{si}. SI can be viewed as a form of Richardson iteration where a matrix splitting is used to form an iterative solution scheme. The splitting is such that the scattering term is lagged. In equations, 
 	\begin{equation} \label{sn:sourceiteration}
-		\mat{L}\underline{\psi}^{\ell+1} = \mat{M}\mat{S}\mat{D}\underline{\psi}^\ell + \underline{b} \iff \underline{\psi}^{\ell+1} = \mat{L}^{-1}\!\paren{\mat{M}\mat{S}\mat{D}\underline{\psi}^\ell + \underline{b}} \,, 
+		\mat{L}\ubar{\psi}^{\ell+1} = \mat{M}\mat{S}\mat{D}\ubar{\psi}^\ell + \ubar{b} \iff \ubar{\psi}^{\ell+1} = \mat{L}^{-1}\!\paren{\mat{M}\mat{S}\mat{D}\ubar{\psi}^\ell + \ubar{b}} \,, 
 	\end{equation}
 where superscripts denote iteration index. Here, $\mat{L}^{-1}$ represents application of the transport sweep to solve the streaming and collision operator. Unfortunately, this iteration can be arbitrarily slow to converge when the scattering ratio, $\sigma_s/\sigma_t$, is large. In such case, the spectral radius of the iteration matrix $\mat{L}^{-1}\mat{M}\mat{S}\mat{D}$ is very close to unity. This motivates the use of preconditioning schemes such as \gls{dsa} or an acceleration scheme such as the \gls{vef} methods discussed in this dissertation. 
 
@@ -185,13 +185,13 @@ In \textcite{graph_sweeps}, a pseudo-optimal reordering of the elements was deve
 	\end{equation}
 where $\mat{F}_{d,\downarrow}$ and $\mat{F}_{d,\uparrow}$ represent the lower and strictly upper triangular parts of $\mat{F}_d$, respectively. The graph algorithm finds the element order such that $\|\mat{F}_{d,\uparrow}\|$ is as small as possible. The inversion of the streaming and collision operator in direction $\Omegahat_d$ can then be iteratively solved using 
 	\begin{equation} \label{sn:horich}
-		(\mat{F}_{d,\downarrow} + \mat{G}_d + \mat{M}_t)\underline{\psi}_d^{k+1} = \underline{b}_d - \mat{F}_{d,\uparrow}\underline{\psi}_d^{k} \,,
+		(\mat{F}_{d,\downarrow} + \mat{G}_d + \mat{M}_t)\ubar{\psi}_d^{k+1} = \ubar{b}_d - \mat{F}_{d,\uparrow}\ubar{\psi}_d^{k} \,,
 	\end{equation}
 where superscipts denote the iteration index. Since $\mat{F}_{d,\downarrow}$ is block lower triangular by element and $\mat{G}_d$ and $\mat{M}_t$ are block diagonal by element, the left hand side of Eq.~\ref{sn:horich} can be inverted element-by-element using a transport sweep. 
 
 When used in a source iteration solver (e.g.~Eq.~\ref{sn:sourceiteration}), the action of $\mat{L}^{-1}$ is approximated using the splitting of $\mat{F}_d$ for each direction. Thus, solving the transport problem on a mesh with reentrant faces requires a nested iteration scheme: for each source iteration, the streaming and collision operator is iteratively inverted. However, in practice, it has been seen that a single iteration of the iterative scheme in Eq.~\ref{sn:horich} per outer source iteration is enough for robust convergence when the previous outer iteration is used as the initial guess for the inner iteration. This algorithm solves 
 	\begin{equation}
-		\mat{L}_{\downarrow} \underline{\psi}^{\ell+1} = \mat{M}\mat{S}\mat{D}\underline{\psi}^\ell + \underline{b} - \mat{F}_{\uparrow} \underline{\psi}^\ell \,, 
+		\mat{L}_{\downarrow} \ubar{\psi}^{\ell+1} = \mat{M}\mat{S}\mat{D}\ubar{\psi}^\ell + \ubar{b} - \mat{F}_{\uparrow} \ubar{\psi}^\ell \,, 
 	\end{equation}
 where $\mat{L}_{\downarrow} = \diag(\mat{F}_{d,\downarrow} + \mat{G}_d + \mat{M}_t)$ and $\mat{F}_{\uparrow} = \diag(\mat{F}_{d,\uparrow})$. 
 Note that since more information is lagged, solving on a mesh with reentrant faces requires more iterations than a corresponding orthogonal mesh problem. 
@@ -273,40 +273,40 @@ Note that $\nablah \mathbbm{1}_K$ is zero since $\mathbbm{1}_K$ is constant on e
 	\begin{equation} \label{sn:local_balance}
 		\int_{\partial K^+} \Omegahat\cdot\n\, \psi_d \ud s + \int_K \sigma_t\, \psi_d \ud \x = \int_K q \ud \x - \int_{\partial K^-} \Omegahat\cdot\n\,\psi_{d,\text{in}} \ud s \,, 
 	\end{equation}
-where $\psi_{d,\text{in}}$ is the boundary inflow function when $\partial K^+ \cap \Gamma_b \neq \emptyset$ or incoming angular flux from an upwind element otherwise. We now write the balance statement as $\underline{c}_{d,K}^T \underline{\psi}_{d,K} = s_{d,K}$ where 
+where $\psi_{d,\text{in}}$ is the boundary inflow function when $\partial K^+ \cap \Gamma_b \neq \emptyset$ or incoming angular flux from an upwind element otherwise. We now write the balance statement as $\ubar{c}_{d,K}^T \ubar{\psi}_{d,K} = s_{d,K}$ where 
 	\begin{equation}
-	 	\underline{c}_{d,K}^T \underline{\psi}_{d,K} = \int_{\partial K^+} \Omegahat\cdot\n\, \psi_d \ud s + \int_K \sigma_t\, \psi_d \ud \x \,,
+	 	\ubar{c}_{d,K}^T \ubar{\psi}_{d,K} = \int_{\partial K^+} \Omegahat\cdot\n\, \psi_d \ud s + \int_K \sigma_t\, \psi_d \ud \x \,,
 	\end{equation} 
-$s_{d,K}$ is the right hand side of Eq.~\ref{sn:local_balance}, and $\underline{\psi}_{d,K}$ is the vector of $\underline{\psi}_d$ degrees of freedom corresponding to element $K$. 
+$s_{d,K}$ is the right hand side of Eq.~\ref{sn:local_balance}, and $\ubar{\psi}_{d,K}$ is the vector of $\ubar{\psi}_d$ degrees of freedom corresponding to element $K$. 
 
-Here, we present two methods for correcting the transport solution to be positive. Both methods are ``sweep-compatible'' in that they can be performed in each element as the sweep progresses. This ensures that the inflow for subsequent elements is positive. In addition, both methods preserve local balance such that the corrected angular flux, denoted $\psi^*$, satisfies $\underline{c}_{d,K}^T \underline{\psi}_{d,K}^* = s_{d,K}$. In other words, the corrections preserve the original solution's number of particles. 
+Here, we present two methods for correcting the transport solution to be positive. Both methods are ``sweep-compatible'' in that they can be performed in each element as the sweep progresses. This ensures that the inflow for subsequent elements is positive. In addition, both methods preserve local balance such that the corrected angular flux, denoted $\psi^*$, satisfies $\ubar{c}_{d,K}^T \ubar{\psi}_{d,K}^* = s_{d,K}$. In other words, the corrections preserve the original solution's number of particles. 
 
 \subsection{Zero and Rescale}
 The zero and rescale fixup \cite{hamilton2009negative} is a simple scheme for producing a positive solution that maintains particle balance. The scheme is characterized by setting any negative degrees of freedom to zero and then rescaling the solution in each element so that particle balance is maintained before and after zeroing the degrees of freedom. Let 
 	\begin{equation}
-		[\underline{\psi}_{d,K}]_i^Z = \max([\underline{\psi}_{d,K}]_i, 0) \,, \quad 1 \leq i \leq \dim(\Qbb{p}(K)) \,, 
+		[\ubar{\psi}_{d,K}]_i^Z = \max([\ubar{\psi}_{d,K}]_i, 0) \,, \quad 1 \leq i \leq \dim(\Qbb{p}(K)) \,, 
 	\end{equation}
 denote the angular flux degrees of freedom in direction $\Omegahat_d$ in element $K$ where negative values have been replaced with zero. These degrees of freedom are then rescaled so that particle balance is preserved. The corrected angular flux is then: 
 	\begin{equation}
-		\underline{\psi}_{d,K}^* = \frac{s_{d,K}}{\underline{c}_{d,K}^T \underline{\psi}_{d,K}^Z} \underline{\psi}_{d,K}^Z \,. 
+		\ubar{\psi}_{d,K}^* = \frac{s_{d,K}}{\ubar{c}_{d,K}^T \ubar{\psi}_{d,K}^Z} \ubar{\psi}_{d,K}^Z \,. 
 	\end{equation}
 
 \subsection{Quadratic Programming Negative Flux Fixup} \label{sn_sec:qp}
 Here we summarize the quadratic programming-based fixup method from \textcite{YEE2020109696}. This method seeks to find a positive solution that is as close as possible to the original solution as measured in the $\ell_2$ norm (e.g.~the usual Euclidean norm for vectors). The objective function is 
 	\begin{equation}
-		f(\underline{\psi}_{d,K}^*) = \| \underline{\psi}_{d,K}^* - \underline{\psi}_{d,K} \|_2^2 = (\underline{\psi}_{d,K}^* - \underline{\psi}_{d,K}) \cdot (\underline{\psi}_{d,K}^* - \underline{\psi}_{d,K}) \,. 
+		f(\ubar{\psi}_{d,K}^*) = \| \ubar{\psi}_{d,K}^* - \ubar{\psi}_{d,K} \|_2^2 = (\ubar{\psi}_{d,K}^* - \ubar{\psi}_{d,K}) \cdot (\ubar{\psi}_{d,K}^* - \ubar{\psi}_{d,K}) \,. 
 	\end{equation}
-The constrained minimization problem is: find $\underline{\psi}_{d,K}^*$ such that 
+The constrained minimization problem is: find $\ubar{\psi}_{d,K}^*$ such that 
 	\begin{equation}
-		\underline{\psi}_{d,K}^* = \min_{\underline{y}} f(\underline{y}) \,, 
+		\ubar{\psi}_{d,K}^* = \min_{\ubar{y}} f(\ubar{y}) \,, 
 	\end{equation}
 under the constraints of particle balance 
 	\begin{equation}
-		\underline{c}_{d,K}^T \underline{y} = s_{d,k} \,,
+		\ubar{c}_{d,K}^T \ubar{y} = s_{d,k} \,,
 	\end{equation}
 and that the degrees of freedom are positive
 	\begin{equation}
-		[\underline{y}]_i \geq 0 \,, \quad 1 \leq i \leq \dim(\Qbb{p}(K)) \,. 
+		[\ubar{y}]_i \geq 0 \,, \quad 1 \leq i \leq \dim(\Qbb{p}(K)) \,. 
 	\end{equation}
 Note that this method acts on the degrees of freedom directly and not the finite element interpolation function. That is, while the degrees of freedom of $\psi^*$ may be positive, the interpolation may not be. It is then crucial that a positive interpolating scheme is used. Such schemes guarantee the interpolation function is positive when the degrees of freedom are positive. In this document, we use the positive Bernstein polynomials \cite{doi:10.1137/11082539X} when the quadratic programming fixup is used. 
 
@@ -366,11 +366,11 @@ The scattering source is then computed as a mixed-space mass matrix that has tes
 	\end{equation}
 Let the scattering mass matrix $\mat{M}_s \in \R^{\dim(Y_p) \times \dim(X)}$ be defined as 
 	\begin{equation}
-		\underline{u}^T\mat{M}_s \underline{\varphi} = \frac{1}{4\pi}\int \sigma_s\, u\varphi \ud \x \,, \quad u \in Y_p \,, \varphi \in X \,. 
+		\ubar{u}^T\mat{M}_s \ubar{\varphi} = \frac{1}{4\pi}\int \sigma_s\, u\varphi \ud \x \,, \quad u \in Y_p \,, \varphi \in X \,. 
 	\end{equation}
-In a VEF algorithm, the scattering source is computed from the VEF scalar flux. Thus, the scattering source $\mat{M}\mat{S}\mat{D}\underline{\psi}$ is replaced with $\mat{M}\mat{M}_s\underline{\varphi}$. The resulting discrete transport problem is then: 
+In a VEF algorithm, the scattering source is computed from the VEF scalar flux. Thus, the scattering source $\mat{M}\mat{S}\mat{D}\ubar{\psi}$ is replaced with $\mat{M}\mat{M}_s\ubar{\varphi}$. The resulting discrete transport problem is then: 
 	\begin{equation}
-		\mat{L}\underline{\psi} = \mat{M}\mat{M}_s \underline{\varphi} + \underline{b} \,. 
+		\mat{L}\ubar{\psi} = \mat{M}\mat{M}_s \ubar{\varphi} + \ubar{b} \,. 
 	\end{equation}
 
 \subsection{Moments of the Fixed-Source}
