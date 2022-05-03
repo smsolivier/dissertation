@@ -154,7 +154,7 @@ Since $V_h \subset V$, we can directly apply the Lax-Milgram theorem to show tha
 where $a_h$ is $a$ restricted to the space $V_h$ \cite[Corollary 2.4]{la2fa}. Thus, by defining the approximation space as a subset of the infinite-dimensional space, the discrete operator inherits the analytic structure of the underlying weak problem. 
 Note that in this document, we also consider non-conforming methods where the approximation space is not a subspace of $V$. In the case $V_h \not\subset V$, additional requirements are placed on the discrete problem in order to guarantee solvability and stability. This is an important aspect of the \gls{dg} methods presented in Chapter \ref{chap:dgvef}. 
 
-Such a general framework as Galerkin's method, however, does not provide a way to define the approximation space $V_h$. The finite element method fill this gap by providing a systematic process for constructing the finite-dimensional spaces $V_h$ in ways that are amenable to efficient computer implementation. 
+Such a general framework as Galerkin's method, however, does not provide a way to define the approximation space $V_h$. The finite element method fills this gap by providing a systematic process for constructing the finite-dimensional spaces $V_h$ in ways that are amenable to efficient computer implementation. 
 
 \section{Local Polynomial Spaces}
 Both the mesh and the solution are represented with a polynomial space defined locally on each element. Let $\hat{K}^{\dim}$ denote the $\dim$-dimensional reference element which we set to the unit $\dim$-dimensional cube, $\hat{K} = [0,1]^{\dim}$. We omit the superscript denoting the dimensionality when the dimensionality of the reference element can be inferred from context. We define the space of univariate polynomials of degree less than or equal to $k$ as: 
@@ -1225,9 +1225,9 @@ The solution procedure for a 2-dimensional system is shown in Fig.~\ref{fem:conj
 
 Note that the solution satisfying $\min \Pi$ is only true when $\mat{A}$ is symmetric positive definite. Furthermore, when $\mat{A}$ is not symmetric positive definite, $\underline{x}\cdot\mat{A}\underline{x}$ is not an inner product. This means $\mat{A}$-orthogonality cannot be built using the three-term recursion process outlined above and that the previous search directions would need to be stored in order to enforce $\mat{A}$-orthogonality. 
 
-\subsection{The Stabilized Bi-Conjugate Gradient Method}
-In this document, \gls{bicg} \cite{doi:10.1137/0913035} is used to solve non-symmetric systems where the conjugate gradient method would not converge. \gls{bicg} is also a steepest descent method that seeks to find the search directions in an optimal manner. For \gls{bicg}, bi-conjugate search directions are built through repeated applications of the matrix and its transpose, respectively. 
+% \subsection{The Stabilized Bi-Conjugate Gradient Method}
+% In this document, \gls{bicg} \cite{doi:10.1137/0913035} is used to solve non-symmetric systems where the conjugate gradient method would not converge. \gls{bicg} is also a steepest descent method that seeks to find the search directions in an optimal manner. For \gls{bicg}, bi-conjugate search directions are built through repeated applications of the matrix and its transpose, respectively. 
 
-\subsection{Multigrid}
-\cite{multigrid_tutorial}
+% \subsection{Multigrid}
+% \cite{multigrid_tutorial}
 \end{document}

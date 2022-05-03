@@ -3,7 +3,7 @@
 
 \begin{document}
 \chapter{Radiation Transport Background} \label{chap:transport}
-The purpose of this chapter is to motivate and define the simplified transport problem that serves as the model for the development of the moment methods derived in later chapters. To that end, the general kinetic Boltzmann equation is introduced and then particularized to the equations of thermal radiative transfer that describes thermal photons in the absence of material motion and heat conduction. We pay particular attention to the notational differences present in the fields of nuclear engineering, astrophysics, and \gls{hedp}. The simplifications of isotropic scattering and frequency and time-independence are applied to derive the functional form of the core kernel of a single nonlinear Newton iteration of a full TRT algorithm. The chapter concludes with a derivation of the radiation diffusion approximation. 
+The purpose of this chapter is to motivate and define the simplified transport problem that serves as the model for the development of the moment methods derived in later chapters. To that end, the general kinetic Boltzmann equation is introduced and then particularized to the equations of thermal radiative transfer that describe thermal photons in the absence of material motion and heat conduction. We pay particular attention to the notational differences present in the fields of nuclear engineering, astrophysics, and \gls{hedp}. The simplifications of isotropic scattering and frequency and time-independence are applied to derive the functional form of the core kernel of a single nonlinear Newton iteration of a full TRT algorithm. The chapter concludes with a derivation of the radiation diffusion approximation. 
 
 \section{The Boltzmann Transport Equation}
 A discussion of the Boltzmann transport equation must begin with the definition of the particle distribution function, $f$. 
@@ -35,10 +35,10 @@ Here, we focus on neutral particle transport (i.e.~photons or neutrons). Since t
 	\begin{equation} \label{trans:linboltz}
 		\pderiv{f}{t} + \v \cdot \nabla f = \paren{\pderiv{f}{t}}_\text{absorption} + \paren{\pderiv{f}{t}}_\text{scattering} + \paren{\pderiv{f}{t}}_\text{source} \,,
 	\end{equation}
-where we have split the collision term into absorption and scattering terms and included an additional term representing an external source of particles. For neutrons, the external source could be a fixed-source of particles such as radioactive material that emits neutrons. For photons, we consider the source to be the thermal emission of photons. Thus, the photon external source is dependent on the material's temperature. We note that the case of the general Boltzmann equation under the assumption that particles do not interact with each other is called the linear Boltzmann equation. 
+where we have split the collision term into absorption and scattering terms and included an additional term representing an external source of particles. For neutrons, the external source could be a fixed-source of particles such as a radioactive material that emits neutrons. For photons, we consider the source to be the thermal emission of photons. Thus, the photon external source is dependent on the material's temperature. We note that the case of the general Boltzmann equation under the assumption that particles do not interact with each other is called the linear Boltzmann equation. 
 
 \section{Navigating Notation}
-Application of the Boltzmann transport equation to modeling radiation is home to three sets of notation: nuclear engineering, astrophysics, and \gls{hedp}. The hope of this section is to provide the means for newcomers to this subject to navigate these three fields. 
+Application of the Boltzmann transport equation to modeling radiation is home to three sets of notation: nuclear engineering, astrophysics, and \gls{hedp}. The hope of this section is to define the notation used in this document and provide the means for newcomers to this subject to navigate these three fields. 
 
 \subsection{$f$, $\psi$, and $I$}
 In all cases, the velocity variable is represented using a direction-of-flight variable, $\Omegahat$, and an energy variable. 
@@ -87,7 +87,7 @@ Thus, the intensity and angular flux are related through
 		\psi = \frac{I}{h\nu} \,. 
 	\end{equation}
 Since a photon's energy is given by $E = h\nu$, the intensity can be throught of as the energy-track length rate density in the phase space. 
-Thus, if $\sigma_a$ represents the probability per unit length of a material absorbing a photon, the product $\sigma_a I$ represents the amount of energy deposited by photons at any position, direction, frequency, and time. 
+Thus, if $\sigma_a$ represents the probability per unit length of a material absorbing a photon, the product $\sigma_a I$ represents the rate energy is deposited by photons at any position, direction, frequency, and time. 
 The power deposited in the material is computed with 
 	\begin{equation}
 		\int_\D \int_{\mathbb{S}^2} \int_0^\infty \sigma_a I \ud \nu \ud\Omega \ud \x \,. 
@@ -157,7 +157,7 @@ We model scattering and absorption events with the background media by setting:
 	\end{equation}
 where $\sigma_s(\Omegahat'\rightarrow\Omegahat,\nu'\rightarrow \nu)$ is the differential scattering opacity. We define $\sigma_s = \int_{\mathbb{S}^2} \int_0^\infty \sigma_s(\Omegahat'\cdot\Omegahat,\nu'\rightarrow\nu) \ud \nu'\ud\Omega'$ as the scattering opacity and set the total opacity $\sigma_t = \sigma_a + \sigma_s$ where $\sigma_a$ is the absorption opacity. The source term is used to model the emission of thermal photons by the material. This is modeled by Planck's black body source: 
 	\begin{equation}
-		\frac{1}{c}\paren{\pderiv{I}{t}}_\text{source} = \sigma_a\frac{B(\nu,T)}{4\pi} \,,
+		\frac{1}{c}\paren{\pderiv{I}{t}}_\text{source} =\frac{\sigma_a B(\nu,T)}{4\pi} \,,
 	\end{equation}
 where
 	\begin{equation}
@@ -177,7 +177,10 @@ The energy absorption rate is
 The emission rate is given by the Planck source, $B(\nu,T)$.
 The balance of energy between radiation and matter is then written 
 	\begin{equation} \label{trans:meb}
-		C_v \pderiv{T}{t} = \int_0^\infty \sigma_a(\nu) (c E(\x,\nu,t) - B(\nu,T)) \ud \nu\,, 
+	\begin{aligned}
+		C_v \pderiv{T}{t} &= \int_{\mathbb{S}^2} \int_0^\infty \sigma_a \paren{I(\x,\Omegahat,\nu,t) - \frac{B(\nu,T)}{4\pi}} \ud \nu \ud \Omega \\
+		&= \int_0^\infty \sigma_a (c E(\x,\nu,t) - B(\nu,T)) \ud \nu \,, 
+	\end{aligned}
 	\end{equation}
 where $C_v$ is the material's heat capacity. The coupled equations given by Eqs.~\ref{trans:trans_photon} and \ref{trans:meb} are called the equations of thermal radiative transfer. This system is nonlinear due to the Planck emission term. 
 
