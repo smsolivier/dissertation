@@ -246,7 +246,7 @@ The basis functions for $\Pcal{1}$, $\Pcal{2}$, and $\Pcal{3}$ through the Gauss
 \label{fem:shape2d}
 \end{figure}
 
-Interpolation through the Gauss-Lobatto and Gauss-Legendre points both have the required properties to be accurate in the limit as $p\rightarrow \infty$. Thus, the choice of interpolating points is typically dictated by other aspects of the overall algorithm. Note that the Gauss-Lobatto points include the interval end points $0$ and $1$ while the Gauss-Legendre points do not. The bases resulting from Lagrange interpolation through the Gauss-Lobatto and Gauss-Legendre points are referred to as closed and open, respectively, due to this. The Gauss-Legendre basis has the beneficial property of diagonal mass matrices on affine meshes while the closed Gauss-Lobatto basis typically leads to sparser globally coupled systems since closed bases couple fewer degrees of freedom on interior faces. 
+Interpolation through the Gauss-Lobatto and Gauss-Legendre points both have the required properties to be accurate in the limit as $p\rightarrow \infty$ \cite{spectral_canuto,trefethen}. Thus, the choice of interpolating points is typically dictated by other aspects of the overall algorithm. Note that the Gauss-Lobatto points include the interval end points $0$ and $1$ while the Gauss-Legendre points do not. The bases resulting from Lagrange interpolation through the Gauss-Lobatto and Gauss-Legendre points are referred to as closed and open, respectively, due to this. The Gauss-Legendre basis has the beneficial property of diagonal mass matrices on affine meshes while the closed Gauss-Lobatto basis typically leads to sparser globally coupled systems since closed bases couple fewer degrees of freedom on interior faces. 
 
 \section{Description of the Mesh}
 \subsection{Admissible Tesselations}
@@ -917,7 +917,7 @@ The vector-valued analog
 uses the scalar continuous finite element space for each component. In this way, $\vec{v} \in W_p \subset [H^1(\D)]^{\dim}$ and thus $\nabla\vec{v} = \nablah\vec{v} \in [L^2(\D)]^{\dim\times\dim}$. Since each component is defined independently using the scalar space, vectors $\vec{v} \in W_p$ transform according to Eq.~\ref{fem:scalar_copies}. 
 
 \subsection{Raviart Thomas} \label{fem_sec:fes_rt}
-The \gls{rt} space is a discrete subspace of $H(\div;\D)$, the space of vector-valued functions with square-integrable divergence. That is, 
+The \gls{rt} space \cite{Raviart1977,raviart_thomas} is a discrete subspace of $H(\div;\D)$, the space of vector-valued functions with square-integrable divergence. That is, 
 	\begin{equation}
 		H(\div;\D) = \{ \vec{v} \in [L^2(\D)]^2 : \nabla\cdot\vec{v} \in L^2(\D) \} \,. 
 	\end{equation}
@@ -1187,7 +1187,7 @@ This can be seen by setting the gradient of $\Pi$ to zero:
 	\begin{equation}
 		0 = \nabla \Pi = \mat{A} \underline{x} - \underline{b} \iff \mat{A} \underline{x} = \underline{b} \,. 
 	\end{equation}
-The conjugate gradient method is built around the idea of minimizing $\Pi$ in such a way that the system is guaranteed to be solved in at most $N$ steps, where $N$ is the number of rows or columns in the square matrix $\mat{A}$. 
+The conjugate gradient method \cite{cg_hs,cgh} is built around the idea of minimizing $\Pi$ in such a way that the system is guaranteed to be solved in at most $N$ steps, where $N$ is the number of rows or columns in the square matrix $\mat{A}$. 
 
 Note that the residual $\underline{r}^k = \underline{b} - \mat{A}\underline{x}^k = -\nabla\Pi$. Moving in the direction of the residual then moves opposite the gradient of the potential. The method of steepest descent is the method that updates the solution in the direction of the residual in such a way that the potential is minimized. That is, we seek to use the update $\underline{x}^{k+1} = \underline{x}^k + \lambda_k \underline{r}^k$ where $\lambda_i \in \R$ is chosen so that $\underline{x}^{k+1}$ minimizes the potential. Introducing this update into the potential: 
 	\begin{equation}
@@ -1198,7 +1198,7 @@ Setting $\pderiv{\Pi}{\lambda_k} = 0$ and solving for $\lambda_k$ yields:
 		\lambda_k = \frac{\underline{r}^k \cdot \underline{r}^k}{\underline{r}^k \cdot \mat{A} \underline{r}^k} \,. 
 	\end{equation}
 
-The conjugate gradient is a type of steepest descent method where the search directions are chosen to be $\mat{A}$-orthogonal. In this way, the algorithm only searches in new directions and avoids stalls associated with exploring parts of the solution space that have already been explored. In other words, both the parameter $\lambda_k$ in the update for $\underline{x}^{k+1}$ and the search direction are chosen optimally. The update used by conjugate gradient is 
+The conjugate gradient method is a type of steepest descent method where the search directions are chosen to be $\mat{A}$-orthogonal. In this way, the algorithm only searches in new directions and avoids stalls associated with exploring parts of the solution space that have already been explored. In other words, both the parameter $\lambda_k$ in the update for $\underline{x}^{k+1}$ and the search direction are chosen optimally. The update used by conjugate gradient is 
 	\begin{equation}
 		\underline{x}^{k+1} = \underline{x}^k + \lambda_k \underline{z}^k \,, 
 	\end{equation}

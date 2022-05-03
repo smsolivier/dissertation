@@ -7,7 +7,7 @@ In this chapter, we design a family of independent VEF discretizations for the l
 By using the Eddington tensor and boundary factor interpolation procedure established in \cite{two-level-independent-warsa}, these methods achieve both rapid convergence in outer fixed-point iterations and in inner linear solver iterations when paired with a high-order \gls{dg} discretization of \gls{sn} transport. 
 
 In particular, we extend the unified analysis of DG methods developed for elliptic problems presented by \textcite{Arnold2002} to the VEF equations to derive analogs of the \gls{ip}, \gls{br2}, \gls{mdldg}, and \gls{cg} techniques.
-We show that the IP and BR2 VEF methods are effectively preconditioned by the subspace correction method from \textcite{Pazner2021} and that \gls{amg} is effective for the CG and MDLDG discretizations.
+We show that the IP and BR2 VEF methods are effectively preconditioned by the subspace correction method from \textcite{Pazner2021} and that \gls{amg} \cite{amg} is effective for the CG and MDLDG discretizations.
 \textcite{dima_dfem} also applied DG techniques to the VEF equations but they discretize the first-order form of the VEF equations and only consider lowest-order elements in one dimension.
 We note that our CG operator is equivalent to extending the continuous finite element VEF discretization in \cite{two-level-independent-warsa} to multiple dimensions, arbitrary-order, and curved meshes.
 
