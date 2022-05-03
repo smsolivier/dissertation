@@ -73,6 +73,7 @@
 \newcommand{\hmat}[1]{\hat{\mat{#1}}}
 \newcommand{\tmat}[1]{\tilde{\mat{#1}}}
 \renewcommand{\vec}[1]{\boldsymbol{#1}}
+\newcommand{\ubar}[1]{\mkern 1.5mu\underline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
 \newcommand{\bvec}[1]{\boldsymbol{\mathrm{#1}}}
 \newcommand{\twovec}[2]{\begin{pmatrix} #1 \\ #2 \end{pmatrix}}
 \newcommand{\hvec}[1]{\hat{\vec{#1}}}

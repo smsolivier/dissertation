@@ -1083,18 +1083,18 @@ where $\{u_i\}$ and $\{v_i\}$ are the degrees of freedom that determine $u,v \in
 		a(\sum_i b_i v_i, \sum_j b_j u_j) = f(\sum_i b_i v_i) \iff \sum_i \sum_j v_i a(b_i,b_j) u_j = \sum_i v_i f(b_i) \,, 
 	\end{equation} 
 where we have used the bilinearity and linearity of $a$ and $f$, respectively. 
-Letting $\mat{A}$ be the matrix with entries $a(b_i, b_j)$ and $\underline{f}$ the vector with entries $f(b_i)$, the above is equivalent to 
+Letting $\mat{A}$ be the matrix with entries $a(b_i, b_j)$ and $\ubar{f}$ the vector with entries $f(b_i)$, the above is equivalent to 
 	\begin{equation}
-		\underline{v}^T \mat{A} \underline{u} = \underline{v}^T \underline{f} \,, 
+		\ubar{v}^T \mat{A} \ubar{u} = \ubar{v}^T \ubar{f} \,, 
 	\end{equation}
-where $\underline{w}$ represents the vector of degrees of freedom corresponding to some $w \in X_h$. 
+where $\ubar{w}$ represents the vector of degrees of freedom corresponding to some $w \in X_h$. 
 We wish to have this hold $\forall v \in X_h \Rightarrow \forall v_i$. Therefore, solving the abstract problem is equivalent to solving 
 	\begin{equation}
-		\mat{A} \underline{u} = \underline{f} \,, 
+		\mat{A} \ubar{u} = \ubar{f} \,, 
 	\end{equation}
-for the vector of degrees freedom $\underline{u}$. 
+for the vector of degrees freedom $\ubar{u}$. 
 
-We now show that the algebraic system $\mat{A}\underline{u} = \underline{f}$ is sparse in that most of its entries are zero. This fact arises from the local support of the basis functions $b_i$. Let $\supp(b_i) \subset \D$ denote the subset of the domain where $b_i$ is non-zero. In other words, $\supp(b_i)$ is the union of adjacent elements that share the node located at $\x_i$. Then, $a(b_i, b_j)$ is non-zero only where $\supp(b_i)$ and $\supp(b_j)$ overlap i.e.~when $\supp(b_i) \cap \supp(b_j) \neq \emptyset$. Using the basis functions depicted in the upper diagram of Fig.~\ref{fem:fe_support_1d} as an example, the term $a(b_1,b_7)$ is zero since $b_7$ is zero where $b_1$ is non-zero and vice versa. On the other hand, $a(b_4,b_5)$ is non-zero since $b_4$ and $b_5$ are both non-zero in $K_4$. Figure \ref{fem:sparse1d} shows the resulting sparsity pattern corresponding to the finite element spaces depicted in Fig.~\ref{fem:fe_support_1d}. 
+We now show that the algebraic system $\mat{A}\ubar{u} = \ubar{f}$ is sparse in that most of its entries are zero. This fact arises from the local support of the basis functions $b_i$. Let $\supp(b_i) \subset \D$ denote the subset of the domain where $b_i$ is non-zero. In other words, $\supp(b_i)$ is the union of adjacent elements that share the node located at $\x_i$. Then, $a(b_i, b_j)$ is non-zero only where $\supp(b_i)$ and $\supp(b_j)$ overlap i.e.~when $\supp(b_i) \cap \supp(b_j) \neq \emptyset$. Using the basis functions depicted in the upper diagram of Fig.~\ref{fem:fe_support_1d} as an example, the term $a(b_1,b_7)$ is zero since $b_7$ is zero where $b_1$ is non-zero and vice versa. On the other hand, $a(b_4,b_5)$ is non-zero since $b_4$ and $b_5$ are both non-zero in $K_4$. Figure \ref{fem:sparse1d} shows the resulting sparsity pattern corresponding to the finite element spaces depicted in Fig.~\ref{fem:fe_support_1d}. 
 % --- 1D sparsity pattern --- 
 \begin{figure}
 \centering
@@ -1119,38 +1119,49 @@ We now show that the algebraic system $\mat{A}\underline{u} = \underline{f}$ is 
 
 In this document, we will frequently build the matrix, $\mat{A}$, corresponding to a bilinear form, $a(\cdot,\cdot)$, on the space $X_h$ using the following notation: 
 	\begin{equation}
-		\underline{v}^T \mat{A} \underline{u} = a(v,u) \,, \quad u,v \in X_h \,. 
+		\ubar{v}^T \mat{A} \ubar{u} = a(v,u) \,, \quad u,v \in X_h \,. 
 	\end{equation}
-In the above, we implicitly write $u = \sum u_i b_i$ and $v = \sum v_i b_i$ to form the matrix $\mat{A}_{ij} = a(b_i,b_j)$. Analogously, we build the vector $\underline{f}$ corresponding to the linear form $f(\cdot)$ using  
+In the above, we implicitly write $u = \sum u_i b_i$ and $v = \sum v_i b_i$ to form the matrix $\mat{A}_{ij} = a(b_i,b_j)$. Analogously, we build the vector $\ubar{f}$ corresponding to the linear form $f(\cdot)$ using  
 	\begin{equation}
-		\underline{v}^T \underline{f} = f(v) \,, 
+		\ubar{v}^T \ubar{f} = f(v) \,, 
 	\end{equation}
-where $v = \sum v_i b_i$ is implicitly used to form $\underline{f}_i = f(b_i)$. 
+where $v = \sum v_i b_i$ is implicitly used to form $\ubar{f}_i = f(b_i)$. 
 
 \section{Iterative Solution Methods for Linear Systems}
 We consider the algebraic system 
 	\begin{equation}
-		\mat{A} \underline{x} = \underline{b} \,, 
+		\mat{A} \ubar{x} = \ubar{b} \,, 
 	\end{equation}
-where $\mat{A}$ is a non-singular matrix of dimension $n$. Most iterative methods are based on a suitable splitting of $\mat{A}$ such that 
+where $\mat{A}$ is a non-singular matrix of dimension $n$. Iterative methods define a sequence of vectors $\ubar{x}^k$ such that $\ubar{x}^k \rightarrow \ubar{x}$ as $k\rightarrow \infty$. In practice, iterative tolerances are used such that the sequence is terminated when the residual, defined as 
+	\begin{equation} \label{fem:residual_vec}
+		\ubar{r}^k = \ubar{b} - \mat{A}\ubar{x}^k \,,
+	\end{equation}
+is small enough. This allows finding an $\ubar{x}^K$ that is ``close enough'' to the true solution in a number of iterations $K\ll n$. 
+
+On the other hand, direct methods, such as Gaussian elimination, produce the exact solution in a finite number of operations. In the case of Gaussian elimination, the matrix $\mat{A}$ is decomposed into lower and upper triangular matrices. The decomposed system can then be solved in $\mathcal{O}(n^2)$ operations through forward and backward substitution. The decomposition of $\mat{A}$ requires $\mathcal{O}(n^3)$ operations and thus direct methods scale as $\mathcal{O}(n^3)$. 
+
+In practice, iterative methods are preferred over direct methods for the sparse systems of equations generated by finite element discretization. This is due to the memory cost of storing the inverse of a matrix as $\mat{A}^{-1}$ is generally dense even when $\mat{A}$ is sparse. 
+Thus, even sparse direct methods, such as \textcite{lidemmel03}, which account for the sparsity in $\mat{A}$ in the decomposition process, have ``fill-in'' from storing the increased number of non-zeros associated with $\mat{A}^{-1}$. In addition, the matrix-vector products that make up the dominant cost of each iteration of an iterative method can be implemented in $\mathcal{O}(n)$ operations when sparsity is accounted for. If the iteration converges in $K$ iterations, an iterative method can solve the problem in $\mathcal{O}(Kn)$ iterations. An iterative method with $K \ll n$ can then be considerably cheaper in memory and floating point operations compared to a direct method. 
+
+\subsection{Classical Iterative Schemes}
+Most iterative methods are based on a suitable splitting of $\mat{A}$ such that 
 	\begin{equation}
 		\mat{A} = \mat{P} - \mat{N} \,, 
 	\end{equation}
 where $\mat{P}$ is non-singular and ideally computationally efficient to invert. The iteration proceeds as 
 	\begin{equation}
-		\mat{P} \underline{x}^{k+1} = \mat{N}\underline{x}^k + \underline{b} \,,
+		\mat{P} \ubar{x}^{k+1} = \mat{N}\ubar{x}^k + \ubar{b} \,,
 	\end{equation}
-where the superscript denotes iteration index with $\underline{x}^0$ an initial guess. 
-Such an iteration converges if the spectral radius of the iteration matrix $\mat{P}^{-1}\mat{N}$ is less than unity. By adding and subtracting $\mat{A}\underline{x}^k$ on the right hand side, this iteration is equivalent to 
+where the superscript denotes iteration index with $\ubar{x}^0$ an initial guess. 
+Such an iteration is called a Richardson iteration and converges if the spectral radius of the iteration matrix $\mat{P}^{-1}\mat{N}$ is less than unity. By adding and subtracting $\mat{A}\ubar{x}^k$ on the right hand side, this iteration is equivalent to 
 	\begin{equation}
-		\mat{P}\underline{x}^{k+1} = (\mat{N} + \mat{A})\underline{x}^k + \underline{b} - \mat{A}\underline{x}^k = \mat{P}\underline{x}^k + \underline{r}^k \,, 
+		\mat{P}\ubar{x}^{k+1} = (\mat{N} + \mat{A})\ubar{x}^k + \ubar{b} - \mat{A}\ubar{x}^k = \mat{P}\ubar{x}^k + \ubar{r}^k \,, 
 	\end{equation}
-where the residual vector is $\underline{r}^k = \underline{b} - \mat{A}\underline{x}^k$. Operating by $\mat{P}^{-1}$ yields the iteration: 
+where the residual vector is defined in Eq.~\ref{fem:residual_vec}. Operating by $\mat{P}^{-1}$ yields the iteration: 
 	\begin{equation}
-		\underline{x}^{k+1} = \underline{x}^k + \mat{P}^{-1} \underline{r}^k \,. 
+		\ubar{x}^{k+1} = \ubar{x}^k + \mat{P}^{-1} \ubar{r}^k \,. 
 	\end{equation}
 
-\subsection{Classical Iterative Schemes}
 Let $\mat{A} = \mat{D} + \mat{L} + \mat{U}$ where $\mat{D}$, $\mat{L}$, and $\mat{U}$ are the diagonal, strictly lower triangular, and strictly upper triangular parts of the matrix $\mat{A}$. That is, 
 	\begin{equation}
 		\mat{D}_{ij} = \begin{cases}
@@ -1168,51 +1179,51 @@ Let $\mat{A} = \mat{D} + \mat{L} + \mat{U}$ where $\mat{D}$, $\mat{L}$, and $\ma
 	\end{equation}
 The Jacobi method sets $\mat{P} = \mat{D}$ and $\mat{N} = \mat{L} + \mat{U}$ so that 
 	\begin{equation}
-		\underline{x}^{k+1} = \underline{x}_k + \mat{D}^{-1}\underline{r}^k \,. 
+		\ubar{x}^{k+1} = \ubar{x}_k + \mat{D}^{-1}\ubar{r}^k \,. 
 	\end{equation}
-Since $\mat{D}$ is a diagonal matrix, the action $\mat{D}^{-1}\underline{r}^k$ can be applied cheaply by dividing the entries of $\underline{r}$ by the diagonal entries of $\mat{A}$. 
+Since $\mat{D}$ is a diagonal matrix, the action $\mat{D}^{-1}\ubar{r}^k$ can be applied cheaply by dividing the entries of $\ubar{r}$ by the diagonal entries of $\mat{A}$. 
 
 The Gauss-Seidel method uses the splitting $\mat{P} = \mat{D} + \mat{L}$ and $\mat{N} = \mat{U}$. The iteration is then 
 	\begin{equation}
-		\underline{x}^{k+1} = \underline{x}^k + \paren{\mat{D} + \mat{L}}^{-1} \underline{r}^k \,. 
+		\ubar{x}^{k+1} = \ubar{x}^k + \paren{\mat{D} + \mat{L}}^{-1} \ubar{r}^k \,. 
 	\end{equation}
 Note that since the matrix $\mat{D} + \mat{L}$ is lower triangular, the action of its inverse can be applied using forward substitution. Forward substitution requires more floating point operations than inverting a diagonal matrix. However, this added work allows Gauss-Seidel to typically converge faster than Jacobi. 
 
 \subsection{The Conjugate Gradient Method}
-For symmetric positive definite matrices, the solution $\mat{A}\underline{x} = \underline{b}$ is the unique minimizer of the potential 
+For symmetric positive definite matrices, the solution $\mat{A}\ubar{x} = \ubar{b}$ is the unique minimizer of the potential 
 	\begin{equation}
-		\Pi = \frac{1}{2} \underline{x}^T \mat{A} \underline{x} - \underline{x}^T \underline{b} \,. 
+		\Pi = \frac{1}{2} \ubar{x}^T \mat{A} \ubar{x} - \ubar{x}^T \ubar{b} \,. 
 	\end{equation}
 This can be seen by setting the gradient of $\Pi$ to zero: 
 	\begin{equation}
-		0 = \nabla \Pi = \mat{A} \underline{x} - \underline{b} \iff \mat{A} \underline{x} = \underline{b} \,. 
+		0 = \nabla \Pi = \mat{A} \ubar{x} - \ubar{b} \iff \mat{A} \ubar{x} = \ubar{b} \,. 
 	\end{equation}
-The conjugate gradient method \cite{cg_hs,cgh} is built around the idea of minimizing $\Pi$ in such a way that the system is guaranteed to be solved in at most $N$ steps, where $N$ is the number of rows or columns in the square matrix $\mat{A}$. 
+The conjugate gradient method \cite{cg_hs,cgh} is built around the idea of minimizing $\Pi$ in such a way that the system is guaranteed to be solved in at most $n$ steps.
 
-Note that the residual $\underline{r}^k = \underline{b} - \mat{A}\underline{x}^k = -\nabla\Pi$. Moving in the direction of the residual then moves opposite the gradient of the potential. The method of steepest descent is the method that updates the solution in the direction of the residual in such a way that the potential is minimized. That is, we seek to use the update $\underline{x}^{k+1} = \underline{x}^k + \lambda_k \underline{r}^k$ where $\lambda_i \in \R$ is chosen so that $\underline{x}^{k+1}$ minimizes the potential. Introducing this update into the potential: 
+Note that the residual $\ubar{r}^k = \ubar{b} - \mat{A}\ubar{x}^k = -\nabla\Pi$. Moving in the direction of the residual then moves opposite the gradient of the potential. The method of steepest descent is the method that updates the solution in the direction of the residual in such a way that the potential is minimized. That is, we seek to use the update $\ubar{x}^{k+1} = \ubar{x}^k + \lambda_k \ubar{r}^k$ where $\lambda_i \in \R$ is chosen so that $\ubar{x}^{k+1}$ minimizes the potential. Introducing this update into the potential: 
 	\begin{equation}
-		\Pi = \frac{1}{2}\paren{\underline{x}^k + \lambda_k \underline{r}^k}^T \mat{A}\paren{\underline{x}^k + \lambda_k \underline{r}^k} - \paren{\underline{x}^k + \lambda_k \underline{r}^k}^T \underline{r}^k \,. 
+		\Pi = \frac{1}{2}\paren{\ubar{x}^k + \lambda_k \ubar{r}^k}^T \mat{A}\paren{\ubar{x}^k + \lambda_k \ubar{r}^k} - \paren{\ubar{x}^k + \lambda_k \ubar{r}^k}^T \ubar{r}^k \,. 
 	\end{equation}
 Setting $\pderiv{\Pi}{\lambda_k} = 0$ and solving for $\lambda_k$ yields: 
 	\begin{equation}
-		\lambda_k = \frac{\underline{r}^k \cdot \underline{r}^k}{\underline{r}^k \cdot \mat{A} \underline{r}^k} \,. 
+		\lambda_k = \frac{\ubar{r}^k \cdot \ubar{r}^k}{\ubar{r}^k \cdot \mat{A} \ubar{r}^k} \,. 
 	\end{equation}
 
-The conjugate gradient method is a type of steepest descent method where the search directions are chosen to be $\mat{A}$-orthogonal. In this way, the algorithm only searches in new directions and avoids stalls associated with exploring parts of the solution space that have already been explored. In other words, both the parameter $\lambda_k$ in the update for $\underline{x}^{k+1}$ and the search direction are chosen optimally. The update used by conjugate gradient is 
+The conjugate gradient method is a type of steepest descent method where the search directions are chosen to be $\mat{A}$-orthogonal. In this way, the algorithm only searches in new directions and avoids stalls associated with exploring parts of the solution space that have already been visited. In other words, both the parameter $\lambda_k$ in the update for $\ubar{x}^{k+1}$ and the search direction are chosen optimally. The update used by conjugate gradient is 
 	\begin{equation}
-		\underline{x}^{k+1} = \underline{x}^k + \lambda_k \underline{z}^k \,, 
+		\ubar{x}^{k+1} = \ubar{x}^k + \lambda_k \ubar{z}^k \,, 
 	\end{equation}
-where the search direction, $\underline{z}^k$, is chosen such that 
+where the search direction, $\ubar{z}^k$, is chosen such that 
 	\begin{equation}
-		\underline{z}^k = \underline{r}^k + \theta_k \underline{z}^{k-1} \,. 
+		\ubar{z}^k = \ubar{r}^k + \theta_k \ubar{z}^{k-1} \,. 
 	\end{equation}
-Here, $\theta_k$ is the parameter that forces $\underline{z}^{k}$ and $\underline{z}^{k-1}$ to be $\mat{A}$-conjugate such that $\underline{z}^k \cdot \mat{A} \underline{z}^{k-1} = 0$: 
+Here, $\theta_k$ is the parameter that forces $\ubar{z}^{k}$ and $\ubar{z}^{k-1}$ to be $\mat{A}$-conjugate such that $\ubar{z}^k \cdot \mat{A} \ubar{z}^{k-1} = 0$: 
 	\begin{equation}
-		0 = \underline{z}^k \cdot \mat{A} \underline{z}^{k-1} \Rightarrow \theta_k = -\frac{\underline{r}^k\cdot \mat{A} \underline{z}^{k-1}}{\underline{z}^{k-1} \cdot \mat{A} \underline{z}^{k-1}} \,. 
+		0 = \ubar{z}^k \cdot \mat{A} \ubar{z}^{k-1} \Rightarrow \theta_k = -\frac{\ubar{r}^k\cdot \mat{A} \ubar{z}^{k-1}}{\ubar{z}^{k-1} \cdot \mat{A} \ubar{z}^{k-1}} \,. 
 	\end{equation}
 With this update, the $\lambda_k$ that minimizes the potential is 
 	\begin{equation}
-		\lambda_k = \frac{\underline{z}^k \cdot \underline{r}^k}{\underline{z}^k \cdot \mat{A} \underline{z}^k} \,. 
+		\lambda_k = \frac{\ubar{z}^k \cdot \ubar{r}^k}{\ubar{z}^k \cdot \mat{A} \ubar{z}^k} \,. 
 	\end{equation}
 The solution procedure for a 2-dimensional system is shown in Fig.~\ref{fem:conj_grad_diag}. The search directions are chosen such that they are $\mat{A}$-orthogonal allowing the algorithm to find the solution in two steps. 
 % --- conjugate gradient on 2-dimensional diffusion problem --- 
@@ -1223,11 +1234,44 @@ The solution procedure for a 2-dimensional system is shown in Fig.~\ref{fem:conj
 \label{fem:conj_grad_diag}
 \end{figure}
 
-Note that the solution satisfying $\min \Pi$ is only true when $\mat{A}$ is symmetric positive definite. Furthermore, when $\mat{A}$ is not symmetric positive definite, $\underline{x}\cdot\mat{A}\underline{x}$ is not an inner product. This means $\mat{A}$-orthogonality cannot be built using the three-term recursion process outlined above and that the previous search directions would need to be stored in order to enforce $\mat{A}$-orthogonality. 
+Note that the solution being the minimizer of a potential is only true when $\mat{A}$ is symmetric positive definite. Furthermore, when $\mat{A}$ is not symmetric positive definite, $\ubar{x}\cdot\mat{A}\ubar{x}$ is not an inner product. This means $\mat{A}$-orthogonality cannot be built using the three-term recursion process outlined above and that the previous search directions would need to be stored in order to enforce $\mat{A}$-orthogonality. 
 
-% \subsection{The Stabilized Bi-Conjugate Gradient Method}
-% In this document, \gls{bicg} \cite{doi:10.1137/0913035} is used to solve non-symmetric systems where the conjugate gradient method would not converge. \gls{bicg} is also a steepest descent method that seeks to find the search directions in an optimal manner. For \gls{bicg}, bi-conjugate search directions are built through repeated applications of the matrix and its transpose, respectively. 
+\subsection{The Stabilized Bi-Conjugate Gradient Method}
+In this document, the \gls{bicg} is used to solve non-symmetric systems where the conjugate gradient method cannot be used. The original \gls{bcg} \cite{bicg,10.1007/BFb0080116} implicitly solves both $\mat{A}\ubar{x} = \ubar{b}$ and the dual system $\mat{A}^T \ubar{x}^* = \ubar{b}^*$ \cite{saad}. The residuals for the original and dual problem form a bi-orthogonal sequence that allows the design of a conjugate gradient-like algorithm that is effective for non-symmetric problems. The \gls{bicg} algorithm \cite{doi:10.1137/0913035} both rewrites the \gls{bcg} algorithm to remove the requirement of the transpose matrix-vector product and introduces a stabilization process that leads to smoother and more robust convergence. The resulting algorithm is characterized by requiring two matrix-vector products per iteration. Thus, \gls{bicg} allows solving non-symmetric systems but at the cost of being more than twice as expensive per iteration than the conjugate gradient algorithm. The \gls{bicg} algorithm is described in \textcite[p.~27]{siam_templates} and is also implemented in the MFEM finite element library \cite{mfem-paper}. 
 
-% \subsection{Multigrid}
-% \cite{multigrid_tutorial}
+The \gls{gmres} \cite{gmres} is another algorithm that is effective for non-symmetric problems. \gls{gmres} performs one matrix-vector product per iteration but requires storing the residual vectors as the iteration proceeds. Since \gls{gpu} storage is likely to be limited, we prefer \gls{bicg} over \gls{gmres}. This choice trades an additional matrix-vector product per iteration for reduced storage requirements. 
+
+\subsection{Multigrid}
+Many iterative schemes, such as the classical Jacobi and Gauss-Seidel iterations discussed above, have a smoothing property. That is, they are effective at eliminating high-frequency or oscillatory components of the error but leave the low-frequency or smooth components relatively unchanged. This intuition is supported by Fourier analysis \cite{multigrid_tutorial}. Multigrid is an algorithm that effectively eliminates both the high and low frequency components of the error. The basic idea is to apply a smoothing scheme on recursively coarsened problems. Figure \ref{fem:coarsening_diag} shows the effect of coarsening in the mesh size $h$ on an example smooth wave form. In each step from top to bottom, the number of elements is cut in half. The initially smooth waveform appears to be higher frequency on the coarsened meshes. Thus, smooth error modes can be eliminated by representing them on a coarse mesh and applying a smoothing iterative scheme. 
+% --- coarsening intuition --- 
+\begin{figure}
+\centering
+\includegraphics[height=.5\textheight]{figs/coarsening.pdf}
+\caption{The effect of coarsening on a piecewise linear approximation of $\sin(x)$. }
+\label{fem:coarsening_diag}
+\end{figure}
+
+The multigrid algorithm leverages this behavior. A two-level algorithm would: apply a smoothing iterative scheme to the fine-grid problem, project the residual onto a coarser grid, solve for a coarse-grid update, and then prolong the update to the fine-grid problem in order to iteratively update the fine-grid solution vector. A general multigrid algorithm recursively applies this algorithm by replacing each coarse-grid solve with another two-level smoothing and coarsening algorithm. The recursion is repeated until the coarse grid problem is small enough to be solved efficiently with a smoothing iteration. Recursively traversing from fine grid to the coarsest grid and back is called a V-cycle. 
+
+Multigrid algorithms based around coarsening the mesh are termed \gls{gmg} because they rely on the geometry of the problem. Such algorithms typically require the user to supply the hierarchy of meshes used in the coarsening steps. The generation of such a hierarchy is a non-trivial task for sufficiently complicated geometries. In addition, \gls{gmg} requires re-discretizing the problem on each of the meshes in the hierarchy. 
+
+\gls{amg} \cite{amg} is a multigrid scheme that defines the coarse-grid projections and prolongations using only information provided by the algebraic system of equations. In this way, knowledge of the mesh is not required and the expense of re-discretizing on each coarse problem is avoided. This ease-of-use comes at some cost. Typically, \gls{amg} performance is slower than a \gls{gmg} iteration with a well-designed mesh hierarchy. In addition, there exists an expensive ``setup phase'' where the matrix entries are analyzed and the projection and prolongation operators are formed. 
+
+In this document, the \gls{amg} solver from \emph{hypre} \cite{hypre} is used extensively as a preconditioner for the iterative solution of the discrete moment systems. AMG is preferred to GMG due to its black box nature. 
+
+\subsection{Preconditioning}
+The condition number of the matrix $\mat{A}$, denoted $\kappa(\mat{A})$, is defined as the ratio of the maximal and minimal singular values. 
+It is common for the performance of iterative schemes to degrade as the condition number of the algebraic system increases. 
+For example, the conjugate gradient algorithm can be shown to reduce the error at each iteration by at most 
+	\begin{equation} \label{fem:cg_err_red}
+		2\paren{\frac{\sqrt{\kappa(\mat{A})} - 1}{\sqrt{\kappa(\mat{A})} + 1}} \,. 
+	\end{equation}
+The condition numbers of matrices arising from finite element discretization generally increase as the mesh size decreases. Thus, Eq.~\ref{fem:cg_err_red} predicts more iterations will be needed to solve the linear system as the mesh size decreases. Note that as the mesh size decreases, $n$ and thus the expense of matrix-vector products increases. 
+The goal is to design iterative solvers that have uniform convergence with respect to the mesh size. In this way, the expense of solving the linear system is only due to the increased expense associated with $n$ increasing in the linear algebra operations that makeup each iteration of the algorithm. 
+
+Such algorithms are achieved via preconditioning. For a non-singular matrix $\mat{P}$, the preconditioned system is given by: 
+	\begin{equation} \label{fem:prec_sys}
+		\mat{P}^{-1} \mat{A} \ubar{x} = \mat{P}^{-1} \ubar{b} \,.
+	\end{equation}
+Note that the preconditioned system is equivalent to the original system $\mat{A}\ubar{x} = \ubar{b}$. The basic requirements for $\mat{P}$ to be a good preconditioner are that $\mat{P}$ is ``easy'' to invert and that $\kappa(\mat{P}^{-1}\mat{A})$ is smaller than $\kappa(\mat{A})$. In this way, an iterative scheme such as conjugate gradient will converge faster on the preconditioned system in Eq.~\ref{fem:prec_sys} than on the original problem. $\mat{P}$ is said to an optimal preconditioner if $\kappa(\mat{P}^{-1}\mat{A})$ is bounded with respect to the order of $\mat{A}$. Note that for conjugate gradient, the preconditioner must also be symmetric positive definite so that $\mat{P}^{-1}\mat{A}$ is also positive definite. 
 \end{document}
