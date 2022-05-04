@@ -60,7 +60,7 @@
 
 % set to display subsections in TOC 
 \setcounter{tocdepth}{2}
-\setcounter{secnumdepth}{4}
+\setcounter{secnumdepth}{2}
 
 % rename bib auxiliary file names
 \renewcommand{\blxauxsuffix}{}
