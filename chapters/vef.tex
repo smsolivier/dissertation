@@ -3,8 +3,7 @@
 
 \begin{document}
 \chapter{The VEF Algorithm} \label{chap:vef}
-In this document, we develop \gls{vef} methods for the linear, steady-state, mono-energetic, fixed-source transport problem with isotropic scatttering. This problem represents the basic kernel for many more complicated problems such as \gls{trt}. 
-The linear Boltzmann equation that models this problem is: 
+This chapter discusses the VEF algorithm as applied to the continuous model transport equation: 
 	\begin{subequations}
 	\begin{equation} \label{vef:transport}
 		\Omegahat\cdot\nabla\psi + \sigma_t \psi = \frac{\sigma_s}{4\pi}\int \psi \ud \Omega' + q \,, \quad \x \in \D \,,
@@ -14,8 +13,7 @@ The linear Boltzmann equation that models this problem is:
 	\end{equation}
 	\end{subequations}
 where $\psi(\x,\Omegahat)$ is the angular flux, $\D$ the domain of the problem with $\partial\D$ its boundary, $\sigma_t(\x)$ and $\sigma_s(\x)$ the total and scattering macroscopic cross sections, respectively, $q(\x,\Omegahat)$ the fixed-source, and $\bar{\psi}(\x,\Omegahat)$ the inflow boundary function. 
-
-In this chapter, we derive the \gls{vef} algorithm by taking angular moments of the transport equation given by Eq.~\ref{vef:transport}. Due to the streaming term, $\Omegahat\cdot\nabla\psi$, angular moments always produce more unknowns than equations. In VEF, an exact, trivial closure of the second moment is used so that the moment system is an \emph{equivalent reformulation} of the transport problem. Since the VEF closures are weak functions of the solution, iterative schemes can be designed to converge rapidly. We also discuss the mathematical properties of the VEF data and their impact on the structure of the VEF equations. The chapter concludes with a discussion of the two primary philosophies used to design discrete VEF methods. 
+We derive the \gls{vef} algorithm by taking angular moments of the transport equation. Due to the streaming term, $\Omegahat\cdot\nabla\psi$, angular moments always produce more unknowns than equations. In VEF, an exact, trivial closure of the second moment is used so that the moment system is an \emph{equivalent reformulation} of the transport problem. Since the VEF closures are weak functions of the solution, iterative schemes can be designed to converge rapidly. We also discuss the mathematical properties of the VEF data and their impact on the structure of the VEF equations. The chapter concludes with a discussion of the two primary philosophies used to design discrete VEF methods. 
 
 \section{Derivation of the VEF Equations}
 Integrating the transport equation over angle yields 
@@ -98,19 +96,21 @@ VEF methods seek the solution of the coupled transport-VEF moment equations. For
 Boundary conditions are specified in Eqs.~\ref{vef:inflow} and \ref{vef:mlbc} for the transport and VEF drift-diffusion equations, respectively. Here, the transport equation's scattering source is coupled to the VEF drift-diffusion equation and the VEF drift-diffusion equation is nonlinearly coupled to the transport equation through the Eddington tensor and boundary factor. We have increased the complexity of the problem by adding the VEF scalar flux as an additional unknown and by casting the linear transport problem as nonlinear. However, properties of the VEF data and the transport equation allow this coupled, nonlinear system to be solved more efficiently than the transport equation in isolation. 
 
 Let, 
+	\begin{subequations}
 	\begin{equation}
 		\mat{L}\psi = \Omegahat\cdot\nabla\psi + \sigma_t \psi \,,
 	\end{equation}
 	\begin{equation}
 		\mat{R}(\psi)\varphi = -\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\paren{\E(\psi)\varphi} + \sigma_a \varphi 
 	\end{equation}
-be the streaming and collision and VEF drift-diffusion operators, respectively, where $\paren{\cdot}$ indicates a nonlinear dependence on the argument. Furthermore, let $Q = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t}$ be the source for the VEF drift-diffusion equation. The coupled transport-VEF system can then be written 
+	\end{subequations}
+be the streaming and collision and VEF drift-diffusion operators, respectively, where $\paren{\cdot}$ indicates a nonlinear dependence on the argument. Furthermore, let $Q = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t}$ be the source for the VEF drift-diffusion equation. The coupled transport-VEF system can then be written:
 	\begin{subequations}
 	\begin{equation}
 		\mat{L} \psi = \frac{\sigma_s}{4\pi} \varphi + q \,, 
 	\end{equation}
 	\begin{equation}
-		\mat{R}(\psi)\varphi = Q \,,
+		\mat{R}(\psi)\varphi = Q \,. 
 	\end{equation}
 	\end{subequations}
 By linearly eliminating the angular flux, the coupled system is equivalent to 
@@ -126,7 +126,7 @@ where
 		G(\varphi) = \mat{R}\!\paren{\mat{L}^{-1}\!\paren{\frac{\sigma_s}{4\pi}\varphi + q}}^{-1}Q \,. 
 	\end{equation}
 The fixed-point operator $G$ is applied in two stages: 1) solve the transport equation using a scattering source formed from the VEF scalar flux and 2) solve the VEF drift-diffusion equation using the VEF data computed from the angular flux from stage 1). 
-Note that eliminating the angular flux means it appears only as an auxiliary variable used to computed the VEF data.
+Note that eliminating the angular flux means it is as an auxiliary variable that is used to computed the VEF data only.
 This iteration is depicted in Fig.~\ref{vef:vef_alg}. 
 % --- depiction of coupling between VEF and transport --- 
 \begin{figure}
@@ -207,6 +207,8 @@ Therefore, the VEF drift-diffusion equation with Miften-Larsen boundary conditio
 	\end{subequations}
 	
 \section{Functional Derivatives of the VEF Data} \label{vef_sec:gateaux}
+Here, we compute the functional derivatives of the VEF data in order to understand some of the convergence properties of the VEF algorithm. These functional derivatives are also used in Chapter \ref{chap:smm} to demonstrate the connection between the moment methods presented here. An introduction to the Gateaux derivative is provided before deriving the functional derivatives of the VEF data. 
+
 \subsection{The Gateaux Derivative}
 The Gateaux derivative is a generalization of the directional derivative that supports derivatives of functionals (i.e.~a function whose argument is a function) as well as complicated mathematical objects such as second-order tensors \cite{vainberg64}. Let $f : X\rightarrow Y$ be a (possibly nonlinear) mapping from a space $X$ to a space $Y$. For example, a simple scalar function $f(\x)$ would set $X = \R^{\dim}$ and $Y = \R$. The Gateaux derivative of $f$ evaluated at $u\in X$ in the direction $v \in X$ is given by 
 	\begin{equation} \label{vef:gateaux_limit}
@@ -220,7 +222,7 @@ where $\omega\in \R$. Since
 		&= \lim_{\Delta\omega\rightarrow 0} \frac{f(u + \Delta\omega v) - f(u)}{\Delta\omega} \,,
 	\end{aligned}
 	\end{equation}
-where continuity of $f$ is used to move the limit outside of the brackets, the Gateaux derivative can also be equivalently be written 
+where continuity of $f$ is used to move the limit outside of the brackets, the Gateaux derivative can also equivalently be written: 
 	\begin{equation} \label{vef:gateaux}
 		D[f](u,v) = \bracket{\pderiv{}{\omega}f(u + \omega v)}_{\omega=0} \,. 
 	\end{equation}
@@ -251,7 +253,7 @@ Thus, we can alternatively write
 	\begin{equation}
 		f(\x) \xrightarrow{\text{TSE}} f(\x_0) + D[f](\x_0, \Delta \x) \,. 
 	\end{equation}
-In this way, the Gateaux derivative provides a process for linearizing any $f$ even when $f$ is a tensor-valued functional and the argument $\x$ is itself a function. For example, we can linearize the Eddington tensor about some angular flux $\psi_0$ using: 
+In this way, the Gateaux derivative provides a process for linearizing any $f$ even when $f$ is tensor-valued and the argument $\x$ is itself a function. For example, we can linearize the Eddington tensor about some angular flux $\psi_0$ using: 
 	\begin{equation}
 		\E(\psi) \xrightarrow{\text{TSE}} \E(\psi_0) + D[\E](\psi_0,\psi') \,. 
 	\end{equation}
@@ -326,11 +328,11 @@ Note that the $D[E_b](\psi_0,\psi') = 0$ for each of the pairs $(\psi_0,\psi')$ 
 Thus, if the error at any iteration is a scalar multiple or an odd-in-angle perturbation of the current iteration's solution, the functional derivatives of the VEF data are zero. This is also true if the current iteration's solution is linearly anisotropic and the true solution is linearly anisotropic. 
 
 \section{Mathematical Properties of the VEF Equations}
-The presence of the Eddington tensor inside the divergence in the VEF first moment equation leads to cross derivative terms not present in the standard form of the radiation diffusion equation. This can be seen in the differential term in the drift-diffusion form of the VEF equations given by
+The presence of the Eddington tensor inside the divergence in the VEF first moment equation leads to cross derivative terms not present in the standard form of the radiation diffusion equation. This can be seen in the differential term in the drift-diffusion form of the VEF equations given by:
 	\begin{equation}
 		\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\paren{\E\varphi} \,. 
 	\end{equation}
-Assuming the Eddington tensor and total cross section have the required differentiability, we can use the product rule to write 
+Assuming the Eddington tensor and total cross section have the required differentiability, we can use the product rule to write:
 	\begin{equation}
 	\begin{aligned}
 		\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\paren{\E\varphi} &= \nabla\cdot\frac{\E}{\sigma_t}\nabla\varphi + \nabla\cdot\paren{\frac{\nabla\cdot\E}{\sigma_t}\varphi} \\

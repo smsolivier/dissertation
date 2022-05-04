@@ -9,7 +9,7 @@ The purpose of this chapter is to motivate and define the simplified transport p
 A discussion of the Boltzmann transport equation must begin with the definition of the particle distribution function, $f$. 
 The set of all possible positions $\x$ and velocities $\v$ is called the system's phase space. The particle distribution function represents the expected number of particles at each point in the phase space at a given time. In other words, $f(\x,\v,t) \ud \x \ud \v = $ the expected number of particles in the differential phase space volume at a time $t$. 
 
-The Boltzmann transport equation describes the evolution of the particle distribution function over time. In general, the Boltzmann equation is written as 
+The Boltzmann transport equation describes the evolution of the particle distribution function over time. In general, the Boltzmann equation is written as:
 	\begin{equation}
 		\dderiv{f}{t} = \paren{\pderiv{f}{t}}_\text{force} + \paren{\pderiv{f}{t}}_\text{collision} \,,
 	\end{equation}
@@ -86,7 +86,7 @@ Thus, the intensity and angular flux are related through
 	\begin{equation}
 		\psi = \frac{I}{h\nu} \,. 
 	\end{equation}
-Since a photon's energy is given by $E = h\nu$, the intensity can be throught of as the energy-track length rate density in the phase space. 
+The intensity can be throught of as the energy-track length rate density in the phase space since the photon energy is $E = h\nu$.
 Thus, if $\sigma_a$ represents the probability per unit length of a material absorbing a photon, the product $\sigma_a I$ represents the rate energy is deposited by photons at any position, direction, frequency, and time. 
 The power deposited in the material is computed with 
 	\begin{equation}
@@ -139,7 +139,7 @@ Alternatively, the \gls{hedp} community often uses
 		\P(\x,\nu,t) = \frac{1}{c} \int_{\mathbb{S}^2} \Omegahat\otimes\Omegahat\, I(\x,\Omegahat,\nu,t) \ud \Omega \,. 
 	\end{equation}
 	\end{subequations}
-These moments are referred to as the energy density, flux, and pressure, respectively. Note that the flux does not have the $1/c$ factor that the energy density and pressure have. The astrophysical notation of $J$, $\vec{H}$, and $\mat{K}$ simplifies the radiation transport equation by removing factors of $4\pi$ and $c$ at the expense of introducing those factors into the radiation-hydrodynamics equations \cite{castor2004radiation}. 
+These moments are referred to as the energy density, flux, and pressure, respectively. Note that the flux does not have the $1/c$ factor that the energy density and pressure have. The astrophysical notation of $J$, $\vec{H}$, and $\mat{K}$ simplifies the radiation transport equation by removing factors of $4\pi$ and $c$ at the expense of introducing those factors into the radiation-hydrodynamics equations \cite{castor2004radiation}. We elect to use the \gls{hedp} notation of $E$, $\mat{F}$, and $\P$ when discussing photon transport and the nuclear engineering notation of $\phi$ and $\vec{J}$ when discussing neutron transport. 
 
 \section{The Equations of Thermal Radiative Transfer}
 % simplifying assumptions for rad hydro to TRT 
@@ -147,7 +147,7 @@ For thermal photons we consider the linear Boltzmann transport equation given by
 	\begin{equation}
 		\pderiv{I}{t} + (\Omegahat c) \cdot \nabla I = \paren{\pderiv{I}{t}}_\text{collision} + \paren{\pderiv{I}{t}}_\text{source} \,, 
 	\end{equation}
-where we have used the photon velocity $\v = \Omegahat c$. Dividing by $c$ gives the standard form of the transport equation 
+where we have used the photon velocity $\v = \Omegahat c$ and that $I = ch\nu f$. Dividing by $c$ gives the standard form of the transport equation 
 	\begin{equation}
 		\frac{1}{c}\pderiv{I}{t} + \Omegahat\cdot \nabla I = \frac{1}{c} \paren{\pderiv{I}{t}}_\text{collision} + \frac{1}{c}\paren{\pderiv{I}{t}}_\text{source} \,. 
 	\end{equation}
@@ -155,7 +155,7 @@ We model scattering and absorption events with the background media by setting:
 	\begin{equation}
 		\frac{1}{c}\paren{\pderiv{I}{t}}_\text{collision} = \int_{\mathbb{S}^2} \int_0^\infty \sigma_s(\Omegahat'\rightarrow \Omegahat, \nu' \rightarrow \nu) I(\x,\Omegahat',\nu',t) \ud \nu' \ud \Omega' - \sigma_t I(\x,\Omegahat,\nu,t) \,,
 	\end{equation}
-where $\sigma_s(\Omegahat'\rightarrow\Omegahat,\nu'\rightarrow \nu)$ is the differential scattering opacity. We define $\sigma_s = \int_{\mathbb{S}^2} \int_0^\infty \sigma_s(\Omegahat'\cdot\Omegahat,\nu'\rightarrow\nu) \ud \nu'\ud\Omega'$ as the scattering opacity and set the total opacity $\sigma_t = \sigma_a + \sigma_s$ where $\sigma_a$ is the absorption opacity. The source term is used to model the emission of thermal photons by the material. This is modeled by Planck's black body source: 
+where $\sigma_s(\Omegahat'\rightarrow\Omegahat,\nu'\rightarrow \nu)$ is the differential scattering opacity. We define $\sigma_s = \int_{\mathbb{S}^2} \int_0^\infty \sigma_s(\Omegahat'\cdot\Omegahat,\nu'\rightarrow\nu) \ud \nu'\ud\Omega'$ as the scattering opacity. The total opacity is given by $\sigma_t = \sigma_a + \sigma_s$ where $\sigma_a$ is the absorption opacity. The source term is used to model the emission of thermal photons by the material. This is modeled by Planck's black body source: 
 	\begin{equation}
 		\frac{1}{c}\paren{\pderiv{I}{t}}_\text{source} =\frac{\sigma_a B(\nu,T)}{4\pi} \,,
 	\end{equation}
@@ -175,7 +175,7 @@ The energy absorption rate is
 		c\int_0^\infty \sigma_a(\nu) E(\x,\nu,t) \ud \nu \,. 
 	\end{equation}
 The emission rate is given by the Planck source, $B(\nu,T)$.
-The balance of energy between radiation and matter is then written 
+The balance of energy between radiation and matter is then written: 
 	\begin{equation} \label{trans:meb}
 	\begin{aligned}
 		C_v \pderiv{T}{t} &= \int_{\mathbb{S}^2} \int_0^\infty \sigma_a \paren{I(\x,\Omegahat,\nu,t) - \frac{B(\nu,T)}{4\pi}} \ud \nu \ud \Omega \\
@@ -192,7 +192,7 @@ First, we assume that scattering is isotropic. In other words, any outgoing dire
 	\begin{equation}
 		\sigma_s(\Omegahat'\rightarrow\Omegahat,\nu'\rightarrow\nu) \rightarrow \frac{1}{4\pi}\sigma_s(\nu'\rightarrow \nu) \,. 
 	\end{equation}
-The scattering source can then be simplified to: 
+Due to this, the scattering source becomes: 
 	\begin{equation}
 		\int_{\mathbb{S}^2} \int_0^\infty \sigma_s(\Omegahat'\rightarrow\Omegahat,\nu'\rightarrow \nu) I(\cdot,\Omegahat',\nu',\cdot) \ud \nu'\ud\Omega' \rightarrow \frac{c}{4\pi} \int_0^\infty \sigma_s(\nu'\rightarrow\nu) E(\x,\nu',t) \ud \nu' \,, 
 	\end{equation}
@@ -221,7 +221,7 @@ Letting $\bar{I}(\x,\Omegahat,t) = \int_0^\infty I(\x,\Omegahat,\nu,t)$ be the f
 This frequency-independent system of equations emulates a TRT algorithm that uses only one discrete frequency group. Algorithms for the frequency-dependent TRT system must also be effective for the gray TRT system. The gray TRT system serves as an important first step in the development of methods for the frequency-dependent TRT system. 
 
 \subsection{Steady State}
-Under the assumption of steady state, the time derivatives are neglected. The gray TRT system with isotropic scattering simplifies to 
+Time derivatives are neglected under the assumption of steady state. The gray TRT system with isotropic scattering simplifies to 
 	\begin{subequations}
 	\begin{equation}
 		\Omegahat\cdot\nabla\bar{I} + \bar{\sigma}_t \bar{I} = \frac{c \bar{\sigma}_s}{4\pi} E(\x,t) + \frac{\bar{\sigma}_a a c T^4}{4\pi} \,,
@@ -241,7 +241,7 @@ We are then left with:
 This equation models the radiation field at long time scales where the radiation and material have achieved equilibrium. When implicit time integration schemes are applied to the time-dependent TRT system, a steady-state system analogous to Eq.~\ref{trans:trt_simp} must be solved. In this way, the steady-state, frequency-independent TRT system with isotropic scattering represents the core kernel of the full TRT system. 
 
 \subsection{Definition of the Model Problem}
-We now define the transport problem that serves as the model problem for the development of the moment methods presented in this dissertation. The properties of the steady-state, gray TRT system with isotropic scattering can be emulated with the following neutron transport equation: 
+We now define the transport problem that serves as the model for the development of the moment methods presented in this dissertation. The properties of the steady-state, gray TRT system with isotropic scattering can be emulated with the following neutron transport equation: 
 	\begin{equation} \label{trans:model}
 		\Omegahat\cdot\nabla\psi + \sigma_t \psi = \frac{\sigma_s}{4\pi} \int \psi \ud \Omega' + q \,,
 	\end{equation}
