@@ -1282,11 +1282,28 @@ For example, the conjugate gradient algorithm can be shown to reduce the error a
 		2\paren{\frac{\sqrt{\kappa(\mat{A})} - 1}{\sqrt{\kappa(\mat{A})} + 1}} \,. 
 	\end{equation}
 The condition numbers of matrices arising from finite element discretization generally increase as the mesh size decreases. Thus, Eq.~\ref{fem:cg_err_red} predicts more iterations will be needed to solve the linear system as the mesh size decreases. Note that as the mesh size decreases, $n$ increases and thus the cost of all the linear algebra operations that comprise each iteration of the iterative solver also increases. 
-Iterative solvers that have uniform convergence with respect to the mesh size are desired. In this way, the expense of solving the linear system is only due to the increased expense associated with larger linear algebra operations. 
+Iterative solvers that have uniform convergence with respect to the mesh size are desired. 
+In this way, the expense of solving the linear system is only due to the increased expense associated with larger linear algebra operations. 
+This makes the cost of solving the system scale according to the increased cost associated with larger linear algebra operations only. 
 
 Such algorithms are achieved via preconditioning. For a non-singular matrix $\mat{P}$, the preconditioned system is given by: 
 	\begin{equation} \label{fem:prec_sys}
 		\mat{P}^{-1} \mat{A} \ubar{x} = \mat{P}^{-1} \ubar{b} \,.
 	\end{equation}
 Note that the preconditioned system is equivalent to the original system $\mat{A}\ubar{x} = \ubar{b}$. The basic requirements for $\mat{P}$ to be a good preconditioner are that $\mat{P}$ is ``easy'' to invert and that $\kappa(\mat{P}^{-1}\mat{A})$ is smaller than $\kappa(\mat{A})$. In this way, an iterative scheme such as conjugate gradient will converge faster on the preconditioned system in Eq.~\ref{fem:prec_sys} than on the original problem. $\mat{P}$ is said to be an optimal preconditioner if $\kappa(\mat{P}^{-1}\mat{A})$ is bounded with respect to $n$. Note that for conjugate gradient, the preconditioner must also be symmetric positive definite so that $\mat{P}^{-1}\mat{A}$ is also positive definite. 
+
+In practice, forming the matrix $\mat{P}^{-1}\mat{A}$ is avoided since it requires matrix-matrix multiplication along with storing the matrix $\mat{P}^{-1}$. Efficient algorithms are found by applying the preconditioned operator in the following two stages:
+	\begin{subequations}
+	\begin{equation}
+		\ubar{y} = \mat{A} \ubar{r} \,,
+	\end{equation}
+	\begin{equation} \label{fem:prec_stage2}
+		\ubar{z} = \mat{P}^{-1} \ubar{y} \,. 
+	\end{equation}
+	\end{subequations}
+In this way, iterative schemes can be recast to only require the action of $\mat{A}$ and a routine to solve systems of the form:
+	\begin{equation} \label{fem:prec_stage22}
+		\mat{P}\ubar{z} = \ubar{y} \,. 
+	\end{equation}
+We will often approximately solve Eq.~\ref{fem:prec_stage22} by setting $\mat{P} = \mat{A}$ and using one iteration of a classical iterative scheme or one AMG V-cycle. In such cases, the preconditioner is an approximate inversion of the matrix $\mat{A}$. 
 \end{document}

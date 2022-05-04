@@ -448,15 +448,20 @@ Applying the inverse, the projections are given by
 	\begin{equation}
 		\mat{P}_b = \mat{A}_b^{-1} \mat{B} \mat{A} \,. 
 	\end{equation}
-The spaces $V_C$ and $V_B$ are sufficiently large that $\mat{A}_c$ and $\mat{A}_b$ are impractical to invert directly. We thus approximate the inverses using $\mat{R}_c \approx \mat{A}_c^{-1}$ and $\mat{R}_b \approx \mat{A}_b^{-1}$. We use one \gls{amg} V-cycle for $\mat{R}_c$ and one iteration of point Jacobi for $\mat{R}_b$. The full preconditioner is given by the sum of the approximate elliptic projections: 
+The spaces $V_C$ and $V_B$ are sufficiently large that $\mat{A}_c$ and $\mat{A}_b$ are impractical to invert directly. We thus approximate the inverses using $\mat{R}_c \approx \mat{A}_c^{-1}$ and $\mat{R}_b \approx \mat{A}_b^{-1}$. We use one \gls{amg} V-cycle for $\mat{R}_c$ and one iteration of point Jacobi for $\mat{R}_b$. 
+The projections are prolonged to the space $Y_p$ using the transpose of their associated restriction operators. 
+The preconditioned operator is given by the sum of the prolonged, approximate elliptic projections: 
 	\begin{equation}
-		\mat{P} = \mat{P}_c + \mat{P}_b = \mat{R}_c \mat{Q} + \mat{R}_b \mat{B} \,. 
+		\mat{P}\mat{A} = (\mat{Q}^T \mat{P}_c + \mat{B}^T\mat{P}_b)\mat{A} = (\mat{Q}^T\mat{R}_c \mat{Q} + \mat{B}^T \mat{R}_b \mat{B})\mat{A} \,. 
 	\end{equation}
-\todo{how add operators of different sizes}
+The preconditioner $\mat{P}$ is then 
+	\begin{equation}
+		\mat{P} = \mat{Q}^T\mat{R}_c \mat{Q} + \mat{B}^T \mat{R}_b \mat{B} \,. 
+	\end{equation}
+It is applied in two stages corresponding to $V_C$ and $V_B$ each of which include restriction to the subspace, approximately inverting the operator derived by restricting $\mat{A}$ to the subspace, and prolonging back to the original space $Y_p$. 
 In \textcite{Pazner2021}, it is shown that the preconditioned system $\mat{P}\mat{A}$ has condition number independent of the mesh size, polynomial order, and penalty parameter (if applicable). 
 
-In the implementation, the operator $\mat{A}_c$ is computed by \emph{assembling} $\mat{A}$ onto the space $V_C$. This is an algebraic process that allows the CG operator to be formed without re-discretizing and re-evaluating the bilinear forms that comprise $\mat{A}$. This process is depicted in Fig.~\ref{dgvef:usc_assembly}. The operators $\mat{Q}$ and $\mat{B}$ are implemented in a matrix-free fashion. That is, we define only their action onto the residual vector. Finally, the operator $\mat{R}_b$ is computed by assembling the diagonal of the DG system in $\mat{A}$ and applying $\mat{B}$ so that only the degrees of freedom corresponding to $V_B$ remain. The action of $\mat{R}_b$ onto a vector $\ubar{r}$ is then equivalent to dividing each entry of $\ubar{r}$ by the corresponding diagonal entry of $\mat{A}$.
-
+In the implementation, the operator $\mat{A}_c$ is computed by \emph{assembling} $\mat{A}$ onto the space $V_C$. This is an algebraic process that allows the CG operator to be formed without re-discretizing and re-evaluating the bilinear forms that comprise $\mat{A}$. This process is depicted in Fig.~\ref{dgvef:usc_assembly}. The operators $\mat{Q}$ and $\mat{B}$ are implemented in a matrix-free fashion. That is, we define only their action and transpose action onto the residual vector. Finally, the operator $\mat{R}_b$ is computed by assembling the diagonal of $\mat{A}$ and applying $\mat{B}$ so that only the degrees of freedom corresponding to $V_B$ remain. The action of $\mat{R}_b$ onto a vector $\ubar{r}$ is then equivalent to dividing the entries of $\ubar{r}$ corresponding to $\mathcal{B}(K)$ for each $K$ by the associated diagonal entry of $\mat{A}$.
 % --- assembly diagram --- 
 \begin{figure}
 \centering
