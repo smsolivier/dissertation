@@ -7,7 +7,7 @@ In this chapter, we design a family of independent VEF discretizations for the l
 By using the Eddington tensor and boundary factor interpolation procedure established in \cite{two-level-independent-warsa}, these methods achieve both rapid convergence in outer fixed-point iterations and in inner linear solver iterations when paired with a high-order \gls{dg} discretization of \gls{sn} transport. 
 
 In particular, we extend the unified analysis of DG methods developed for elliptic problems presented by \textcite{Arnold2002} to the VEF equations to derive analogs of the \gls{ip}, \gls{br2}, \gls{mdldg}, and \gls{cg} techniques.
-We show that the IP and BR2 VEF methods are effectively preconditioned by the subspace correction method from \textcite{Pazner2021} and that \gls{amg} \cite{amg} is effective for the CG and MDLDG discretizations.
+We show that the IP and BR2 VEF methods are effectively preconditioned by the subspace correction method from \textcite{Pazner2021} and that \gls{amg} is effective for the CG and MDLDG discretizations.
 \textcite{dima_dfem} also applied DG techniques to the VEF equations but they discretize the first-order form of the VEF equations and only consider lowest-order elements in one dimension.
 We note that our CG operator is equivalent to extending the continuous finite element VEF discretization in \cite{two-level-independent-warsa} to multiple dimensions, arbitrary-order, and curved meshes.
 
@@ -189,7 +189,7 @@ Using the boundary conditions and the assumption of conservative numerical fluxe
 		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int_{\Gamma_0} \jump{u} \widehat{\vec{J}}\cdot\n \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\n} \ud s \\+ \int_{\Gamma_0} \jump{\frac{\nablah u}{\sigma_t}} \cdot \avg{\widehat{\E\varphi}\n - \E\varphi\n} \ud s + \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x \\ 
 		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - 2\int_{\Gamma_b} u\, \Jin \ud s \,, \quad \forall u \in Y_p \,. 
 	\end{multline}
-Equation \ref{dgvef:family} defines a \emph{family} of DG methods. That is, through the specification of the numerical flux for the current on interior faces, analogs of all the methods listed in \cite{Arnold2002} can be derived.
+Equation \ref{dgvef:family} defines a \emph{family} of DG methods. That is, through the specification of the numerical fluxes on interior faces, analogs of all the methods listed in \cite{Arnold2002} can be derived.
 
 \section{Specification of Numerical Fluxes}
 All the methods we consider use numerical fluxes of the form 
@@ -432,7 +432,7 @@ In other words, $\mathcal{A}$ is a DG VEF bilinear form (e.g.~Eq.~\ref{dgvef:ip}
 		\ubar{v}_b^T \mat{A}_b \ubar{u}_b = \mathcal{A}(v_b, u_b) \,, \quad u_b,v_b \in V_B \,. 
 	\end{equation}
 	\end{subequations}
-Note that the restriction of $\mathcal{A}$ ftheto $V_C$ represented by $\mat{A}_c$ is exactly the matrix corresponding to the CG VEF operator in Eq.~\ref{dgvef:cg}. We define the so-called \emph{elliptic projections} onto the spaces $V_C$ and $V_B$ as $\mat{P}_c$ and $\mat{P}_b$, respectively, which satisfy 
+Note that the restriction of $\mathcal{A}$ to $V_C$ represented by $\mat{A}_c$ is exactly the matrix corresponding to the CG VEF operator in Eq.~\ref{dgvef:cg}. We define the so-called \emph{elliptic projections} onto the spaces $V_C$ and $V_B$ as $\mat{P}_c : Y_p \rightarrow V_C$ and $\mat{P}_b : Y_p \rightarrow V_B$, respectively, which satisfy 
 	\begin{subequations}
 	\begin{equation}
 		\mat{A}_c \mat{P}_c = \mat{Q} \mat{A} \,,  
@@ -452,6 +452,7 @@ The spaces $V_C$ and $V_B$ are sufficiently large that $\mat{A}_c$ and $\mat{A}_
 	\begin{equation}
 		\mat{P} = \mat{P}_c + \mat{P}_b = \mat{R}_c \mat{Q} + \mat{R}_b \mat{B} \,. 
 	\end{equation}
+\todo{how add operators of different sizes}
 In \textcite{Pazner2021}, it is shown that the preconditioned system $\mat{P}\mat{A}$ has condition number independent of the mesh size, polynomial order, and penalty parameter (if applicable). 
 
 In the implementation, the operator $\mat{A}_c$ is computed by \emph{assembling} $\mat{A}$ onto the space $V_C$. This is an algebraic process that allows the CG operator to be formed without re-discretizing and re-evaluating the bilinear forms that comprise $\mat{A}$. This process is depicted in Fig.~\ref{dgvef:usc_assembly}. The operators $\mat{Q}$ and $\mat{B}$ are implemented in a matrix-free fashion. That is, we define only their action onto the residual vector. Finally, the operator $\mat{R}_b$ is computed by assembling the diagonal of the DG system in $\mat{A}$ and applying $\mat{B}$ so that only the degrees of freedom corresponding to $V_B$ remain. The action of $\mat{R}_b$ onto a vector $\ubar{r}$ is then equivalent to dividing each entry of $\ubar{r}$ by the corresponding diagonal entry of $\mat{A}$.
