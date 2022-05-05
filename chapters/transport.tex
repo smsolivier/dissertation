@@ -3,7 +3,7 @@
 
 \begin{document}
 \chapter{Radiation Transport Background} \label{chap:transport}
-The purpose of this chapter is to motivate and define the simplified transport problem that serves as the model for the development of the moment methods derived in later chapters. To that end, the general kinetic Boltzmann equation is introduced and then particularized to the equations of thermal radiative transfer that describe thermal photons in the absence of material motion and heat conduction. We pay particular attention to the notational differences present in the fields of nuclear engineering, astrophysics, and \gls{hedp}. The simplifications of isotropic scattering and frequency and time-independence are applied to derive the functional form of the core kernel of a single nonlinear Newton iteration of a full TRT algorithm. The chapter concludes with a derivation of the radiation diffusion approximation. 
+The purpose of this chapter is to motivate and define the simplified transport problem that serves as the model for the development of the moment methods derived in later chapters. To that end, the general kinetic Boltzmann equation is introduced and then particularized to the equations of thermal radiative transfer that describe thermal photons in the absence of material motion and heat conduction. We pay particular attention to the notational differences present in the fields of nuclear engineering, astrophysics, and \gls{hedp}. The simplifications of isotropic scattering and frequency and time-independence are applied to derive the model problem. The chapter concludes with a derivation of the radiation diffusion approximation. 
 
 \section{The Boltzmann Transport Equation}
 A discussion of the Boltzmann transport equation must begin with the definition of the particle distribution function, $f$. 
@@ -38,11 +38,12 @@ Here, we focus on neutral particle transport (i.e.~photons or neutrons). Since t
 where we have split the collision term into absorption and scattering terms and included an additional term representing an external source of particles. For neutrons, the external source could be a fixed-source of particles such as a radioactive material that emits neutrons. For photons, we consider the source to be the thermal emission of photons. Thus, the photon external source is dependent on the material's temperature. We note that the case of the general Boltzmann equation under the assumption that particles do not interact with each other is called the linear Boltzmann equation. 
 
 \section{Navigating Notation}
-Application of the Boltzmann transport equation to modeling radiation is home to three sets of notation: nuclear engineering, astrophysics, and \gls{hedp}. The hope of this section is to define the notation used in this document and provide the means for newcomers to this subject to navigate these three fields. 
+Application of the Boltzmann transport equation to modeling radiation is home to three sets of notation: nuclear engineering, astrophysics, and \gls{hedp}. Here, we define the notation used to describe the radiation field and its moments. The hope of this section is to provide the means for newcomers to this subject to navigate these three fields. 
 
 \subsection{$f$, $\psi$, and $I$}
-In all cases, the velocity variable is represented using a direction-of-flight variable, $\Omegahat$, and an energy variable. 
-The angular variable, $\Omegahat$, is represented using the spherical coordinate system depicted in Fig.~\ref{trans:spherical_coords} which uses a polar and azimuthal angle to describe the direction $\Omegahat$ in three-dimensional space. Figure \ref{trans:omega_phase} depicts the direction-of-flight portion of the phase space. Particles at any point in time, space, and frequency can travel in any direction on the unit sphere. 
+In radiation transport, the velocity variable is represented using a direction-of-flight variable, $\Omegahat$, and an energy variable. 
+The angular variable, $\Omegahat$, is a direction on the unit sphere, $\mathbb{S}^2$, and is described using the spherical coordinate system depicted in Fig.~\ref{trans:spherical_coords} where polar and azimuthal angles are used to define the direction $\Omegahat$ in three-dimensional space. 
+Figure \ref{trans:omega_phase} depicts the direction-of-flight portion of the phase space. Particles at any point in time, space, and frequency can travel in any direction on the unit sphere. The differential phase space volume associated with the angular variable is the cone $\ud\Omega$ about the direction $\Omegahat$. 
 \begin{figure}
 \centering
 \begin{subfigure}{.49\textwidth}
@@ -65,7 +66,8 @@ In the case of neutrons, the energy variable is $E = \frac{1}{2}mv^2$ where $v =
 		\iiint f(\x,\v,t) \ud \x \ud \v \ud t = \iiiint f(\x,\Omegahat,E,t) \ud \x \ud \Omega \ud E \ud t = \iiiint f(\x,\Omegahat,\nu,t) \ud \x \ud \Omega \ud \nu \ud t \,. 
 	\end{equation}
 That is, each representation of the velocity variable represents the same expected number of particles. 
-Note that even though $\Omegahat$ is a three-dimensional vector, it is represented only using two parameters. In other words, $f(\x,\Omegahat,E,t)$ and $f(\x,\Omegahat,\nu,t)$ are both still functions of seven independent variables. 
+Although $\Omegahat$ is a three-dimensional vector, it is defined in spherical coordinates using only two parameters. This is possible since $\Omegahat$ is a unit vector. 
+Thus, $f(\x,\Omegahat,E,t)$ and $f(\x,\Omegahat,\nu,t)$ are both still functions of seven independent variables. 
 
 For nuclear reactors, neutrons are the primary particle of interest and the goal is to understand the fission power produced by the system. To that end, the transport equation is cast in terms of the \emph{angular flux}, $\psi$. The angular flux represents the particle path length density in the phase space. In other words, $\psi \ud \x \ud \Omega \ud E \ud t$ represents the expected distance traveled by particles located in the phase space element $\ud \x \ud \Omega\ud E$ in the time interval $\ud t$. In relation to the distribution function, $f$, the angular flux is defined as the product of the particle speed and the distribution function: 
 	\begin{equation}
@@ -76,7 +78,7 @@ This definition is the natural choice for computing reaction rates. If $\sigma$ 
 		\int_\D \int_{\mathbb{S}^2} \int_0^\infty \sigma \psi \ud E \ud \Omega \ud \x \,. 
 	\end{equation}
 
-Radiation transport in astrophysics and \gls{hedp} is often concerned with the energy transfer and deposition associated with thermal photons. The Boltzmann equation is then typically cast in terms of the \emph{intensity}, $I$. The intensity is defined with power units, energy per unit time, but is also expressed per unit area, per unit sold angle, and per unit frequency bandwidth. The intensity is defined as 
+Radiation transport in astrophysics and \gls{hedp} is often concerned with the energy transfer and deposition associated with thermal photons. The Boltzmann equation is then typically cast in terms of the \emph{intensity}, $I$. The intensity is defined with power units, energy per unit time, but is also expressed per unit area, per unit sold angle, and per unit frequency bandwidth. It is defined as 
 	\begin{equation}
 		I(\x,\Omegahat,\nu,t) \equiv c h \nu f(\x,\Omegahat,\nu,t) \,,
 	\end{equation}
@@ -86,8 +88,8 @@ Thus, the intensity and angular flux are related through
 	\begin{equation}
 		\psi = \frac{I}{h\nu} \,. 
 	\end{equation}
-The intensity can be throught of as the energy-track length rate density in the phase space since the photon energy is $E = h\nu$.
-Thus, if $\sigma_a$ represents the probability per unit length of a material absorbing a photon, the product $\sigma_a I$ represents the rate energy is deposited by photons at any position, direction, frequency, and time. 
+Due to this, the intensity can be thought of as the energy-track length rate density in the phase space.
+Thus, if $\sigma_a$ represents the probability per unit length of a material absorbing a photon, the product $\sigma_a I$ represents the rate energy is deposited by photons at each position, direction, frequency, and time. 
 The power deposited in the material is computed with 
 	\begin{equation}
 		\int_\D \int_{\mathbb{S}^2} \int_0^\infty \sigma_a I \ud \nu \ud\Omega \ud \x \,. 
@@ -124,7 +126,7 @@ For photons, the astrophysics and \gls{hedp} notations differ in their definitio
 		\vec{H}(\x,\nu,t) = \frac{1}{4\pi} \int_{\mathbb{S}^2} \Omegahat\, I(\x,\Omegahat,\nu,t) \ud \Omega \,,
 	\end{equation}
 	\begin{equation}
-		\mat{K}(\x,\nu,t) = \frac{1}{4\pi} \int \Omegahat\otimes \Omegahat\, I(\x,\Omegahat,\nu,t) \ud \Omega \,. 
+		\mat{K}(\x,\nu,t) = \frac{1}{4\pi} \int_{\mathbb{S}^2} \Omegahat\otimes \Omegahat\, I(\x,\Omegahat,\nu,t) \ud \Omega \,. 
 	\end{equation}
 	\end{subequations}
 Alternatively, the \gls{hedp} community often uses 
@@ -218,7 +220,7 @@ Letting $\bar{I}(\x,\Omegahat,t) = \int_0^\infty I(\x,\Omegahat,\nu,t)$ be the f
 		C_v \pderiv{T}{t} = c\bar{\sigma}_a (E(\x,t) - a T^4) \,. 
 	\end{equation}
 	\end{subequations}
-This frequency-independent system of equations emulates a TRT algorithm that uses only one discrete frequency group. Algorithms for the frequency-dependent TRT system must also be effective for the gray TRT system. The gray TRT system serves as an important first step in the development of methods for the frequency-dependent TRT system. 
+This frequency-independent system of equations emulates a TRT algorithm that uses only one discrete frequency group. Algorithms for the frequency-dependent TRT system must also be effective for the gray TRT system. The gray TRT system then serves as an important first step in the development of methods for the frequency-dependent TRT system. 
 
 \subsection{Steady State}
 Time derivatives are neglected under the assumption of steady state. The gray TRT system with isotropic scattering simplifies to 
