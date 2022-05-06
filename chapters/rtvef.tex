@@ -92,7 +92,7 @@ Alternatively, non-conforming DG-like techniques can be used to allow use of the
 \subsection{$\Hone$}
 Setting $\vec{v},\vec{J} \in \mathcal{V} \subset \Hone$ and $u,\varphi \in \mathcal{E} \subset L^2(\D)$ allows the weak form in Eq.~\ref{rtvef:vef_weak} to hold. The inf-sup \cite{mfem_brezzi,Brezzi2003StabilityOS} condition states that the discretization arising from the pairing of equal degree interpolation for the scalar flux and current will be singular. That is, the $Y_p\times W_p$ discretization does not have a unique solution. The smallest non-singular pairing of spaces is then $Y_p \times W_{p+1}$. In other words, if the scalar flux is piecewise-constant, continuous linear finite elements for each component of the current must be used. 
 
-The discretization is complete by supplying boundary conditions. Solving the Miften-Larsen boundary conditions (Eq.~\ref{vef:mlbc}) for $\varphi$ yields 
+The discretization is complete by supplying boundary conditions. Solving the Miften-Larsen boundary conditions (Eq.~\ref{moment:vefbc}) for $\varphi$ yields 
 	\begin{equation}
 		\bar{\varphi} = \frac{1}{E_b}\!\paren{\vec{J}\cdot\n - 2\Jin} \,. 
 	\end{equation}
@@ -129,7 +129,7 @@ The Miften-Larsen boundary conditions are applied with
 	\begin{equation} \label{rtvef:rt_mlbc}
 		\widehat{\E\varphi}\n = \frac{\E\n}{E_b}\!\paren{\vec{J}\cdot\n - 2\Jin} \,, \quad \mathrm{on} \ \mathcal{F} \in \Gamma_b \,. 
 	\end{equation}
-This is derived by solving Eq.~\ref{vef:mlbc} for the scalar flux and multiplying by $\E\n$. The $Y_p \times \RT_p$ discretization is then: find $(\varphi,\vec{J}) \in Y_p \times \RT_p$ such that 
+This is derived by solving Eq.~\ref{moment:vefbc} for the scalar flux and multiplying by $\E\n$. The $Y_p \times \RT_p$ discretization is then: find $(\varphi,\vec{J}) \in Y_p \times \RT_p$ such that 
 	\begin{subequations} \label{rtvef:rtvef}
 	\begin{equation}
 		\int u\, \nabla\cdot\vec{J} \ud \x + \int \sigma_a\, u\varphi \ud \x = \int u\, Q_0 \ud \x \,, \quad \forall u \in Y_p \,,
