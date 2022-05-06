@@ -3,7 +3,7 @@
 
 \begin{document}
 \chapter{Moment Methods for Radiation Transport} \label{chap:moment}
-This chapter discusses the \gls{vef} and \gls{smm} algorithms as applied to the continuous model transport equation: 
+This chapter discusses the \gls{vef} and \gls{smm} algorithms as applied to the continuous model transport problem: 
 	\begin{subequations}
 	\begin{equation} \label{moment:transport}
 		\Omegahat\cdot\nabla\psi + \sigma_t \psi = \frac{\sigma_s}{4\pi}\int \psi \ud \Omega' + q \,, \quad \x \in \D \,,
@@ -15,9 +15,10 @@ This chapter discusses the \gls{vef} and \gls{smm} algorithms as applied to the 
 where $\psi(\x,\Omegahat)$ is the angular flux, $\D$ the domain of the problem with $\partial\D$ its boundary, $\sigma_t(\x)$ and $\sigma_s(\x)$ the total and scattering macroscopic cross sections, respectively, $q(\x,\Omegahat)$ the fixed-source, and $\bar{\psi}(\x,\Omegahat)$ the inflow boundary function. 
 The moment system is formed by taking the zeroth and first angular moments of the transport equation. 
 Due to the streaming term, $\Omegahat\cdot\nabla\psi$, angular moments always produce more unknowns than equations. 
-The VEF and SMM equations are formulated by defining additional algebraic equations, called closures, which define the second moment of the transport solution in terms of the zeroth moment, closing the moment system. 
+The VEF and SMM moment systems are formulated by defining additional algebraic equations, called closures, which define the second moment of the transport solution in terms of the zeroth moment, closing the moment system. 
 The SMM and VEF methods are differentiated by their choice of closure: VEF uses a multiplicative, nonlinear closure while SMM uses an additive, linear closure. In both cases, the closures are exact such that the moment system is an equivalent reformulation of the transport equation and trivial in that the transport solution must already be known in order to define the closures. 
-The moment methods are iterative schemes for solving the coupled transport-moment system simultaneously. The moment system is used to compute the expensive and slow to converge scattering physics and the transport equation is used to provide the closures. 
+
+Moment methods use iterative schemes to solve the coupled transport-moment system simultaneously. An efficient algorithm is found by using the moment system with lagged closures to compute the expensive and slow to converge scattering physics.
 Rapid convergence is achieved due to the fact that the VEF and SMM closures are weak functions of the transport solution.
 
 Here, we derive the moment systems for the VEF and second moment methods and define the iterative schemes used to solve the coupled transport-moment system. We discuss the mathematical properties of the VEF and SMM closures and their moment systems. The connection between the SMM and VEF closures is established. The chapter concludes with a discussion of the two primary philosophies used to design discrete moment methods. 
@@ -70,7 +71,7 @@ The moment equations are given by:
 	\end{equation}
 	\end{subequations}
 In three dimensions, the moment system has 10 unknowns corresponding to the scalar flux, three components of the current, and the six unique components of the symmetric pressure tensor but only four equations arising from the scalar zeroth moment and vector first moment equations. On the boundary of the domain, we have one equation but two unknowns corresponding to the normal component of the current and the boundary functional, $B(\psi)$. 
-Closures provide additional algebraic equations which define $\P$ and $B$ in terms of the lower moments. For both VEF and SMM, the closures are formulated in terms of the scalar flux and angular flux-dependent functionals. If the angular flux were known, these closures are exact making the moment system an equivalent reformulation of the transport equation. 
+Closures provide additional algebraic equations which define $\P$ and $B$ in terms of the lower moments. For both VEF and SMM, the closures are formulated in terms of the scalar flux and angular flux-dependent functionals. If the angular flux were known, the closed moment system defines the zeroth and first moment of the angular flux. In other words, the moment system is an equivalent reformulation of the transport equation. 
 
 Note that for an independent moment method the discretized solution of the moment system will not be equivalent to the moments of the discrete angular flux; they will differ on the order of the spatial discretization error. 
 To notationally separate the two scalar flux solutions, we use $\varphi$ to denote the moment system's scalar flux and $\phi$ for the zeroth moment of the angular flux. 
@@ -128,7 +129,7 @@ For the boundary conditions, let
 	\begin{equation} \label{moment:corrfac}
 		\beta(\psi) = \int |\Omegahat\cdot\n|\,\psi \ud \Omega - \frac{1}{2}\int\psi \ud \Omega 
 	\end{equation}
-be the boundary correction factor. The SMM boundary conditions are then: 
+be the boundary correction factor. The boundary functional is closed using $B = \beta + \frac{1}{2}\varphi$ so that the SMM boundary conditions are: 
 	\begin{equation}
 		\vec{J}\cdot\n = 2\Jin + \frac{1}{2}\varphi + \beta(\psi) \,.  
 	\end{equation}
@@ -142,7 +143,7 @@ The factors of one third and one half used in the closures of $\P$ and $B$, resp
 	\end{equation}
 Thus, the closures simplify to 
 	\begin{equation}
-		\P = \frac{1}{3}\I \varphi \,, \quad \vec{J}\cdot\n = 2 J_n^- + \frac{1}{2}\varphi 
+		\P = \frac{1}{3}\I \varphi \,, \quad B = \frac{1}{2}\varphi \,, 
 	\end{equation}
 in the thick diffusion limit. 
 In other words, the moment equations with SMM closures are equivalent to radiation diffusion with Marshak boundary conditions when the angular flux is linearly anisotropic. 
@@ -156,13 +157,14 @@ With these closures, the SMM equations are
 		\frac{1}{3}\nabla\varphi + \sigma_t \vec{J} = \vec{Q}_1 - \nabla\cdot\T \,, \quad \x \in \D\,,
 	\end{equation}
 	\begin{equation} \label{moment:smmbc}
-		\vec{J}\cdot\n = \frac{1}{2}\varphi + 2\Jin + \beta(\psi) \,, \quad \x \in \partial \D \,. 
+		\vec{J}\cdot\n = \frac{1}{2}\varphi + 2\Jin + \beta \,, \quad \x \in \partial \D \,. 
 	\end{equation}
 	\end{subequations}
 The second-order form is found by eliminating the current: 
 	\begin{equation} \label{moment:smm_drift}
 		-\nabla\cdot\frac{1}{3\sigma_t}\nabla\varphi + \sigma_a \varphi = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t} + \nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T \,. 
 	\end{equation}
+Observe that the SMM moment system is the radiation diffusion system with additional transport-dependent source terms. 
 
 \section{The Moment Algorithm}
 Moment methods solve the coupled transport-moment system simultaneously. The transport equation is used to provide the VEF or SMM closures while the moment system is used to compute the moment-dependent physics. In our case, the moment system's scalar flux solution is used to compute the isotropic scattering source. In this way, the coupling of the angular phase space induced by integrating over all angles is avoided. This allows use of the efficient solution procedure known as the transport sweep discussed in Chapter \ref{chap:sn} for the discrete transport equations. Since the closures are weak functions of the transport solution, simple iterative schemes can converge rapidly and robustly. 
@@ -179,7 +181,7 @@ The moment algorithm solves the coupled system given by:
 		\mathcal{M}(\psi,\mat{X}) = 0 \,,
 	\end{equation}
 	\end{subequations}
-where transport boundary conditions are specified in Eq.~\ref{moment:inflow}. The moment system's boundary conditions are given by Eq.~\ref{moment:vefbc} for a VEF method and Eq.~\ref{moment:smmbc} for SMM. Here, the moment system is coupled to the transport equation through the closures and the transport equation's scattering source is coupled to the moment system through the moment system's scalar flux. We have increased the complexity of the problem by adding the moment system's unknowns. In the case of VEF, the coupled system in Eq.~\ref{moment:coupled} is also nonlinear due to the use of nonlinear closures. Solving the coupled system is advantageous due to the ability to use the transport sweep and the rapid convergence of the closures.  
+where transport boundary conditions are specified in Eq.~\ref{moment:inflow}. The moment system's boundary conditions are given by Eq.~\ref{moment:vefbc} for a VEF method and Eq.~\ref{moment:smmbc} for SMM. Here, the moment system is coupled to the transport equation through the closures and the transport equation's scattering source is coupled to the moment system through the moment system's scalar flux. We have increased the complexity of the problem by adding the moment system's unknowns. In the case of VEF, the coupled system in Eq.~\ref{moment:coupled} is also nonlinear due to the use of nonlinear closures. However, solving the coupled system is still advantageous due to the ability to use the transport sweep and the rapid convergence of the closures.  
 
 Let 
 	\begin{equation}
@@ -238,13 +240,13 @@ for VEF and
 		\mat{G}(\mat{X}) = \mat{D}^{-1}b\!\paren{\mat{L}^{-1}\!\paren{\frac{\sigma_s}{4\pi}\varphi + q}}
 	\end{equation}
 for SMM.
-The fixed-point operator $\mat{G}$ is applied in two stages: 1) solve the transport equation using a scattering source formed from the moment scalar flux and 2) solve the moment system using the closures computed with the angular flux from stage 1). 
+The fixed-point operator $\mat{G}$ is applied in two stages: 1) solve the transport equation using a scattering source formed from the moment system's scalar flux and 2) solve the moment system using the closures computed with the angular flux from stage 1). 
 
 The simplest algorithm to solve $\mat{X} = \mat{G}(\mat{X})$ is fixed-point iteration: 
 	\begin{equation}
 		\mat{X}^{k+1} = \mat{G}(\mat{X}^k) 
 	\end{equation}
-where $\mat{X}^0$ is an initial guess. This process is repeated until the difference between successive iterates is small enough. Again, we note that the angular flux has been eliminated and thus appears only implicitly in computing the fixed-point operator, $\mat{G}$. The coupling between the transport and moment systems is depicted in Fig.~\ref{moment:moment_alg} for the VEF and SMM algorithms. Convergence of the fixed-point iteration is expected to be rapid since the closures are weak functions of the transport solution \cite{goldin}. 
+where $\mat{X}^0$ is an initial guess. This process is repeated until the difference between successive iterates is small enough. Again, we note that the angular flux has been eliminated and thus appears only implicitly in computing the fixed-point operator, $\mat{G}$. The coupling between the transport and moment system is depicted in Fig.~\ref{moment:moment_alg} for the VEF and SMM algorithms. Convergence of the fixed-point iteration is expected to be rapid since the closures are weak functions of the transport solution \cite{goldin}. 
 % --- depiction of coupling between moment and transport --- 
 \begin{figure}
 \centering
@@ -328,7 +330,7 @@ Therefore, the VEF drift-diffusion equation with Miften-Larsen boundary conditio
 % Since the SMM correction tensor and factor limit to zero, SMM also shares this property. However, the SMM corrections are not normalized and thus are not bounded like the VEF data are. 
 
 \section{Functional Derivatives of the VEF Data} \label{moment_sec:gateaux}
-Here, we compute the functional derivatives of the VEF data in order to understand some of the convergence properties of the VEF algorithm. These functional derivatives are also used in Chapter \ref{chap:smm} to demonstrate the connection between the moment methods presented here. An introduction to the Gateaux derivative is provided before deriving the functional derivatives of the VEF data. 
+Here, we compute the functional derivatives of the VEF data in order to understand some of the convergence properties of the VEF algorithm. These functional derivatives are also used in Section \ref{moment_sec:linearize} to establish the connection between the VEF and SMM closures. An introduction to the Gateaux derivative is provided before deriving the functional derivatives of the VEF data and applying them to investigate the convergence properties of the VEF algorithm.  
 
 \subsection{The Gateaux Derivative}
 The Gateaux derivative is a generalization of the directional derivative that supports derivatives of functionals (i.e.~a function whose argument is a function) as well as complicated mathematical objects such as second-order tensors \cite{vainberg64}. Let $f : X\rightarrow Y$ be a (possibly nonlinear) mapping from a space $X$ to a space $Y$. For example, a simple scalar function $f(\x)$ would set $X = \R^{\dim}$ and $Y = \R$. The Gateaux derivative of $f$ evaluated at $u\in X$ in the direction $v \in X$ is given by 
@@ -347,7 +349,7 @@ where continuity of $f$ is used to move the limit outside of the brackets, the G
 	\begin{equation} \label{moment:gateaux}
 		D[f](u,v) = \bracket{\pderiv{}{\omega}f(u + \omega v)}_{\omega=0} \,. 
 	\end{equation}
-We favor the definition in Eq.~\ref{moment:gateaux} over Eq.~\ref{moment:gateaux_limit} as it leads to simpler calculations by leveraging the existing machinery of the partial derivative. 
+We favor the definition in Eq.~\ref{moment:gateaux} over Eq.~\ref{moment:gateaux_limit} as it leads to simpler calculations by leveraging the familiar machinery of the partial derivative. 
 
 As an example, if $u : \R^2 \rightarrow \R$ and $\vec{v} : \R^2 \rightarrow \R^2$, we can compute $\vec{v}\cdot\nabla u|_{\x}$ using the above definition as 
 	\begin{equation}
@@ -584,7 +586,7 @@ Converting the operator notation back to equations, this is equivalent to:
 Observe that these equations are equivalent to the transport equation and the SMM diffusion equation given in Eq.~\ref{moment:smm_drift} with the corrected Marshak boundary condition from Eq.~\ref{moment:smmbc}. 
 An equivalent fixed-point operator can be derived by eliminating the angular flux and operating by the inverse of the diffusion operator. Thus, SMMs are both 1) an algorithm based on a reformulation of the transport equation using additive closures and 2) VEF algorithms linearized about a linearly anisotropic solution. 
 
-\section{Mathematical Properties of Moment Systems}
+\section{Mathematical Properties of the Moment Systems}
 The presence of the Eddington tensor inside the divergence in the VEF first moment equation leads to cross derivative terms not present in the standard form of the radiation diffusion equation. This can be seen in the differential term in the drift-diffusion form of the VEF equations given by:
 	\begin{equation}
 		\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\paren{\E\varphi} \,. 
