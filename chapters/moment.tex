@@ -38,7 +38,7 @@ The first moment is found by multiplying the transport equation by $\Omegahat$ a
 	\begin{equation}
 		\nabla\cdot\P + \sigma_t \vec{J} = \vec{Q}_1 \,, 
 	\end{equation}
-where $\P = \int \Omegahat\otimes\Omegahat\, \psi \ud \Omega$ is the second moment of the angular flux and $\vec{Q}_1$ is the first angular moment of $q$. We refer to the first three moments as the scalar flux, current, and pressure, respectively. 
+where $\P = \int \Omegahat\otimes\Omegahat\, \psi \ud \Omega$ is the second moment of the angular flux and $\vec{Q}_1$ is the first angular moment of $q$. We refer to the first three moments of the angular flux as the scalar flux, current, and pressure, respectively. 
 
 Boundary conditions for the moment system are derived by manipulating partial currents. Letting $J_n^\pm = \int_{\Omegahat\cdot\n\gtrless 0} \Omegahat\cdot\n\, \psi \ud \Omega$ where $\n$ is the outward unit normal on the boundary of the domain, consider 
 	\begin{equation}
@@ -204,7 +204,7 @@ Observe that Eq.~\ref{moment:lo_only} is now a function of the moment solution o
 	\begin{equation}
 		\F(\mat{X}) = \mathcal{M}\!\paren{\mat{L}^{-1}\!\paren{\frac{\sigma_s}{4\pi}\varphi +q},\mat{X}} 
 	\end{equation}
-and equivalently solve $\F(\mat{X}) = 0$. In this reduced problem, the angular flux appears only as an auxiliary variable used to compute the residual $\mat{F}(\mat{X})$ and we say that the angular flux is enslaved to the moment system. This reduced formulation $\mat{F}(\mat{X}) = 0$ has much lower dimension than the original coupled system given in Eq.~\ref{moment:coupled} but has the same solution. Due to this, advanced solvers for $\F(\mat{X})$ can be applied that would otherwise be impractical for Eq.~\ref{moment:coupled} due to storage and computation costs associated with the high-dimensional angular flux. 
+and equivalently solve $\F(\mat{X}) = 0$. In this reduced problem, the angular flux appears only as an auxiliary variable used to compute the residual $\mat{F}(\mat{X})$ and we say that the angular flux is enslaved to the moment system. This reduced formulation $\mat{F}(\mat{X}) = 0$ has much lower dimension than the original coupled system given in Eq.~\ref{moment:coupled} but has the same solution. Due to this, advanced solvers for $\F(\mat{X})$ can be applied that would otherwise be impractical for Eq.~\ref{moment:coupled} due to the storage and computation costs associated with the high-dimensional angular flux. 
 
 We now leverage the structure of the VEF and SMM moment systems to further simplify the above algorithm. 
 Let 
@@ -213,9 +213,9 @@ Let
 	\end{equation}
 represent the VEF moment system such that $\mathcal{M}(\psi,\mat{X}) = \mat{V}(\psi)\mat{X} - f$. We then have that 
 	\begin{equation}
-		\F(\mat{X}) = \mat{V}\!\paren{\mat{L}^{-1}\!\paren{\frac{\sigma_s}{4\pi}\varphi + q}} \mat{X} - f = 0 \,,  
+		\F(\mat{X}) = \mat{V}\!\paren{\mat{L}^{-1}\!\paren{\frac{\sigma_s}{4\pi}\varphi + q}} \mat{X} - f = 0 \,. 
 	\end{equation}
-and thus, 
+Operating by the inverse of the VEF moment system, the coupled transport-VEF system is equivalent to: 
 	\begin{equation} \label{moment:vef_iter}
 		\mat{X} = \mat{V}\!\paren{\mat{L}^{-1}\!\paren{\frac{\sigma_s}{4\pi}\varphi + q}}^{-1} f \,. 
 	\end{equation}
@@ -240,7 +240,7 @@ for VEF and
 		\mat{G}(\mat{X}) = \mat{D}^{-1}b\!\paren{\mat{L}^{-1}\!\paren{\frac{\sigma_s}{4\pi}\varphi + q}}
 	\end{equation}
 for SMM.
-The fixed-point operator $\mat{G}$ is applied in two stages: 1) solve the transport equation using a scattering source formed from the moment system's scalar flux and 2) solve the moment system using the closures computed with the angular flux from stage 1). 
+The fixed-point operator $\mat{G}$ is applied in two stages: 1) solve the transport equation using a scattering source formed from the moment system's scalar flux and 2) solve the moment system using the closures computed with the angular flux from stage 1). The definitions of the fixed-point operator, $\mat{G}$, show the key differences between the VEF and SMM algorithms. VEF has a transport-dependent left hand side operator while the right hand side sources are fixed. On the other hand, SMM has transport-dependent sources but a fixed left hand side operator corresponding to radiation diffusion. 
 
 The simplest algorithm to solve $\mat{X} = \mat{G}(\mat{X})$ is fixed-point iteration: 
 	\begin{equation}

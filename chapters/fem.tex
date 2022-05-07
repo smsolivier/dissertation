@@ -27,7 +27,7 @@ with $q$ representing a source term and the solution space $X = \mathcal{C}^1$, 
 	\begin{equation} \label{fem:rad_strong}
 		-\nabla\cdot D \nabla\varphi + \sigma_a \varphi = Q \,. 
 	\end{equation}
-Here, the diffusion coefficient, $D$, must be once differentiable and the solution, $\varphi$, must be twice differentiable. In problems with multiple materials, the diffusion coefficient can be discontinuous. Solving radiation diffusion in strong form then necessitates the use of domain decomposition methods where the problem is solved with a set of subproblems corresponding to each material that are coupled through interface conditions.  Furthermore, in many physical problems discontinuities in the solution, known as shocks, are possible. In such cases, the solution itself is not differentiable. In addition, the location of the discontinuities are not known a priori making the use of domain decomposition methods much more difficult. 
+Here, the diffusion coefficient, $D$, must be once differentiable and the solution, $\varphi$, must be twice differentiable. In problems with multiple materials, the diffusion coefficient can be discontinuous. Solving radiation diffusion in strong form then necessitates the use of domain decomposition methods where the problem is solved with a set of subproblems corresponding to each material that are coupled through interface conditions.  Furthermore, in many physical problems discontinuities in the solution, known as shocks, are possible. In such cases, the solution itself is not differentiable. The location of the discontinuities are not known a priori making the use of domain decomposition methods much more difficult. 
 
 This motivates the use of reformulations of the strong form that relax, or weaken, the requirements on the differentiability of the solution and its coefficients. These weak forms are derived by multiplying the strong form by a suitably smooth (i.e.~differentiable) function and integrating over the domain. By applying integration by parts formulae, derivatives can be offloaded to the test function, leading to a weakening of the differentiability requirements. 
 
@@ -280,7 +280,7 @@ In this document, we only consider the use of tensor product elements. That is, 
 		\item the elements do not overlap i.e.~for each distinct $K_1,K_2 \in \meshT$, $\mathring{K}_1 \cap \mathring{K}_2 = \emptyset$,
 		\item \label{fem:adjacent_elements}any face of $K_1 \in \meshT$ is either a subset of the boundary of the domain or a face of another $K_2 \in \meshT$.  
 	\end{enumerate}
-An example of an admissible mesh is shown in Fig.~\ref{fem:admissible}. The elements have non-empty interior, do not overlap, and all faces are either a subset of the boundary or a face of another element in the mesh. Figure \ref{fem:inadmissible} shows an inadmissible mesh that violates requirement \ref{fem:adjacent_elements} since there are faces in the mesh that correspond to only a subset of another element's boundary. Such a mesh is said to have ``hanging nodes'' which require a special treatment that we do not consider in this document. 
+An example of an admissible mesh is shown in Fig.~\ref{fem:admissible}. The elements have non-empty interior, do not overlap, and all faces are either a subset of the boundary or a face of another element in the mesh. Figure \ref{fem:inadmissible} shows an inadmissible mesh that violates requirement \ref{fem:adjacent_elements} since there are faces in the mesh that correspond to only a subset of another element's boundary. Such a mesh is said to have ``hanging nodes'' which require a special treatment that we do not consider here. 
 
 \subsection{Mathematical Notation}
 We define $\Gamma$ as the set of unique faces in the mesh with $\Gamma_0 = \Gamma\setminus \partial\D$ the set of interior faces and $\Gamma_b = \Gamma \cap \partial\D$ the set of boundary faces so that $\Gamma = \Gamma_0 \cup \Gamma_b$. We denote the outward unit normal to element $K$ as $\n_K$. On an interior face $\mathcal{F} \in \Gamma_0$ between elements $K_1$ and $K_2$, we use the convention that $\n$ is the unit vector perpendicular to the shared face $K_1 \cap K_2$ pointing from $K_1$ to $K_2$ (see Fig.~\ref{fem:jump_avg_diag}). On such an interior face, the jump, $\jump{\cdot}$, and average, $\avg{\cdot}$, are defined as:
@@ -1056,7 +1056,7 @@ it is seen that $\{b_i\}$ forms a basis for $X_h$. The $b_i$ are referred to as 
 \label{fem:fe_support}
 \end{figure}
 
-For DG spaces, degrees of freedom are not shared between elements. Thus, the global basis is spanned by the of collection of the element-local basis functions corresponding to each element in the mesh. In this case, the support of the basis functions is limited to a single element. 
+For DG spaces, degrees of freedom are not shared between elements. Thus, the global basis is spanned by the collection of element-local basis functions corresponding to each element in the mesh. In this case, the support of each basis function is limited to a single element. 
 
 Using this basis, a function $u \in X_h$ can be represented as 
 	\begin{equation}
@@ -1124,15 +1124,15 @@ where $a_K(\cdot,\cdot)$ is the bilinear form $a(\cdot,\cdot)$ restricted to ele
 	\end{equation} 
 for each element $K \in \meshT$. That is, each entry $(\mat{A}_K)_{ij}$ is summed into the global row and column specified by $\mathcal{G}_K(i)$ and $\mathcal{G}_K(j)$, respectively. Linear forms are assembled in an analogous process. The entries of the linear form are computed with  
 	\begin{equation}
-		(\ubar{f}_K)_{\mathcal{G}_K(i)} \mathrel{+}= (\ubar{f}_K)_i \,, \quad 1 \leq i \leq \dim(\mathcal{Q}) \,,
+		\ubar{f}_{\mathcal{G}_K(i)} \mathrel{+}= (\ubar{f}_K)_i \,, \quad 1 \leq i \leq \dim(\mathcal{Q}) \,,
 	\end{equation}
 for each $K \in \meshT$ where 
 	\begin{equation}
-		\ubar{f}_i = f_K(\ell_i) \,, \quad 1\leq i \leq \dim(\mathcal{Q}) \,, 
+		(\ubar{f}_K)_i = f_K(\ell_i) \,, \quad 1\leq i \leq \dim(\mathcal{Q}) \,, 
 	\end{equation}
 with $f_K = f|_K$.  
 
-In this document, we will frequently build the matrix, $\mat{A}$, corresponding to a bilinear form, $a(\cdot,\cdot)$, on the space $X_h$ using the following notation: 
+In this document, we will frequently build the matrix, $\mat{A}$, corresponding to a bilinear form, $a(\cdot,\cdot)$, on a space $X_h$ using the following notation: 
 	\begin{equation}
 		\ubar{v}^T \mat{A} \ubar{u} = a(v,u) \,, \quad u,v \in X_h \,. 
 	\end{equation}
@@ -1143,6 +1143,7 @@ In the above, we implicitly write $u = \sum u_i b_i$ and $v = \sum v_i b_i$ to f
 where $v = \sum v_i b_i$ is implicitly used to form $\ubar{f}_i = f(b_i)$. In both cases, the efficient finite element assembly algorithm is used to form the matrix $\mat{A}$ and vector $\ubar{f}$. 
 
 \section{Iterative Solution Methods for Linear Systems}
+We now discuss iterative solution techniques for solving the linear systems of equations generated by finite element discretization. 
 We consider the algebraic system 
 	\begin{equation}
 		\mat{A} \ubar{x} = \ubar{b} \,, 
@@ -1156,7 +1157,7 @@ is small enough. This allows finding an $\ubar{x}^K$ that is ``close enough'' to
 On the other hand, direct methods, such as Gaussian elimination, produce the exact solution in a finite number of operations. In the case of Gaussian elimination, the matrix $\mat{A}$ is decomposed into lower and upper triangular matrices. The decomposed system can then be solved in $\mathcal{O}(n^2)$ operations through forward and backward substitution. The decomposition of $\mat{A}$ requires $\mathcal{O}(n^3)$ operations and thus direct methods scale as $\mathcal{O}(n^3)$. 
 
 In practice, iterative methods are preferred over direct methods for the sparse systems of equations generated by finite element discretization. This is due to the memory cost of storing the inverse of a matrix as $\mat{A}^{-1}$ is generally dense even when $\mat{A}$ is sparse. 
-Thus, even sparse direct methods, such as \textcite{lidemmel03}, which account for the sparsity in $\mat{A}$ in the decomposition process, have ``fill-in'' from storing the increased number of non-zeros associated with $\mat{A}^{-1}$. In addition, the matrix-vector products that make up the dominant cost of each iteration of an iterative method can be implemented in $\mathcal{O}(n)$ operations when sparsity is accounted for. If the iteration converges in $K$ iterations, an iterative method can solve the problem in $\mathcal{O}(Kn)$ iterations. An iterative method with $K \ll n$ can then be considerably cheaper in memory and floating point operations compared to a direct method. 
+Thus, even sparse direct methods, such as \textcite{lidemmel03}, which account for the sparsity in $\mat{A}$ in the decomposition process, have ``fill-in'' from storing the increased number of non-zeros associated with $\mat{A}^{-1}$. In addition, the matrix-vector products that make up the dominant cost of each iteration of an iterative method can be implemented in $\mathcal{O}(n)$ operations when sparsity is accounted for. If the iteration converges in $K$ iterations, an iterative method can solve the problem in $\mathcal{O}(Kn)$ operations. An iterative method with $K \ll n$ can then be considerably cheaper in memory and floating point operations compared to a direct method. 
 
 \subsection{Classical Iterative Schemes}
 Most iterative methods are based on a suitable splitting of $\mat{A}$ such that 
@@ -1213,7 +1214,7 @@ This can be seen by setting the gradient of $\Pi$ to zero:
 	\begin{equation}
 		0 = \nabla \Pi = \mat{A} \ubar{x} - \ubar{b} \iff \mat{A} \ubar{x} = \ubar{b} \,. 
 	\end{equation}
-The conjugate gradient method \cite{cg_hs,cgh} is built around the idea of minimizing $\Pi$ in such a way that the system is guaranteed to be solved in at most $n$ steps.
+The conjugate gradient method \cite{cg_hs,cgh} is built around the idea of minimizing $\Pi$ in such a way that the system is guaranteed to be solved in at most $n$ steps. An excellent reference for understanding the conjugate gradient method is \textcite{10.5555/865018}. 
 
 Note that the residual $\ubar{r}^k = \ubar{b} - \mat{A}\ubar{x}^k = -\nabla\Pi$. Moving in the direction of the residual then moves opposite the gradient of the potential. The method of steepest descent is the method that updates the solution in the direction of the residual in such a way that the potential is minimized. That is, we seek to use the update $\ubar{x}^{k+1} = \ubar{x}^k + \lambda_k \ubar{r}^k$ where $\lambda_i \in \R$ is chosen so that $\ubar{x}^{k+1}$ minimizes the potential. Introducing this update into the potential: 
 	\begin{equation}
@@ -1266,7 +1267,8 @@ Many iterative schemes, such as the classical Jacobi and Gauss-Seidel iterations
 \label{fem:coarsening_diag}
 \end{figure}
 
-The multigrid algorithm leverages this behavior. A two-level algorithm would: apply a smoothing iterative scheme to the fine-grid problem, restrict the residual onto a coarser grid, solve for a coarse-grid update, and then prolong the update to the fine-grid problem in order to iteratively update the fine-grid solution vector. A general multigrid algorithm recursively applies this algorithm by replacing each coarse-grid solve with another two-level smoothing and coarsening algorithm. The recursion is repeated until the coarse grid problem is small enough to be solved efficiently with a smoothing iteration. Recursively traversing from fine grid to the coarsest grid and back is called a V-cycle. 
+The multigrid algorithm leverages this behavior. A two-level algorithm would: apply a smoothing iterative scheme to the fine-grid problem, restrict the residual onto a coarser grid, solve for a coarse-grid update, and then prolong the update to the fine-grid problem in order to iteratively update the fine-grid solution vector. 
+A general multigrid algorithm recursively applies this algorithm by replacing each coarse-grid solve with another two-level smoothing and coarsening algorithm. The recursion is repeated until the coarse grid problem is small enough to be solved efficiently with a smoothing iteration. Recursively traversing from fine grid to the coarsest grid and back is called a V-cycle. 
 
 Multigrid algorithms based around coarsening the mesh are termed \gls{gmg} because they rely on the geometry of the problem. Such algorithms typically require the user to supply the hierarchy of meshes used in the coarsening steps. The generation of such a hierarchy is a non-trivial task for sufficiently complicated geometries. In addition, \gls{gmg} requires re-discretizing the problem on each of the meshes in the hierarchy. 
 
@@ -1277,13 +1279,12 @@ In this document, the \gls{amg} solver from \emph{hypre} \cite{hypre} is used ex
 \subsection{Preconditioning}
 The condition number of the matrix $\mat{A}$, denoted $\kappa(\mat{A})$, is defined as the ratio of the maximal and minimal singular values of $\mat{A}$. 
 It is common for the performance of iterative schemes to degrade as the condition number of the algebraic system increases. 
-For example, the conjugate gradient algorithm can be shown to reduce the error at each iteration by at most 
+For example, it is well known (e.g.~from \textcite[\S 2.4.2]{quateroni}) that the conjugate gradient algorithm reduces the error at each iteration by at most a factor of  
 	\begin{equation} \label{fem:cg_err_red}
 		2\paren{\frac{\sqrt{\kappa(\mat{A})} - 1}{\sqrt{\kappa(\mat{A})} + 1}} \,. 
 	\end{equation}
 The condition numbers of matrices arising from finite element discretization generally increase as the mesh size decreases. Thus, Eq.~\ref{fem:cg_err_red} predicts more iterations will be needed to solve the linear system as the mesh size decreases. Note that as the mesh size decreases, $n$ increases and thus the cost of all the linear algebra operations that comprise each iteration of the iterative solver also increases. 
 Iterative solvers that have uniform convergence with respect to the mesh size are desired. 
-In this way, the expense of solving the linear system is only due to the increased expense associated with larger linear algebra operations. 
 This makes the cost of solving the system scale according to the increased cost associated with larger linear algebra operations only. 
 
 Such algorithms are achieved via preconditioning. For a non-singular matrix $\mat{P}$, the preconditioned system is given by: 
