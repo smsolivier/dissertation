@@ -31,7 +31,7 @@ Thus, the force term $\paren{\pderiv{f}{t}}_\text{force} = \frac{\F}{m}\cdot\nab
 	\end{equation}
 For charged particle transport, the particles experience external electromagnetic forces and frequently interact with each other through Coloumb collisions. In this case, particles with charge $q$ experience the force $\F = q(\E + \v\times \mat{B})$ due to the electric field, $\E$, and magnetic field, $\mat{B}$. The Coloumbic collision term is described by the (quite complicated) Fokker-Planck operator \cite[Eq.~7.25]{chen2012introduction}. 
 
-Here, we focus on neutral particle transport (i.e.~photons or neutrons). Since these particles do not have charge, there are no external electromagnetic forces. Furthermore, particle-particle collisions are exceedingly rare and it is thus commonplace to ignore them. The collision term then only includes the interaction of the neutral particle with the background medium. These interactions are broadly classified into absorption and scattering events. The probabilities of these events occuring per unit distance traveled are called cross sections for neutrons and opacities for photons and are govenered by nuclear physics. The most general form of the Boltzmann transport equation for a neutral particle is then: 
+Here, we focus on neutral particle transport (i.e.~photons or neutrons). Since these particles do not have charge, there are no external electromagnetic forces. Furthermore, particle-particle collisions are exceedingly rare and it is thus commonplace to ignore them \cite{neutron_transport_LM}. The collision term then only includes the interaction of the neutral particle with the background medium. These interactions are broadly classified into absorption and scattering events. The probabilities of these events occuring per unit distance traveled are called cross sections for neutrons and opacities for photons and are govenered by nuclear physics. The most general form of the Boltzmann transport equation for a neutral particle is then: 
 	\begin{equation} \label{trans:linboltz}
 		\pderiv{f}{t} + \v \cdot \nabla f = \paren{\pderiv{f}{t}}_\text{absorption} + \paren{\pderiv{f}{t}}_\text{scattering} + \paren{\pderiv{f}{t}}_\text{source} \,,
 	\end{equation}
@@ -83,11 +83,7 @@ Radiation transport in astrophysics and \gls{hedp} is often concerned with the e
 		I(\x,\Omegahat,\nu,t) \equiv c h \nu f(\x,\Omegahat,\nu,t) \,,
 	\end{equation}
 where $c$ is the speed of light. 
-Since photons travel at the speed of light, the particle speed is $v = c$. 
-Thus, the intensity and angular flux are related through 
-	\begin{equation}
-		\psi = \frac{I}{h\nu} \,. 
-	\end{equation}
+Since photons travel at the speed of light, the particle speed is $v \equiv c$. 
 Due to this, the intensity can be thought of as the energy-track length rate density in the phase space.
 Thus, if $\sigma_a$ represents the probability per unit length of a material absorbing a photon, the product $\sigma_a I$ represents the rate energy is deposited by photons at each position, direction, frequency, and time. 
 The power deposited in the material is computed with 
@@ -104,6 +100,11 @@ The rate of momentum deposited into the material by radiation traveling in all d
 		\frac{1}{c}\int_\D \int_{\mathbb{S}^2} \int_0^\infty \sigma_a\,\Omegahat I \ud \nu \ud \Omega\ud \x \,. 
 	\end{equation}
 These examples show that the choice of $\psi \equiv vf$ and $I \equiv c h\nu f$ are purely notational conveniences designed to aid in the computation of each field's quantities of interest. 
+In particular, the intensity and angular flux are informally related through 
+	\begin{equation} \label{trans:psi_I_relation}
+		\psi = \frac{I}{h\nu} \ \mathrm{or} \ I = E \psi \,. 
+	\end{equation}
+Here, the informality arises from the angular flux depending on the particle energy and the intensity depending on the particle frequency. The intent of providing Eq.~\ref{trans:psi_I_relation} is to give a simple way to convert between the notations used in nuclear engineering, astrophysics, and \gls{hedp}. 
 
 \subsection{Moments of the Distribution Function}
 Integration over the velocity variable plays an important role in both neutron and photon transport. In the above, we integrated over position-velocity space to determine the reaction rate and the energy and momentum deposition rates. These integrated quantities are called the moments of the distribution function. 
