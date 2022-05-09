@@ -16,21 +16,23 @@ In this chapter, we use the connection between VEF and SMM established in Sectio
 \section{Discrete Second Moment Methods}
 The equivalence of SMM and VEF linearized about a linearly anisotropic solution provides a systematic path toward deriving discrete SMMs. Any VEF method can be converted to an SMM through the linearization process described in Section \ref{moment_sec:linearize}. We make use of the structure of the coupled transport-VEF system to simplify the derivations. Consider
 	\begin{equation}
-		F(\psi,\varphi) = \begin{bmatrix} 
-			\mat{\Theta}(\psi,\varphi) \\ \mat{V}(\psi,\varphi) 
+		\F(\psi,\mat{X}) = \begin{bmatrix} 
+			\mat{\Theta}(\psi,\varphi) \\ \mat{V}(\psi,\mat{X}) 
 		\end{bmatrix} = 0\,,
 	\end{equation}
-where $\mat{\Theta}(\psi,\varphi)$ represents a generic transport discretization and $\mat{V}(\psi,\varphi)$ a generic discretization of the VEF moment equations. Here, $\mat{\Theta}$ and $\mat{V}$ include the inflow and Miften-Larsen boundary conditions, respectively. Note that for a VEF discretization in first-order form, $\mat{V}$ will also depend on the current. Given that the operators that make up the discretization of the transport equation are linear in both the angular and scalar flux and that the operators in the VEF discretization are nonlinear in the angular flux and linear in the scalar flux (and current where applicable), the linearization process will produce a system of the form: 
+where $\mat{\Theta}(\psi,\varphi)$ represents a generic transport discretization and $\mat{V}(\psi,\varphi)$ a generic discretization of the VEF moment equations. The moment system's unknowns are represented by $\mat{X}$ which includes the scalar flux and current for discretizations of the first-order form of the VEF equations and just the scalar flux for discretizations in second-order form. 
+Here, $\mat{\Theta}$ and $\mat{V}$ include the inflow and Miften-Larsen boundary conditions, respectively. 
+Given that the operators that make up the discretization of the transport equation are linear in both the angular and scalar flux and that the operators in the VEF discretization are nonlinear in the angular flux and linear in the scalar flux (and current where applicable), the linearization process will produce a system of the form: 
 	\begin{equation}
 		\begin{bmatrix} 
 			\mat{\Theta}(\psi,\varphi) \\
-			\displaystyle\mat{V}(\psi_0,\varphi) + \pderiv{\mat{V}}{\psi}\biggr\rvert_{\psi_0}
+			\displaystyle\mat{V}(\psi_0,\mat{X}) + \pderiv{\mat{V}}{\psi}\biggr\rvert_{\psi_0}
 		\end{bmatrix} = 0 \,, 
 	\end{equation}
 where $\psi_0$ is the diffusion approximation of the transport problem. 
 In other words, we have the original transport equation coupled to a discretization of diffusion with a $\psi$-dependent correction term arising from the derivative of the VEF operator, $\pderiv{\mat{V}}{\psi}$, evaluated at the diffusion approximation to the transport problem. 
 
-In the following subsections, the methods derived in Chapters \ref{chap:dgvef} and \ref{chap:rtvef} are linearized to form discrete SMMs by determining 1) the diffusion problem, $\mat{V}(\psi_0, \varphi)$, found by evaluating the VEF system using a linearly anisotropic angular flux and 2) the transport-dependent correction terms corresponding to $\pderiv{\mat{V}}{\psi}\big\rvert_{\psi_0}$. We will see that linearizing the \emph{discrete} VEF system provides a straightforward path toward discretizing the correction terms. 
+In the following subsections, the methods derived in Chapters \ref{chap:dgvef} and \ref{chap:rtvef} are linearized to form discrete SMMs by determining 1) the diffusion problem, $\mat{V}(\psi_0, \mat{X})$, found by evaluating the VEF system using a linearly anisotropic angular flux and 2) the transport-dependent correction terms corresponding to $\pderiv{\mat{V}}{\psi}\big\rvert_{\psi_0}$. We will see that linearizing the \emph{discrete} VEF system provides a straightforward path toward discretizing the correction terms. 
 
 \subsection{Interior Penalty}
 From Section \ref{dgvef_sec:ip}, the IP VEF discretization is: find $\varphi\in Y_p$ such that 
@@ -51,14 +53,17 @@ The diffusion operator is then
 	\end{multline}
 where $D = \frac{1}{3\sigma_t}$ is the diffusion coefficient. 
 
-Next, we must determine the correction terms by computing the partial derivative with respect to the angular flux of each of the terms in the IP VEF discretization (Eq.~\ref{smm:ipvef}). For terms without VEF data, the partial derivative is zero. Consider 
+Next, we must determine the correction terms by computing the partial derivative with respect to the angular flux of each of the terms in the IP VEF discretization (Eq.~\ref{smm:ipvef}). We set the diffusion solution $\y_0 = \vector{\psi_0 & \phi_0}$. For terms without VEF data, the partial derivative is zero. Consider 
 	\begin{equation}
-		\pderiv{}{\psi}\int_{\Gamma_b} E_b\, u \varphi \ud s \biggr\rvert_{\y_0} = \int_{\Gamma_b} \pderiv{E_b}{\psi}\biggr\rvert_{\psi_0} \, u \varphi_0 \ud s = \int_{\Gamma_b} u\, \beta(\psi) \ud s \,. 
+		\pderiv{}{\psi}\int_{\Gamma_b} E_b\, u \varphi \ud s \biggr\rvert_{\y_0} = \int_{\Gamma_b} \pderiv{E_b}{\psi}\biggr\rvert_{\psi_0} \, u \varphi_0 \ud s = \int_{\Gamma_b} u\, \beta(\psi) \ud s \,, 
 	\end{equation}
+where $\beta(\psi)$ is the correction factor defined in Eq.~\ref{moment:corrfac}. We have used the directional derivative of the Eddington boundary factor computed in Eq.~\ref{moment:Eb_deriv} to simplify the term $\pderiv{\E}{\psi}$. 
+Here, $\pderiv{\varphi}{\psi} = 0$ since we consider $\psi$ and $\varphi$ as independent variables. 
 Analogously, for terms with the Eddington tensor
 	\begin{equation}
-		\pderiv{(\E\varphi)}{\psi}\biggr\rvert_{\y_0} = \pderiv{\E}{\psi}\biggr\rvert_{\psi_0} \varphi_0 = \T(\psi) \,. 
+		\pderiv{(\E\varphi)}{\psi}\biggr\rvert_{\y_0} = \pderiv{\E}{\psi}\biggr\rvert_{\psi_0} \varphi_0 = \T(\psi) \,,
 	\end{equation}
+where the directional derivative of the Eddington tensor is given by Eq.~\ref{moment:Edd_deriv} and $\T(\psi)$ is the correction tensor from Eq.~\ref{moment:corrten}. 
 Thus, the correction terms can be derived by setting terms without angular flux dependence to zero and replacing 
 	\begin{equation}
 		E_b\varphi \rightarrow \beta(\psi) \,, \quad \E\varphi \rightarrow \T(\psi) \,. 
@@ -68,8 +73,9 @@ The IP SMM discretization is then: find $\varphi \in Y_p$ such that
 		\frac{1}{2}\int_{\Gamma_b} u\varphi \ud s + \int_{\Gamma_0} \kappa\, \jump{u}\jump{\varphi} \ud s - \int_{\Gamma_0} \jump{u}\avg{D\nablah\varphi\cdot\n} \ud s - \int_{\Gamma_0} \avg{D\nablah u\cdot\n} \jump{\varphi} \ud s \\
 		+ \int \nablah u \cdot D\nablah\varphi \ud \x + \int \sigma_a\, u \varphi \ud \x \\
 		= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_0} \jump{u} \avg{\frac{\vec{Q}_1\cdot\n}{\sigma_t}} \ud s - \int_{\Gamma_b} u\paren{2\Jin + \beta} \ud s \\
-		+ \int_{\Gamma_0} \jump{u}\avg{\frac{1}{\sigma_t}\nablah\cdot\T\cdot\n} \ud s + \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot\jump{\T\n} \ud s - \int \nablah u\cdot \frac{1}{\sigma_t}\nablah\cdot\T \ud \x \,, \quad \forall u \in Y_p \,. 
+		+ \int_{\Gamma_0} \jump{u}\avg{\frac{1}{\sigma_t}\nablah\cdot\T\cdot\n} \ud s + \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot\jump{\T\n} \ud s - \int \nablah u\cdot \frac{1}{\sigma_t}\nablah\cdot\T \ud \x \,, \quad \forall u \in Y_p \,, 
 	\end{multline}
+where the local divergence of the correction tensor is computed with Eq.~\ref{sn:T_div}. 
 This represents the standard IP discretization of diffusion with Marshak boundary conditions that is corrected by transport-dependent volumetric and boundary source terms. 
 
 \subsection{Continuous Finite Element}
@@ -115,7 +121,7 @@ with angular quadrature since it was found to be important that $\Jin$ and $\int
 	\end{equation}
 where $\mathbbm{1}_A(x)$ is the indicator function that is one when $x\in A$ and zero otherwise, have non-smooth integrands and therefore cannot be integrated exactly with an angular quadrature rule. 
 
-The correction terms are found by computing the partial derivative of the VEF discretization with respect to the angular flux evaluated at the linearly anisotropic function $\y_0 = \vector{\psi_0 & \varphi_0 & \vec{J}_0}$ where $\vec{J}_0 = \int \Omegahat\,\psi_0 \ud \Omega$. As before, terms without VEF data are zero and we can replace $E_b\varphi \rightarrow \beta(\psi)$ and $\E\varphi \rightarrow \T(\psi)$. However, this replacement is valid only for terms with \emph{only} $E_b\varphi$ or $\E\varphi$ and not both. 
+The correction terms are found by computing the partial derivative of the VEF discretization with respect to the angular flux evaluated at the linearly anisotropic function $\y_0 = \vector{\psi_0 & \varphi_0 & \vec{J}_0}$ where $\vec{J}_0 = \int \Omegahat\,\psi_0 \ud \Omega$. As before, terms without VEF data are zero and we can replace $E_b\varphi \rightarrow \beta(\psi)$ and $\E\varphi \rightarrow \T(\psi)$. However, this replacement is valid only for terms with \emph{only} $E_b$ or $\E$ and not both. 
 
 An additional linearization is required for the boundary terms due to the presence of both the Eddington tensor and boundary factor. This linearization is: 
 	\begin{equation}

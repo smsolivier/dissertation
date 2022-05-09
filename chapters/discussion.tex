@@ -64,7 +64,7 @@ The crooked pipe $hp$ scaling is repeated in Table \ref{disc:outin_cp}. Here, it
 \end{table}
 
 \section{Acceleration of Inexact Sweeps on the Triple Point Mesh}
-On a high-order mesh with reentrant faces, the transport equation is only approximately inverted at each outer iteration (see the discussion in Section \ref{sn_sec:hosweep}). This means the VEF data are computed from an angular flux possessing errors due to lagging the inflow data on reentrant faces. While VEF converged robustly in the thick diffusion limit on a mesh with reentrant faces, degraded performance for optically thin problems was observed as compared to an equivalent mesh with reentrant faces. Here, we demonstrate two schemes to produce more robust behavior for optically thin problems on curved meshes. The thick diffusion limit problem scales the material data according to 
+On a high-order mesh with reentrant faces, the transport equation is only approximately inverted at each outer iteration (see the discussion in Section \ref{sn_sec:hosweep}). This means the VEF data are computed from an angular flux possessing errors due to lagging the inflow data on reentrant faces. While VEF converged robustly in the thick diffusion limit on a mesh with reentrant faces, degraded performance for optically thin problems was observed as compared to an equivalent mesh without reentrant faces. Here, we demonstrate two schemes to produce more robust behavior for optically thin problems on curved meshes. The thick diffusion limit problem scales the material data according to 
 	\begin{equation}
 		\sigma_t = \frac{1}{\epsilon} \,, \quad \sigma_s = \frac{1}{\epsilon} - \epsilon \,, \quad q = \epsilon \,. 
 	\end{equation}
@@ -118,7 +118,7 @@ Table \ref{disc:all_eps_orthog} shows the number of fixed-point iterations to co
 	\begin{equation}
 		\sigma_t = \frac{1}{\epsilon} \,, \quad \sigma_s = \frac{1}{\epsilon} - \epsilon \,, \quad q = \epsilon \,. 
 	\end{equation}
-with the thick diffusion limit corresponding to $\epsilon \rightarrow 0$. A coarse $8\times 8$ mesh is used with $S_4$ angular quadrature. Observe that all the VEF methods converge equivalently for each value of $\epsilon$ tested. The SMM algorithms converged within one iteration of each other. SMM converged 1-3 iterations slower than VEF. On this idealized problem where negativities are unlikely to occur all methods performed very similarly. 
+with the thick diffusion limit corresponding to $\epsilon \rightarrow 0$. A coarse $8\times 8$ mesh is used with $S_4$ angular quadrature. The fixed-point tolerance was $10^{-6}$. Observe that all the VEF methods converged equivalently for each value of $\epsilon$ tested. The SMM algorithms converged within one iteration of each other. SMM converged 1-3 iterations slower than VEF. On this idealized problem where negativities are unlikely to occur all methods performed very similarly. 
 % --- all VEF and SMM on orthogonal mesh TDL ---
 \begin{table}
 \centering
@@ -137,8 +137,6 @@ The thick diffusion limit problem was repeated on the triple point mesh in Table
 \end{table}
 
 \subsection{Crooked Pipe}
-Next, we compare performance on the multi-material crooked pipe problem. This problem is defined in Sections \ref{dgvef_sec:cp}, \ref{rtvef_sec:cp}, and \ref{smm_sec:cp}. The problem consists of two materials with an 1000x difference in total interaction cross section and corresponds to the first Newton iteration of a time-dependent \gls{trt} algorithm. A comparison of all the VEF and SMM methods presented here is provided in Table \ref{disc:all_cp_outer}. Anderson-accelerated fixed-point iteration is used with a tolerance of $10^{-6}$. Two Anderson vectors are used. The zero and scale negative flux fixup was used for the DG VEF methods. The mixed finite element VEF methods and all the SMMs used the quadratic programming negative flux fixup. We again see that the less numerically diffusive methods required 1-3 more iterations to converge than the numerically diffusive methods. This is true for both the VEF and SMM methods. All methods show a slight increase in iterations as the polynomial order is refined. This is likely due to the increased reliance on the negative flux fixup for higher polynomial orders. 
-Even on this difficult problem, SMM converged only slightly slower than the corresponding VEF method. 
 % --- outer iterations for all VEF and SMM on crooked pipe --- 
 \begin{table}
 \centering
@@ -146,8 +144,13 @@ Even on this difficult problem, SMM converged only slightly slower than the corr
 \label{disc:all_cp_outer}
 \input{figs/cp_outerall}
 \end{table}
+Next, we compare performance on the multi-material crooked pipe problem. This problem is defined in Sections \ref{dgvef_sec:cp}, \ref{rtvef_sec:cp}, and \ref{smm_sec:cp}. The problem consists of two materials with an 1000x difference in total interaction cross section and corresponds to the first Newton iteration of a time-dependent \gls{trt} algorithm. A comparison of all the VEF and SMM methods presented here is provided in Table \ref{disc:all_cp_outer}. Anderson-accelerated fixed-point iteration is used with a tolerance of $10^{-6}$. Two Anderson vectors are used. The zero and scale negative flux fixup was used for the DG VEF methods. The mixed finite element VEF methods and all the SMMs used the quadratic programming negative flux fixup. We again see that the less numerically diffusive methods required 1-3 more iterations to converge than the numerically diffusive methods. This is true for both the VEF and SMM methods. All methods show a slight increase in iterations as the polynomial order is refined. This is likely due to the increased reliance on the negative flux fixup for higher polynomial orders. 
+Even on this difficult problem, SMM converged only slightly slower than the corresponding VEF method. 
 
-Table \ref{disc:all_cp_inner} shows the average number of inner preconditioned linear solver iterations until a convergence of $10^{-8}$ across all the outer iterations on the crooked pipe problem. Note that the VEF methods used \gls{bicg} while the SMMs used iterative schemes that leverage the symmetry of the SMM diffusion operator. In particular, the IP VEF method used \gls{bicg} whereas the IP SMM used the conjugate gradient method. In this case, each iteration for the VEF method is twice as expensive as the SMM iteration since \gls{bicg} performs both a matrix-vector product and a transpose matrix-vector product where the conjugate gradient method only requires one matrix-vector product per iteration. Here, we attempt only to show that all of the methods can be scalably solved with respect to both the mesh size and the polynomial order. A comparison of performance would require timing data. 
+Table \ref{disc:all_cp_inner} shows the average number of inner preconditioned linear solver iterations until a convergence of $10^{-8}$ across all the outer iterations on the crooked pipe problem. 
+All of the VEF methods and the RT SMM used \gls{bicg}. The IP, CG, and HRT SMMs used the conjugate gradient solver. 
+Methods that used \gls{bicg} are twice as expensive per iteration compared to methods that used conjugate gradient.
+Here, we attempt only to show that all of the methods can be scalably solved with respect to both the mesh size and the polynomial order. A comparison of performance would require timing data. 
 % --- avg. inner iterations for all VEF and SMM on crooked pipe ---
 \begin{table}
 \centering
@@ -157,7 +160,6 @@ Table \ref{disc:all_cp_inner} shows the average number of inner preconditioned l
 \end{table}
 
 \subsection{Weak Scaling}
-Table \ref{disc:allweak} summarizes the weak scaling performance of all the methods presented here. The data is taken from Sections \ref{dgvef_sec:weak}, \ref{rtvef_sec:weak}, and \ref{smm_sec:weak}. The first iteration of the crooked pipe problem is used to demonstrate the convergence of the inner solve. The tolerance for the preconditioned linear solvers was $10^{-8}$. The VEF methods used \gls{bicg} while the IP, CG, and HRT SMMs used conjugate gradient. The RT SMM used \gls{bicg}. Both IP methods used the uniform subspace correction preconditioner with one Jacobi iteration and one AMG V-cycle per iteration. The CG and HRT VEF methods and SMMs used one AMG V-cycle as a preconditioner. Both RT methods used a lower block triangular preconditioner that used one iteration of Gauss-Seidel to approximate the inverse of the total interaction mass matrix and one AMG V-cycle to approximate the inverse of the lumped Schur complement. 
 % --- weak scaling on crooked pipe for all methods --- 
 \begin{table}
 \centering
@@ -165,6 +167,7 @@ Table \ref{disc:allweak} summarizes the weak scaling performance of all the meth
 \label{disc:allweak}
 \input{figs/allweak}
 \end{table}
+Table \ref{disc:allweak} summarizes the weak scaling performance of all the methods presented here. The data is taken from Sections \ref{dgvef_sec:weak}, \ref{rtvef_sec:weak}, and \ref{smm_sec:weak}. The first iteration of the crooked pipe problem is used to demonstrate the convergence of the inner solve. The tolerance for the preconditioned linear solvers was $10^{-8}$. The VEF methods used \gls{bicg} while the IP, CG, and HRT SMMs used conjugate gradient. The RT SMM used \gls{bicg}. Both IP methods used the uniform subspace correction preconditioner with one Jacobi iteration and one AMG V-cycle per iteration. The CG and HRT VEF methods and SMMs used one AMG V-cycle as a preconditioner. Both RT methods used a lower block triangular preconditioner that used one iteration of Gauss-Seidel to approximate the inverse of the total interaction mass matrix and one AMG V-cycle to approximate the inverse of the lumped Schur complement. 
 
 Observe that all methods can be solved efficiently in parallel on a mesh of over a million elements. For both VEF and SMM, the CG and HRT solvers converged similarly. The RT and IP methods generally required the most iterations. Comparing VEF to SMM, it is seen that the SMM solvers require more iterations. This is due to the use of conjugate gradient instead of \gls{bicg} for the IP, CG, and HRT methods. For the case of RT VEF and SMM where \gls{bicg} was used for both types, the iteration counts are very close with both methods converging within $\pm 2$ iterations of each other. 
 
@@ -176,5 +179,5 @@ Since VEF is non-symmetric, more expensive iterative solvers must be used. In th
 
 We now compare the \gls{dg}, \gls{cg}, and mixed finite element discretization methods in terms of cost. The mixed finite element techniques solve for both the scalar flux and the current whereas the DG and CG techniques only solve for the scalar flux. This means the mixed finite element systems will be significantly larger or, in the case of a hybridized method, will require significantly higher setup costs. Due to this, the mixed finite element methods will both be more expensive to form and invert. The DG methods have more unknowns than the CG method and also require more complicated preconditioners. Thus, DG methods are more costly than the CG method. 
 
-In light of these arguments, the CG SMM will have the lowest cost per iteration of all the VEF methods and SMMs presented here. 
+In light of these arguments, the CG SMM is expected to have the lowest cost per iteration of all the VEF methods and SMMs presented here. 
 \end{document}

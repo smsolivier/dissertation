@@ -452,14 +452,14 @@ The spaces $V_C$ and $V_B$ are sufficiently large that $\mat{A}_c$ and $\mat{A}_
 The projections are prolonged to the space $Y_p$ using the transpose of their associated restriction operators. 
 The preconditioned operator is given by the sum of the prolonged, approximate elliptic projections: 
 	\begin{equation}
-		\mat{P}\mat{A} = (\mat{Q}^T \mat{P}_c + \mat{B}^T\mat{P}_b)\mat{A} = (\mat{Q}^T\mat{R}_c \mat{Q} + \mat{B}^T \mat{R}_b \mat{B})\mat{A} \,. 
+		\mat{P}^{-1}\mat{A} = (\mat{Q}^T \mat{P}_c + \mat{B}^T\mat{P}_b)\mat{A} = (\mat{Q}^T\mat{R}_c \mat{Q} + \mat{B}^T \mat{R}_b \mat{B})\mat{A} \,. 
 	\end{equation}
-The preconditioner $\mat{P}$ is then 
+The preconditioner $\mat{P}^{-1}$ is then 
 	\begin{equation}
 		\mat{P} = \mat{Q}^T\mat{R}_c \mat{Q} + \mat{B}^T \mat{R}_b \mat{B} \,. 
 	\end{equation}
 It is applied in two stages corresponding to $V_C$ and $V_B$ each of which include restriction to the subspace, approximately inverting the operator derived by restricting $\mat{A}$ to the subspace, and prolonging back to the original space $Y_p$. 
-In \textcite{Pazner2021}, it is shown that the preconditioned system $\mat{P}\mat{A}$ has condition number independent of the mesh size, polynomial order, and penalty parameter (if applicable). 
+In \textcite{Pazner2021}, it is shown that the preconditioned system $\mat{P}^{-1}\mat{A}$ has condition number independent of the mesh size, polynomial order, and penalty parameter (if applicable). 
 
 In the implementation, the operator $\mat{A}_c$ is computed by \emph{assembling} $\mat{A}$ onto the space $V_C$. This is an algebraic process that allows the CG operator to be formed without re-discretizing and re-evaluating the bilinear forms that comprise $\mat{A}$. This process is depicted in Fig.~\ref{dgvef:usc_assembly}. The operators $\mat{Q}$ and $\mat{B}$ are implemented in a matrix-free fashion. That is, we define only their action and transpose action onto the residual vector. Finally, the operator $\mat{R}_b$ is computed by assembling the diagonal of $\mat{A}$ and applying $\mat{B}$ so that only the degrees of freedom corresponding to $V_B$ remain. The action of $\mat{R}_b$ onto a vector $\ubar{r}$ is then equivalent to dividing the entries of $\ubar{r}$ corresponding to $\mathcal{B}(K)$ for each $K$ by the associated diagonal entry of $\mat{A}$.
 % --- assembly diagram --- 
@@ -578,7 +578,7 @@ with $\epsilon \in (0,1]$ and the thick diffusion limit corresponding to $\epsil
 
 We first demonstrate robust convergence on an $8\times 8$ linear mesh with $\D = [0,1]^2$. Convergence was identical for linear, quadratic, and cubic basis functions so we present results for $p=2$ only. Level symmetric $S_4$ angular quadrature is used. Fixed-point iteration without Anderson acceleration is used to solve the coupled transport-VEF system. Table \ref{dgvef:tdl} shows the number of iterations required to converge to a fixed-point tolerance of $10^{-6}$ as $\epsilon \rightarrow 0$. All four VEF variants converge robustly and in an identical number of iterations for each value of $\epsilon$. All methods converged to the non-trivial diffusion limit solution. Lineouts of the 2D solutions are shown in Fig.~\ref{dgvef:eps_lineout} to demonstrate that the non-trivial, diffusion solution is obtained by each of the four methods. Note that even the continuous finite element discretization paired with the discontinuous finite element transport discretization was( robust in the thick diffusion limit. 
 % --- thick diffusion limit --- 
-\begin{table})
+\begin{table}
 \centering
 \caption{Number of iterations to convergence in the thick diffusion limit on a coarse, orthogonal mesh.}
 \label{dgvef:tdl}
