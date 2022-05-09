@@ -2,51 +2,91 @@
 \documentclass[../doc.tex]{subfiles}
 
 \begin{document}
+Below is a list of the symbols and mathematical notation used throughout this document. 
+
+\subsection*{Mathematical Symbols}
 \begin{longtable}{p{2cm}p{12cm}}
 $\in$ & indicates set membership. $x \in A$ means that $x$ is an element of the set $A$\\
 $\subset$ & indicates subset. $A \subset B$ if all elements of $A$ are also members of $B$ \\
 $\emptyset$ & the emtpy set defined as the unique set that has no elements \\
+$\cap$ & intersection of two sets. $A\cap B$ has only the elements that belong to both $A$ and $B$ \\
+$\cup$ & union of two sets. $A\cup B$ has all the elements of $A$ and $B$ \\
 $\R$ & the set of real numbers \\
 $\dim$ & denotes spatial dimensionality ($1\leq \dim \leq 3$) \\
 $\D$ & denotes the computational domain, $\D \subset \R^{\dim}$\\ 
 $\partial\D$ & the boundary of the domain, $\D$ \\
 $\mathbb{S}^2$ & the unit sphere \\
+$\e_i$ & the canonical Cartesian basis \\
+$\nabla$ & the spatial gradient $\nabla = \pderiv{}{x} \e_x + \pderiv{}{y}\e_y + \pderiv{}{z}\e_z$ \\
+$\nabla\cdot$ & the divergence operator \\
+$:$ & scalar contraction of two tensors \\
 $\x$ & the spatial variable such that $\x \in \D$ \\
-$\Omegahat$ & the direction-of-flight variable. $\Omegahat\in \mathbb{S}^2$\\
-$\nu$ & photon frequency \\
-$E$ & neutron energy \\
+$\ud\x$ & differential volume element such that $\ud\x = \ud x \ud y \ud z$ \\ 
+$\ud s$ & differential surface element (e.g.~for integrating over an embedded surface) \\
 $t$ & time variable \\
+\end{longtable}
 
-$\hat{K}^{\dim}$ & the $\dim$-dimensional reference element \\
+\subsection*{Finite Element Notation}
+\begin{longtable}{p{2cm}p{12cm}}
+$\mathcal{P}_k(\hat{K}^1)$ & space of univariate polynomials of degree less than or equal to $k$ \\
+$\mathcal{Q}_{m,n}(\hat{K})$ & tensor product polynomial space of $\mathcal{P}_m(\hat{K}^1)$ and $\mathcal{P}_n(\hat{K}^1)$ \\
+$\mathcal{Q}_{\ell,m,n}(\hat{K})$ & tensor product polynomial space of $\mathcal{P}_\ell(\hat{K}^1)$, $\mathcal{P}_m(\hat{K}^1)$, and $\mathcal{P}_n(\hat{K}^1)$ \\
+$\mathcal{Q}_p(\hat{K})$ & tensor product space of equal degree in each coordinate \\ 
+$\ell_i(\vec{\xi})$ & a nodal basis function for a polynomial space defined on $\hat{K}$ \\
+$\hat{K}^{\dim}$ & the $\dim$-dimensional reference element, $\hat{K}^{\dim} = [0,1]^{\dim}$ \\
+$\vec{\xi}$ & referential coordinate such that $\vec{\xi} \in \hat{K}$ \\
+$K$ & a finite element \\
+$\T$ & reference to physical space transformation such that $K = \T(\hat{K})$ \\
+$\F$ & Jacobian matrix of an element transformation \\
+$J$ & Jacobian of an element transformation such that $J = \det(\F)$ \\
+$h$ & characteristic mesh element length \\
+$\Qbb{p}(K)$ & space of mapped polynomials defined by composing $\Qcal{p}$ with the inverse mesh transformation \\
+$\mathbb{D}_k(K)$ & element-local polynomial space for the Raviart Thomas space $\RT_k$ \\
+$\n$ & outward unit normal vector \\ 
+$\n_K$ & outward normal with respect to element $K$ \\
+$\hat{\n}$ & outward unit normal vector to a surface on the reference element $\hat{K}$ \\
+$\tang$ & unit vector tangential to a surface \\
+$b_i$ & denotes a global basis function for a finite element space \\
+$\kappa$ & interior penalty parameter \emph{or} \\ 
+& condition number of an algebraic system of equations \\
+
+$\meshT$ & collection of elements $K$ called a tessellation of the domain, $\D$ \\
+$\jump{\cdot}$ & the jump of a function across a face between two elements \\
+$\avg{\cdot}$ & the average of a function evaluated on each side of a face \\
 $\nablah$ & the local gradient defined by applying the gradient locally on each element \\ 
+$\hnabla$ & gradient in reference space \\
+$\mathcal{F}$ & denotes a face in the mesh \\
 $\Gamma$ & Set of unique faces in the mesh \\
 $\Gamma_0$ & Set of unique interior faces in the mesh \\
+$\Gamma_b$ & Set of unique faces on the boundary of the mesh, $\Gamma = \Gamma_0 \cup \Gamma_b$ \\
 $L^2(\D)$ & the space of square-integrable functions \\ 
 $H^1(\D)$ & the space of square-integrable functions with square-integrabl gradient \\ 
 $H(\div;\D)$ & the space of square-integrable vector-valued functions with square-integrable divergence \\ 
 $Y_p$ & the degree-$p$ Discontinuous Galerkin space \\
+$X_p$ & the vector-valued degree-$p$ Discontinuous Galerkin space ($X_p = [Y_p]^{\dim}$)\\
 $V_p$ & the degree-$p$ continuous finite element space \\ 
-$W_p$ & the degree-$p$ vector-valued finite element space where each component of the vector belongs to $V_p$ \\ 
+$W_p$ & the degree-$p$ vector-valued finite element space where each component of the vector belongs to $V_p$ ($W_p = [V_p]^{\dim}$) \\ 
 $\RT_p$ & the order $p$ Raviart Thomas finite element space \\ 
 $\Lambda_p$ & the interior trace of the order $p$ Raviart Thomas space, $\RT_p$ \\
+\end{longtable}
 
-$\mathcal{P}_k(\hat{K}^1)$ & space of univariate polynomials of degree less than or equal to $k$ \\
-$\mathcal{Q}_{m,n}(\hat{K})$ & tensor product polynomial space of $\mathcal{P}_m(\hat{K}^1)$ and $\mathcal{P}_n(\hat{K}^1)$ \\
-$\mathcal{Q}_{\ell,m,n}$ & tensor product polynomial space of $\mathcal{P}_\ell(\hat{K}^1)$, $\mathcal{P}_m(\hat{K}^1)$, and $\mathcal{P}_n(\hat{K}^1)$ \\
-$\mathcal{Q}_p(\hat{K})$ & tensor product space of equal degree in each coordinate \\ 
-$K$ & a finite element \\
-$\meshT$ & collection of elements $K$ called a tessellation of the domain, $\D$ \\
-$\jump{\cdot}$ & the jump of a function across a face between two elements \\
-$\avg{\cdot}$ & the average of a function evaluated on each side of a face \\
-
+\subsection*{Radiation Transport}
+\begin{longtable}{p{2cm}p{12cm}}
+$h$ & Planck's constant \\
+$\Omegahat$ & the direction-of-flight variable. $\Omegahat\in \mathbb{S}^2$\\
+$\nu$ & photon frequency \\
+$E$ & neutron energy \\
 $\psi$ & the angular flux \\
 $\bar{\psi}$ & the inflow boundary function \\
+$J_n^\pm$ & half-range partial currents of the angular flux \\
 $\Jin$ & the inflow current computed from the inflow boundary function, $\bar{\psi}$ \\
 $\phi$ & the zeroth angular moment of the angular flux \\
 $\vec{J}$ & the first angular moment of the angular flux \\
 $\P$ & the second angular moment of the angular flux \\
 $\E$ & the Eddington tensor defined as the ratio of the second and zeroth angular moments of the angular flux \\
 $E_b$ & the Eddington boundary factor used to form boundary conditions for the VEF method \\
+$\T$ & SMM correction tensor \\
+$\beta$ & the SMM boundary correction factor \\
 $Q_0$ & the zeroth moment of the fixed-source, $q$ \\
 $\Qone$ & the first moment of the fixed-source, $q$ \\
 $\sigma_s$ & the scattering macroscopic cross section \\

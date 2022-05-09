@@ -52,7 +52,7 @@ In this case, RT methods apply directly for both $\vec{v}$ and $\vec{J}$. Howeve
 \begin{prop} \label{rtvef:edd_prop}
 For a symmetric tensor $\mat{S}$, let $\vec{v} : \D\rightarrow \R^2$ be such that 
 \begin{enumerate}
-	\item $\vec{v}|_K \in \H^1(K)$ for each $K \in \meshT$
+	\item $\vec{v}|_K \in [H^1(K)]^2$ for each $K \in \meshT$
 	\item $\jump{\vec{v}\cdot\mat{S}\n} = 0$ 
 \end{enumerate}
 then $\int \nabla\vec{v} : \mat{S} \ud \x < \infty$. Conversely, if $\int \nabla\vec{v} : \mat{S} \ud \x < \infty$ and (a) is satisfied, then (b) holds. 
@@ -68,7 +68,7 @@ From (a), $\nablah \vec{v} \in [L^2(K)]^2$. Given a sufficiently smooth symmetri
 	\end{equation}
 Since the left hand side is bounded, $\int \nabla\vec{v} : \mat{S} \ud \x < \infty$. 
 
-On the other hand, if $\int \nabla\vec{v} : \mat{S} \ud \x < \infty$, then $\nabla\vec{v}:\mat{S} = \nablah\vec{v}:\mat{S}$ and, given $\vec{v}|_K\in\H^1(K)$, we obtain 
+On the other hand, if $\int \nabla\vec{v} : \mat{S} \ud \x < \infty$, then $\nabla\vec{v}:\mat{S} = \nablah\vec{v}:\mat{S}$ and, given $\vec{v}|_K\in[H^1(K)]^2$, we obtain 
 	\begin{equation}
 		\int_{\Gamma_0} \jump{\vec{v}\cdot\mat{S}\n} \ud s = 0 \,, \quad \forall \mat{S} \in [C_0^\infty(\D)]^{2\times 2} \,,
 	\end{equation}

@@ -460,7 +460,7 @@ In the process of performing a Fourier stability analysis of the VEF algorithm, 
 	\end{equation}
 represent the VEF drift-diffusion equation and Miften-Larsen boundary conditions, respectively. Here, $Q = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t}$ is used for brevity. The coupled transport-VEF system can be written as the root-finding problem: 
 	\begin{equation} \label{moment:vef_root}
-		F(\y) = \begin{bmatrix} 
+		\F(\y) = \begin{bmatrix} 
 			\mat{L}\psi - \mat{S}\varphi - q \\ 
 			\mat{V}(\psi,\varphi) \\ 
 			\mat{B}(\psi,\varphi)
@@ -469,9 +469,9 @@ represent the VEF drift-diffusion equation and Miften-Larsen boundary conditions
 	\end{equation}
 where $\y = \vector{\psi & \varphi}$. In this section, we show that the SMM algorithm is equivalent to a first-order Taylor series of $F$ expanded about $\y_0 = \vector{\psi_0 & \varphi_0}$ where $\psi_0$ is a linearly anisotropic solution of the transport equation and $\varphi_0 = \int \psi_0 \ud \Omega$. In other words, $\psi_0$ is the diffusion approximation to the transport problem at hand. We assume that $\psi_0$ and $\varphi_0$ satisfy the transport and Marshak diffusion boundary conditions, respectively. 
 
-The first-order Taylor series approximation to the root finding problem $F(\y) = 0$ is: 
+The first-order Taylor series approximation to the root finding problem $\F(\y) = 0$ is: 
 	\begin{equation} \label{moment:smm_root}
-		0 = F(\y) \xrightarrow{\text{TSE}} F(\y_0) + \pderiv{F}{\y}\biggr\rvert_{\y_0}(\y - \y_0) \,. 
+		0 = \F(\y) \xrightarrow{\text{TSE}} \F(\y_0) + \pderiv{F}{\y}\biggr\rvert_{\y_0}(\y - \y_0) \,. 
 	\end{equation}
 The Jacobian is given by: 
 	\begin{equation}
@@ -536,7 +536,7 @@ where we have used the form of the derivative of the Eddington boundary factor d
 The linear part of $F$ is then: 
 	\begin{equation}
 	\begin{aligned}
-		F(\y) &\approx F(\y_0) + \pderiv{F}{\y}\biggr\rvert_{\y_0}(\y - \y_0)\\
+		\F(\y) &\approx \F(\y_0) + \pderiv{F}{\y}\biggr\rvert_{\y_0}(\y - \y_0)\\
 		&= \begin{bmatrix} 
 			\mat{L}\psi_0 - \mat{S}\varphi_0 - q \\
 			-\mat{D}\varphi_0 - Q \\ 

@@ -123,7 +123,7 @@
 \newcommand{\vDG}{X_p}
 \newcommand{\e}{\boldsymbol{\mathrm{e}}}
 \newcommand{\n}{\boldsymbol{\mathrm{n}}}
-\newcommand{\tang}{\boldsymbol{\mathrm{\tau}}}
+\newcommand{\tang}{\boldsymbol{\mathrm{t}}}
 \newcommand{\Jin}{J_\text{in}}
 \newcommand\Q{\mathcal{Q}}
 
