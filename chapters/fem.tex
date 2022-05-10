@@ -192,7 +192,8 @@ Alternatively, writing $\ell_i(\xi) = \sum_{j=0}^k c_{ij} \xi^j$, the coefficien
 		\end{bmatrix}
 		\mat{C} = \I \,,
 	\end{equation}
-where $\mat{C} \in \R^{(k+1)\times(k+1)}$ is the matrix of coefficients with entries $c_{ij}$. The Vandermonde system is simply a change of basis from $\{1,x,x^2,\ldots\}$ to the nodal basis. Nodal bases for the spaces $\Qcal{m,n}$ and $\Qcal{\ell,m,n}$ are formed through tensor products of the corresponding one-dimensional nodal bases.
+where $\mat{C} \in \R^{(k+1)\times(k+1)}$ is the matrix of coefficients with entries $c_{ij}$. The Vandermonde system is simply a change of basis from $\{1,x,x^2,\ldots\}$ to the nodal basis. Note that this system becomes increasingly ill-conditioned as the polynomial order increases. 
+Nodal bases for the spaces $\Qcal{m,n}$ and $\Qcal{\ell,m,n}$ are formed through tensor products of the corresponding one-dimensional nodal bases.
 The basis functions for $\Pcal{1}$, $\Pcal{2}$, and $\Pcal{3}$ through the Gauss-Lobatto and Gauss-Legendre points are shown in Fig.~\ref{fem:shape1d} and \ref{fem:shape_leg1d}, respectively.  Figure \ref{fem:shape2d} shows a selection of the two-dimensional nodal basis functions through the Gauss-Lobatto points for the spaces $\Qcal{1}$, $\Qcal{2}$, and $\Qcal{3}$. 
 % --- shape functions in 1D (Lobatto) --- 
 \begin{figure}
