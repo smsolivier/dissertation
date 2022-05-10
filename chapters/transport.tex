@@ -105,6 +105,7 @@ In particular, the intensity and angular flux are informally related through
 		\psi = \frac{I}{h\nu} \quad \mathrm{or} \quad I = E \psi \,. 
 	\end{equation}
 Here, the informality arises from the angular flux depending on the particle energy and the intensity depending on the particle frequency. The intent of providing Eq.~\ref{trans:psi_I_relation} is to give a simple way to convert between the notations used in nuclear engineering, astrophysics, and \gls{hedp}. 
+\textcite[\S 2.1.5]{rgm} provides further commentary on these notational differences. 
 
 \subsection{Moments of the Distribution Function}
 Integration over the velocity variable plays an important role in both neutron and photon transport. In the above, we integrated over position-velociy space to determine the reaction rate and the energy and momentum deposition rates. These integrated quantities are called the moments of the distribution function. 
@@ -181,7 +182,7 @@ The emission rate is given by the Planck source, $B(\nu,T)$.
 The balance of energy between radiation and matter is then written: 
 	\begin{equation} \label{trans:meb}
 	\begin{aligned}
-		C_v \pderiv{T}{t} &= \int_{\mathbb{S}^2} \int_0^\infty \sigma_a \paren{I(\x,\Omegahat,\nu,t) - \frac{B(\nu,T)}{4\pi}} \ud \nu \ud \Omega \\
+		C_v \pderiv{T}{t} &= \int_{\mathbb{S}^2} \int_0^\infty \sigma_a\!\paren{I(\x,\Omegahat,\nu,t) - \frac{B(\nu,T)}{4\pi}} \ud \nu \ud \Omega \\
 		&= \int_0^\infty \sigma_a (c E(\x,\nu,t) - B(\nu,T)) \ud \nu \,, 
 	\end{aligned}
 	\end{equation}
