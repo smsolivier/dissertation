@@ -45,7 +45,7 @@
 \usetikzlibrary{calc}
 \RequirePackage{stmaryrd}
 \RequirePackage{subcaption}
-\RequirePackage[backend=bibtex,sorting=none,style=ieee,citestyle=numeric-comp]{biblatex}
+\RequirePackage[backend=bibtex,sorting=none,style=ieee,citestyle=numeric-comp,isbn=false,url=false,eprint=false,giveninits=true]{biblatex}
 \RequirePackage{subfiles}
 \RequirePackage{adjustbox}
 % \RequirePackage[section]{placeins}
