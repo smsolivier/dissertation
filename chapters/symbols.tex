@@ -2,6 +2,7 @@
 \documentclass[../doc.tex]{subfiles}
 
 \begin{document}
+\renewcommand{\arraystretch}{1.1}
 Below is a list of the symbols and mathematical notation used throughout this document. 
 
 \subsection*{Mathematical Symbols}
@@ -17,6 +18,8 @@ $\D$ & denotes the computational domain, $\D \subset \R^{\dim}$\\
 $\partial\D$ & the boundary of the domain, $\D$ \\
 $\mathbb{S}^2$ & the unit sphere \\
 $\e_i$ & the canonical Cartesian basis \\
+$\dderiv{}{x}$ & total derivative with respect to $x$ \\
+$\pderiv{}{x}$ & partial derivatives with respect to $x$ \\
 $\nabla$ & the spatial gradient $\nabla = \pderiv{}{x} \e_x + \pderiv{}{y}\e_y + \pderiv{}{z}\e_z$ \\
 $\nabla\cdot$ & the divergence operator \\
 $:$ & scalar contraction of two tensors \\
@@ -29,7 +32,7 @@ $\equiv$ & defined as \\
 \end{longtable}
 
 \subsection*{Finite Element Notation}
-\begin{longtable}{p{2cm}p{12cm}}
+\begin{longtable}{p{2.25cm}p{12cm}}
 $\hat{K}^{\dim}$ & the $\dim$-dimensional reference element, $\hat{K}^{\dim} = [0,1]^{\dim}$ \\
 $\mathcal{P}_k(\hat{K}^1)$ & space of univariate polynomials of degree less than or equal to $k$ \\
 $\mathcal{Q}_{m,n}(\hat{K})$ & tensor product polynomial space of $\mathcal{P}_m(\hat{K}^1)$ and $\mathcal{P}_n(\hat{K}^1)$ \\
@@ -38,9 +41,11 @@ $\mathcal{Q}_p(\hat{K})$ & tensor product space of equal degree in each coordina
 $\ell_i(\vec{\xi})$ & a nodal basis function for a polynomial space defined on $\hat{K}$ \\
 $\vec{\xi}$ & referential coordinate such that $\vec{\xi} \in \hat{K}$ \\
 $K$ & a finite element \\
+$\mathcal{F}$ & denotes a face in the mesh \\
 $\T$ & reference to physical space transformation such that $K = \T(\hat{K})$ \\
 $\F$ & Jacobian matrix of an element transformation \\
 $J$ & Jacobian of an element transformation such that $J = \det(\F)$ \\
+{$\T_\mathcal{F}$, $\F_\mathcal{F}$, $J_\mathcal{F}$} & transformation, Jacobian, and determinant corresponding to the embedded surface, $\mathcal{F}$ \\
 $h$ & characteristic mesh element length \\
 $\Qbb{p}(K)$ & space of mapped polynomials defined by composing $\Qcal{p}$ with the inverse mesh transformation \\
 $\mathbb{D}_k(K)$ & element-local polynomial space for the Raviart Thomas space $\RT_k$ \\
@@ -57,7 +62,6 @@ $\jump{\cdot}$ & the jump of a function across a face between two elements \\
 $\avg{\cdot}$ & the average of a function evaluated on each side of a face \\
 $\nablah$ & the local gradient defined by applying the gradient locally on each element \\ 
 $\hnabla$ & gradient in reference space \\
-$\mathcal{F}$ & denotes a face in the mesh \\
 $\Gamma$ & Set of unique faces in the mesh \\
 $\Gamma_0$ & Set of unique interior faces in the mesh \\
 $\Gamma_b$ & Set of unique faces on the boundary of the mesh, $\Gamma = \Gamma_0 \cup \Gamma_b$ \\
@@ -75,6 +79,7 @@ $\Lambda_p$ & the interior trace of the order $p$ Raviart Thomas space, $\RT_p$ 
 \subsection*{Radiation Transport}
 \begin{longtable}{p{2cm}p{12cm}}
 $h$ & Planck's constant \\
+$c$ & speed of light \\
 $\Omegahat$ & the direction-of-flight variable. $\Omegahat\in \mathbb{S}^2$\\
 $\nu$ & photon frequency \\
 $E$ & neutron energy \\
@@ -83,6 +88,7 @@ $\bar{\psi}$ & the inflow boundary function \\
 $J_n^\pm$ & half-range partial currents of the angular flux \\
 $\Jin$ & the inflow current computed from the inflow boundary function, $\bar{\psi}$ \\
 $\phi$ & the zeroth angular moment of the angular flux \\
+$\varphi$ & denotes the scalar flux solution of the moment \\
 $\vec{J}$ & the first angular moment of the angular flux \\
 $\P$ & the second angular moment of the angular flux \\
 $\E$ & the Eddington tensor defined as the ratio of the second and zeroth angular moments of the angular flux \\
