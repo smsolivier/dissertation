@@ -29,9 +29,9 @@ Thus, the force term $\paren{\pderiv{f}{t}}_\text{force} = \frac{\F}{m}\cdot\nab
 	\begin{equation}
 		\pderiv{f}{t} + \v \cdot \nabla f + \frac{\F}{m} \cdot \nabla_{\v} f = \paren{\pderiv{f}{t}}_\text{collision} \,. 
 	\end{equation}
-For charged particle transport, the particles experience external electromagnetic forces and frequently interact with each other through Coloumb collisions. In this case, particles with charge $q$ experience the force $\F = q(\E + \v\times \mat{B})$ due to the electric field, $\E$, and magnetic field, $\mat{B}$. The Coloumbic collision term is described by the (quite complicated) Fokker-Planck operator \cite[Eq.~7.25]{chen2012introduction}. 
+For charged particle transport, the particles experience external electromagnetic forces and frequently interact with each other through Coulomb collisions. In this case, particles with charge $q$ experience the force $\F = q(\E + \v\times \mat{B})$ due to the electric field, $\E$, and magnetic field, $\mat{B}$. The Coulombic collision term is described by the (quite complicated) Fokker-Planck operator \cite[Eq.~7.25]{chen2012introduction}. 
 
-Here, we focus on neutral particle transport (i.e.~photons or neutrons). Since these particles do not have charge, there are no external electromagnetic forces. Furthermore, particle-particle collisions are exceedingly rare and it is thus commonplace to ignore them \cite{neutron_transport_LM}. The collision term then only includes the interaction of the neutral particle with the background medium. These interactions are broadly classified into absorption and scattering events. The probabilities of these events occuring per unit distance traveled are called cross sections for neutrons and opacities for photons and are govenered by nuclear physics. The most general form of the Boltzmann transport equation for a neutral particle is then: 
+Here, we focus on neutral particle transport (i.e.~photons or neutrons). Since these particles do not have charge, there are no external electromagnetic forces. Furthermore, particle-particle collisions are exceedingly rare and it is thus commonplace to ignore them \cite{neutron_transport_LM}. The collision term then only includes the interaction of the neutral particle with the background medium. These interactions are broadly classified into absorption and scattering events. The probabilities of these events occurring per unit distance traveled are called cross sections for neutrons and opacities for photons and are governed by nuclear physics. The most general form of the Boltzmann transport equation for a neutral particle is then: 
 	\begin{equation} \label{trans:linboltz}
 		\pderiv{f}{t} + \v \cdot \nabla f = \paren{\pderiv{f}{t}}_\text{absorption} + \paren{\pderiv{f}{t}}_\text{scattering} + \paren{\pderiv{f}{t}}_\text{source} \,,
 	\end{equation}
@@ -108,7 +108,7 @@ Here, the informality arises from the angular flux depending on the particle ene
 \textcite[\S 2.1.5]{rgm} provides further commentary on these notational differences. 
 
 \subsection{Moments of the Distribution Function}
-Integration over the velocity variable plays an important role in both neutron and photon transport. In the above, we integrated over position-velociy space to determine the reaction rate and the energy and momentum deposition rates. These integrated quantities are called the moments of the distribution function. 
+Integration over the velocity variable plays an important role in both neutron and photon transport. In the above, we integrated over position-velocity space to determine the reaction rate and the energy and momentum deposition rates. These integrated quantities are called the moments of the distribution function. 
 For most purposes, the direction particles are traveling is immaterial for computing reaction and deposition rates. Integrating the angular flux over the direction of travel simplifies the above calculation for reaction rate. Let 
 	\begin{equation}
 		\phi(\x,E,t) = \int_{\mathbb{S}^2} \psi(\x,\Omegahat,E,t) \ud \Omega \,,  

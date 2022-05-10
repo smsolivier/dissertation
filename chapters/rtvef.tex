@@ -12,7 +12,7 @@ A lowest-order mixed finite element discretization of the VEF equations in one s
 The DG methods presented in Chapter \ref{chap:dgvef} do not have element-local particle conservation and do not directly solve for the current. Furthermore, a mixed finite element VEF discretization has immediate compatibility with the mixed methods used in the hydrodynamics framework of \cite{blast}. 
 
 The chapter begins by deriving the weak form of the VEF equations in first-order form. We show that, due to the presence of the Eddington tensor in the VEF first moment equation, the standard \gls{rt} mixed finite element methods are not appropriate for the VEF equations. We present two alternatives: a method where each component of the current is approximated with continuous finite elements and a non-conforming approach where the RT space is used along with DG-like numerical fluxes. 
-We provide background on the discrete inf-sup condition, a key mathematical aspect in the design of mixed finite element methods, and show how the inf-sup condition indicates both methods will be non-singular but the first method will suffer from the presence of non-physical spurrious modes that plague solution quality and degrade the performance of iterative solvers. 
+We provide background on the discrete inf-sup condition, a key mathematical aspect in the design of mixed finite element methods, and show how the inf-sup condition indicates both methods will be non-singular but the first method will suffer from the presence of non-physical spurious modes that plague solution quality and degrade the performance of iterative solvers. 
 Block preconditioners for the mixed finite element system are presented. 
 We then derive a hybridized version of the RT method that uses Lagrange multipliers to reduce the number of globally coupled unknowns. 
 The chapter concludes with numerical results. We investigate the accuracy of the methods, their fixed-point convergence rates in the thick diffusion limit and on the linearized crooked pipe, and the performance of the preconditioned iterative solvers in both serial and parallel. 
@@ -310,7 +310,7 @@ For the block system to be non-singular, we must have that
 	\end{equation}
 Equivalently, we require that the nullspace of $\mat{D}^T$ has only the trivial nullspace of zero (i.e.~$N(\mat{D}^T) = \{0\}$). The discrete inf-sup condition is precisely this condition on the matrix $\mat{D}$ that $N(\mat{D}^T) = \{0\}$. 
 
-\subsection{Presence of Spurrious Modes}
+\subsection{Presence of Spurious Modes}
 We now particularize the matrix $\mat{D}$ for a single element, $K = [0,1]^2$, of the lowest-order $\Hone \times L^2(\D)$ and $H(\div;\D)\times L^2(\D)$ discretizations of the Poisson problem. Let 
 	\begin{subequations}
 	\begin{equation}

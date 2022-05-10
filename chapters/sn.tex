@@ -192,7 +192,7 @@ where $\mat{F}_{d,\downarrow}$ and $\mat{F}_{d,\uparrow}$ represent the lower an
 	\begin{equation} \label{sn:horich}
 		(\mat{F}_{d,\downarrow} + \mat{G}_d + \mat{M}_t)\ubar{\psi}_d^{k+1} = \ubar{b}_d - \mat{F}_{d,\uparrow}\ubar{\psi}_d^{k} \,,
 	\end{equation}
-where superscipts denote the iteration index. Since $\mat{F}_{d,\downarrow}$ is block lower triangular by element and $\mat{G}_d$ and $\mat{M}_t$ are block diagonal by element, the left hand side of Eq.~\ref{sn:horich} can be inverted element-by-element using a transport sweep. 
+where superscripts denote the iteration index. Since $\mat{F}_{d,\downarrow}$ is block lower triangular by element and $\mat{G}_d$ and $\mat{M}_t$ are block diagonal by element, the left hand side of Eq.~\ref{sn:horich} can be inverted element-by-element using a transport sweep. 
 
 When used in a source iteration solver (e.g.~Eq.~\ref{sn:sourceiteration}), the action of $\mat{L}^{-1}$ is approximated using the splitting of $\mat{F}_d$ for each direction. Thus, solving the transport problem on a mesh with reentrant faces requires a nested iteration scheme: for each source iteration, the streaming and collision operator is iteratively inverted. However, in practice, it has been seen that a single iteration of the iterative scheme in Eq.~\ref{sn:horich} per outer source iteration is enough for robust convergence when the previous outer iteration is used as the initial guess for the inner iteration. This algorithm solves:
 	\begin{equation}

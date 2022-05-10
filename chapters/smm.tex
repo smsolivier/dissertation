@@ -3,7 +3,7 @@
 
 \begin{document}
 \chapter{Second Moment Methods} \label{chap:smm}
-Lewis and Miller's \gls{smm} \cite{lewis_miller} couples the transport equation to the moment equations with additive closures that depend linearly on the transport solution. This scheme is characterized by a two-stage process where 1) the transport equation is inverted with a scattering source defined from the previous iteration's SMM scalar flux and 2) a \emph{diffusion approximation} is solved with transport-dependent correction sources. By contrast, VEF uses nonlinear closures and the generally non-symmetric VEF moment system must be solved at each iteration. Since SMM solves the symetric diffusion equation instead of the non-symmetric VEF equations, less expensive solvers, such as conjugate gradient, can be used instead of the general purpose methods such as \gls{bicg} or \gls{gmres} which generally require more computation and storage. 
+Lewis and Miller's \gls{smm} \cite{lewis_miller} couples the transport equation to the moment equations with additive closures that depend linearly on the transport solution. This scheme is characterized by a two-stage process where 1) the transport equation is inverted with a scattering source defined from the previous iteration's SMM scalar flux and 2) a \emph{diffusion approximation} is solved with transport-dependent correction sources. By contrast, VEF uses nonlinear closures and the generally non-symmetric VEF moment system must be solved at each iteration. Since SMM solves the symmetric diffusion equation instead of the non-symmetric VEF equations, less expensive solvers, such as conjugate gradient, can be used instead of the general purpose methods such as \gls{bicg} or \gls{gmres} which generally require more computation and storage. 
 In addition, where the VEF closures are well defined only when $\psi>0$, the additive closures used in SMM are well-defined for any $\psi$. 
 
 Here, we pursue independent discretizations of the SMM moment system. 
@@ -130,7 +130,7 @@ An additional linearization is required for the boundary terms due to the presen
 		&= \int_{\Gamma_b} \vec{v} \cdot \paren{\frac{1}{E_{b0}}\pderiv{\E}{\psi}\biggr\rvert_{\psi_0} - \frac{\E_0}{E_{b0}^2}\pderiv{E_b}{\psi}\biggr\rvert_{\psi_0}}\!\n\!\paren{\vec{J}_0\cdot\n - 2\Jin} \ud s \,. 
 	\end{aligned}
 	\end{equation}
-Since we have assumed that $\varphi_0$ and $\vec{J}_0$ satisfy the boundary conditions, we can subsitute 
+Since we have assumed that $\varphi_0$ and $\vec{J}_0$ satisfy the boundary conditions, we can substitute 
 	\begin{equation}
 		\varphi_0 = \frac{1}{E_{b0}}\paren{\vec{J}_0\cdot\n - 2\Jin} 
 	\end{equation}

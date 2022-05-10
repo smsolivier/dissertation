@@ -250,7 +250,7 @@ The basis functions for $\Pcal{1}$, $\Pcal{2}$, and $\Pcal{3}$ through the Gauss
 Interpolation through the Gauss-Lobatto and Gauss-Legendre points both have the required properties to be accurate in the limit as $p\rightarrow \infty$ \cite{spectral_canuto,trefethen}. Thus, the choice of interpolating points is typically dictated by other aspects of the overall algorithm. Note that the Gauss-Lobatto points include the interval end points $0$ and $1$ while the Gauss-Legendre points do not. The bases resulting from Lagrange interpolation through the Gauss-Lobatto and Gauss-Legendre points are referred to as closed and open, respectively, due to this. The Gauss-Legendre basis has the beneficial property of diagonal mass matrices on affine meshes while the closed Gauss-Lobatto basis typically leads to sparser globally coupled systems since closed bases couple fewer degrees of freedom on interior faces. 
 
 \section{Description of the Mesh}
-\subsection{Admissible Tesselations}
+\subsection{Admissible Tessellations}
 % --- admissible meshes --- 
 \begin{figure}
 \centering
@@ -266,15 +266,15 @@ Interpolation through the Gauss-Lobatto and Gauss-Legendre points both have the 
 	\caption{}
 	\label{fem:inadmissible}
 \end{subfigure}
-\caption{Examples of (a) an admissible tesselation and (b) an inadmissible tesselation.}
+\caption{Examples of (a) an admissible tessellation and (b) an inadmissible tessellation.}
 \end{figure}
 
 Let $\D \subset \R^{\dim}$ with $\dim = 2,3$ be the domain of the problem. The domain is subdivided into a finite number of subsets $K$, called finite elements, such that 
 	\begin{equation}
 		\D = \bigcup_{K \in \meshT} K \,, 
 	\end{equation}
-where $\meshT$ denotes a tesselation of the domain called the mesh. 
-In this document, we only consider the use of tensor product elements. That is, in two dimensions each $K$ is a quadrilateral and in three dimensions each $K$ is a hexahedron. The tesselation of the domain satisfies the following properties: 
+where $\meshT$ denotes a tessellation of the domain called the mesh. 
+In this document, we only consider the use of tensor product elements. That is, in two dimensions each $K$ is a quadrilateral and in three dimensions each $K$ is a hexahedron. The tessellation of the domain satisfies the following properties: 
 	\begin{enumerate}
 		\item each $K$ is a closed set with an interior, denoted $\mathring{K}$, that is non-empty, 
 		\item the elements do not overlap i.e.~for each distinct $K_1,K_2 \in \meshT$, $\mathring{K}_1 \cap \mathring{K}_2 = \emptyset$,
