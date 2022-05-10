@@ -99,7 +99,7 @@ for i in range(len(w)):
 
 print('length =', s) 
 
-plt.quiver(Xs[:,0], Xs[:,1], tans[:,0], tans[:,1], color='#1f77b4', clip_on=True, label=r'$\boldsymbol{\mathrm{\tau}}$')
+plt.quiver(Xs[:,0], Xs[:,1], tans[:,0], tans[:,1], color='#1f77b4', clip_on=True, label=r'$\boldsymbol{\mathrm{t}}$')
 plt.quiver(Xs[:,0], Xs[:,1], nors[:,0], nors[:,1], color='#ff7f0e', clip_on=True, label=r'$\boldsymbol{\mathrm{n}}$')
 plt.legend(loc='lower right')
 plt.xlabel('$x$')
