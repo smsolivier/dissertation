@@ -40,7 +40,7 @@ for j,p in enumerate(orders):
 		s = [tex.utils.writeNumber(df['h'][i], '{:.3e}')]
 		for key in keys:
 			for f in range(len(files)):
-				s.append(tex.utils.writeNumber(d[f][p][i]['err'], '{:.3e}'))
+				s.append(tex.utils.writeNumber(d[f][p][i][key], '{:.3e}'))
 		app.AddRow(*s) 
 	app.AddRowGroup(str(p), n*j, n, False)
 
