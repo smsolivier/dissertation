@@ -7,17 +7,17 @@ In this chapter, we design a family of independent VEF discretizations for the l
 By using the Eddington tensor and boundary factor interpolation procedure established in \cite{two-level-independent-warsa}, these methods achieve both rapid convergence in outer fixed-point iterations and in inner linear solver iterations when paired with a high-order \gls{dg} discretization of \gls{sn} transport. 
 
 In particular, we extend the unified analysis of DG methods developed for elliptic problems presented by \textcite{Arnold2002} to the VEF equations to derive analogs of the \gls{ip}, \gls{br2}, \gls{mdldg}, and \gls{cg} techniques.
-We show that the IP and BR2 VEF methods are effectively preconditioned by the subspace correction method from \textcite{Pazner2021} and that \gls{amg} is effective for the CG and MDLDG discretizations.
+We show that the IP and BR2 VEF methods are effectively preconditioned by the subspace correction method from \textcite{Pazner2021} and that \gls{amg} is effective for the \gls{cg} and \gls{mdldg} discretizations.
 \textcite{dima_dfem} also applied DG techniques to the VEF equations but they discretize the first-order form of the VEF equations and only consider lowest-order elements in one dimension.
 We note that our CG operator is equivalent to extending the continuous finite element VEF discretization in \cite{two-level-independent-warsa} to multiple dimensions, arbitrary-order, and curved meshes.
 
 The chapter proceeds as follows. We first introduce the high-level concepts used to derive DG discretizations of the second-order form of elliptic partial differential equations. 
-We then extend Arnold's unified framework to the VEF moment system. The IP, BR2, and MDLDG methods are derived from this framework through the specification of the numerical fluxes. A discussion of the implementation of the so-called lifting operators that are used to stabilize the BR2 and MDLDG discretizations is provided.
+We then extend Arnold's unified framework to the VEF moment system. The \gls{ip}, \gls{br2}, and \gls{mdldg} methods are derived from this framework through the specification of the numerical fluxes. A discussion of the implementation of the so-called lifting operators that are used to stabilize the BR2 and MDLDG discretizations is provided.
 A continuous finite element discretization is then extracted from the DG framework.  
 Section \ref{dgvef_sec:subspace} discusses the \gls{usc} preconditioner and its implementation. 
 We conclude with computational results.
 We show that all the methods presented achieve high-order accuracy on curved meshes through the method of manufactured solutions, preserve the thick diffusion limit both on orthogonal and a severely distorted curved mesh, and are effective on the linearized, steady-state crooked pipe problem in both outer fixed-point iterations and inner preconditioned linear solver iterations.
-The parallel performance of the IP and CG methods is demonstrated with a weak scaling study.
+The parallel performance of the \gls{ip} and \gls{cg} methods is demonstrated with a weak scaling study.
 
 \section{Arnold's Unified Framework}
 \textcite{Arnold2002} derive a family of DG methods for the model elliptic problem: 
@@ -202,7 +202,7 @@ All the methods we consider use numerical fluxes of the form
 	\end{equation}
 	\end{subequations}
 where $\alpha(\varphi)$ and $\vec{\theta}(\varphi)$ are single-valued functions whose purpose is to ensure a stable discretization.
-The IP, BR2, and LDG methods differ only in the choice of $\alpha(\varphi)$ and $\vec{\theta}(\varphi)$. With these numerical fluxes, Eq.~\ref{dgvef:family} becomes: 
+The \gls{ip}, \gls{br2}, and \gls{ldg} methods differ only in the choice of $\alpha(\varphi)$ and $\vec{\theta}(\varphi)$. With these numerical fluxes, Eq.~\ref{dgvef:family} becomes: 
 	\begin{multline} \label{dgvef:family_alpha}
 		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int_{\Gamma_0} \jump{u} \alpha(\varphi) \ud s - \int_{\Gamma_0} \jump{u} \avg{\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi}\cdot\n} \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\n} \ud s \\ + \int_{\Gamma_0} \jump{\frac{\nablah u}{\sigma_t}} \cdot \vec{\theta}(\varphi) \ud s
 		+ \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x \\ 
@@ -237,7 +237,7 @@ where $\kappa$ is the penalty parameter. IP methods require that $\kappa \propto
 	\end{multline}
 
 \subsection{The Second Method of Bassi and Rebay (BR2)}
-The BR2 method uses an alternative penalty term. Let $\vec{\rho}_f(\omega)\in \vDG$ be a face-local lifting operator defined by 
+The \gls{br2} method uses an alternative penalty term. Let $\vec{\rho}_f(\omega)\in \vDG$ be a face-local lifting operator defined by 
 	\begin{equation} \label{dgvef:rhof}
 		\int \vec{v}\cdot\vec{\rho}_f(\omega) \ud \x = -\int_f \avg{\vec{v} \cdot\n} \omega \ud s \,, \quad \forall \vec{v} \in \vDG\,, \quad \text{on} \ f\in \Gamma_0 \,. 
 	\end{equation}
@@ -264,7 +264,7 @@ The BR2 DG VEF discretization is then: find $\varphi \in Y_p$ such that
 	\end{multline}
 
 \subsection{Minimal Dissipation Local Discontinuous Galerkin}
-Finally, we consider the Local Discontinuous Galerkin (LDG) method. In general, LDG uses the following numerical fluxes:
+Finally, we consider the \gls{ldg} method. In general, \gls{ldg} uses the following numerical fluxes:
 	\begin{subequations}
 	\begin{equation}
 		\widehat{\vec{J}}\cdot\n = \avg{\vec{J}\cdot\n} + \beta\jump{\vec{J}\cdot\n} + \kappa \jump{\varphi} \,,
@@ -282,7 +282,7 @@ where $\vec{J}$ is defined as the discrete elimination of the current derived in
 		% \beta = \frac{1}{2}\sign(\vec{w}\cdot\n) \,, 
 	\end{equation}
 where $\vec{w}$ is any constant, non-zero vector. This choice imposes an arbitrary upwinding on the current that is balanced by an opposing choice for the scalar flux.
-With this choice of $\beta$, the LDG method is stable for any $\kappa \geq 0$; if $\kappa\equiv 0$, the method is referred to as the minimal dissipation LDG method \cite{10.1007/s10915-007-9130-3}.
+With this choice of $\beta$, the \gls{ldg} method is stable for any $\kappa \geq 0$; if $\kappa\equiv 0$, the method is referred to as the minimal dissipation \gls{ldg} method \cite{10.1007/s10915-007-9130-3}.
 Using the numerical flux for the scalar flux, the discrete current simplifies to 
 	\begin{equation}
 		\vec{J} = \frac{1}{\sigma_t}\paren{\vec{Q}_1 - \nablah \cdot\paren{\E\varphi}} - \vec{r}_0\!\paren{\jump{\E\varphi\n}} - \vec{\ell}\!\paren{\beta\jump{\E\varphi\n}} \,,
@@ -291,7 +291,7 @@ where $\vec{r}_0(\vec{\tau}) \in \vDG$ is another lifting operator defined by
 	\begin{equation}
 	 	\int \sigma_t\, \vec{v}\cdot\vec{r}_0(\vec{\tau}) \ud \x = -\int_{\Gamma_0} \avg{\vec{v}}\cdot \vec{\tau} \ud s \,, \quad \forall \vec{v} \in \vDG \,, 
 	\end{equation} 
-that differs from $\vec{r}(\vec{\tau})$ only in the region of integration on the right hand side. The LDG method is then equivalent to setting 
+that differs from $\vec{r}(\vec{\tau})$ only in the region of integration on the right hand side. The \gls{ldg} method is then equivalent to setting 
 	\begin{subequations}
 	\begin{multline}
 		\alpha(\varphi) = -\avg{\vec{r}_0\!\paren{\jump{\E\varphi\n}}\cdot\n + \vec{\ell}\!\paren{\beta\jump{\E\varphi\n}}\cdot\n} \\+ \beta\jump{\frac{1}{\sigma_t}\paren{\vec{Q}_1 - \nablah\cdot\paren{\E\varphi}}\cdot\n - \vec{r}_0\!\paren{\jump{\E\varphi\n}}\cdot\n - \vec{\ell}\!\paren{\beta\jump{\E\varphi\n}}\cdot\n} + \kappa\jump{\varphi} \,,
@@ -312,13 +312,13 @@ where $\vec{\rho}_0(\omega), \vec{\lambda}(\upsilon) \in \vDG$ such that
 	\begin{equation}
 		\int \vec{v} \cdot \vec{\lambda}(\upsilon) \ud \x = -\int_{\Gamma_0} \jump{\vec{v}\cdot\n} \upsilon \ud s \,, \quad \forall \vec{v} \in \vDG \,, 
 	\end{equation}
-are analogs of $\vec{r}_0(\vec{\tau})$ and $\vec{\ell}(\vec{\chi})$, respectively, that do not include the total interaction cross section in the left hand side mass matrices and have scalar arguments. The LDG VEF discretization is then: find $\varphi \in Y_p$ such that 
+are analogs of $\vec{r}_0(\vec{\tau})$ and $\vec{\ell}(\vec{\chi})$, respectively, that do not include the total interaction cross section in the left hand side mass matrices and have scalar arguments. The \gls{ldg} VEF discretization is then: find $\varphi \in Y_p$ such that 
 	\begin{multline} \label{dgvef:ldg}
 		\int_{\Gamma_b} E_b\, u \varphi \ud s + \int_{\Gamma_0} \kappa\, \jump{u}\jump{\varphi} \ud s - \int_{\Gamma_0} \jump{u} \avg{\frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi}\cdot\n} \ud s - \int_{\Gamma_0} \avg{\frac{\nablah u}{\sigma_t}} \cdot \jump{\E\varphi\n} \ud s \\
 		+ \int \paren{\vec{\rho}_0\!\paren{\jump{u}} + \vec{\lambda}\!\paren{\beta\jump{u}}}\cdot\paren{\vec{r}_0\!\paren{\jump{\E\varphi\n}} + \vec{\ell}\!\paren{\beta\jump{\E\varphi\n}}} \ud \x \\+ \int \nablah u \cdot \frac{1}{\sigma_t}\nablah\cdot\paren{\E\varphi} \ud \x + \int \sigma_a\, u \varphi \ud \x 
 		\\= \int u\, Q_0 \ud \x + \int \nablah u \cdot \frac{\vec{Q}_1}{\sigma_t} \ud \x - \int_{\Gamma_0} \jump{u} \paren{\avg{\frac{\vec{Q}_1\cdot\n}{\sigma_t}} + \beta\jump{\frac{\vec{Q}_1\cdot\n}{\sigma_t}}} \ud s - 2\int_{\Gamma_b} u\, \Jin \ud s \,, \quad \forall u \in Y_p \,. 
 	\end{multline}
-The advantage of LDG is that the penalty parameter does not need to scale with the mesh size. However, the LDG stabilization term has a non-compact stencil that connects neighbors of neighbors, leading to less sparsity than the IP or BR2 methods. 
+The advantage of \gls{ldg} is that the penalty parameter does not need to scale with the mesh size. However, the \gls{ldg} stabilization term has a non-compact stencil that connects neighbors of neighbors, leading to less sparsity than the IP or BR2 methods. 
 
 \section{Implementation of Lifting Operators} \label{dgvef_sec:lifting}
 Consider the face-local lifting operator $\vec{\rho}_f(\omega)$ used in the BR2 stabilization term defined in Eq.~\ref{dgvef:rhof} with $\omega = \jump{u}$ which satisfies
