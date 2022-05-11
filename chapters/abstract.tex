@@ -2,7 +2,6 @@
 \documentclass[../doc.tex]{subfiles}
 
 \begin{document}
-\begin{abstract}
 % Simulations of astrophysical phenomena and inertial confinement fusion require the simultaneous numerical modeling of hydrodynamics and \gls{trt}. 
 Numerically modeling the high energy density regimes characteristic of astrophysical phenomena and \gls{icf} requires simultaneously modeling hydrodynamics and \gls{trt}. 
 Recently, high-order finite element discretizations of the hydrodynamics equations using high-order (curved) meshes have been shown to have improved robustness and computational performance over low-order methods. Due to the tightly coupled nature of these radiation-hydrodynamics simulations, high-order methods compatible with curved meshes are also desired for \gls{trt}. 
@@ -16,6 +15,5 @@ The \gls{vef} method is a moment-based transport algorithm where the choice of c
 We also investigate the use of \glspl{smm}, a class of moment methods closely related to the VEF method. SMMs avoid the difficult-to-solve VEF moment system through a clever choice of closure, leading to an iterative scheme where only radiation diffusion must be inverted at each iteration. 
 By leveraging a mathematical connection between SMM and VEF, the VEF methods presented in this dissertation are converted to SMMs to derive novel DG, CG, and mixed finite element-based algorithms. The resulting methods also form robust and efficient transport algorithms while avoiding the non-symmetric solvers that VEF methods require. 
 
-This work demonstrates that the algorithmic flexiblity allowed by moment methods can be used to design efficient algorithms for radiation transport. In addition, this dissertation serves as the foundation for the design of efficient, high-order, moment-based radiation-hydrodynamics algorithms. 
-\end{abstract}
+This work demonstrates that the algorithmic flexibility allowed by moment methods can be used to design efficient algorithms for radiation transport. In addition, this dissertation serves as the foundation for the design of efficient, high-order, moment-based radiation-hydrodynamics algorithms. 
 \end{document}

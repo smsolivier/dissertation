@@ -57,6 +57,7 @@
      {\end{longtable}}%
 }
 \renewcommand{\glsnamefont}[1]{\textbf{#1}}
+\renewcommand{\glossarysection}[2][]{} % suppress title created by printglossaries command
 
 % set to display subsections in TOC 
 \setcounter{tocdepth}{2}

@@ -22,7 +22,9 @@
 
 \copyrightpage
 
+\begin{abstract}
 \subfile{chapters/abstract}
+\end{abstract}
 
 % --- front matter --- 
 \begin{frontmatter}
@@ -46,9 +48,9 @@
 \end{preamble}
 
 % list of acronyms 
+\begin{preamble}{Acronyms}
 \printglossary[style=april_gloss_style]
-\addcontentsline{toc}{chapter}{Acronyms}
-\clearpage
+\end{preamble}
 
 % list of symbols 
 \begin{preamble}{List of Symbols}
@@ -61,6 +63,7 @@
 % \listoftables
 % \clearpage
 
+% acknowledgements 
 \begin{preamble}{\acknowledgename}
 \subfile{chapters/acknowledge}
 \end{preamble}
@@ -68,8 +71,6 @@
 
 % --- main matter --- 
 \glsresetall % ignore glossary uses in abstract
-\pagestyle{headings}
-
 \subfile{chapters/introduction}
 \subfile{chapters/transport}
 \subfile{chapters/moment}
