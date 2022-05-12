@@ -38,11 +38,11 @@ Here, we focus on neutral particle transport (i.e.~photons or neutrons). Since t
 where we have split the collision term into absorption and scattering terms and included an additional term representing an external source of particles. For neutrons, the external source could be a fixed-source of particles such as a radioactive material that emits neutrons. For photons, we consider the source to be the thermal emission of photons. Thus, the photon external source is dependent on the material's temperature. We note that the case of the general Boltzmann equation under the assumption that particles do not interact with each other is called the linear Boltzmann equation. 
 
 \section{Boundary and Initial Conditions}
-Suppose that the Boltzmann transport equation is solved in a spatial domain $\D$ surrounded by a surface $\partial\D$. To solve the transport equation, the initial and boundary conditions for the particle distribution function must be provided. The initial condition corresponds to specifying $f(\x,\v,0)$: the expected number of particles in the phase space at time $t=0$. Letting $\n$ represent the outward unit normal to the boundary of the domain, the boundary condition specifies $f(\x,\v,t)$ for each $\x\in\partial\D$ satisfying $\v\cdot\n<0$ for all values of $t$. Figure \ref{trans:inflow_diag} depicts an example domain and its boundary along with a selection of normal vectors. The region $\v\cdot\n<0$ where the boundary conditions must be provided are shown in red. The case where 
+Suppose that the Boltzmann transport equation is solved in a spatial domain $\D$ with boundary $\partial\D$. To solve the transport equation, the initial and boundary conditions for the particle distribution function must be provided. The initial condition corresponds to specifying $f(\x,\v,0)$: the expected number of particles in the phase space at time $t=0$. Letting $\n$ represent the outward unit normal to the boundary of the domain, the boundary condition specifies $f(\x,\v,t)$ for each $\x\in\partial\D$ satisfying $\v\cdot\n<0$ for all values of $t$. Figure \ref{trans:inflow_diag} depicts an example domain and its boundary along with a selection of normal vectors. The region $\v\cdot\n<0$ where the boundary conditions must be provided are shown in red. The case where 
 	\begin{equation} \label{trans:gen_inflow}
 		f(\x,\v,t) = \bar{f}(\x,\v,t) \,, \quad \x \in \partial\D \ \mathrm{and} \ \v \cdot \n < 0 \,, 
 	\end{equation}
-is called an inflow boundary condition with $\bar{f}$ the inflow boundary function. The special case $\bar{f} \equiv 0$ is called a vacuum boundary condition. Other types of boundary conditions common for radiation transport are provided in \cite[\S 1.3]{neutron_transport_LM}.
+is called an inflow boundary condition with $\bar{f}$ the inflow boundary function. The special case $\bar{f} \equiv 0$ is called a vacuum boundary condition. Other types of boundary conditions commonly used in radiation transport are provided in \cite[\S 1.3]{neutron_transport_LM}.
 % --- inflow boundary conditions diagram --- 
 \begin{figure}
 \centering
@@ -174,9 +174,14 @@ We model scattering and absorption events with the background media by setting:
 	\begin{equation}
 		\frac{1}{c}\paren{\pderiv{I}{t}}_\text{collision} = \int_{\mathbb{S}^2} \int_0^\infty \sigma_s(\Omegahat'\rightarrow \Omegahat, \nu' \rightarrow \nu) I(\x,\Omegahat',\nu',t) \ud \nu' \ud \Omega' - \sigma_t I(\x,\Omegahat,\nu,t) \,,
 	\end{equation}
-where $\sigma_s(\Omegahat'\rightarrow\Omegahat,\nu'\rightarrow \nu)$ is the differential scattering opacity. We define $\sigma_s = \int_{\mathbb{S}^2} \int_0^\infty \sigma_s(\Omegahat'\cdot\Omegahat,\nu'\rightarrow\nu) \ud \nu'\ud\Omega'$ as the scattering opacity. The total opacity is given by $\sigma_t = \sigma_a + \sigma_s$ where $\sigma_a$ is the absorption opacity. The source term is used to model the emission of thermal photons by the material. This is modeled by Planck's black body source: 
+where $\sigma_s(\Omegahat'\rightarrow\Omegahat,\nu'\rightarrow \nu)$ is the differential scattering opacity. 
+We define 
 	\begin{equation}
-		\frac{1}{c}\paren{\pderiv{I}{t}}_\text{source} =\frac{\sigma_a B(\nu,T)}{4\pi} \,,
+		\sigma_s(\nu) = \int_{\mathbb{S}^2} \int_0^\infty \sigma_s(\Omegahat'\rightarrow\Omegahat,\nu'\rightarrow\nu) \ud \nu'\ud\Omega'	
+	\end{equation}
+as the scattering opacity. The total opacity is given by $\sigma_t(\nu) = \sigma_a(\nu) + \sigma_s(\nu)$ where $\sigma_a(\nu)$ is the absorption opacity. In general, all of these opacities also depend on the material's temperature. The source term is used to model the emission of thermal photons by the material. This is modeled by Planck's black body source: 
+	\begin{equation}
+		\frac{1}{c}\paren{\pderiv{I}{t}}_\text{source} =\frac{\sigma_a(\nu) B(\nu,T)}{4\pi} \,,
 	\end{equation}
 where
 	\begin{equation}
@@ -185,13 +190,13 @@ where
 is the Planck emission function with $k$ Boltzmann's constant and $T$ the temperature of the material. Note that the above source is only valid under the assumption of local thermodynamic equilibrium. 
 Thus, the Boltzmann transport equation for thermal photons is given by 
 	\begin{equation} \label{trans:trans_photon}
-		\frac{1}{c}\pderiv{I}{t} + \Omegahat\cdot\nabla I + \sigma_t I = \int_{\mathbb{S}^2}\int_0^\infty \sigma_s(\Omegahat'\rightarrow\Omegahat,\nu'\rightarrow \nu) I(\cdot,\Omegahat',\nu',\cdot) \ud \nu'\ud\Omega' + \frac{\sigma_a B(\nu,T)}{4\pi} \,. 
+		\frac{1}{c}\pderiv{I}{t} + \Omegahat\cdot\nabla I + \sigma_t I = \int_{\mathbb{S}^2}\int_0^\infty \sigma_s(\Omegahat'\rightarrow\Omegahat,\nu'\rightarrow \nu) I(\cdot,\Omegahat',\nu',\cdot) \ud \nu'\ud\Omega' + \frac{\sigma_a B}{4\pi} \,. 
 	\end{equation}
 Converting the boundary condition in Eq.~\ref{trans:gen_inflow} to apply to the intensity by multiplying by $ch\nu$ and swapping the velocity for the direction of flight yields: 
 	\begin{equation}
-		I(\x,\Omegahat,\nu,t) = \bar{I}(\x,\Omegahat,\nu,t) \,, \quad \x \in \partial \D \ \mathrm{and} \ \Omegahat\cdot\n < 0 \,. 
+		I(\x,\Omegahat,\nu,t) = \bar{I}(\x,\Omegahat,\nu,t) \,, \quad \x \in \partial \D \ \mathrm{and} \ \Omegahat\cdot\n < 0 \,, 
 	\end{equation}
-Providing $I(\x,\Omegahat,\nu,0)$ provides the initial condition. 
+where $\bar{I}$ is the inflow boundary condition for the intensity. The initial condition supplies $I(\x,\Omegahat,\nu,0)$. 
 
 We now wish to derive an equation for the evolution of the material temperature. We model the material gaining energy by absorbing radiation and losing energy by emitting thermal radiation. Here, we are interested in the energy exchanged between matter and radiation traveling in all directions and at any frequency. 
 The energy absorption rate is 
@@ -202,12 +207,12 @@ The emission rate is given by the Planck source, $B(\nu,T)$.
 The balance of energy between radiation and matter is then written: 
 	\begin{equation} \label{trans:meb}
 	\begin{aligned}
-		C_v \pderiv{T}{t} &= \int_{\mathbb{S}^2} \int_0^\infty \sigma_a\!\paren{I(\x,\Omegahat,\nu,t) - \frac{B(\nu,T)}{4\pi}} \ud \nu \ud \Omega \\
-		&= \int_0^\infty \sigma_a (c E(\x,\nu,t) - B(\nu,T)) \ud \nu \,, 
+		C_v(T) \pderiv{T}{t} &= \int_{\mathbb{S}^2} \int_0^\infty \sigma_a(\nu)\!\paren{I(\x,\Omegahat,\nu,t) - \frac{B(\nu,T)}{4\pi}} \ud \nu \ud \Omega \\
+		&= \int_0^\infty \sigma_a(\nu) (c E(\x,\nu,t) - B(\nu,T)) \ud \nu \,, 
 	\end{aligned}
 	\end{equation}
-where $C_v$ is the material's heat capacity. 
-An initial temperature field must be provided but, since the energy balance equation does not involve spatial derivatives, boundary conditions for the temperature do not. 
+where $C_v(T)$ is the material's heat capacity. 
+An initial temperature field must be provided. Boundary conditions for the temperature field are not required since the energy balance equation does not have spatial derivatives. 
 The coupled equations given by Eqs.~\ref{trans:trans_photon} and \ref{trans:meb} are called the equations of thermal radiative transfer. This system is nonlinear due to the Planck emission term. 
 
 \section{Steady-State, Linear Transport: A Proxy for TRT}
@@ -227,34 +232,41 @@ where the definition of the frequency-dependent energy density given in Eq.~\ref
 \subsection{Gray Transport}
 The gray TRT system is derived by defining suitable frequency-averaged opacities and integrating the transport equation over all angles. The gray opacities are defined as weighted averages of the form: 
 	\begin{equation}
-		\bar{\sigma}_x = \frac{\int_0^\infty \sigma_x w(\x,\Omegahat,\nu,t) \ud \nu}{\int I(\x,\Omegahat,\nu,t) \ud \nu} \,, 
+		\ubar{\sigma}_x = \frac{\int_0^\infty \sigma_x\,w(\x,\Omegahat,\nu,t) \ud \nu}{\int w(\x,\Omegahat,\nu,t) \ud \nu} \,, 
 	\end{equation}
-where $x$ is the total, scattering, and absorption events and $w$ is a weight function that approximates the true frequency-dependent intensity. In practice, $w$ could be an approximation to the intensity computed from a larger algorithm with multiple levels in frequency, an analytical approximation to the intensity (e.g.~Rosseland opacities) \cite{pomraning2005equations}, or another numerical approximation such as via a stochastic method. 
+where $x$ is the total, scattering, and absorption events and $w$ is a weight function that approximates the true frequency-dependent intensity. In practice, $w$ could be an approximation to the intensity computed from a larger algorithm with multiple levels in frequency, an analytical approximation to the intensity (e.g.~Rosseland opacities) \cite{pomraning2005equations}, or through another numerical approximation such as with a stochastic method. 
 
 The gray emission rate is the average of the Planck emission source over all directions and frequencies: 
 	\begin{equation}
-		\bar{B}(T) = \int_{\mathbb{S}^2} \int_0^\infty B(\nu,T) \ud \nu \ud \Omega = a c T^4 \,,
+		\ubar{B}(T) = \int_{\mathbb{S}^2} \int_0^\infty B(\nu,T) \ud \nu \ud \Omega = a c T^4 \,,
 	\end{equation}
 where $a = 8\pi^5 k^4/15h^3 c^3$. 
-Letting $\bar{I}(\x,\Omegahat,t) = \int_0^\infty I(\x,\Omegahat,\nu,t)$ be the frequency-averaged intensity, the gray TRT system is: 
+Letting $\ubar{I}(\x,\Omegahat,t) = \int_0^\infty I(\x,\Omegahat,\nu,t)$ be the frequency-averaged intensity, the gray TRT system is: 
 	\begin{subequations}
 	\begin{equation}
-		\frac{1}{c}\pderiv{\bar{I}}{t} + \Omegahat\cdot\nabla\bar{I} + \bar{\sigma}_t \bar{I} = \frac{c \bar{\sigma}_s}{4\pi} E(\x,t) + \frac{\bar{\sigma}_a c T^4}{4\pi} \,,
+		\frac{1}{c}\pderiv{\ubar{I}}{t} + \Omegahat\cdot\nabla\ubar{I} + \ubar{\sigma}_t \ubar{I} = \frac{c \ubar{\sigma}_s}{4\pi} E(\x,t) + \frac{\ubar{\sigma}_a c T^4}{4\pi} \,,
 	\end{equation}
 	\begin{equation}
-		C_v \pderiv{T}{t} = c\bar{\sigma}_a (E(\x,t) - a T^4) \,. 
+		\ubar{I}(\x,\Omegahat,t) = \ubar{\bar{I}}(\x,\Omegahat,t) \,, \quad \x\in\partial\D \ \mathrm{and} \ \Omegahat\cdot\n < 0 \,,
+	\end{equation}
+	\begin{equation}
+		C_v(T) \pderiv{T}{t} = c\ubar{\sigma}_a (E(\x,t) - a T^4) \,, 
 	\end{equation}
 	\end{subequations}
+where $\ubar{\bar{I}}(\x,\Omegahat,t) = \int_0^\infty \bar{I}(\x,\Omegahat,\nu,t)\ud\nu$ is the gray inflow boundary function.
 The gray TRT equations are often used to iteratively accelerate the convergence of frequency-dependent simulations. In this way, algorithms for the frequency-dependent TRT system must also be effective for the gray TRT system. The gray TRT system then serves as an important first step in the development of frequency-dependent TRT methods. 
 
 \subsection{Steady State}
 Time derivatives are neglected under the assumption of steady state. The gray TRT system with isotropic scattering simplifies to 
 	\begin{subequations}
 	\begin{equation}
-		\Omegahat\cdot\nabla\bar{I} + \bar{\sigma}_t \bar{I} = \frac{c \bar{\sigma}_s}{4\pi} E(\x,t) + \frac{\bar{\sigma}_a a c T^4}{4\pi} \,,
+		\Omegahat\cdot\nabla\ubar{I} + \ubar{\sigma}_t \ubar{I} = \frac{c \ubar{\sigma}_s}{4\pi} E(\x,t) + \frac{\ubar{\sigma}_a a c T^4}{4\pi} \,,
+	\end{equation}
+	\begin{equation} \label{trans:graybc}
+		\ubar{I}(\x,\Omegahat,t) = \ubar{\bar{I}}(\x,\Omegahat,t) \,, \quad \x\in\partial\D \ \mathrm{and} \ \Omegahat\cdot\n < 0 \,,
 	\end{equation}
 	\begin{equation}
-		0 = c\bar{\sigma}_a (E(\x,t) - a T^4) \,. 
+		0 = c\ubar{\sigma}_a (E(\x,t) - a T^4) \,. 
 	\end{equation}
 	\end{subequations}
 In this case, the material temperature is determined by the radiation field such that: 
@@ -263,16 +275,22 @@ In this case, the material temperature is determined by the radiation field such
 	\end{equation}
 We are then left with: 
 	\begin{equation} \label{trans:trt_simp}
-		\Omegahat\cdot\nabla\bar{I} + \bar{\sigma}_t \bar{I} = \frac{c \bar{\sigma}_s + c\bar{\sigma}_a}{4\pi} E(\x,t) \,. 
+		\Omegahat\cdot\nabla\ubar{I} + \ubar{\sigma}_t \ubar{I} = \frac{c \ubar{\sigma}_s + c\ubar{\sigma}_a}{4\pi} E(\x,t) \,, 
 	\end{equation}
+along with the gray boundary condition in Eq.~\ref{trans:graybc}. 
 This equation models the radiation field at long time scales where the radiation and material have achieved equilibrium. When implicit time integration schemes are applied to the time-dependent TRT system, a steady-state system analogous to Eq.~\ref{trans:trt_simp} with additional sources must be solved at each time step. Thus, the steady-state, frequency-independent TRT system with isotropic scattering represents the core kernel of the full TRT system. 
 
 \subsection{Definition of the Model Problem}
 We now define the transport problem that serves as the model for the development of the moment methods presented in this dissertation. The properties of the steady-state, gray TRT system with isotropic scattering can be emulated with the following neutron transport equation: 
-	\begin{equation} \label{trans:model}
+	\begin{subequations} \label{trans:model}
+	\begin{equation} 
 		\Omegahat\cdot\nabla\psi + \sigma_t \psi = \frac{\sigma_s}{4\pi} \int \psi \ud \Omega' + q \,,
 	\end{equation}
-where $\psi$ represents the energy and time-independent angular flux, $\sigma_t$ and $\sigma_s$ energy-independent cross sections, and $q$ a fixed-source of particles. In this document, we solve Eq.~\ref{trans:model} and use the nuclear engineering notation for the moments. That is, we use 
+	\begin{equation}
+		\psi(\x,\Omegahat) = \bar{\psi}(\x,\Omegahat) \,, \quad \x \in \partial\D\ \mathrm{and} \ \Omegahat\cdot\n < 0 \,,
+	\end{equation}
+	\end{subequations}
+where $\psi$ represents the energy and time-independent angular flux, $\sigma_t$ and $\sigma_s$ energy-independent cross sections, $q$ a fixed-source of particles, and $\bar{\psi}$ the inflow boundary function for the angular flux. In this document, we solve Eq.~\ref{trans:model} and use the nuclear engineering notation for the moments. That is, we use 
 	\begin{equation}
 		\phi(\x) = \int_{\mathbb{S}^2} \psi(\x,\Omegahat) \ud \Omega \,,
 	\end{equation}
@@ -285,9 +303,14 @@ where $\psi$ represents the energy and time-independent angular flux, $\sigma_t$
 
 \section{The Radiation Diffusion Approximation}
 Here, we apply a simplification to the angular dependence in our model transport problem to derive the radiation diffusion approximation. We wish to solve 
-	\begin{equation} \label{trans:model2}
+	\begin{subequations} \label{trans:model2}
+	\begin{equation}
 		\Omegahat\cdot\nabla\psi + \sigma_t \psi = \frac{\sigma_s}{4\pi} \int \psi \ud \Omega' + \frac{Q}{4\pi} \,,
 	\end{equation}
+	\begin{equation}
+		\psi(\x,\Omegahat) = \bar{\psi}(\x,\Omegahat)\,, \quad \x \in \partial\D \ \mathrm{and} \ \Omegahat\cdot\n < 0 \,,
+	\end{equation}
+	\end{subequations}
 under the assumption that the angular flux is linearly anisotropic in angle. In other words, the angular flux can be written: 
 	\begin{equation}
 		\psi(\x,\Omegahat) = \frac{1}{4\pi}(\phi(\x) + 3\Omegahat\cdot\vec{J}(\x) \,. 		
@@ -332,4 +355,32 @@ where $\sigma_a = \sigma_t - \sigma_s$ was used. By eliminating the current, the
 	\begin{equation}
 		-\nabla\cdot \frac{1}{3\sigma_t} \nabla\phi + \sigma_a \phi = Q \,. 
 	\end{equation}
+On the boundary domain, the current is: 
+	\begin{equation}
+		\vec{J}\cdot\n = \int\Omegahat\cdot\n\,\psi \ud \Omega = \int_{\Omegahat\cdot\n>0} \Omegahat\cdot\n\,\psi \ud \Omega + \int_{\Omegahat\cdot\n<0} \Omegahat\cdot\n\,\bar{\psi} \ud \Omega \,. 
+	\end{equation}
+That is, the inflow boundary function is used for direction entering the domain while the angular flux is used to compute the outflow from the domain. We now use the linearly anisotropic assumption to simplify the outflow term: 
+	\begin{equation}
+	\begin{aligned}
+		\int_{\Omegahat\cdot\n>0} \Omegahat\cdot\n\,\psi\ud\Omega &= \int_{\Omegahat\cdot\n>0} \Omegahat\cdot\n\,\frac{1}{4\pi}\!\paren{\phi + 3\Omegahat\cdot\vec{J}} \ud \Omega \\
+		&= \frac{\phi}{4\pi}\int_{\Omegahat\cdot\n>0} \Omegahat\cdot\n \ud \Omega + \frac{3}{4\pi}\n \cdot \int_{\Omegahat\cdot\n>0} \Omegahat\otimes\Omegahat \ud \Omega \cdot \vec{J} \\
+		&= \frac{\phi}{4} + \frac{\vec{J}\cdot\n}{2} \,. 
+	\end{aligned}
+	\end{equation}
+Here, we have used the following half-range angular identities: 
+	\begin{equation}
+		\int_{\Omegahat\cdot\n>0} \Omegahat\otimes\Omegahat \ud \Omega = \frac{2\pi}{3}\I \,,
+	\end{equation}
+	\begin{equation}
+		\int_{\Omegahat\cdot\n>0} \Omegahat\cdot\n \ud \Omega = \pi \,. 
+	\end{equation}
+Defining 
+	\begin{equation}
+		\Jin = \int_{\Omegahat\cdot\n<0} \Omegahat\cdot\n\,\bar{\psi} \ud \Omega 
+	\end{equation}
+as the inflow partial current, the inflow boundary conditions for the diffusion approximation are: 
+	\begin{equation} \label{trans:marshak}
+		\frac{\vec{J}\cdot\n}{2} + \frac{\phi}{4} = \Jin \,. 
+	\end{equation}
+This boundary condition is referred to as a Marshak boundary condition. 
 \end{document}
