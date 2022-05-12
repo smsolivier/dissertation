@@ -47,7 +47,7 @@ is called an inflow boundary condition with $\bar{f}$ the inflow boundary functi
 \begin{figure}
 \centering
 \includegraphics[width=.85\textwidth]{figs/bean.pdf}
-\caption{A kidney bean shaped domain depicted with a selection of normal vectors along its boundary. The inflow region corresponding to $\v\cdot\n<0$ is colored in red for two example directions of $\v$.}
+\caption{A kidney bean shaped domain depicted with a selection vectors normal to its boundary. The inflow region corresponding to $\v\cdot\n<0$ is colored in red for two example directions of $\v$. The value of the distribution function in the phase space must be supplied at each position corresponding to the inflow region shown in red.}
 \label{trans:inflow_diag}
 \end{figure}
 
@@ -192,7 +192,7 @@ Thus, the Boltzmann transport equation for thermal photons is given by
 	\begin{equation} \label{trans:trans_photon}
 		\frac{1}{c}\pderiv{I}{t} + \Omegahat\cdot\nabla I + \sigma_t I = \int_{\mathbb{S}^2}\int_0^\infty \sigma_s(\Omegahat'\rightarrow\Omegahat,\nu'\rightarrow \nu) I(\cdot,\Omegahat',\nu',\cdot) \ud \nu'\ud\Omega' + \frac{\sigma_a B}{4\pi} \,. 
 	\end{equation}
-Converting the boundary condition in Eq.~\ref{trans:gen_inflow} to apply to the intensity by multiplying by $ch\nu$ and swapping the velocity for the direction of flight yields: 
+Converting the boundary condition in Eq.~\ref{trans:gen_inflow} to apply to the intensity by multiplying by $ch\nu$ and swapping the velocity for the direction of flight, the boundary conditions for the transport equation for thermal photons are given by: 
 	\begin{equation}
 		I(\x,\Omegahat,\nu,t) = \bar{I}(\x,\Omegahat,\nu,t) \,, \quad \x \in \partial \D \ \mathrm{and} \ \Omegahat\cdot\n < 0 \,, 
 	\end{equation}
@@ -241,16 +241,16 @@ The gray emission rate is the average of the Planck emission source over all dir
 		\ubar{B}(T) = \int_{\mathbb{S}^2} \int_0^\infty B(\nu,T) \ud \nu \ud \Omega = a c T^4 \,,
 	\end{equation}
 where $a = 8\pi^5 k^4/15h^3 c^3$. 
-Letting $\ubar{I}(\x,\Omegahat,t) = \int_0^\infty I(\x,\Omegahat,\nu,t)$ be the frequency-averaged intensity, the gray TRT system is: 
+Letting $\ubar{I}(\x,\Omegahat,t) = \int_0^\infty I(\x,\Omegahat,\nu,t) \ud \nu$ and $\ubar{E}(\x,t) = \int_0^\infty E(\x,\nu,t) \ud \nu$ be the frequency-averaged intensity and energy density, respectively, the gray TRT system is: 
 	\begin{subequations}
 	\begin{equation}
-		\frac{1}{c}\pderiv{\ubar{I}}{t} + \Omegahat\cdot\nabla\ubar{I} + \ubar{\sigma}_t \ubar{I} = \frac{c \ubar{\sigma}_s}{4\pi} E(\x,t) + \frac{\ubar{\sigma}_a c T^4}{4\pi} \,,
+		\frac{1}{c}\pderiv{\ubar{I}}{t} + \Omegahat\cdot\nabla\ubar{I} + \ubar{\sigma}_t \ubar{I} = \frac{c \ubar{\sigma}_s}{4\pi} \ubar{E} + \frac{\ubar{\sigma}_a c T^4}{4\pi} \,,
 	\end{equation}
 	\begin{equation}
 		\ubar{I}(\x,\Omegahat,t) = \ubar{\bar{I}}(\x,\Omegahat,t) \,, \quad \x\in\partial\D \ \mathrm{and} \ \Omegahat\cdot\n < 0 \,,
 	\end{equation}
 	\begin{equation}
-		C_v(T) \pderiv{T}{t} = c\ubar{\sigma}_a (E(\x,t) - a T^4) \,, 
+		C_v(T) \pderiv{T}{t} = c\ubar{\sigma}_a (\ubar{E} - a T^4) \,, 
 	\end{equation}
 	\end{subequations}
 where $\ubar{\bar{I}}(\x,\Omegahat,t) = \int_0^\infty \bar{I}(\x,\Omegahat,\nu,t)\ud\nu$ is the gray inflow boundary function.
@@ -260,22 +260,22 @@ The gray TRT equations are often used to iteratively accelerate the convergence 
 Time derivatives are neglected under the assumption of steady state. The gray TRT system with isotropic scattering simplifies to 
 	\begin{subequations}
 	\begin{equation}
-		\Omegahat\cdot\nabla\ubar{I} + \ubar{\sigma}_t \ubar{I} = \frac{c \ubar{\sigma}_s}{4\pi} E(\x,t) + \frac{\ubar{\sigma}_a a c T^4}{4\pi} \,,
+		\Omegahat\cdot\nabla\ubar{I} + \ubar{\sigma}_t \ubar{I} = \frac{c \ubar{\sigma}_s}{4\pi} \ubar{E} + \frac{\ubar{\sigma}_a a c T^4}{4\pi} \,,
 	\end{equation}
 	\begin{equation} \label{trans:graybc}
-		\ubar{I}(\x,\Omegahat,t) = \ubar{\bar{I}}(\x,\Omegahat,t) \,, \quad \x\in\partial\D \ \mathrm{and} \ \Omegahat\cdot\n < 0 \,,
+		\ubar{I}(\x,\Omegahat) = \ubar{\bar{I}}(\x,\Omegahat) \,, \quad \x\in\partial\D \ \mathrm{and} \ \Omegahat\cdot\n < 0 \,,
 	\end{equation}
 	\begin{equation}
-		0 = c\ubar{\sigma}_a (E(\x,t) - a T^4) \,. 
+		0 = c\ubar{\sigma}_a (\ubar{E} - a T^4) \,. 
 	\end{equation}
 	\end{subequations}
 In this case, the material temperature is determined by the radiation field such that: 
 	\begin{equation}
-		T^4 = \frac{E}{a}  \,. 
+		T^4 = \frac{\ubar{E}}{a}  \,. 
 	\end{equation}
 We are then left with: 
 	\begin{equation} \label{trans:trt_simp}
-		\Omegahat\cdot\nabla\ubar{I} + \ubar{\sigma}_t \ubar{I} = \frac{c \ubar{\sigma}_s + c\ubar{\sigma}_a}{4\pi} E(\x,t) \,, 
+		\Omegahat\cdot\nabla\ubar{I} + \ubar{\sigma}_t \ubar{I} = \frac{c \ubar{\sigma}_s + c\ubar{\sigma}_a}{4\pi} \ubar{E} \,, 
 	\end{equation}
 along with the gray boundary condition in Eq.~\ref{trans:graybc}. 
 This equation models the radiation field at long time scales where the radiation and material have achieved equilibrium. When implicit time integration schemes are applied to the time-dependent TRT system, a steady-state system analogous to Eq.~\ref{trans:trt_simp} with additional sources must be solved at each time step. Thus, the steady-state, frequency-independent TRT system with isotropic scattering represents the core kernel of the full TRT system. 
@@ -290,7 +290,7 @@ We now define the transport problem that serves as the model for the development
 		\psi(\x,\Omegahat) = \bar{\psi}(\x,\Omegahat) \,, \quad \x \in \partial\D\ \mathrm{and} \ \Omegahat\cdot\n < 0 \,,
 	\end{equation}
 	\end{subequations}
-where $\psi$ represents the energy and time-independent angular flux, $\sigma_t$ and $\sigma_s$ energy-independent cross sections, $q$ a fixed-source of particles, and $\bar{\psi}$ the inflow boundary function for the angular flux. In this document, we solve Eq.~\ref{trans:model} and use the nuclear engineering notation for the moments. That is, we use 
+where $\psi(\x,\Omegahat)$ represents the energy and time-independent angular flux, $\sigma_t(\x)$ and $\sigma_s(\x)$ energy-independent cross sections, $q(\x,\Omegahat)$ a fixed-source of particles, and $\bar{\psi}(\x,\Omegahat)$ the inflow boundary function for the angular flux. In this document, we solve Eq.~\ref{trans:model} and use the nuclear engineering notation for the moments. That is, we use 
 	\begin{equation}
 		\phi(\x) = \int_{\mathbb{S}^2} \psi(\x,\Omegahat) \ud \Omega \,,
 	\end{equation}
@@ -355,32 +355,38 @@ where $\sigma_a = \sigma_t - \sigma_s$ was used. By eliminating the current, the
 	\begin{equation}
 		-\nabla\cdot \frac{1}{3\sigma_t} \nabla\phi + \sigma_a \phi = Q \,. 
 	\end{equation}
-On the boundary domain, the current is: 
+We refer to $D = \frac{1}{3\sigma_t}$ as the diffusion coefficient. 
+
+Boundary conditions are derived by manipulating the so-called partial currents. Let 
 	\begin{equation}
-		\vec{J}\cdot\n = \int\Omegahat\cdot\n\,\psi \ud \Omega = \int_{\Omegahat\cdot\n>0} \Omegahat\cdot\n\,\psi \ud \Omega + \int_{\Omegahat\cdot\n<0} \Omegahat\cdot\n\,\bar{\psi} \ud \Omega \,. 
+		J_n^\pm = \int_{\Omegahat\cdot\n\gtrless 0} \Omegahat\cdot\n\, \psi \ud \Omega \,,
 	\end{equation}
-That is, the inflow boundary function is used for direction entering the domain while the angular flux is used to compute the outflow from the domain. We now use the linearly anisotropic assumption to simplify the outflow term: 
+so that 
+	\begin{equation}
+		\vec{J}\cdot\n = \int \Omegahat\cdot\n\, \psi \ud \Omega = J_n^+ + J_n^- \,. 
+	\end{equation}
+We add and subtract the incoming partial current, $J_n^-$, to arrive at 
 	\begin{equation}
 	\begin{aligned}
-		\int_{\Omegahat\cdot\n>0} \Omegahat\cdot\n\,\psi\ud\Omega &= \int_{\Omegahat\cdot\n>0} \Omegahat\cdot\n\,\frac{1}{4\pi}\!\paren{\phi + 3\Omegahat\cdot\vec{J}} \ud \Omega \\
-		&= \frac{\phi}{4\pi}\int_{\Omegahat\cdot\n>0} \Omegahat\cdot\n \ud \Omega + \frac{3}{4\pi}\n \cdot \int_{\Omegahat\cdot\n>0} \Omegahat\otimes\Omegahat \ud \Omega \cdot \vec{J} \\
-		&= \frac{\phi}{4} + \frac{\vec{J}\cdot\n}{2} \,. 
+		\vec{J}\cdot\n &= (J_n^+ - J_n^-) + 2J_n^- \\
+		&= \int |\Omegahat\cdot\n|\,\psi \ud \Omega + 2 J_n^- \,. 
 	\end{aligned}
 	\end{equation}
-Here, we have used the following half-range angular identities: 
+Using the assumption that the angular flux is linearly anisotropic the first term on the right hand side becomes: 
 	\begin{equation}
-		\int_{\Omegahat\cdot\n>0} \Omegahat\otimes\Omegahat \ud \Omega = \frac{2\pi}{3}\I \,,
+		\int |\Omegahat\cdot\n|\,\psi \ud \Omega = \frac{1}{4\pi}\int |\Omegahat\cdot\n| (\phi + 3\Omegahat\cdot\vec{J}) \ud \Omega = \frac{\phi}{2} \,,
 	\end{equation}
+where we have used the angular identity: 
 	\begin{equation}
-		\int_{\Omegahat\cdot\n>0} \Omegahat\cdot\n \ud \Omega = \pi \,. 
+		\int |\Omegahat\cdot\n| \ud \Omega = 2\pi \,, 
 	\end{equation}
-Defining 
+and that $\int|\Omegahat\cdot\n|\,\Omegahat\ud\Omega = 0$ since its integrand is an odd function in angle. On the boundary of the domain, the inflow partial current is determined by the inflow angular flux function, $\bar{\psi}$. Defining 
 	\begin{equation}
 		\Jin = \int_{\Omegahat\cdot\n<0} \Omegahat\cdot\n\,\bar{\psi} \ud \Omega 
 	\end{equation}
-as the inflow partial current, the inflow boundary conditions for the diffusion approximation are: 
-	\begin{equation} \label{trans:marshak}
-		\frac{\vec{J}\cdot\n}{2} + \frac{\phi}{4} = \Jin \,. 
+the radiation diffusion boundary conditions are: 
+	\begin{equation}
+		\vec{J}\cdot\n = \frac{\phi}{2} + 2\Jin \,. 
 	\end{equation}
-This boundary condition is referred to as a Marshak boundary condition. 
+This boundary condition is referred to as the Marshak boundary condition. 
 \end{document}

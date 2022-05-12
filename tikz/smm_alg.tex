@@ -13,7 +13,7 @@
 \begin{document}
 \begin{tikzpicture}
 	\node (transport) at (0,0) {$\Omegahat\cdot\nabla\psi + \sigma_t \psi = \dfrac{\sigma_s}{4\pi}\varphi + q$}; 
-	\node[align=center] (vef) at ([xshift=4.5cm]transport) {$\nabla\cdot\vec{J} + \sigma_a \varphi = Q_0$\\$\nabla\varphi + 3\sigma_t \vec{J} = \vec{Q}_1 - \nabla\cdot\T$}; 
+	\node[align=center] (vef) at ([xshift=4.5cm]transport) {$\nabla\cdot\vec{J} + \sigma_a \varphi = Q_0$\\$\frac{1}{3}\nabla\varphi + \sigma_t \vec{J} = \vec{Q}_1 - \nabla\cdot\T$}; 
 
 	\draw[->, >=stealth, shorten <= 8mm, shorten >= 8mm] (transport |- {(0,-.5)}) to[bend right=25] node[midway, below=1mm, align=center, scale=.6] {$\T(\cdot) = \int \Omegahat\otimes\Omegahat\,(\cdot)\ud\Omega - \frac{1}{3}\int (\cdot) \ud \Omega$} (vef |- {(0,-.5)});
 	\draw[->, >=stealth, shorten <= 8mm, shorten >= 8mm] (vef |- {(0,.5)}) to[bend right=25] node[midway, above=1mm, align=center, scale=.6] {$\varphi$} (transport |- {(0,.5)});

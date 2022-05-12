@@ -411,7 +411,7 @@ This decomposition is depicted in Fig.~\ref{dgvef:usc_fes} for the space $Y_3$. 
 \label{dgvef:usc_fes}
 \end{figure}
 
-We now present operators $\mat{Q} : Y_p \rightarrow V_C$ and $\mat{B} : Y_p \rightarrow V_B$ that take functions in $Y_p$ and convert them to $V_C$ and $V_B$, respectively. Let $u \in Y_p$ be given. The interpolation operator $\mat{Q}u$ copies the degrees of freedom corresponding to nodes interior to each element or on the boundary of the domain (e.g.~$\x_i \in \mathcal{I}(K)$ for each $K$ or $\x_i \in \partial\D$) so that $\mat{Q}u(\x_i) = u(\x_i)$ at each $\x_i \in \mathcal{I}(K)$ for each $K$ or $\x_i \in \partial\D$. For nodes located on interior faces of the mesh, $\mat{Q}u$ averages the values of $u$ in the elements that share the face. That is for a face $\Gamma_0 \ni \mathcal{F} = K_1 \cap K_2$, we set 
+We now present operators $\mat{Q} : Y_p \rightarrow V_C$ and $\mat{B} : Y_p \rightarrow V_B$ that take functions in $Y_p$ and convert them to $V_C$ and $V_B$, respectively. Let $u \in Y_p$ be given. The operator $\mat{Q}u$ copies the degrees of freedom corresponding to nodes interior to each element or on the boundary of the domain so that $\mat{Q}u(\x_i) = u(\x_i)$ at each $\x_i \in \mathcal{I}(K)$ for each $K$ and $\x_i \in \partial\D$. For nodes located on interior faces of the mesh, $\mat{Q}u$ averages the values of $u$ in the elements that share the face. That is for a face $\Gamma_0 \ni \mathcal{F} = K_1 \cap K_2$, we set 
 	\begin{equation}
 		\mat{Q}u(\x_i) = \frac{1}{2}\paren{u|_{K_1} + u|_{K_2}} \,,
 	\end{equation}

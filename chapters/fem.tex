@@ -141,7 +141,7 @@ Note that the condition of coercivity is a stronger form of positive definitenes
 	\begin{equation}
 		\kappa(a) \leq \alpha/\beta \,. 
 	\end{equation}
-The condition number is commonly used as a proxy for the ``difficulty'' of solving a problem with iterative methods. The constants $\alpha$ and $\beta$ depend on the bilinear form $a$ and on the choice for the space $V$. Thus, the choice of $V$ impacts both the existence and uniqueness of the solution to Eq.~\ref{fem:weak_gm} as well as the ease with which it can be solved. 
+The condition number is commonly used as a proxy for the ``difficulty'' of solving a problem with iterative methods. The constants $\alpha$ and $\beta$ depend on the bilinear form $a(\cdot,\cdot)$ and on the choice for the space $V$. Thus, the choice of $V$ impacts both the existence and uniqueness of the solution to Eq.~\ref{fem:weak_gm} as well as the ease with which it can be solved. 
 
 Galerkin's method for approximating the problem in Eq.~\ref{fem:weak_gm} consists of defining similar problems in finite-dimensional spaces $V_h$. The conforming finite element method restricts the finite-dimensional approximation space to be $V_h \subset V$. To be specific, for any finite-dimensional subspace $V_h\subset V$ we define the discrete problem to be: find $u_h \in V_h$ such that 
 	\begin{equation} \label{fem:galerkin}
@@ -151,7 +151,7 @@ Since $V_h \subset V$, we can directly apply the Lax-Milgram theorem to show tha
 	\begin{equation}
 		\kappa(a_h) \leq \alpha/\beta \,, 
 	\end{equation}
-where $a_h$ is $a$ restricted to the space $V_h$ \cite[Corollary 2.4]{la2fa}. Thus, by defining the approximation space as a subset of the infinite-dimensional space, the discrete operator inherits the analytic structure of the underlying weak problem. 
+where $a_h(\cdot,\cdot)$ is $a(\cdot,\cdot)$ restricted to the space $V_h$ \cite[Corollary 2.4]{la2fa}. Thus, by defining the approximation space as a subset of the infinite-dimensional space, the discrete operator inherits the analytic structure of the underlying weak problem. In other words, conforming methods allow well defined analytic problems to map to well defined discrete problems that can be solved efficiently. 
 Note that in this document, we also consider non-conforming methods where the approximation space is not a subspace of $V$. In the case $V_h \not\subset V$, additional requirements are placed on the discrete problem in order to guarantee solvability and stability. This is an important aspect of the \gls{dg} methods presented in Chapter \ref{chap:dgvef}. 
 
 Such a general framework as Galerkin's method, however, does not provide a way to define the approximation space $V_h$. The finite element method fills this gap by providing a systematic process for constructing the finite-dimensional spaces $V_h$ in ways that are amenable to efficient computer implementation. 
@@ -159,7 +159,7 @@ Such a general framework as Galerkin's method, however, does not provide a way t
 \section{Local Polynomial Spaces}
 Both the mesh and the solution are represented with a polynomial space defined locally on each element. Let $\hat{K}^{\dim}$ denote the $\dim$-dimensional reference element which we set to the unit $\dim$-dimensional cube, $\hat{K} = [0,1]^{\dim}$. We omit the superscript denoting the dimensionality when the dimensionality of the reference element can be inferred from context. We define the space of univariate polynomials of degree less than or equal to $k$ as: 
 	\begin{equation}
-		\mathcal{P}_k(\hat{K}^1) = \{ p : \hat{K}^1 \rightarrow \R : p = \sum_{i=0}^{k} \alpha_i x^i \,, \alpha_i \in \R\ \forall\,i \in [0,k]\} = \spn\{ 1, x, x^2, \ldots, x^k \} \,. 
+		\mathcal{P}_k(\hat{K}^1) = \{ p : \hat{K}^1 \rightarrow \R : p = \sum_{i=0}^{k} \alpha_i x^i \,,\ \alpha_i \in \R\} = \spn\{ 1, x, x^2, \ldots, x^k \} \,. 
 	\end{equation}
 Multi-dimensional polynomial spaces are built through tensor products of the one-dimensional space. The tensor product polynomial spaces are:  
 	\begin{equation}
@@ -178,7 +178,7 @@ The tensor product polynomial space of equal degree in each variable is denoted 
 		\end{cases} \,. 
 	\end{equation}
 
-Nodal bases for the space $\Pcal{p}$ are constructed using Lagrange interpolating polynomials. We consider interpolation through the Gauss-Lobatto and Gauss-Legendre points. Let $\{\xi_i\}$ represent the $p+1$ one-dimensional Gauss-Lobatto or Gauss-Legendre points in the interval $[0,1]$. Let $\ell_i$ denote the Lagrange interpolating polynomial satisfying $\ell_i(\xi_j) = \delta_{ij}$ where $\delta_{ij}$ is the Kronecker delta. The set of functions $\{\ell_i\}$ form a basis for $\Pcal{p}$. The basis functions can be written as:  
+Nodal bases for the space $\Pcal{p}$ are constructed using Lagrange interpolating polynomials. We consider interpolation through the Gauss-Lobatto and Gauss-Legendre points. Let $\{\xi_i\}$ represent the $p+1$, one-dimensional Gauss-Lobatto or Gauss-Legendre points in the interval $[0,1]$. Let $\ell_i$ denote the Lagrange interpolating polynomial satisfying $\ell_i(\xi_j) = \delta_{ij}$ where $\delta_{ij}$ is the Kronecker delta. The set of functions $\{\ell_i\}$ form a basis for $\Pcal{p}$. The basis functions can be written as:  
 	\begin{equation}
 		\ell_i(\xi) = \prod_{\substack{0\leq j \leq k\\i\neq j}} \frac{\xi - \xi_j}{\xi_i - \xi_j} \,, \quad i \in [0,k] \,. 
 	\end{equation}
@@ -192,7 +192,7 @@ Alternatively, writing $\ell_i(\xi) = \sum_{j=0}^k c_{ij} \xi^j$, the coefficien
 		\end{bmatrix}
 		\mat{C} = \I \,,
 	\end{equation}
-where $\mat{C} \in \R^{(k+1)\times(k+1)}$ is the matrix of coefficients with entries $c_{ij}$. The Vandermonde system is simply a change of basis from $\{1,x,x^2,\ldots\}$ to the nodal basis. Note that this system becomes increasingly ill-conditioned as the polynomial order increases. 
+where $\mat{C} \in \R^{(k+1)\times(k+1)}$ is the matrix of coefficients with entries $c_{ij}$. The Vandermonde system is simply a change of basis from $\{1,x,x^2,\ldots\}$ to the nodal basis. Note that this system becomes increasingly ill-conditioned as the polynomial order increases and is not suitable for computing nodal bases when $p$ is large. 
 Nodal bases for the spaces $\Qcal{m,n}$ and $\Qcal{\ell,m,n}$ are formed through tensor products of the corresponding one-dimensional nodal bases.
 The basis functions for $\Pcal{1}$, $\Pcal{2}$, and $\Pcal{3}$ through the Gauss-Lobatto and Gauss-Legendre points are shown in Fig.~\ref{fem:shape1d} and \ref{fem:shape_leg1d}, respectively.  Figure \ref{fem:shape2d} shows a selection of the two-dimensional nodal basis functions through the Gauss-Lobatto points for the spaces $\Qcal{1}$, $\Qcal{2}$, and $\Qcal{3}$. 
 % --- shape functions in 1D (Lobatto) --- 
@@ -214,7 +214,7 @@ The basis functions for $\Pcal{1}$, $\Pcal{2}$, and $\Pcal{3}$ through the Gauss
 	\includegraphics[width=\textwidth]{figs/shape3.pdf}
 	\caption{}
 \end{subfigure}
-\caption{Plots of the one-dimensional shape functions through the Gauss-Lobatto nodes for (a) linear, (b) quadratic, and (c) cubic polynomial orders.}
+\caption{Plots of the one-dimensional nodal basis functions through the Gauss-Lobatto nodes for (a) linear, (b) quadratic, and (c) cubic polynomial orders.}
 \label{fem:shape1d}
 \end{figure}
 
@@ -236,7 +236,7 @@ The basis functions for $\Pcal{1}$, $\Pcal{2}$, and $\Pcal{3}$ through the Gauss
 	\includegraphics[width=\textwidth]{figs/shape_leg3.pdf}
 	\caption{}
 \end{subfigure}
-\caption{Plots of the one-dimensional shape functions through the Gauss-Legendre nodes for (a) linear, (b) quadratic, and (c) cubic polynomial orders.}
+\caption{Plots of the one-dimensional nodal basis functions through the Gauss-Legendre nodes for (a) linear, (b) quadratic, and (c) cubic polynomial orders.}
 \label{fem:shape_leg1d}
 \end{figure}
 
@@ -297,7 +297,7 @@ and likewise for vector-valued functions on the boundary. A straightforward comp
 	\begin{equation} \label{fem:jumps_avg_id}
 		\sum_{K\in\meshT} \int_{\partial K} u\, \vec{v}\cdot\n_K \ud s = \int_\Gamma \jump{u} \avg{\vec{v}\cdot\n} \ud s + \int_{\Gamma_0} \avg{u}\jump{\vec{v}\cdot\n} \ud s \,. 
 	\end{equation}
-We refer to this as the ``jumps and averages identity.'' The restriction of the integration to the interior faces for the second term on the right side of Eq.~\ref{fem:jumps_avg_id} is used so that only one term contributes on the boundary of the mesh and is supported by the definition of the jump and average on the boundary of the domain. 
+We refer to this as the ``jumps and averages identity.'' The restriction of the integration to the interior faces for the second term on the right side of Eq.~\ref{fem:jumps_avg_id} is used so that only one term contributes on the boundary of the mesh and is supported by our definition of the jump and average on the boundary of the domain. 
 Finally, we define the ``broken'' gradient, denoted by $\nablah$, obtained by applying the gradient locally on each element. That is, 
 	\begin{equation} \label{fem:broken_grad}
 		(\nablah u)|_{K} = \nabla(u|_K) \,, \quad \forall K \in \meshT \,. 
@@ -908,7 +908,7 @@ so that each function $u\in V_p$ is a piecewise-continuous polynomial mapped fro
 \begin{figure}
 \centering
 \includegraphics[width=.3\textwidth]{figs/h1fes.pdf}
-\caption{A depiction of the distribution of degrees of freedom for the quadratic continuous finite element space. Continuity of members of the finite element space is enforced by sharing degrees of freedom across neighboring elements.}
+\caption{A depiction of the distribution of degrees of freedom for the quadratic continuous finite element space. Continuity of the members of the finite element space is enforced by sharing degrees of freedom across neighboring elements.}
 \label{fem:h1fes}
 \end{figure}
 
@@ -1071,7 +1071,7 @@ A selection of basis functions for $V_1$, $V_2$, and $V_3$ in one dimension are 
 \begin{figure}
 \centering
 \includegraphics[width=.65\textwidth]{figs/fe_support.pdf}
-\caption{A selection of global basis functions for a linear continuous finite element space in two dimensions. The basis functions are non-zero only the finite number of elements that share a node. }
+\caption{A selection of global basis functions for a linear continuous finite element space in two dimensions. The basis functions are non-zero only on the finite number of elements that share a node. }
 \label{fem:fe_support}
 \end{figure}
 
@@ -1086,11 +1086,11 @@ Both the test function $v$ and the solution $u$ are represented as a linear comb
 	\begin{equation}
 		u = \sum_i b_i u_i \,, \quad v = \sum_i b_i v_i \,,
 	\end{equation}
-where $\{u_i\}$ and $\{v_i\}$ are the degrees of freedom that determine $u,v \in V$. Inserting this representation into the abstract problem yields 
+where $\{u_i\}$ and $\{v_i\}$ are the degrees of freedom that determine $u,v \in X_h$. Inserting this representation into the abstract problem yields 
 	\begin{equation}
 		a(\sum_i b_i v_i, \sum_j b_j u_j) = f(\sum_i b_i v_i) \iff \sum_i \sum_j v_i a(b_i,b_j) u_j = \sum_i v_i f(b_i) \,, 
 	\end{equation} 
-where we have used the bilinearity and linearity of $a$ and $f$, respectively. 
+where we have used the bilinearity and linearity of $a(\cdot,\cdot)$ and $f(\cdot)$, respectively. 
 Letting $\mat{A}$ be the matrix with entries $a(b_i, b_j)$ and $\ubar{f}$ the vector with entries $f(b_i)$, the above is equivalent to 
 	\begin{equation}
 		\ubar{v}^T \mat{A} \ubar{u} = \ubar{v}^T \ubar{f} \,, 

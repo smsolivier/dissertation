@@ -131,22 +131,9 @@ For the boundary conditions, let
 	\end{equation}
 be the boundary correction factor. The boundary functional is closed using $B = \beta + \frac{1}{2}\varphi$ so that the SMM boundary conditions are: 
 	\begin{equation}
-		\vec{J}\cdot\n = 2\Jin + \frac{1}{2}\varphi + \beta(\psi) \,.  
+		\vec{J}\cdot\n = \frac{1}{2}\varphi + 2\Jin + \beta(\psi) \,.  
 	\end{equation}
-
-The factors of one third and one half used in the closures of $\P$ and $B$, respectively, are chosen so that the SMM equations are equivalent to radiation diffusion when the angular flux is linearly anisotropic. To see this, let $\psi(\x,\Omegahat) = f(\x) + \Omegahat\cdot\vec{g}(\x)$ then 
-	\begin{equation}
-		\T(\psi) = \int \Omegahat\otimes\Omegahat\paren{f + \Omegahat\cdot\vec{g}} \ud \Omega - \frac{1}{3}\I \int f + \Omegahat\cdot\vec{g} \ud \Omega = \frac{4\pi f}{3} \I - \frac{4\pi f}{3} \I = 0 \,, 
-	\end{equation}
-	\begin{equation}
-		\beta(\psi) = \int |\Omegahat\cdot\n|\paren{f + \Omegahat\cdot\vec{g}} \ud \Omega - \frac{1}{2}\int f + \Omegahat\cdot\vec{g} \ud \Omega = 2\pi f - \frac{4\pi f}{2} = 0 \,. 
-	\end{equation}
-Thus, the closures simplify to 
-	\begin{equation}
-		\P = \frac{1}{3}\I \varphi \,, \quad B = \frac{1}{2}\varphi \,, 
-	\end{equation}
-in the thick diffusion limit. 
-In other words, the moment equations with SMM closures are equivalent to radiation diffusion with Marshak boundary conditions when the angular flux is linearly anisotropic. 
+The factors of one third and one half used in the closures of $\P$ and $B$, respectively, are chosen so that the SMM moment system is equivalent to radiation diffusion when the angular flux is linearly anisotropic. 
 
 With these closures, the SMM equations are 
 	\begin{subequations}
@@ -201,7 +188,7 @@ By linearly eliminating the angular flux, the coupled system is equivalent to:
 		\mathcal{M}\!\paren{\mat{L}^{-1}\!\paren{\frac{\sigma_s}{4\pi}\varphi +q},\mat{X}} = 0 \,. 
 	\end{equation}
 Observe that Eq.~\ref{moment:lo_only} is now a function of the moment solution only. That is, we can define 
-	\begin{equation}
+	\begin{equation} \label{moment:rootfind}
 		\F(\mat{X}) = \mathcal{M}\!\paren{\mat{L}^{-1}\!\paren{\frac{\sigma_s}{4\pi}\varphi +q},\mat{X}} 
 	\end{equation}
 and equivalently solve $\F(\mat{X}) = 0$. In this reduced problem, the angular flux appears only as an auxiliary variable used to compute the residual $\mat{F}(\mat{X})$ and we say that the angular flux is enslaved to the moment system. This reduced formulation $\mat{F}(\mat{X}) = 0$ has much lower dimension than the original coupled system given in Eq.~\ref{moment:coupled} but has the same solution. Due to this, advanced solvers for $\F(\mat{X})$ can be applied that would otherwise be impractical for Eq.~\ref{moment:coupled} due to the storage and computation costs associated with the high-dimensional angular flux. 
@@ -266,14 +253,14 @@ where $\mat{X}^0$ is an initial guess. This process is repeated until the differ
 \end{figure}
 
 \section{Anderson Acceleration}
-Iterative efficiency can be improved with the use of Anderson acceleration. Anderson acceleration defines the next iterate as the linear combination of the previous $m$ iterates that minimizes the residual $\mat{X} - \mat{G}(\mat{X})$. For the storage cost of $m$ previous iterates, Anderson acceleration increases the convergence rate and improves robustness. While it is not practical to store multiple copies of the angular flux, it is reasonable to expect that a small set of moment-sized vectors can be stored. The process of linearly eliminating the transport equation, codified in Eq.~\ref{moment:lo_only}, allows the Anderson space to be built from the much smaller moment-sized vectors only. In the case where a subset of the angular flux unknowns are not eliminated, such as when a parallel block Jacobi sweep is used to avoid communication costs or when mesh cycles or reentrant faces are present, the solution vector can be augmented with these un-eliminated unknowns so that they are included in the Anderson space. This is the nonlinear analog to the ideas used for Krylov-accelerated source iteration \cite{doi:10.13182/NSE02-14}. 
+Iterative efficiency for solving $\mat{X} = \mat{G}(\mat{X})$ can be improved with the use of Anderson acceleration. Anderson acceleration defines the next iterate as the linear combination of the previous $m$ iterates that minimizes the residual $\mat{X} - \mat{G}(\mat{X})$. For the storage cost of $m$ previous iterates, Anderson acceleration increases the convergence rate and improves robustness. While it is not practical to store multiple copies of the angular flux, it is reasonable to expect that a small set of moment-sized vectors can be stored. The process of linearly eliminating the transport equation, codified in Eq.~\ref{moment:lo_only}, allows the Anderson space to be built from the much smaller moment-sized vectors only. In the case where a subset of the angular flux unknowns are not eliminated, such as when a parallel block Jacobi sweep is used to avoid communication costs or when mesh cycles or reentrant faces are present, the solution vector can be augmented with these un-eliminated unknowns so that they are included in the Anderson space. This is the nonlinear analog to the ideas used for Krylov-accelerated source iteration \cite{doi:10.13182/NSE02-14}. 
 
-In addition, the problem $\mat{F}(\mat{X}) = 0$ can be solved directly with root-finding methods such as \gls{jfnk}. Such an approach appears advantageous since only the nonlinear residual $\mat{F}(\mat{X})$ must be computed. This avoids the need to invert the moment system. However, such an approach would require additional preconditioning in order to form a scalable solution method. 
+In addition, the problem $\mat{F}(\mat{X}) = 0$, with $\F$ defined in Eq.~\ref{moment:rootfind}, can be solved directly with root-finding methods such as \gls{jfnk}. Such an approach appears advantageous since only the nonlinear residual $\mat{F}(\mat{X})$ must be computed. This avoids the need to invert the moment system. However, such an approach would require additional preconditioning in order to form a scalable solution method. 
 
 Root-finding methods could also be applied to the problem $\mat{f}(\mat{X}) = \mat{X} - \mat{G}(\mat{X}) = 0$. 
 We observed that \gls{jfnk} applied to this problem typically required significantly more evaluations of $\mat{G}$ than Anderson-accelerated fixed-point iteration. This is because \gls{jfnk} builds a new Krylov space to approximate the gradient of $F$ \emph{at each iteration} meaning information across iterations is not kept. Since evaluating $\mat{G}$ involves inverting the transport equation, this significantly increases the expense of the algorithm. Thus, we present results using fixed-point iteration and Anderson-accelerated fixed-point iteration only. 
 
-\section{Bounds and Asymptotic Limits of the VEF Data}
+\section{Bounds and Asymptotic Limits of the Closures}
 The Eddington tensor and boundary factor are defined as 
 	\begin{equation}
 		\E = \frac{\int\Omegahat\otimes\Omegahat\,\psi \ud \Omega}{\int \psi \ud \Omega}\,,
@@ -318,16 +305,31 @@ and thus
 		E_b = \frac{f(\x)/2}{f(\x)} = \frac{1}{2} 
 	\end{equation}
 in the thick diffusion limit. 
-Therefore, the VEF drift-diffusion equation with Miften-Larsen boundary conditions limits to the radiation diffusion equation with Marshak boundary conditions: 
+With these asymptotic values, the VEF drift-diffusion equation, given by Eq.~\ref{moment:vef_drift}, simplifies to 
 	\begin{subequations}
 	\begin{equation}
-		-\nabla\cdot\frac{1}{3\sigma_t}\nabla\varphi + \sigma_a \varphi = Q \,, \quad \x \in \D \,, 
+		-\nabla\cdot\frac{1}{3\sigma_t}\nabla\varphi + \sigma_a \varphi = Q_0 - \nabla\cdot \frac{\Qone}{\sigma_t} \,, \quad \x \in \D \,, 
 	\end{equation}
 	\begin{equation}
 		\vec{J}\cdot\n = \frac{1}{2}\varphi + 2\Jin \,, \quad \x \in \partial \D\,. 
 	\end{equation}
 	\end{subequations}
-% Since the SMM correction tensor and factor limit to zero, SMM also shares this property. However, the SMM corrections are not normalized and thus are not bounded like the VEF data are. 
+If we also assume that the transport equation's fixed-source, $q$, is isotropic, then the VEF moment system with Miften-Larsen boundary conditions is equivalent to radiation diffusion with Marshak boundary conditions in the thick diffusion limit where the angular flux is linearly aniostropic. 
+
+For SMM, the closures are not normalized. This means they are not guaranteed to be bounded functions of the angular flux. However, the SMM closures have the same asymptotic limit as the VEF closures. 
+To see this, let $\psi(\x,\Omegahat) = f(\x) + \Omegahat\cdot\vec{g}(\x)$ then 
+	\begin{equation}
+		\T(\psi) = \int \Omegahat\otimes\Omegahat\paren{f + \Omegahat\cdot\vec{g}} \ud \Omega - \frac{1}{3}\I \int f + \Omegahat\cdot\vec{g} \ud \Omega = \frac{4\pi f}{3} \I - \frac{4\pi f}{3} \I = 0 \,, 
+	\end{equation}
+	\begin{equation}
+		\beta(\psi) = \int |\Omegahat\cdot\n|\paren{f + \Omegahat\cdot\vec{g}} \ud \Omega - \frac{1}{2}\int f + \Omegahat\cdot\vec{g} \ud \Omega = 2\pi f - \frac{4\pi f}{2} = 0 \,. 
+	\end{equation}
+Thus, the closures simplify to 
+	\begin{equation}
+		\P = \frac{1}{3}\I \varphi \,, \quad B = \frac{1}{2}\varphi \,, 
+	\end{equation}
+in the thick diffusion limit. 
+In other words, the moment equations with SMM closures are equivalent to radiation diffusion with Marshak boundary conditions when the angular flux is linearly anisotropic. 
 
 \section{Functional Derivatives of the VEF Data} \label{moment_sec:gateaux}
 Here, we compute the functional derivatives of the VEF data in order to understand some of the convergence properties of the VEF algorithm. These functional derivatives are also used in Section \ref{moment_sec:linearize} to establish the connection between the VEF and SMM closures. An introduction to the Gateaux derivative is provided before deriving the functional derivatives of the VEF data and applying them to investigate the convergence properties of the VEF algorithm.  
@@ -620,7 +622,7 @@ which also requires derivatives of the angular flux through the correction tenso
 The goal of this dissertation is to evaluate the fixed-point operator $\mat{G}(\mat{X})$, defined in Eq.~\ref{moment:vef_fp} for VEF and Eq.~\ref{moment:smm_fp} for SMM, numerically in a computationally efficient manner. Numerically approximating this operator requires defining 1) a discretization of the transport equation, 2) a representation for VEF and SMM closures, and 3) a discretization for the moment system. In the VEF literature, discrete VEF methods are generally classified as consistent and independent based on their approach for defining the algorithmic choices corresponding to 2) and 3). Consistent methods are characterized by having discrete transport and moment equations that are algebraically consistent. These methods produce solutions for the moment system that match the moments of the discrete transport equation to machine precision (or to the maximum value of the solver tolerances). In other words, the difference between the moments of the transport solution and the solution of the moment system differ in a manner that is independent of the mesh size. Consistent methods are derived by forming moment equations from the \emph{discrete} transport equation and applying discrete closures. This leads to a moment discretization that is an equivalent reformulation of the discrete transport equation leading to the discrete equivalence that characterizes these methods. 
 
 On the other hand, independent moment methods are characterized as having discrete transport and moment equations that are not algebraically consistent. Due to this, the moments of the discrete transport solution and the solution of the moment system differ on the order of the spatial discretization error and are thus only equivalent in the limit as the spatial mesh is refined. 
-Independent methods are derived by discretizing the continuous moment system (with closures already applied) without regard for the discretization used for the transport equation. Rapid convergence is maintained when the discrete VEF data are represented in a sufficiently consistent manner \cite{two-level-independent-warsa}. 
+Independent methods are derived by discretizing the continuous moment system (with closures already applied) without regard for the discretization used for the transport equation. Rapid convergence is maintained when the discrete closures are represented in a sufficiently consistent manner \cite{two-level-independent-warsa}. 
 
 Figure \ref{moment:commuting} depicts a commuting diagram for approximating the continuous transport problem with a discrete moment system. The consistent approach moves down and to the right from the continuous transport equation corresponding to discretizing and using discrete moments and closures to form the moment system. Independent methods move right and then down corresponding to forming the continuous moment equations and then discretizing. It is important to note that both approaches lead to discrete moment systems that approximate the continuous transport problem. However, only the consistent approach produces a method with an equivalence in the bottom row of the commuting diagram.
 % --- VEF commuting diagram --- 
@@ -631,10 +633,10 @@ Figure \ref{moment:commuting} depicts a commuting diagram for approximating the 
 \label{moment:commuting}
 \end{figure}
 
-Consistent methods are attractive in that they can be used in place of an existing transport method without changing the solution. This is particularly important in reactor physics applications where licensing restrictions may require that new methods exactly reproduce solutions produced by older methods. In addition, forming the discrete moment system from the discrete transport equation provides a systematic process for steps 2) and 3) of the discrete moment method. For VEF, consistent discretization of the moment system often makes the resulting algebraic system difficult to precondition effectively with existing linear solver technology. 
+Consistent methods are attractive in that they can be used in place of an existing transport method without changing the solution. This is particularly important in reactor physics applications where licensing restrictions may require that new methods exactly reproduce solutions produced by older methods. In addition, forming the discrete moment system from the discrete transport equation provides a systematic process for steps 2) and 3) of the discrete moment method. However, for VEF, consistent discretization of the moment system often makes the resulting algebraic system difficult to precondition effectively with existing linear solver technology. 
 Furthermore, use of negative flux fixups to ensure positivity of the transport equation will render an otherwise consistent VEF method inconsistent. 
 
 By contrast, the independent approach allows significant algorithmic flexibility. 
-\textcite{two-level-independent-warsa} compared the iterative efficiency of consistent and independent VEF methods and saw equivalent convergence as long as the independent method properly represented the VEF data. In particular, using \gls{sn} angular quadrature and finite element interpolation produced independent methods that converged as rapidly as a consistent method. This flexibility allows the design of efficient and robust moment methods that can leverage existing discretization and linear solver technology and have multiphysics compatibility. 
+\textcite{two-level-independent-warsa} compared the iterative efficiency of consistent and independent VEF methods and saw equivalent convergence as long as the independent method properly represented the VEF data. In particular, using \gls{sn} angular quadrature and finite element interpolation produced independent methods that converged as rapidly as a consistent method. This flexibility allows the design of efficient and robust moment methods that can leverage existing discretization and linear solver technology and have multiphysics compatibility. We pursue independent methods in this dissertation to have the flexibility to discretize the moment system such that it can be efficiently solved and to match the hydrodynamics framework of \cite{blast}.  
 
 \end{document}

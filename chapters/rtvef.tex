@@ -150,7 +150,7 @@ Furthermore, $\nablah:\E = \frac{1}{3}\nabla\cdot\vec{v}$ and thus this discreti
 \begin{figure}
 \centering
 \includegraphics[width=.35\textwidth]{figs/Eproj.pdf}
-\caption{A depiction of the angle of the average of the Eddington tensor applied to the normal vector. In the thick diffusion limit, the Eddington tensor does not rotate the normal making $\beta =0$. }
+\caption{A depiction of the angle between the normal vector and the average of the Eddington tensor applied to the normal vector. In the thick diffusion limit, the Eddington tensor does not rotate the normal making $\beta =0$. }
 \label{rtvef:Eproj}
 \end{figure}
 
@@ -826,7 +826,7 @@ where $\alpha$ controls the amount of distortion. When $\alpha=0$, the mesh is u
 % --- curved solvers --- 
 \begin{table}
 \centering
-\caption{Number of \gls{bicg} iterations until convergence on the first iteration of a thick diffusion limit problem with $\epsilon = 10^{-1}$ as the mesh distortion parameter increases. A $--$ indicates \gls{bicg} did not converge in 250 iterations. Here, H1, RT, and HRT rows refer to the $Y_p\times W_{p+1}$, $Y_p\times \RT_p$, and hybridized $Y_p\times \RT_p$ discretizations, respectively.}
+\caption{Number of BiCGStab iterations until convergence on the first iteration of a thick diffusion limit problem with $\epsilon = 10^{-1}$ as the mesh distortion parameter increases. A -- indicates BiCGStab did not converge in 250 iterations. Here, H1, RT, and HRT rows refer to the $Y_p\times W_{p+1}$, $Y_p\times \RT_p$, and hybridized $Y_p\times \RT_p$ discretizations, respectively.}
 \label{rtvef:curved_solvers}
 \input{figs/rtvef/solvers}
 \end{table}
@@ -847,7 +847,7 @@ Table \ref{rtvef:cp} shows the number of Anderson-accelerated fixed-point iterat
 % --- crooked pipe hp scaling --- 
 \begin{table}
 \centering
-\caption{The number of outer Anderson-accelerated fixed-point iterations until convergence along with the maximum, minimum, and average numbers of inner \gls{bicg} iterations until convergence on the linearized crooked pipe problem. Two Anderson vectors were used. The H1, RT, and HRT columns refer to the $Y_p\times W_{p+1}$, $Y_p\times \RT_p$, and hybridized $Y_p\times \RT_p$ discretizations, respectively. The H1 and RT methods were preconditioned with a block lower triangular preconditioner with AMG applied to the lumped Schur complement. HRT was preconditioned with AMG. The previous outer iteration's solution was used as the initial guess for the inner iteration. }
+\caption{The number of outer Anderson-accelerated fixed-point iterations until convergence along with the maximum, minimum, and average numbers of inner BiCGStab iterations until convergence on the linearized crooked pipe problem. Two Anderson vectors were used. The H1, RT, and HRT columns refer to the $Y_p\times W_{p+1}$, $Y_p\times \RT_p$, and hybridized $Y_p\times \RT_p$ discretizations, respectively. The H1 and RT methods were preconditioned with a block lower triangular preconditioner with AMG applied to the lumped Schur complement. HRT was preconditioned with AMG. The previous outer iteration's solution was used as the initial guess for the inner iteration. }
 \label{rtvef:cp}
 \begin{adjustbox}{max width=\textwidth}
 \input{figs/cp.tex}
@@ -885,7 +885,7 @@ Finally, we show that the RT and HRT methods scale in parallel. The parallel par
 % --- weak scaling --- 
 \begin{table}
 \centering
-\caption{A weak scaling study on the first iteration of the linearized crooked pipe problem. The RT and HRT columns refer to the $Y_2\times \RT_p$ and hybridized $Y_2\times \RT_P$ discretizations, respectively. The RT method uses lower block triangular preconditioning with AMG on the lumped Schur complement. HRT is preconditioned with AMG. \gls{bicg} iteration counts are compared when a parallel block Jacobi sweep is used to compute the VEF data (VEF) and when the VEF data are set to mock a radiation diffusion problem (Diffusion). The DOF column corresponds to the number of VEF scalar flux unknowns.}
+\caption{A weak scaling study on the first iteration of the linearized crooked pipe problem. The RT and HRT columns refer to the $Y_2\times \RT_p$ and hybridized $Y_2\times \RT_P$ discretizations, respectively. The RT method uses lower block triangular preconditioning with AMG on the lumped Schur complement. HRT is preconditioned with AMG. BiCGStab iteration counts are compared when a parallel block Jacobi sweep is used to compute the VEF data (VEF) and when the VEF data are set to mock a radiation diffusion problem (Diffusion). The DOF column corresponds to the number of VEF scalar flux unknowns.}
 \label{rtvef:weak}
 \input{figs/rtvef/weak}
 \end{table}
