@@ -127,6 +127,7 @@
 \newcommand{\tang}{\boldsymbol{\mathrm{t}}}
 \newcommand{\Jin}{J_\text{in}}
 \newcommand\Q{\mathcal{Q}}
+\newcommand{\A}{\mathcal{A}}
 
 % --- text highlighting --- 
 % highlights text to remind me to do look at it again

@@ -51,12 +51,12 @@ For the abstract problem, multiplying by a test function $v$ and integrating ove
 	\begin{equation} \label{fem:weak_inter}
 		\int v A(u) \ud \x = \int v\, q \ud \x \,.
 	\end{equation}
-Let the bilinear form $a(v,u)$ represent the operator derived by applying an integration by parts formula to $\int v\,A(u) \ud \x$ and the linear form $b(v) = \int v \, q \ud \x$. Furthermore, let $u,v \in V$ be a space of functions such that $a(v,u)$ is well defined. The statement $a(v,u) = b(v)$ is then an equivalent reformulation of Eq.~\ref{fem:weak_inter}. 
+Let the bilinear form $\A(v,u)$ represent the operator derived by applying an integration by parts formula to $\int v\,A(u) \ud \x$ and the linear form $b(v) = \int v \, q \ud \x$. Furthermore, let $u,v \in V$ be a space of functions such that $\A(v,u)$ is well defined. The statement $\A(v,u) = b(v)$ is then an equivalent reformulation of Eq.~\ref{fem:weak_inter}. 
 If we add a condition that this holds for all ($\equiv \forall$) test functions $v\in V$, then 
 	\begin{equation} \label{fem:weak_abstract}
-		a(v,u) = b(v) \,, \quad \forall v \in V\,,
+		\A(v,u) = b(v) \,, \quad \forall v \in V\,,
 	\end{equation}
-implies that the strong form, $A(u) = q$, is satisfied provided that there exists a solution to the strong form. That is, when there exists $u \in X$ such that $A(u) = q$, the weak form in Eq.~\ref{fem:weak_abstract} is equivalent to the strong form. Note that if there does not exist a $u \in X$ that satisfies $A(u) = q$, there may still be a $u \in V$ that satisfies $a(v,u) = b(v)\,, \forall v \in V$. In general, we have that $X \subset V$ meaning the weak form allows a broader class of solutions. A sufficiently weak form defined over $V$ allows the solution of problems with discontinuous data or shocks in the solution that would not be possible using the strong form defined over $X$. 
+implies that the strong form, $A(u) = q$, is satisfied provided that there exists a solution to the strong form. That is, when there exists $u \in X$ such that $A(u) = q$, the weak form in Eq.~\ref{fem:weak_abstract} is equivalent to the strong form. Note that if there does not exist a $u \in X$ that satisfies $A(u) = q$, there may still be a $u \in V$ that satisfies $\A(v,u) = b(v)\,, \forall v \in V$. In general, we have that $X \subset V$ meaning the weak form allows a broader class of solutions. A sufficiently weak form defined over $V$ allows the solution of problems with discontinuous data or shocks in the solution that would not be possible using the strong form defined over $X$. 
 
 In problems where it is possible, the solution space is typically restricted to functions that satisfy the boundary conditions. For example, if the problem contains the Dirichlet boundary condition $u = u^*$ for $\x \in \partial\D$, the solution space would be restricted to 
 	\begin{equation}
@@ -65,7 +65,7 @@ In problems where it is possible, the solution space is typically restricted to 
 the space of functions $u\in V$ that attain $u = u^*$ for $\x \in \partial\D$. 
 This restricted solution space is supported by correspondingly restricting the test space to be zero on the boundary. That is, the test function $v \in V_0$. This modified weak form then reads: find $u \in V_{u^*}$ such that 
 	\begin{equation}
-		a(v,u) = b(v) \,, \quad \forall v \in V_0 \,. 
+		\A(v,u) = b(v) \,, \quad \forall v \in V_0 \,. 
 	\end{equation}
 
 \subsection{Radiation Diffusion Example} \label{fem_sec:rad_diff}
@@ -122,36 +122,36 @@ since $u,v \in L^2(\D)$ are square-integrable.
 		\int \nabla u \cdot D \nabla\varphi \ud \x < \infty \,, \quad \forall u, \varphi \in H^1(\D) \,. 
 	\end{equation}
 	\end{subequations}
-Thus, since $H^1(\D) \subset L^2(\D)$, taking $u,\varphi \in H^1(\D)$ makes all terms in the radiation diffusion weak form well defined. In other words, the proper choice for the test and solution space is $V = H^1(\D)$. 
+Since $H^1(\D) \subset L^2(\D)$, taking $u,\varphi \in H^1(\D)$ makes all terms in the radiation diffusion weak form well defined. In other words, the proper choice for the test and solution space is $V = H^1(\D)$. 
 
 \subsection{Galerkin's Method}
 We now construct a finite-dimensional approximation for the abstract problem in weak form given by: find $u \in V$ such that 
 	\begin{equation} \label{fem:weak_gm}
-		a(v,u) = b(v) \,, \quad \forall v \in V \,. 
+		\A(v,u) = b(v) \,, \quad \forall v \in V \,. 
 	\end{equation}
-The Lax-Milgram theorem (\textcite[\S 6.2.1]{evans2010partial}) states that Eq.~\ref{fem:weak_gm} has a unique solution when $a(\cdot,\cdot)$ is continuous, i.e., there exists $\alpha>0$ such that 
+The Lax-Milgram theorem (\textcite[\S 6.2.1]{evans2010partial}) states that Eq.~\ref{fem:weak_gm} has a unique solution when $\A(\cdot,\cdot)$ is continuous, i.e., there exists $\alpha>0$ such that 
 	\begin{equation}
-		|a(v,u)| \leq \alpha \|u\|\|v\| \,, \quad \forall u,v \in V \,,
+		|\A(v,u)| \leq \alpha \|u\|\|v\| \,, \quad \forall u,v \in V \,,
 	\end{equation}
 and coercive, i.e., there exists $\beta > 0$ such that 
 	\begin{equation}
-		a(u,u) \geq \beta \|u\|^2 \,, \quad \forall u \in V \,. 
+		\A(u,u) \geq \beta \|u\|^2 \,, \quad \forall u \in V \,. 
 	\end{equation}
-Note that the condition of coercivity is a stronger form of positive definiteness. \textcite{la2fa} connects the constants $\alpha,\beta$ to the condition number of the bilinear form $a(\cdot,\cdot)$, denoted $\kappa(a)$, as 
+Note that the condition of coercivity is a stronger form of positive definiteness. \textcite{la2fa} connects the constants $\alpha,\beta$ to the condition number of the bilinear form $\A(\cdot,\cdot)$, denoted $\kappa(\A)$, as 
 	\begin{equation}
-		\kappa(a) \leq \alpha/\beta \,. 
+		\kappa(\A) \leq \alpha/\beta \,. 
 	\end{equation}
-The condition number is commonly used as a proxy for the ``difficulty'' of solving a problem with iterative methods. The constants $\alpha$ and $\beta$ depend on the bilinear form $a(\cdot,\cdot)$ and on the choice for the space $V$. Thus, the choice of $V$ impacts both the existence and uniqueness of the solution to Eq.~\ref{fem:weak_gm} as well as the ease with which it can be solved. 
+The condition number is commonly used as a proxy for the ``difficulty'' of solving a problem with iterative methods. The constants $\alpha$ and $\beta$ depend on the bilinear form $\A(\cdot,\cdot)$ and on the choice for the space $V$. Thus, the choice of $V$ impacts both the existence and uniqueness of the solution to Eq.~\ref{fem:weak_gm} as well as the ease with which it can be solved. 
 
 Galerkin's method for approximating the problem in Eq.~\ref{fem:weak_gm} consists of defining similar problems in finite-dimensional spaces $V_h$. The conforming finite element method restricts the finite-dimensional approximation space to be $V_h \subset V$. To be specific, for any finite-dimensional subspace $V_h\subset V$ we define the discrete problem to be: find $u_h \in V_h$ such that 
 	\begin{equation} \label{fem:galerkin}
-	 	a(v_h,u_h) = b(v_h) \,, \quad \forall v_h \in V_h \,. 
+	 	\A(v_h,u_h) = b(v_h) \,, \quad \forall v_h \in V_h \,. 
 	\end{equation} 
 Since $V_h \subset V$, we can directly apply the Lax-Milgram theorem to show that the discrete problem in \ref{fem:galerkin} has a unique solution. Furthermore, we have that 
 	\begin{equation}
-		\kappa(a_h) \leq \alpha/\beta \,, 
+		\kappa(\A_h) \leq \alpha/\beta \,, 
 	\end{equation}
-where $a_h(\cdot,\cdot)$ is $a(\cdot,\cdot)$ restricted to the space $V_h$ \cite[Corollary 2.4]{la2fa}. Thus, by defining the approximation space as a subset of the infinite-dimensional space, the discrete operator inherits the analytic structure of the underlying weak problem. In other words, conforming methods allow well defined analytic problems to map to well defined discrete problems that can be solved efficiently. 
+where $\A_h(\cdot,\cdot)$ is $\A(\cdot,\cdot)$ restricted to the space $V_h$ \cite[Corollary 2.4]{la2fa}. Thus, by defining the approximation space as a subset of the infinite-dimensional space, the discrete operator inherits the analytic structure of the underlying weak problem. In other words, conforming methods allow well defined analytic problems to map to well defined discrete problems that can be solved efficiently. 
 Note that in this document, we also consider non-conforming methods where the approximation space is not a subspace of $V$. In the case $V_h \not\subset V$, additional requirements are placed on the discrete problem in order to guarantee solvability and stability. This is an important aspect of the \gls{dg} methods presented in Chapter \ref{chap:dgvef}. 
 
 Such a general framework as Galerkin's method, however, does not provide a way to define the approximation space $V_h$. The finite element method fills this gap by providing a systematic process for constructing the finite-dimensional spaces $V_h$ in ways that are amenable to efficient computer implementation. 
@@ -1080,7 +1080,7 @@ For DG spaces, degrees of freedom are not shared between elements. Thus, the glo
 \subsection{Finite Element Assembly}
 Consider the abstract, finite-dimensional problem: find $u \in X_h$ such that 
 	\begin{equation}
-		a(v,u) = f(v) \,, \quad \forall v \in X_h \,. 
+		\A(v,u) = f(v) \,, \quad \forall v \in X_h \,. 
 	\end{equation}
 Both the test function $v$ and the solution $u$ are represented as a linear combination of the global basis functions $\{b_i\}$ that span $X_h$. That is, we write 
 	\begin{equation}
@@ -1088,10 +1088,10 @@ Both the test function $v$ and the solution $u$ are represented as a linear comb
 	\end{equation}
 where $\{u_i\}$ and $\{v_i\}$ are the degrees of freedom that determine $u,v \in X_h$. Inserting this representation into the abstract problem yields 
 	\begin{equation}
-		a(\sum_i b_i v_i, \sum_j b_j u_j) = f(\sum_i b_i v_i) \iff \sum_i \sum_j v_i a(b_i,b_j) u_j = \sum_i v_i f(b_i) \,, 
+		\A(\sum_i b_i v_i, \sum_j b_j u_j) = f(\sum_i b_i v_i) \iff \sum_i \sum_j v_i \A(b_i,b_j) u_j = \sum_i v_i f(b_i) \,, 
 	\end{equation} 
-where we have used the bilinearity and linearity of $a(\cdot,\cdot)$ and $f(\cdot)$, respectively. 
-Letting $\mat{A}$ be the matrix with entries $a(b_i, b_j)$ and $\ubar{f}$ the vector with entries $f(b_i)$, the above is equivalent to 
+where we have used the bilinearity and linearity of $\A(\cdot,\cdot)$ and $f(\cdot)$, respectively. 
+Letting $\mat{A}$ be the matrix with entries $\A(b_i, b_j)$ and $\ubar{f}$ the vector with entries $f(b_i)$, the above is equivalent to 
 	\begin{equation}
 		\ubar{v}^T \mat{A} \ubar{u} = \ubar{v}^T \ubar{f} \,, 
 	\end{equation}
@@ -1102,7 +1102,7 @@ We wish to have this hold $\forall v \in X_h \Rightarrow \forall v_i$. Therefore
 	\end{equation}
 for the vector of degrees freedom $\ubar{u}$. 
 
-We now show that the algebraic system $\mat{A}\ubar{u} = \ubar{f}$ is sparse in that most of its entries are zero. This fact arises from the local support of the basis functions $b_i$. Let $\supp(b_i) \subset \D$ denote the subset of the domain where $b_i$ is non-zero. In other words, $\supp(b_i)$ is the union of adjacent elements that share the node located at $\x_i$. Then, $a(b_i, b_j)$ is non-zero only where $\supp(b_i)$ and $\supp(b_j)$ overlap i.e.~when $\supp(b_i) \cap \supp(b_j) \neq \emptyset$. Using the basis functions depicted in the upper diagram of Fig.~\ref{fem:fe_support_1d} as an example, the term $a(b_1,b_7)$ is zero since $b_7$ is zero where $b_1$ is non-zero and vice versa. On the other hand, $a(b_4,b_5)$ is non-zero since $b_4$ and $b_5$ are both non-zero in $K_4$. Figure \ref{fem:sparse1d} shows the resulting sparsity pattern corresponding to the finite element spaces depicted in Fig.~\ref{fem:fe_support_1d}. 
+We now show that the algebraic system $\mat{A}\ubar{u} = \ubar{f}$ is sparse in that most of its entries are zero. This fact arises from the local support of the basis functions $b_i$. Let $\supp(b_i) \subset \D$ denote the subset of the domain where $b_i$ is non-zero. In other words, $\supp(b_i)$ is the union of adjacent elements that share the node located at $\x_i$. Then, $\A(b_i, b_j)$ is non-zero only where $\supp(b_i)$ and $\supp(b_j)$ overlap i.e.~when $\supp(b_i) \cap \supp(b_j) \neq \emptyset$. Using the basis functions depicted in the upper diagram of Fig.~\ref{fem:fe_support_1d} as an example, the term $\A(b_1,b_7)$ is zero since $b_7$ is zero where $b_1$ is non-zero and vice versa. On the other hand, $\A(b_4,b_5)$ is non-zero since $b_4$ and $b_5$ are both non-zero in $K_4$. Figure \ref{fem:sparse1d} shows the resulting sparsity pattern corresponding to the finite element spaces depicted in Fig.~\ref{fem:fe_support_1d}. 
 % --- 1D sparsity pattern --- 
 \begin{figure}
 \centering
@@ -1129,9 +1129,9 @@ The piecewise polynomial nature of the finite element spaces also lends itself t
 The goal is to split the integration over the entire domain into a sum over the individual elements and to group computations associated with each element together. 
 Let $\mathcal{Q}$ be the element-local polynomial space associated with $X_h$ and let $\{\ell_i\}$ be its nodal basis. Element-local matrices are computed according to: 
 	\begin{equation}
-		(\mat{A}_K)_{ij} = a_K(\ell_i, \ell_j) \,, \quad 1 \leq i,j \leq \dim(\mathcal{Q}) \,, 
+		(\mat{A}_K)_{ij} = \A_K(\ell_i, \ell_j) \,, \quad 1 \leq i,j \leq \dim(\mathcal{Q}) \,, 
 	\end{equation}
-where $a_K(\cdot,\cdot)$ is the bilinear form $a(\cdot,\cdot)$ restricted to element $K$. The local matrices $\mat{A}_K$ are then summed into the global matrix $\mat{A}$ using a local to global map, $\mathcal{G}_K$. This map converts the local index $i$ corresponding to the local basis function $\ell_i$ in element $K$ to its associated global basis function $b_{\mathcal{G}_K(i)}$. In particular, $\mathcal{G}_K$ obeys the matching conditions associated with $X_h$ such that entries corresponding to nodes shared between elements are mapped to the same global index. The finite element assembly algorithm is to perform: 
+where $\A_K(\cdot,\cdot)$ is the bilinear form $\A(\cdot,\cdot)$ restricted to element $K$. The local matrices $\mat{A}_K$ are then summed into the global matrix $\mat{A}$ using a local to global map, $\mathcal{G}_K$. This map converts the local index $i$ corresponding to the local basis function $\ell_i$ in element $K$ to its associated global basis function $b_{\mathcal{G}_K(i)}$. In particular, $\mathcal{G}_K$ obeys the matching conditions associated with $X_h$ such that entries corresponding to nodes shared between elements are mapped to the same global index. The finite element assembly algorithm is to perform: 
 	\begin{equation}
 		\mat{A}_{\mathcal{G}_K(i), \mathcal{G}_K(j)} \mathrel{+}= (\mat{A}_K)_{ij} \,, \quad 1\leq i,j \leq \dim(\mathcal{Q}) \,, 
 	\end{equation} 
@@ -1145,11 +1145,11 @@ for each $K \in \meshT$ where
 	\end{equation}
 with $f_K = f|_K$.  
 
-In this document, we will frequently build the matrix, $\mat{A}$, corresponding to a bilinear form, $a(\cdot,\cdot)$, on a space $X_h$ using the following notation: 
+In this document, we will frequently build the matrix, $\mat{A}$, corresponding to a bilinear form, $\A(\cdot,\cdot)$, on a space $X_h$ using the following notation: 
 	\begin{equation}
-		\ubar{v}^T \mat{A} \ubar{u} = a(v,u) \,, \quad u,v \in X_h \,. 
+		\ubar{v}^T \mat{A} \ubar{u} = \A(v,u) \,, \quad u,v \in X_h \,. 
 	\end{equation}
-In the above, we implicitly write $u = \sum u_i b_i$ and $v = \sum v_i b_i$ to form the matrix $\mat{A}_{ij} = a(b_i,b_j)$. Analogously, we build the vector $\ubar{f}$ corresponding to the linear form $f(\cdot)$ using  
+In the above, we implicitly write $u = \sum u_i b_i$ and $v = \sum v_i b_i$ to form the matrix $\mat{A}_{ij} = \A(b_i,b_j)$. Analogously, we build the vector $\ubar{f}$ corresponding to the linear form $f(\cdot)$ using  
 	\begin{equation}
 		\ubar{v}^T \ubar{f} = f(v) \,, 
 	\end{equation}
