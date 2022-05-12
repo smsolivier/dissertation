@@ -31,7 +31,7 @@ Here, the diffusion coefficient, $D$, must be once differentiable and the soluti
 
 This motivates the use of reformulations of the strong form that relax, or weaken, the requirements on the differentiability of the solution and its coefficients. These weak forms are derived by multiplying the strong form by a suitably smooth (i.e.~differentiable) function and integrating over the domain. By applying integration by parts formulae, derivatives can be offloaded to the test function, leading to a weakening of the differentiability requirements. 
 
-In this section, we provide insight into the use of test functions and weak derivatives, derive the weak form for the abstract problem $A(u) = q$ along with an example weak form for the radiation diffusion problem, discuss the mathematical spaces that are required to make the weak form well-defined, and define the Galerkin's method for numerically approximating the weak form of a partial differential equation. 
+In this section, we provide insight into the use of test functions and weak derivatives, derive the weak form for the abstract problem $A(u) = q$ along with an example weak form for the radiation diffusion problem, discuss the mathematical spaces that are required to make the weak form well defined, and define Galerkin's method for numerically approximating the weak form of a partial differential equation. 
 
 \subsection{Test Functions and Weak Derivatives}
 Consider a one-dimensional function $f$ defined on the interval $[a,b]$. We ``test'' $f$ by multiplying it by an arbitrary function $v$ and integrating over the interval $[a,b]$. If, for example, $v = 1$ or $v=x$, we can glean information about the mean and variance of $f$, respectively. In addition, by setting the test function to the Dirac delta function centered at an arbitrary position $x$ we have that 
@@ -73,7 +73,7 @@ Returning to the radiation diffusion example in Eq.~\ref{fem:rad_strong} with th
 	\begin{equation} \label{fem:rad_weak}
 		\int \nabla u \cdot D \nabla\varphi \ud \x + \int \sigma_a\, u \varphi \ud \x = \int u\, Q \ud \x \,,\quad \forall u \in V \,. 
 	\end{equation}
-Here, $V = \{ u \in C^0 : u|_{\partial\D} = 0 \}$ is the space of continuous functions that are zero on the boundary of the domain. 
+Here, we set $V = \{ u \in C^0 : u|_{\partial\D} = 0 \}$ such that $V$is the space of continuous functions that are zero on the boundary of the domain. 
 We have used the integration by parts formula: 
 	\begin{equation}
 		\int u\, \nabla\cdot\vec{v} \ud \x = \oint_{\partial\D} u\,\vec{v}\cdot\n \ud s - \int \nabla u \cdot \vec{v} \ud \x \,, 
@@ -548,7 +548,7 @@ The normal is computed by applying $\F^{-T}$ to the referential normal, $\hat{\n
 In this section, we present the machinery used to transform integrands involving scalar and vector-valued functions and their derivatives between reference and physical space. These transformations allow integration over the arbitrary geometries defined by the map $\T$ using numerical quadrature rules defined on the reference element. These transformations and numerical quadrature are implicitly used to compute all of the bilinear and linear forms discussed in this document. 
 
 \subsection{The Scalar Case}
-For a scalar function $u : \D \rightarrow \R$, denote by $\hat{u} : \hat{K} \rightarrow \R$ its representation in reference space. The functions $u$ and $\hat{u}$ are related by 
+For a scalar function $u : K \rightarrow \R$, denote by $\hat{u} : \hat{K} \rightarrow \R$ its representation in reference space. The functions $u$ and $\hat{u}$ are related by 
 	\begin{equation} \label{fem:scalar_trans}
 		u(\x) = \hat{u}(\T^{-1}(\x)) \,.  	
 	\end{equation}
@@ -592,7 +592,7 @@ This derivation extends analogously to three dimensions.
 
 \subsection{The Vector Case}
 Here, we present the transformations for vector-valued functions assuming $\dim = 2$ for the sake of brevity and note that the ideas presented here extend analogously to three dimensions. 
-For vector-valued functions, the basis the vector is defined on must also be considered. The simplest basis is the canonical basis, $\e_i$, corresponding to the $x$ and $y$ axes. In this case, a vector $\vec{v} : \D \rightarrow \R^2$ is 
+For vector-valued functions, the basis the vector is defined on must also be considered. The simplest basis is the canonical basis, $\e_i$, corresponding to the $x$ and $y$ axes. In this case, a vector $\vec{v} : K \rightarrow \R^2$ is 
 	\begin{equation} \label{fem:scalar_copies}
 		\vec{v} = v_1 \e_1 + v_2 \e_2 
 	\end{equation}
@@ -683,7 +683,9 @@ where $\hat{\n}$ is the normal vector in reference space corresponding to the ph
 In other words, the contravariant Piola transformation preserves the normal component. 
 
 \subsection{The Gradient of the Piola Transformation} \label{fem_sec:grad_piola}
-Here we derive a formula for the transformation of the gradient of a vector defined under the contravariant Piola transformation. For the contravariant Piola transform $\vec{v} = \frac{1}{J}\mat{F}\hvec{v} \circ \T^{-1}$ the inverse transform is: 
+Here we derive a formula for the transformation of the gradient of a vector defined under the contravariant Piola transformation. This result is crucial for implementing the \gls{rt} discretization of the VEF moment system. 
+We present the derivation in its entirety since this result is not commonly included in finite element textbooks. 
+For the contravariant Piola transform $\vec{v} = \frac{1}{J}\mat{F}\hvec{v} \circ \T^{-1}$ the inverse transform is: 
 	\begin{equation}
 		\hvec{v} = J\mat{F}^{-1}\vec{v} \circ \T \,. 
 	\end{equation}
@@ -820,7 +822,7 @@ We can then say that:
 		&= \paren{\hnabla\hvec{v} - \hat{\mat{B}}} : \F^{T} \E \F^{-T} \,\ud\vec{\xi} \,. 
 	\end{aligned}
 	\end{equation}
-Here, we use the fact that $\mat{A} : \mat{B} = \tr(\mat{A}\mat{B}^T)$ and apply the cyclic property of the trace to permute $\mat{F}$ and $\mat{F}^{-1}$. 
+Here, we used the fact that $\mat{A} : \mat{B} = \tr(\mat{A}\mat{B}^T)$ and apply the cyclic property of the trace to permute $\mat{F}$ and $\mat{F}^{-1}$. 
 In this form, we can implement the gradient calculation as a matrix-vector product of the flattened referential gradient and the coefficients of $\hvec{v}$. 
 
 When the mesh transformation is affine, $\hmat{B} = 0$ since the Hessian of an affine transformation is zero. In addition, the Piola identity states that $\tr\hmat{B} = 0$. This can be most easily seen in Eq.~\ref{fem:bmat_parts} where 
@@ -901,7 +903,7 @@ Let the degree-$p$, scalar continuous finite element space be
 	\begin{equation}
 		V_p = \{ u \in C_0(\D) : u|_{K_e} \in \Qbb{p}(K_e) \,, \quad \forall K_e \in\meshT \} 
 	\end{equation}
-so that each function $u\in V_p$ is a piecewise-continuous polynomial mapped from the reference element. Since $u \in V_p$ is locally smooth and $V_p \subset C_0(\D)$, it can be shown that given $u\in V_p$, $\nabla u = \nablah u \in [L^2(\D)]^2$. Thus, $V_p \subset H^1(\D)$. The distribution of degrees of freedom for the space $V_2$ is shown in Fig.~\ref{fem:h1fes}. Here, continuity is enforced by sharing degrees of freedom between elements. Due to this, a nodal basis using closed points, such as the Gauss-Lobatto points, must be used. 
+so that each function $u\in V_p$ is a piecewise-continuous polynomial mapped from the reference element. Since $u \in V_p$ is locally smooth and $V_p \subset C_0(\D)$, it can be shown that given $u\in V_p$, $\nabla u = \nablah u \in [L^2(\D)]^2$ \cite[cf.~Prop. 3.2.1]{quateroni}. Thus, $V_p \subset H^1(\D)$. The distribution of degrees of freedom for the space $V_2$ is shown in Fig.~\ref{fem:h1fes}. Here, continuity is enforced by sharing degrees of freedom between elements. Due to this, a nodal basis using closed points, such as the Gauss-Lobatto points, must be used. 
 % --- CFEM FES ---
 \begin{figure}
 \centering
@@ -922,7 +924,7 @@ The \gls{rt} space \cite{Raviart1977,raviart_thomas} is a discrete subspace of $
 		H(\div;\D) = \{ \vec{v} \in [L^2(\D)]^2 : \nabla\cdot\vec{v} \in L^2(\D) \} \,. 
 	\end{equation}
 The requirements of a discrete subspace are codified in the following proposition. 
-\begin{prop}[see \textcite{quateroni} Prop. 3.2.2] \label{fem:div_prop}
+\begin{prop}[Cf.~\textcite{quateroni} Prop. 3.2.2] \label{fem:div_prop}
 Let $\vec{v} : \D \rightarrow \R^2$ be such that 
 \begin{enumerate}
 	\item $\vec{v}|_K \in [H^1(K)]^2$ for each $K \in \meshT$  
@@ -996,13 +998,18 @@ The contravariant Piola transformation is used to allow sharing the degrees of f
 	\begin{equation}
 		\mathbb{D}_p(K) = \{ \vec{v} = \frac{1}{J}\mat{F}\hat{\vec{v}}\circ\T^{-1} : \hat{\vec{v}} \in \Qcal{p+1,p} \times \Qcal{p,p+1} \} \,. 
 	\end{equation}
+In three dimensions, the element-local polynomial space is: 
+	\begin{equation}
+		\mathbb{D}_p(K) = \{ \vec{v} = \frac{1}{J}\mat{F}\hat{\vec{v}}\circ\T^{-1} : \hat{\vec{v}} \in \Qcal{p+1,p,p} \times \Qcal{p,p+1,p} \times \Qcal{p,p,p+1} \} \,. 
+	\end{equation}
 Here, both the inverse mesh transformation and $1/J$ are generally non-polynomial when $\T$ is non-affine. 
 
 We now define the degree-$p$ RT space as: 
 	\begin{equation}
-		\RT_p = \{ \vec{v} \in H(\div;\D) : \vec{v}|_K \in \mathbb{D}_p(K) \,, \quad \forall K \in \meshT \} \,. 
+		\RT_p = \{ \vec{v} \in [L^2(\D)]^{\dim} : \vec{v}|_K \in \mathbb{D}_p(K) \ \forall K \in \meshT \ \mathrm{and}\ \jump{\vec{v}\cdot\n} = 0 \ \forall \mathcal{F} \in \Gamma_0 \} \,. 
 	\end{equation}
-Note that since the contravariant Piola transform is used, functions in RT transform according to Eqs.~\ref{fem:piola}, \ref{fem:piola_grad}, and \ref{fem:piola_div}. 
+In other words, $\RT_p$ uses the element-local polynomial space $\mathbb{D}_p(K)$ on each element and shares degrees of freedom so that the normal component is continuous across each interior face. 
+Note that since the contravariant Piola transform is used, functions in $\RT_p$ transform according to Eqs.~\ref{fem:piola}, \ref{fem:piola_grad}, and \ref{fem:piola_div}. 
 The location of the degrees of freedom for $\RT_1$ are shown on a $3\times 3$ mesh in Fig.~\ref{fem:rtfes}. Continuity in the normal component is enforced by sharing the degrees of freedom corresponding to the normal component on interior faces. 
 From Proposition \ref{fem:div_prop}, $\vec{v} \in \RT_p$ satisfies $\nabla\cdot\vec{v} = \nablah\cdot\vec{v} \in L^2(\D)$. However, the RT space does not have the continuity to allow a square-integrable gradient. In other words, $\nabla\vec{v} \notin [L^2(\D)]^{2\times 2}$ and $\nabla\vec{v} \neq \nablah\vec{v}$. 
 % --- RT FES --- 
@@ -1032,15 +1039,26 @@ The degrees of freedom in $\Lambda_1$ are depicted in Fig.~\ref{fem:ifes}. Note 
 In the previous section, we defined piecewise polynomial spaces that, through a clever choice of degrees of freedom, are finite-dimensional subspaces of the Sobolev spaces introduced in Section \ref{fem_sec:sobolev}. In this section, we discuss their computer implementation. A canonical basis with small support such that each basis function is non-zero on only a few elements in the mesh is built. We then discuss finite element assembly which leverages the small support of the basis functions to achieve an efficient algorithm for forming the matrices associated with a finite element space and bilinear or linear form. 
 
 \subsection{The Canonical Basis}
-Let $X_h$ denote one of the finite element spaces described in the previous section and $\mathcal{N}_h$ denote the set of nodes associated with $X_h$. For example, if $X_h = V_1$, the linear continuous finite element space, then $\mathcal{N}_h$ is the set of locations, $\x_i$, in the domain corresponding to a vertex in the mesh. A function $u_h \in X_h$ is determined by the values it takes at the nodes in $\mathcal{N}_h$. That is, $u_h \in X_h$ is determined by the set 
+Let $X_h$ denote one of the finite element spaces described in the previous section and $\mathcal{N}_h$ denote the set of nodes associated with $X_h$. 
+We also let $\mathcal{Q}(K)$ denote the element-local polynomial space for $X_h$ such that given $u \in X_h$, $u|_K \in \mathcal{Q}(K)$ for each $K \in \meshT$ and use $\{\ell_i\}$ to denote its nodal basis. 
+For example, if $X_h = V_1$, the linear continuous finite element space, then $\mathcal{N}_h$ is the set of locations, $\x_i$, in the domain corresponding to a vertex in the mesh and $\mathcal{Q}(K) = \Qbb{p}(K)$. 
+A function $u_h \in X_h$ is determined by the values it takes at the nodes in $\mathcal{N}_h$. That is, $u_h \in X_h$ is determined by the set 
 	\begin{equation}
 		\Sigma_h = \{ u_h(\x_i)\,, \quad \forall \x_i \in \mathcal{N}_h\} \,, 
 	\end{equation}
-called the set of degrees of freedom for the space $X_h$. Defining functions $b_i$ that satisfy 
+called the set of degrees of freedom for the space $X_h$. Defining functions $b_i \in X_h$ that satisfy 
 	\begin{equation}
-		b_i \in X_h \,, \quad b_i(\x_j) = \delta_{ij}\,, 1 \leq i,j \leq \dim(X_h) \,, 
+		b_i(\x_j) = \delta_{ij}\,, \quad 1 \leq i,j \leq \dim(X_h) \,, 
 	\end{equation}
-it is seen that $\{b_i\}$ forms a basis for $X_h$. The $b_i$ are referred to as basis functions. A selection of basis functions for $V_1$, $V_2$, and $V_3$ in one dimension are depicted in Fig.~\ref{fem:fe_support_1d}. Observe that each $b_i$ is one at $x_i$ and zero for each $x_j$ where $i\neq j$ and that each basis function has a localized support. That is, the basis functions associated with the boundary of the domain are non-zero only on a single element. This is also true for the ``bubble'' basis functions corresponding to a node that is on the interior of an element (e.g.~$b_8$ in the middle diagram). Basis functions associated with a node shared by multiple elements are non-zero only on those elements. This is demonstrated by $b_4$, $b_7$, and $b_{10}$ in the upper, middle, and lower diagrams, respectively. Figure \ref{fem:fe_support} shows a selection of basis functions for $V_1$ in two dimensions. Again, the basis functions are non-zero only in the elements that share a node. This property of local support was constructed by design to to keep the resulting algebraic system as computationally manageable and memory efficient as possible. 
+it is seen that $\{b_i\}$ forms a basis for $X_h$. 
+The $b_i$ are referred to as the global basis functions. Since each $b_i \in X_h$, we have that $b_i|_K \in \mathcal{Q}(K)$. In particular, we choose the $b_i$ so that their restrictions in each element exactly align with one of the element-local nodal basis functions $\ell_i$. In this way, the global representation of members of $X_h$ is built up from the local representation using $\mathcal{Q}(K)$ on each element. Through the sharing of nodes between neighboring elements (e.g.~the choice of $\mathcal{N}_h$), the requirements of the finite element spaces in Section \ref{fem_sec:fes} are satisfied. 
+Using this basis, a function $u \in X_h$ can be represented as 
+	\begin{equation}
+		u(\x) = \sum_i b_i(\x) u_i 
+	\end{equation}
+where $u_i \in \Sigma_h$ is the degree of freedom corresponding to $b_i$. 
+
+A selection of basis functions for $V_1$, $V_2$, and $V_3$ in one dimension are depicted in Fig.~\ref{fem:fe_support_1d}. Observe that each $b_i$ is one at $x_i$ and zero for each $x_j$ where $i\neq j$ and that each basis function has a localized support. That is, the basis functions associated with the boundary of the domain are non-zero only on a single element. This is also true for the ``bubble'' basis functions corresponding to a node that is on the interior of an element (e.g.~$b_8$ in the middle diagram). Basis functions associated with a node shared by multiple elements are non-zero only on those elements. This is demonstrated by $b_4$, $b_7$, and $b_{10}$ in the upper, middle, and lower diagrams, respectively. Figure \ref{fem:fe_support} shows a selection of basis functions for $V_1$ in two dimensions. Again, the basis functions are non-zero only in the elements that share a node. This property of local support was constructed by design to to keep the resulting algebraic system as computationally manageable and memory efficient as possible. 
 % --- 1D support diagram --- 
 \begin{figure}
 \centering
@@ -1059,18 +1077,12 @@ it is seen that $\{b_i\}$ forms a basis for $X_h$. The $b_i$ are referred to as 
 
 For DG spaces, degrees of freedom are not shared between elements. Thus, the global basis is spanned by the collection of element-local basis functions corresponding to each element in the mesh. In this case, the support of each basis function is limited to a single element. 
 
-Using this basis, a function $u \in X_h$ can be represented as 
-	\begin{equation}
-		u(\x) = \sum_i b_i(\x) u_i 
-	\end{equation}
-where $u_i \in \Sigma_h$ is the degree of freedom corresponding to $b_i$. 
-
 \subsection{Finite Element Assembly}
 Consider the abstract, finite-dimensional problem: find $u \in X_h$ such that 
 	\begin{equation}
 		a(v,u) = f(v) \,, \quad \forall v \in X_h \,. 
 	\end{equation}
-Both the test function $v$ and the solution $u$ are represented as a linear combination of the canonical basis functions $\{b_i\}$ that span $X_h$. That is, we write 
+Both the test function $v$ and the solution $u$ are represented as a linear combination of the global basis functions $\{b_i\}$ that span $X_h$. That is, we write 
 	\begin{equation}
 		u = \sum_i b_i u_i \,, \quad v = \sum_i b_i v_i \,,
 	\end{equation}
@@ -1269,22 +1281,22 @@ Many iterative schemes, such as the classical Jacobi and Gauss-Seidel iterations
 \end{figure}
 
 The multigrid algorithm leverages this behavior. A two-level algorithm would: apply a smoothing iterative scheme to the fine-grid problem, restrict the residual onto a coarser grid, solve for a coarse-grid update, and then prolong the update to the fine-grid problem in order to iteratively update the fine-grid solution vector. 
-A general multigrid algorithm recursively applies this algorithm by replacing each coarse-grid solve with another two-level smoothing and coarsening algorithm. The recursion is repeated until the coarse grid problem is small enough to be solved efficiently with a smoothing iteration. Recursively traversing from fine grid to the coarsest grid and back is called a V-cycle. 
+A general multigrid algorithm recursively applies this algorithm by replacing each coarse-grid solve with another two-level smoothing and coarsening algorithm. The recursion is repeated until the coarse grid problem is small enough to be solved efficiently with a smoothing iteration. Recursively traversing from the finest grid to the coarsest grid and back is called a V-cycle. 
 
 Multigrid algorithms based around coarsening the mesh are termed \gls{gmg} because they rely on the geometry of the problem. Such algorithms typically require the user to supply the hierarchy of meshes used in the coarsening steps. The generation of such a hierarchy is a non-trivial task for sufficiently complicated geometries. In addition, \gls{gmg} requires re-discretizing the problem on each of the meshes in the hierarchy. 
 
 \gls{amg} \cite{amg} is a multigrid scheme that defines the coarse-grid restrictions and prolongations using only information provided by the entries of the algebraic system of equations. In this way, knowledge of the mesh is not required and the expense of re-discretizing on each coarse problem is avoided. This ease-of-use comes at some cost. Typically, \gls{amg} performance is mildly degraded compared to \gls{gmg} with a well-designed mesh hierarchy. In addition, there exists an expensive ``setup phase'' where the matrix entries are analyzed and the restriction and prolongation operators are formed. 
 
-In this document, the \gls{amg} solver from \emph{hypre} \cite{hypre} is used extensively as a preconditioner for the iterative solution of the discrete moment systems. AMG is preferred to GMG due to its black box nature. 
+In this document, the \gls{amg} solver from \emph{hypre} \cite{hypre} is used extensively as a preconditioner for the iterative solution of the discrete moment systems. AMG is preferred to GMG in this work due to its black box nature. 
 
 \subsection{Preconditioning}
 The condition number of the matrix $\mat{A}$, denoted $\kappa(\mat{A})$, is defined as the ratio of the maximal and minimal singular values of $\mat{A}$. 
 It is common for the performance of iterative schemes to degrade as the condition number of the algebraic system increases. 
-For example, it is well known (e.g.~from \textcite[\S 2.4.2]{quateroni}) that the conjugate gradient algorithm reduces the error at each iteration by at most a factor of  
+For example, it is well known \cite[cf.~\S 2.4.2]{quateroni} that the conjugate gradient algorithm reduces the error at each iteration by at most a factor of  
 	\begin{equation} \label{fem:cg_err_red}
 		2\paren{\frac{\sqrt{\kappa(\mat{A})} - 1}{\sqrt{\kappa(\mat{A})} + 1}} \,. 
 	\end{equation}
-The condition numbers of matrices arising from finite element discretization generally increase as the mesh size decreases. Thus, Eq.~\ref{fem:cg_err_red} predicts more iterations will be needed to solve the linear system as the mesh size decreases. Note that as the mesh size decreases, $n$ increases and thus the cost of all the linear algebra operations that comprise each iteration of the iterative solver also increases. 
+The condition numbers of matrices arising from finite element discretization generally increase as the mesh size decreases. Thus, Eq.~\ref{fem:cg_err_red} predicts more iterations will be needed to solve the linear system associated with increased mesh resolution. Note that as the mesh size decreases, $n$ increases and thus the cost of all the linear algebra operations that comprise each iteration of the iterative solver also increases. 
 Iterative solvers that have uniform convergence with respect to the mesh size are desired. 
 This makes the cost of solving the system scale according to the increased cost associated with larger linear algebra operations only. 
 

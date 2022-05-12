@@ -93,7 +93,7 @@ with
 	\begin{equation}
 		E_b = \frac{\int |\Omegahat\cdot\n|\,\psi \ud \Omega}{\int\psi \ud \Omega} 
 	\end{equation}
-the Eddington boundary factor. Since, for the continuous equations, $\varphi/\int\psi \ud \Omega = 1$, these closures are simply algebraic reformulations of the pressure tensor and boundary functional. 
+the Eddington boundary factor. Since, for the continuous equations, $\varphi/\int\psi \ud \Omega = 1$, these closures are simply algebraic reformulations of the pressure tensor and boundary functional. Note that due to the normalization of the Eddington tensor and boundary factor, both $\E$ and $E_b$ are nonlinear functions of the angular flux. 
 
 With these closures, the VEF equations are 
 	\begin{subequations} \label{moment:vefeq}
@@ -164,7 +164,7 @@ The second-order form is found by eliminating the current:
 	\begin{equation} \label{moment:smm_drift}
 		-\nabla\cdot\frac{1}{3\sigma_t}\nabla\varphi + \sigma_a \varphi = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t} + \nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T \,. 
 	\end{equation}
-Observe that the SMM moment system is the radiation diffusion system with additional transport-dependent source terms. 
+Observe that the SMM moment system is the radiation diffusion system with additional transport-dependent source terms. Likewise, the boundary condition is the Marshak boundary condition with an additional transport-dependent boundary source. 
 
 \section{The Moment Algorithm}
 Moment methods solve the coupled transport-moment system simultaneously. The transport equation is used to provide the VEF or SMM closures while the moment system is used to compute the moment-dependent physics. In our case, the moment system's scalar flux solution is used to compute the isotropic scattering source. In this way, the coupling of the angular phase space induced by integrating over all angles is avoided. This allows use of the efficient solution procedure known as the transport sweep discussed in Chapter \ref{chap:sn} for the discrete transport equations. Since the closures are weak functions of the transport solution, simple iterative schemes can converge rapidly and robustly. 
@@ -184,7 +184,7 @@ The moment algorithm solves the coupled system given by:
 where transport boundary conditions are specified in Eq.~\ref{moment:inflow}. The moment system's boundary conditions are given by Eq.~\ref{moment:vefbc} for a VEF method and Eq.~\ref{moment:smmbc} for SMM. Here, the moment system is coupled to the transport equation through the closures and the transport equation's scattering source is coupled to the moment system through the moment system's scalar flux. We have increased the complexity of the problem by adding the moment system's unknowns. In the case of VEF, the coupled system in Eq.~\ref{moment:coupled} is also nonlinear due to the use of nonlinear closures. However, solving the coupled system is still advantageous due to the ability to use the transport sweep and the rapid convergence of the closures.  
 
 Let 
-	\begin{equation}
+	\begin{equation} \label{moment:stream_coll}
 		\mat{L}\psi = \Omegahat\cdot\nabla\psi + \sigma_t\psi 
 	\end{equation}
 be the streaming and collision operator. The coupled transport-moment system can then be rewritten 
@@ -380,7 +380,7 @@ In this way, the Gateaux derivative provides a process for linearizing any $f$ e
 	\begin{equation}
 		\E(\psi) \xrightarrow{\text{TSE}} \E(\psi_0) + D[\E](\psi_0,\psi') \,. 
 	\end{equation}
-This linearization is used in this section to investigate the properties of the VEF data and is also used in Chapter \ref{chap:smm} to derive discrete \glspl{smm}. 
+This linearization is used in this section to investigate the properties of the VEF data and is also used in Section \ref{moment_sec:linearize} to establish the connection between the VEF and SMM closures. 
 
 \subsection{Derivation of Functional Derivatives}
 Applying the definition in Eq.~\ref{moment:gateaux} to the Eddington tensor, the derivative of the Eddington tensor evaluated at $\psi_0$ in the direction $\psi'$ is 
@@ -461,30 +461,30 @@ In the process of performing a Fourier stability analysis of the VEF algorithm, 
 represent the VEF drift-diffusion equation and Miften-Larsen boundary conditions, respectively. Here, $Q = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t}$ is used for brevity. The coupled transport-VEF system can be written as the root-finding problem: 
 	\begin{equation} \label{moment:vef_root}
 		\F(\y) = \begin{bmatrix} 
-			\mat{L}\psi - \mat{S}\varphi - q \\ 
+			\mat{L}\psi - \frac{\sigma_s}{4\pi}\varphi - q \\ 
 			\mat{V}(\psi,\varphi) \\ 
 			\mat{B}(\psi,\varphi)
 		\end{bmatrix}
 		= 0 \,, 
 	\end{equation}
-where $\y = \vector{\psi & \varphi}$. In this section, we show that the SMM algorithm is equivalent to a first-order Taylor series of $F$ expanded about $\y_0 = \vector{\psi_0 & \varphi_0}$ where $\psi_0$ is a linearly anisotropic solution of the transport equation and $\varphi_0 = \int \psi_0 \ud \Omega$. In other words, $\psi_0$ is the diffusion approximation to the transport problem at hand. We assume that $\psi_0$ and $\varphi_0$ satisfy the transport and Marshak diffusion boundary conditions, respectively. 
+where $\y = \vector{\psi & \varphi}$ and $\mat{L}$ is the streaming and collision operator defined in Eq.~\ref{moment:stream_coll}. In this section, we show that the SMM algorithm is equivalent to a first-order Taylor series of $\F$ expanded about $\y_0 = \vector{\psi_0 & \varphi_0}$ where $\psi_0$ is a linearly anisotropic solution of the transport equation and $\varphi_0 = \int \psi_0 \ud \Omega$. In other words, $\psi_0$ is the diffusion approximation to the transport problem at hand. We assume that $\psi_0$ and $\varphi_0$ satisfy the transport and Marshak diffusion boundary conditions, respectively. 
 
 The first-order Taylor series approximation to the root finding problem $\F(\y) = 0$ is: 
 	\begin{equation} \label{moment:smm_root}
-		0 = \F(\y) \xrightarrow{\text{TSE}} \F(\y_0) + \pderiv{F}{\y}\biggr\rvert_{\y_0}(\y - \y_0) \,. 
+		0 = \F(\y) \xrightarrow{\text{TSE}} \F(\y_0) + \pderiv{\F}{\y}\biggr\rvert_{\y_0}(\y - \y_0) \,. 
 	\end{equation}
 The Jacobian is given by: 
 	\begin{equation}
-		\pderiv{F}{\y} = \begin{bmatrix} 
-			\pderiv{F_1}{\psi} & \pderiv{F_1}{\varphi} \\ 
-			\pderiv{F_2}{\psi} & \pderiv{F_2}{\varphi} \\ 
+		\pderiv{\F}{\y} = \begin{bmatrix} 
+			\pderiv{F_1}{\psi} & \pderiv{F_1}{\varphi} \\[4pt] 
+			\pderiv{F_2}{\psi} & \pderiv{F_2}{\varphi} \\[4pt] 
 			\pderiv{F_3}{\psi} & \pderiv{F_3}{\varphi} 
 		\end{bmatrix} \,,
 	\end{equation}
-where $F_i$ are the rows of $F$. The transport equation is linear in both $\psi$ and $\varphi$ so the first row of the Jacobian is simply: 
+where $F_i$ are the rows of $\F$. The transport equation is linear in both $\psi$ and $\varphi$ so the first row of the Jacobian is simply: 
 	\begin{equation}
 		\pderiv{F_1}{\y} = \begin{bmatrix} 
-			\mat{L} & -\mat{S} 
+			\mat{L} & -\frac{\sigma_s}{4\pi} 
 		\end{bmatrix} \,. 
 	\end{equation}
 The second and third rows are complicated by the nonlinear dependence on $\psi$ in the operators $\mat{V}$ and $\mat{B}$. The second row of the Jacobian is: 
@@ -533,29 +533,29 @@ For the boundary conditions, an analogous process yields
 	\end{equation}
 where we have used the form of the derivative of the Eddington boundary factor derived in Eq.~\ref{moment:Eb_deriv} and $\beta$ is the correction factor given in Eq.~\ref{moment:corrfac}. 
 
-The linear part of $F$ is then: 
+The linear part of $\F$ is then: 
 	\begin{equation}
 	\begin{aligned}
-		\F(\y) &\approx \F(\y_0) + \pderiv{F}{\y}\biggr\rvert_{\y_0}(\y - \y_0)\\
+		\F(\y) &\approx \F(\y_0) + \pderiv{\F}{\y}\biggr\rvert_{\y_0}(\y - \y_0)\\
 		&= \begin{bmatrix} 
-			\mat{L}\psi_0 - \mat{S}\varphi_0 - q \\
+			\mat{L}\psi_0 - \frac{\sigma_s}{4\pi}\varphi_0 - q \\
 			-\mat{D}\varphi_0 - Q \\ 
 			\vec{J}\cdot\n - \frac{1}{2}\varphi_0 - 2\Jin 
 		\end{bmatrix}
 		+  \begin{bmatrix} 
-			\mat{L} & -\mat{S} \\
+			\mat{L} & -\frac{\sigma_s}{4\pi} \\
 			-\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T & \mat{D} \\ 
 			-\beta & -\frac{1}{2} 
 		\end{bmatrix} \begin{bmatrix} 
 			\psi - \psi_0 \\ \varphi - \varphi_0 
 		\end{bmatrix} \\
 		&= \begin{bmatrix} 
-			\mat{L}\psi - \mat{S}\varphi - q \\
+			\mat{L}\psi - \frac{\sigma_s}{4\pi}\varphi - q \\
 			-\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T(\psi - \psi_0) + \mat{D}\varphi - Q \\
 			\vec{J}\cdot\n - \frac{1}{2}\varphi - 2\Jin - \beta(\psi - \psi_0)
 		\end{bmatrix} \\
 		&= \begin{bmatrix} 
-			\mat{L}\psi - \mat{S}\varphi - q \\
+			\mat{L}\psi - \frac{\sigma_s}{4\pi}\varphi - q \\
 			-\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T(\psi) + \mat{D}\varphi - Q \\
 			\vec{J}\cdot\n - \frac{1}{2}\varphi - 2\Jin - \beta(\psi)
 		\end{bmatrix}
@@ -577,10 +577,10 @@ Converting the operator notation back to equations, this is equivalent to:
 	\end{subequations}
 	\begin{subequations} \label{moment:linearized}
 	\begin{equation}
-		-\nabla\cdot\frac{1}{3\sigma_t}\nabla\varphi + \sigma_a \varphi = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t} + \nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T(\psi) \,, \quad \x \in \D \,, 
+		-\nabla\cdot\frac{1}{3\sigma_t}\nabla\varphi + \sigma_a \varphi = Q_0 - \nabla\cdot\frac{\Qone}{\sigma_t} + \nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T \,, \quad \x \in \D \,, 
 	\end{equation}
 	\begin{equation}
-		\vec{J}\cdot\n = \frac{1}{2}\varphi + \Jin + \beta(\psi) \,, \quad \x \in \partial \D \,. 
+		\vec{J}\cdot\n = \frac{1}{2}\varphi + \Jin + \beta \,, \quad \x \in \partial \D \,. 
 	\end{equation}
 	\end{subequations}
 Observe that these equations are equivalent to the transport equation and the SMM diffusion equation given in Eq.~\ref{moment:smm_drift} with the corrected Marshak boundary condition from Eq.~\ref{moment:smmbc}. 
@@ -608,13 +608,13 @@ the VEF drift-diffusion equation can be written as the diffusion-advection-react
 	\end{equation}
 Here, it is clear that the VEF drift-diffusion equation is not symmetric due to the presence of the advective term, $\vec{c}\cdot\nabla\varphi$. In addition, since $\mat{D}$ is symmetric positive definite (since the Eddington tensor is symmetric positive definite), the VEF drift-diffusion equation is an elliptic partial differential equation. 
 
-However, since the transport equation allows discontinuous solutions in space and angle, the Eddington tensor is generally not differentiable in space. Numerically, it is common to use a \gls{dg} spatial discretization for the transport equation. In such case, the solution is generally discontinuous across interior mesh interfaces. Thus, the VEF drift-diffusion equation cannot be written in the standard elliptic form of Eq.~\ref{moment:standard_elliptic} since the Eddington tensor does not have the required regularity to have $\nabla\cdot\E$ be well defined. This means discretization techniques must be extended to handle the non-standard form of the VEF drift-diffusion equation. 
+However, the transport equation allows discontinuous solutions in space and angle. This means the Eddington tensor is generally not differentiable in space. Numerically, it is common to use a \gls{dg} spatial discretization for the transport equation. In such case, the solution is generally discontinuous across interior mesh interfaces. Thus, the VEF drift-diffusion equation cannot be written in the standard elliptic form of Eq.~\ref{moment:standard_elliptic} since the Eddington tensor does not have the required regularity to have $\nabla\cdot\E$ be well defined. This means discretization techniques must be extended to handle the non-standard form of the VEF drift-diffusion equation. 
 
 These same difficulties also apply to the SMM correction sources. For SMM, the second-order form has the correction source: 
 	\begin{equation}
 		\nabla\cdot\frac{1}{\sigma_t}\nabla\cdot\T \,, 
 	\end{equation}
-which also requires derivatives of the angular flux through the correction tensor, $\T$. Thus, discretizations for the SMM correction source must also be developed to handle this difficulty.
+which also requires derivatives of the angular flux through the correction tensor, $\T$. Thus, discretizations for the SMM correction source must also be developed to handle the low regularity of the angular flux. 
 
 \section{Discrete Moment Methods}
 The goal of this dissertation is to evaluate the fixed-point operator $\mat{G}(\mat{X})$, defined in Eq.~\ref{moment:vef_fp} for VEF and Eq.~\ref{moment:smm_fp} for SMM, numerically in a computationally efficient manner. Numerically approximating this operator requires defining 1) a discretization of the transport equation, 2) a representation for VEF and SMM closures, and 3) a discretization for the moment system. In the VEF literature, discrete VEF methods are generally classified as consistent and independent based on their approach for defining the algorithmic choices corresponding to 2) and 3). Consistent methods are characterized by having discrete transport and moment equations that are algebraically consistent. These methods produce solutions for the moment system that match the moments of the discrete transport equation to machine precision (or to the maximum value of the solver tolerances). In other words, the difference between the moments of the transport solution and the solution of the moment system differ in a manner that is independent of the mesh size. Consistent methods are derived by forming moment equations from the \emph{discrete} transport equation and applying discrete closures. This leads to a moment discretization that is an equivalent reformulation of the discrete transport equation leading to the discrete equivalence that characterizes these methods. 

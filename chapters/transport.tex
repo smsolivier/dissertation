@@ -3,7 +3,7 @@
 
 \begin{document}
 \chapter{Radiation Transport Background} \label{chap:transport}
-The purpose of this chapter is to motivate and define the simplified transport problem that serves as the model for the development of the moment methods derived in later chapters. To that end, the general kinetic Boltzmann equation is introduced and then particularized to the equations of thermal radiative transfer that describe thermal photons in the absence of material motion and heat conduction. We pay particular attention to the notational differences present in the fields of nuclear engineering, astrophysics, and \gls{hedp}. The simplifications of isotropic scattering and frequency and time-independence are applied to derive the model problem. The chapter concludes with a derivation of the radiation diffusion approximation. 
+The purpose of this chapter is to motivate and define the simplified transport problem that serves as the model for the development of the moment methods derived in later chapters. To that end, the general kinetic Boltzmann equation is introduced and then particularized to the equations of thermal radiative transfer which describe thermal photons in the absence of material motion and heat conduction. We pay particular attention to the notational differences present in the fields of nuclear engineering, astrophysics, and \gls{hedp}. The simplifications of isotropic scattering and frequency and time-independence are applied to derive the model problem. The chapter concludes with a derivation of the radiation diffusion approximation. 
 
 \section{The Boltzmann Transport Equation}
 A discussion of the Boltzmann transport equation must begin with the definition of the particle distribution function, $f$. 
@@ -36,6 +36,20 @@ Here, we focus on neutral particle transport (i.e.~photons or neutrons). Since t
 		\pderiv{f}{t} + \v \cdot \nabla f = \paren{\pderiv{f}{t}}_\text{absorption} + \paren{\pderiv{f}{t}}_\text{scattering} + \paren{\pderiv{f}{t}}_\text{source} \,,
 	\end{equation}
 where we have split the collision term into absorption and scattering terms and included an additional term representing an external source of particles. For neutrons, the external source could be a fixed-source of particles such as a radioactive material that emits neutrons. For photons, we consider the source to be the thermal emission of photons. Thus, the photon external source is dependent on the material's temperature. We note that the case of the general Boltzmann equation under the assumption that particles do not interact with each other is called the linear Boltzmann equation. 
+
+\section{Boundary and Initial Conditions}
+Suppose that the Boltzmann transport equation is solved in a spatial domain $\D$ surrounded by a surface $\partial\D$. To solve the transport equation, the initial and boundary conditions for the particle distribution function must be provided. The initial condition corresponds to specifying $f(\x,\v,0)$: the expected number of particles in the phase space at time $t=0$. Letting $\n$ represent the outward unit normal to the boundary of the domain, the boundary condition specifies $f(\x,\v,t)$ for each $\x\in\partial\D$ satisfying $\v\cdot\n<0$ for all values of $t$. Figure \ref{trans:inflow_diag} depicts an example domain and its boundary along with a selection of normal vectors. The region $\v\cdot\n<0$ where the boundary conditions must be provided are shown in red. The case where 
+	\begin{equation} \label{trans:gen_inflow}
+		f(\x,\v,t) = \bar{f}(\x,\v,t) \,, \quad \x \in \partial\D \ \mathrm{and} \ \v \cdot \n < 0 \,, 
+	\end{equation}
+is called an inflow boundary condition with $\bar{f}$ the inflow boundary function. The special case $\bar{f} \equiv 0$ is called a vacuum boundary condition. Other types of boundary conditions common for radiation transport are provided in \cite[\S 1.3]{neutron_transport_LM}.
+% --- inflow boundary conditions diagram --- 
+\begin{figure}
+\centering
+\includegraphics[width=.85\textwidth]{figs/bean.pdf}
+\caption{A kidney bean shaped domain depicted with a selection of normal vectors along its boundary. The inflow region corresponding to $\v\cdot\n<0$ is colored in red for two example directions of $\v$.}
+\label{trans:inflow_diag}
+\end{figure}
 
 \section{Navigating Notation}
 Application of the Boltzmann transport equation to modeling radiation is home to three sets of notation: nuclear engineering, astrophysics, and \gls{hedp}. Here, we define the notation used to describe the radiation field and its moments. The hope of this section is to provide the means for newcomers to this subject to navigate these three fields. 
@@ -109,15 +123,16 @@ Here, the informality arises from the angular flux depending on the particle ene
 
 \subsection{Moments of the Distribution Function}
 Integration over the velocity variable plays an important role in both neutron and photon transport. In the above, we integrated over position-velocity space to determine the reaction rate and the energy and momentum deposition rates. These integrated quantities are called the moments of the distribution function. 
-For most purposes, the direction particles are traveling is immaterial for computing reaction and deposition rates. Integrating the angular flux over the direction of travel simplifies the above calculation for reaction rate. Let 
+For most purposes, the direction particles are traveling is immaterial for computing reaction and deposition rates. Thus, defining variables that represent integrations of the angular flux over the direction of travel can simplify the above calculations. Let, 
 	\begin{equation}
 		\phi(\x,E,t) = \int_{\mathbb{S}^2} \psi(\x,\Omegahat,E,t) \ud \Omega \,,  
 	\end{equation}
-be the \emph{scalar flux}. The reaction rate is then $\int_\D \int_0^\infty \sigma \phi(\x,E,t) \ud E \ud \x$. We will also use the \emph{current} defined as: 
+be the \emph{scalar flux}. The reaction rate is then $\int_\D \int_0^\infty \sigma \phi(\x,E,t) \ud E \ud \x$. In this way, the scalar flux represents the track length rate density of neutrons at energy $E$ traveling in any direction.
+We will also use the \emph{current} defined as: 
 	\begin{equation}
 		\vec{J}(\x,E,t) = \int_{\mathbb{S}^2} \Omegahat\,\psi(\x,\Omegahat,E,t) \ud \Omega \,. 
 	\end{equation}
-The scalar flux represents the track length rate density of neutrons at energy $E$ traveling in any direction. Letting $\n$ denote a unit vector normal to a differential area $\ud A$, $\Omegahat\cdot\n \psi(\x,\Omegahat,E,t) \ud A$ represents the rate at which particles cross $\ud A$ going in the direction $\Omegahat$ at energy $E$. Thus, the current represents the net number of particles crossing $\ud A$ regardless of $\Omegahat$. We call these terms the zeroth and first moments of the angular flux due to their definition as $\int_{\mathbb{S}^2} \Omegahat^i \psi \ud \Omega$ where $i=0$ for the scalar flux and $i=1$ for the current. 
+Letting $\n$ denote a unit vector normal to a differential area $\ud A$, $\Omegahat\cdot\n\,\psi(\x,\Omegahat,E,t) \ud A$ represents the rate at which particles cross $\ud A$ going in the direction $\Omegahat$ at energy $E$. Thus, the current represents the net number of particles crossing $\ud A$ regardless of $\Omegahat$. We call these terms the zeroth and first moments of the angular flux due to their definition as $\int_{\mathbb{S}^2} \Omegahat^i\,\psi \ud \Omega$ where $i=0$ for the scalar flux and $i=1$ for the current. 
 
 For photons, the astrophysics and \gls{hedp} notations differ in their definitions of the moments. In astrophysics, the zeroth, first, and second moments are defined as averages over solid angle: 
 	\begin{subequations}
@@ -172,6 +187,11 @@ Thus, the Boltzmann transport equation for thermal photons is given by
 	\begin{equation} \label{trans:trans_photon}
 		\frac{1}{c}\pderiv{I}{t} + \Omegahat\cdot\nabla I + \sigma_t I = \int_{\mathbb{S}^2}\int_0^\infty \sigma_s(\Omegahat'\rightarrow\Omegahat,\nu'\rightarrow \nu) I(\cdot,\Omegahat',\nu',\cdot) \ud \nu'\ud\Omega' + \frac{\sigma_a B(\nu,T)}{4\pi} \,. 
 	\end{equation}
+Converting the boundary condition in Eq.~\ref{trans:gen_inflow} to apply to the intensity by multiplying by $ch\nu$ and swapping the velocity for the direction of flight yields: 
+	\begin{equation}
+		I(\x,\Omegahat,\nu,t) = \bar{I}(\x,\Omegahat,\nu,t) \,, \quad \x \in \partial \D \ \mathrm{and} \ \Omegahat\cdot\n < 0 \,. 
+	\end{equation}
+Providing $I(\x,\Omegahat,\nu,0)$ provides the initial condition. 
 
 We now wish to derive an equation for the evolution of the material temperature. We model the material gaining energy by absorbing radiation and losing energy by emitting thermal radiation. Here, we are interested in the energy exchanged between matter and radiation traveling in all directions and at any frequency. 
 The energy absorption rate is 
@@ -186,7 +206,9 @@ The balance of energy between radiation and matter is then written:
 		&= \int_0^\infty \sigma_a (c E(\x,\nu,t) - B(\nu,T)) \ud \nu \,, 
 	\end{aligned}
 	\end{equation}
-where $C_v$ is the material's heat capacity. The coupled equations given by Eqs.~\ref{trans:trans_photon} and \ref{trans:meb} are called the equations of thermal radiative transfer. This system is nonlinear due to the Planck emission term. 
+where $C_v$ is the material's heat capacity. 
+An initial temperature field must be provided but, since the energy balance equation does not involve spatial derivatives, boundary conditions for the temperature do not. 
+The coupled equations given by Eqs.~\ref{trans:trans_photon} and \ref{trans:meb} are called the equations of thermal radiative transfer. This system is nonlinear due to the Planck emission term. 
 
 \section{Steady-State, Linear Transport: A Proxy for TRT}
 In this section, the model problem of the steady-state, frequency-independent, linear Boltzmann equation with isotropic scattering is derived from the TRT equations. 
@@ -203,11 +225,12 @@ Due to this, the scattering source becomes:
 where the definition of the frequency-dependent energy density given in Eq.~\ref{tran:energy_density} was used. Isotropic scattering is rarely the correct model for scattering. However, it shares many of the same implementational aspects of more complicated scattering models that have been expanded in spherical harmonics. 
 
 \subsection{Gray Transport}
-The gray TRT system is derived by defining suitable frequency-averaged opacities and integrating the transport equation over all angles. The averaged opacities are defined as 
+The gray TRT system is derived by defining suitable frequency-averaged opacities and integrating the transport equation over all angles. The gray opacities are defined as weighted averages of the form: 
 	\begin{equation}
-		\bar{\sigma}_x = \frac{\int_0^\infty \sigma_x I(\x,\Omegahat,\nu,t) \ud \nu}{\int I(\x,\Omegahat,\nu,t) \ud \nu} \,, 
+		\bar{\sigma}_x = \frac{\int_0^\infty \sigma_x w(\x,\Omegahat,\nu,t) \ud \nu}{\int I(\x,\Omegahat,\nu,t) \ud \nu} \,, 
 	\end{equation}
-where $x$ is the total, scattering, and absorption events. 
+where $x$ is the total, scattering, and absorption events and $w$ is a weight function that approximates the true frequency-dependent intensity. In practice, $w$ could be an approximation to the intensity computed from a larger algorithm with multiple levels in frequency, an analytical approximation to the intensity (e.g.~Rosseland opacities) \cite{pomraning2005equations}, or another numerical approximation such as via a stochastic method. 
+
 The gray emission rate is the average of the Planck emission source over all directions and frequencies: 
 	\begin{equation}
 		\bar{B}(T) = \int_{\mathbb{S}^2} \int_0^\infty B(\nu,T) \ud \nu \ud \Omega = a c T^4 \,,
@@ -222,7 +245,7 @@ Letting $\bar{I}(\x,\Omegahat,t) = \int_0^\infty I(\x,\Omegahat,\nu,t)$ be the f
 		C_v \pderiv{T}{t} = c\bar{\sigma}_a (E(\x,t) - a T^4) \,. 
 	\end{equation}
 	\end{subequations}
-This frequency-independent system of equations emulates a TRT algorithm that uses only one discrete frequency group. Algorithms for the frequency-dependent TRT system must also be effective for the gray TRT system. The gray TRT system then serves as an important first step in the development of methods for the frequency-dependent TRT system. 
+The gray TRT equations are often used to iteratively accelerate the convergence of frequency-dependent simulations. In this way, algorithms for the frequency-dependent TRT system must also be effective for the gray TRT system. The gray TRT system then serves as an important first step in the development of frequency-dependent TRT methods. 
 
 \subsection{Steady State}
 Time derivatives are neglected under the assumption of steady state. The gray TRT system with isotropic scattering simplifies to 
@@ -242,7 +265,7 @@ We are then left with:
 	\begin{equation} \label{trans:trt_simp}
 		\Omegahat\cdot\nabla\bar{I} + \bar{\sigma}_t \bar{I} = \frac{c \bar{\sigma}_s + c\bar{\sigma}_a}{4\pi} E(\x,t) \,. 
 	\end{equation}
-This equation models the radiation field at long time scales where the radiation and material have achieved equilibrium. When implicit time integration schemes are applied to the time-dependent TRT system, a steady-state system analogous to Eq.~\ref{trans:trt_simp} must be solved. In this way, the steady-state, frequency-independent TRT system with isotropic scattering represents the core kernel of the full TRT system. 
+This equation models the radiation field at long time scales where the radiation and material have achieved equilibrium. When implicit time integration schemes are applied to the time-dependent TRT system, a steady-state system analogous to Eq.~\ref{trans:trt_simp} with additional sources must be solved at each time step. Thus, the steady-state, frequency-independent TRT system with isotropic scattering represents the core kernel of the full TRT system. 
 
 \subsection{Definition of the Model Problem}
 We now define the transport problem that serves as the model for the development of the moment methods presented in this dissertation. The properties of the steady-state, gray TRT system with isotropic scattering can be emulated with the following neutron transport equation: 
@@ -275,12 +298,10 @@ We will use the following angular identities:
 		\int_{\mathbb{S}^2} \ud \Omega = 4\pi \,, 
 	\end{equation}
 	\begin{equation}
-		\int_{\mathbb{S}^2} \Omegahat \ud \Omega = 0 \,,
-	\end{equation}
-	\begin{equation}
-		\int_{\mathbb{S}^2} \Omegahat\otimes\Omegahat \ud \Omega = \frac{4\pi}{3}\I \,. 
+		\int_{\mathbb{S}^2} \Omegahat\otimes\Omegahat \ud \Omega = \frac{4\pi}{3}\I \,, 
 	\end{equation}
 	\end{subequations}
+and that integrating any function that is odd in angle is zero. 
 Integrating Eq.~\ref{trans:model2} over all angles yields the zeroth moment equation: 
 	\begin{equation}
 		\nabla\cdot\vec{J} + \sigma_t \phi = \sigma_s\phi + Q \,. 
@@ -307,5 +328,8 @@ All together, the radiation diffusion system is
 		\frac{1}{3}\nabla\phi + \sigma_t \vec{J} = 0 \,, 
 	\end{equation}
 	\end{subequations}
-where $\sigma_a = \sigma_t - \sigma_s$ was used. 
+where $\sigma_a = \sigma_t - \sigma_s$ was used. By eliminating the current, the second-order form of radiation diffusion is: 
+	\begin{equation}
+		-\nabla\cdot \frac{1}{3\sigma_t} \nabla\phi + \sigma_a \phi = Q \,. 
+	\end{equation}
 \end{document}

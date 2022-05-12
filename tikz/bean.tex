@@ -1,0 +1,42 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+\usepackage{bm}
+\newcommand{\Omegahat}{\boldsymbol{\mathrm{v}}}
+
+\begin{document}
+\begin{tikzpicture}[>=latex]
+	\def\phi{0}
+	\draw[black, thick] plot[samples=200,smooth, domain=-4.42:108.11,variable=\t] ({8*cos(\t)*(cos(\t-\phi)^3 + sin(\t-\phi)^3)}, {8*sin(\t)*(cos(\t-\phi)^3 + sin(\t-\phi)^3)}); 
+	\draw[red, thick] plot[samples=200,smooth, domain=108.11:175.58,variable=\t] ({8*cos(\t)*(cos(\t-\phi)^3 + sin(\t-\phi)^3)}, {8*sin(\t)*(cos(\t-\phi)^3 + sin(\t-\phi)^3)}); 
+
+	\draw[->] (8.000,0.000) -- +(0.500,-0.000);
+	\draw[->] (6.539,2.380) -- +(0.297,0.402);
+	\draw[->] (4.382,3.677) -- +(0.292,0.406);
+	\draw[->] (3.098,5.366) -- +(0.440,0.238);
+	\draw[->] (1.334,7.566) -- +(0.275,0.417);
+	\draw[->] (-1.320,7.484) -- +(-0.335,0.371);
+	\draw[->] (-2.098,3.634) -- +(-0.486,-0.117);
+	\draw[->] (1.127,-0.946) -- +(-0.286,-0.410);
+	\draw[->] (5.937,-2.161) -- +(0.109,-0.488);
+	\draw[->] (8.000,-0.000) -- +(0.500,-0.000);
+
+	\draw[->, thick] (-4,-2) -- node[left, scale=2] {$\Omegahat$} +(71.565:2cm); 
+
+	\begin{scope}[xshift=15cm]
+		\draw[red, thick] plot[samples=200,smooth, domain=-15.67:96.31,variable=\t] ({8*cos(\t)*(cos(\t-\phi)^3 + sin(\t-\phi)^3)}, {8*sin(\t)*(cos(\t-\phi)^3 + sin(\t-\phi)^3)}); 
+		\draw[black, thick] plot[samples=200,smooth, domain=96.31:164.33,variable=\t] ({8*cos(\t)*(cos(\t-\phi)^3 + sin(\t-\phi)^3)}, {8*sin(\t)*(cos(\t-\phi)^3 + sin(\t-\phi)^3)}); 
+		\draw[->, thick] (8,7) -- node[above, scale=2] {$\Omegahat$} +(26.565:-2cm); 
+		\draw[->] (8.000,0.000) -- +(0.500,-0.000);
+		\draw[->] (6.539,2.380) -- +(0.297,0.402);
+		\draw[->] (4.382,3.677) -- +(0.292,0.406);
+		\draw[->] (3.098,5.366) -- +(0.440,0.238);
+		\draw[->] (1.334,7.566) -- +(0.275,0.417);
+		\draw[->] (-1.320,7.484) -- +(-0.335,0.371);
+		\draw[->] (-2.098,3.634) -- +(-0.486,-0.117);
+		\draw[->] (1.127,-0.946) -- +(-0.286,-0.410);
+		\draw[->] (5.937,-2.161) -- +(0.109,-0.488);
+		\draw[->] (8.000,-0.000) -- +(0.500,-0.000);
+	\end{scope}
+\end{tikzpicture}
+\end{document}
