@@ -8,6 +8,7 @@ The compiled document is freely available at [link](http://samolivier.net/wp-con
 	* Can build individual chapters to reduce the expense of compiling a large document 
 	* provides targets to clean auxiliary tex files 
 	* allows amortizing the cost of compiling Tikz figures by building them to PDF and then including the PDF in the document 
+	* avoids the need to track figures and tables (that may be changing as you generate results) 
 * each chapter is in its own `.tex` file (I used the `subfiles` Latex package) 
 	* adding `% !TEX root = ../doc.tex` to the top of each subfile tells editors (e.g. Sublime Text) to use citation and equation references from the entire document 
 * formatting and common macros stored in separate class file (`dissertation.cls`) which extends the `ucbthesis` Latex class. This declutters the main `doc.tex` file. 
