@@ -105,7 +105,7 @@ The product of two square-integrable functions is integrable.
 \end{prop}
 \begin{proof}
 We must show that given $u,v \in L^2(\D)$, $\int u v \ud \x < \infty$. Observe that 
-	$$ (u + v)^2 = u^2 + 2 uv + v^2 \geq 0 \iff uv \leq \frac{1}{2}\paren{u^2 + v^2} \,. $$ 
+	$$ (u - v)^2 = u^2 - 2 uv + v^2 \geq 0 \iff uv \leq \frac{1}{2}\paren{u^2 + v^2} \,. $$ 
 Thus, 
 	$$ \int uv \ud \x \leq \int \frac{1}{2}\paren{u^2 + v^2} \ud \x = \frac{1}{2}\int u^2 \ud \x + \frac{1}{2} \int v^2 \ud \x < \infty \,, $$
 since $u,v \in L^2(\D)$ are square-integrable. 
