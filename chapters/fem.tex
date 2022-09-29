@@ -936,7 +936,7 @@ then $\vec{v} \in H(\div;\D)$. Conversely, if $\vec{v} \in H(\div;\D)$ and (a) i
 It must be shown that, given (a) and (b), $\nabla\cdot\vec{v} \in L^2(\D)$. From (a), $\nablah\cdot\vec{v} \in L^2(\D)$. Using Green's identity and (b): 
 	\begin{equation}
 	\begin{aligned}
-		\int u\nablah\cdot\vec{v} \ud \x &= \sum_{K\in\meshT} \bracket{\int_{\partial K} u \vec{v}\cdot\n \ud s - \int_K \nabla u \cdot \vec{v} \ud \x } \\
+		\int u\,\nablah\cdot\vec{v} \ud \x &= \sum_{K\in\meshT} \bracket{\int_{\partial K} u \vec{v}\cdot\n \ud s - \int_K \nabla u \cdot \vec{v} \ud \x } \\
 		&= \int_{\Gamma_0} u \jump{\vec{v}\cdot\n} \ud s - \int \nabla u \cdot \vec{v} \ud \x \\
 		&= \int u\, \nabla\cdot\vec{v} \ud \x \,, 
 	\end{aligned}
