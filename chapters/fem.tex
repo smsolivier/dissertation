@@ -1041,7 +1041,7 @@ In the previous section, we defined piecewise polynomial spaces that, through a 
 \subsection{The Canonical Basis}
 Let $X_h$ denote one of the finite element spaces described in the previous section and $\mathcal{N}_h$ denote the set of nodes associated with $X_h$. 
 We also let $\mathcal{Q}(K)$ denote the element-local polynomial space for $X_h$ such that given $u \in X_h$, $u|_K \in \mathcal{Q}(K)$ for each $K \in \meshT$ and use $\{\ell_i\}$ to denote its nodal basis. 
-For example, if $X_h = V_1$, the linear continuous finite element space, then $\mathcal{N}_h$ is the set of locations, $\x_i$, in the domain corresponding to a vertex in the mesh and $\mathcal{Q}(K) = \Qbb{p}(K)$. 
+For example, if $X_h = V_1$, the linear continuous finite element space, then $\mathcal{N}_h$ is the set of locations, $\x_i$, in the domain corresponding to a vertex in the mesh and $\mathcal{Q}(K) = \Qbb{1}(K)$. 
 A function $u_h \in X_h$ is determined by the values it takes at the nodes in $\mathcal{N}_h$. That is, $u_h \in X_h$ is determined by the set 
 	\begin{equation}
 		\Sigma_h = \{ u_h(\x_i)\,, \quad \forall \x_i \in \mathcal{N}_h\} \,, 

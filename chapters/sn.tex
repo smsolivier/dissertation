@@ -113,7 +113,7 @@ We first discuss properties of the discrete transport system corresponding to th
 	\begin{equation}
 		\ubar{\psi} = \vector{\ubar{\psi}_1^T & \ldots & \ubar{\psi}_{N_\Omega}^T} \in \R^N 
 	\end{equation}
-such that the solution vector groups the all the spatial unknowns corresponding to each angle together. In other words, $\ubar{\psi}$ strides in space first then angle. 
+such that the solution vector groups all the spatial unknowns corresponding to each angle together. In other words, $\ubar{\psi}$ strides in space first then angle. 
 Let $\mat{L}_d = \mat{F}_d + \mat{G}_d + \mat{M}_t$ be the streaming and collision operator in each direction $\Omegahat_d$ and $\mat{L} = \diag(\mat{L}_d) \in \R^{N\times N}$ be the streaming and collision operator for all directions such that 
 	\begin{equation}
 		\mat{L} = \begin{bmatrix} 
@@ -263,7 +263,7 @@ It is important for the fixup to locally conserve the number of particles in eac
 	\begin{equation}
 		\int_{\Gamma} \Omegahat\cdot\n\,\jump{u} \widehat{\psi}_d - \int \Omegahat\cdot\nablah u\, \psi_d \ud \x + \int \sigma_t\, u \psi \ud \x = \int u\, q \ud \x 
 	\end{equation}
-where $q$ includes the fixed and scattering sources and $\widehat{\psi}$ is the upwind numerical flux defined for both interior and boundary faces in Eqs.~\ref{sn:upwind} and \ref{sn:upwind_bdr}. By setting the test function $u = \mathbbm{1}_K$ where 
+where $q$ includes the fixed and scattering sources and $\widehat{\psi}_d$ is the upwind numerical flux defined for both interior and boundary faces in Eqs.~\ref{sn:upwind} and \ref{sn:upwind_bdr}. By setting the test function $u = \mathbbm{1}_K$ where 
 	\begin{equation}
 		\mathbbm{1}_{K}(\x) = \begin{cases} 
 			1 \,, & \x \in K \\ 
@@ -278,7 +278,7 @@ Note that $\nablah \mathbbm{1}_K$ is zero since $\mathbbm{1}_K$ is constant on e
 	\begin{equation} \label{sn:local_balance}
 		\int_{\partial K^+} \Omegahat\cdot\n\, \psi_d \ud s + \int_K \sigma_t\, \psi_d \ud \x = \int_K q \ud \x - \int_{\partial K^-} \Omegahat\cdot\n\,\psi_{d,\text{in}} \ud s \,, 
 	\end{equation}
-where $\psi_{d,\text{in}}$ is the boundary inflow function when $\partial K^+ \cap \Gamma_b \neq \emptyset$ or incoming angular flux from an upwind element otherwise. We now write the balance statement as $\ubar{c}_{d,K}^T \ubar{\psi}_{d,K} = s_{d,K}$ where 
+where $\psi_{d,\text{in}}$ is the boundary inflow function when $\partial K^+ \cap \Gamma_b \neq \emptyset$ or the incoming angular flux from an upwind element otherwise. We now write the balance statement as $\ubar{c}_{d,K}^T \ubar{\psi}_{d,K} = s_{d,K}$ where 
 	\begin{equation}
 	 	\ubar{c}_{d,K}^T \ubar{\psi}_{d,K} = \int_{\partial K^+} \Omegahat\cdot\n\, \psi_d \ud s + \int_K \sigma_t\, \psi_d \ud \x \,,
 	\end{equation} 
