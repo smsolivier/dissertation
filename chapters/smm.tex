@@ -57,7 +57,7 @@ Next, we must determine the correction terms by computing the partial derivative
 	\begin{equation}
 		\pderiv{}{\psi}\int_{\Gamma_b} E_b\, u \varphi \ud s \biggr\rvert_{\y_0} = \int_{\Gamma_b} \pderiv{E_b}{\psi}\biggr\rvert_{\psi_0} \, u \varphi_0 \ud s = \int_{\Gamma_b} u\, \beta(\psi) \ud s \,, 
 	\end{equation}
-where $\beta(\psi)$ is the correction factor defined in Eq.~\ref{moment:corrfac}. We have used the directional derivative of the Eddington boundary factor computed in Eq.~\ref{moment:Eb_deriv} to simplify the term $\pderiv{\E}{\psi}$. 
+where $\beta(\psi)$ is the correction factor defined in Eq.~\ref{moment:corrfac}. We have used the directional derivative of the Eddington boundary factor computed in Eq.~\ref{moment:Eb_deriv} to simplify the term $\pderiv{E_b}{\psi}$. 
 Here, $\pderiv{\varphi}{\psi} = 0$ since we consider $\psi$ and $\varphi$ as independent variables. 
 Analogously, for terms with the Eddington tensor
 	\begin{equation}
@@ -155,7 +155,7 @@ The Raviart Thomas SMM discretization is then: find $(\varphi,\vec{J}) \in Y_p \
 		+\int_{\Gamma_b} \frac{1}{3E_{b0}}\vec{v}\cdot\n\paren{2\Jin + \beta} \ud s - \int_{\Gamma_0} \jump{\vec{v}}\cdot\avg{\T\n} \ud s + \int \nablah \vec{v} : \T \ud \x \,, \quad \forall \vec{v} \in \RT_p \,. 
 	\end{multline}
 	\end{subequations}
-Note that the \gls{minres} solver requires the system to be symmetric indefinite. The RT SMM discretization can be written in symmetric indefinite form by by multiplying the zeroth moment by negative one and the first moment by positive three. 
+Note that the \gls{minres} solver requires the system to be symmetric indefinite. The RT SMM discretization can be written in symmetric indefinite form by multiplying the zeroth moment by negative one and the first moment by positive three. 
 
 \subsection{Hybridized Raviart Thomas}
 The left hand side of the RT SMM discretization is equivalent to an RT discretization of radiation diffusion. Thus, the standard RT hybridization process outlined in Section \ref{rtvef_sec:hyb_diff} can be applied directly to the RT SMM method. That is, the current is approximated in the discontinuous space $\hRT_p$ and continuity of the current in the normal component is enforced with a Lagrange multiplier defined on the interior skeleton of the mesh, $\Gamma_0$. The use of a discontinuous approximation for the scalar flux and current allows eliminating these variables in favor of the Lagrange multiplier. This reduced system is both significantly smaller than the block system and can be effectively preconditioned with AMG. 
